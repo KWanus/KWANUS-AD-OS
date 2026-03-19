@@ -1,0 +1,12 @@
+Begin or continue Phase 1 only.
+
+Use the Phase 1 documents in this folder as the source of truth.
+
+Rules:
+- Do not move to Phase 2
+- Do not claim completion without DB validation
+- Keep architecture modular
+- Keep UI premium and no-friction
+
+Required result:
+A working Phase 1 foundation with validated persistence.

@@ -1,65 +1,34 @@
-import Image from "next/image";
+"use client";
+import Link from "next/link";
 
-export default function Home() {
+export default function Dashboard() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="min-h-screen bg-[#0a0f1e] text-white flex flex-col">
+      <header className="px-8 py-6 border-b border-white/10">
+        <h1 className="text-2xl font-bold tracking-tight text-cyan-400">KWANUS AD OS</h1>
+        <p className="text-sm text-white/40 mt-1">Autonomous Digital Operating System</p>
+      </header>
+      <div className="flex-1 flex flex-col items-center justify-center px-8 py-16">
+        <h2 className="text-4xl font-bold mb-3">What do you want to do?</h2>
+        <p className="text-white/40 mb-12 text-lg">Choose your next action below.</p>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
+          <Link href="/scan-products" className="group rounded-2xl border border-white/10 bg-white/5 hover:bg-cyan-500/10 hover:border-cyan-500/40 p-8 transition-all duration-200 flex flex-col gap-3">
+            <div className="text-3xl">📦</div>
+            <h3 className="text-xl font-semibold group-hover:text-cyan-400 transition-colors">Scan Products</h3>
+            <p className="text-white/40 text-sm">Analyze product demand, competition, and opportunity score.</p>
+          </Link>
+          <Link href="/scan-businesses" className="group rounded-2xl border border-white/10 bg-white/5 hover:bg-cyan-500/10 hover:border-cyan-500/40 p-8 transition-all duration-200 flex flex-col gap-3">
+            <div className="text-3xl">🔍</div>
+            <h3 className="text-xl font-semibold group-hover:text-cyan-400 transition-colors">Scan Businesses</h3>
+            <p className="text-white/40 text-sm">Audit any business URL and get a structured diagnostic report.</p>
+          </Link>
+          <Link href="/projects" className="group rounded-2xl border border-white/10 bg-white/5 hover:bg-cyan-500/10 hover:border-cyan-500/40 p-8 transition-all duration-200 flex flex-col gap-3">
+            <div className="text-3xl">🗂️</div>
+            <h3 className="text-xl font-semibold group-hover:text-cyan-400 transition-colors">Projects</h3>
+            <p className="text-white/40 text-sm">View and manage your saved scans and projects.</p>
+          </Link>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+      </div>
+    </main>
   );
 }
