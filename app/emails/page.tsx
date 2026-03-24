@@ -1,0 +1,715 @@
+"use client";
+
+import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
+import AppNav from "@/components/AppNav";
+import EmailSubNav from "@/components/EmailSubNav";
+import {
+  Mail,
+  Plus,
+  X,
+  ChevronRight,
+  Users,
+  TrendingUp,
+  DollarSign,
+  Zap,
+  ShoppingCart,
+  CheckCircle,
+  Eye,
+  RotateCcw,
+  Settings,
+  Trash2,
+  AlertTriangle,
+  Loader2,
+  BarChart2,
+  Activity,
+} from "lucide-react";
+import { EMAIL_FLOW_TEMPLATES, type EmailFlowTemplate } from "@/src/data/emailFlowTemplates";
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
+type TriggerType =
+  | "signup"
+  | "abandoned_cart"
+  | "purchase"
+  | "browse_abandon"
+  | "win_back"
+  | "custom";
+
+type FlowStatus = "draft" | "active" | "paused";
+
+interface EmailFlow {
+  id: string;
+  name: string;
+  trigger: TriggerType;
+  status: FlowStatus;
+  enrolled?: number;
+  openRate?: number;
+  revenue?: number;
+  createdAt: string;
+  updatedAt: string;
+}
+
+// ---------------------------------------------------------------------------
+// Trigger config
+// ---------------------------------------------------------------------------
+
+const TRIGGER_CONFIG: Record<
+  TriggerType,
+  {
+    label: string;
+    description: string;
+    icon: React.ElementType;
+    border: string;
+    bg: string;
+    text: string;
+    emoji: string;
+  }
+> = {
+  signup: {
+    label: "Signup",
+    description: "Someone joins your list",
+    icon: Users,
+    border: "border-cyan-500/40",
+    bg: "bg-cyan-500/10",
+    text: "text-cyan-400",
+    emoji: "🎯",
+  },
+  abandoned_cart: {
+    label: "Abandoned Cart",
+    description: "Added to cart, didn't buy",
+    icon: ShoppingCart,
+    border: "border-yellow-500/40",
+    bg: "bg-yellow-500/10",
+    text: "text-yellow-400",
+    emoji: "🛒",
+  },
+  purchase: {
+    label: "Purchase",
+    description: "Completed order",
+    icon: CheckCircle,
+    border: "border-green-500/40",
+    bg: "bg-green-500/10",
+    text: "text-green-400",
+    emoji: "✅",
+  },
+  browse_abandon: {
+    label: "Browse Abandon",
+    description: "Viewed product, didn't add",
+    icon: Eye,
+    border: "border-orange-500/40",
+    bg: "bg-orange-500/10",
+    text: "text-orange-400",
+    emoji: "👀",
+  },
+  win_back: {
+    label: "Win-Back",
+    description: "Inactive 30+ days",
+    icon: RotateCcw,
+    border: "border-purple-500/40",
+    bg: "bg-purple-500/10",
+    text: "text-purple-400",
+    emoji: "🔁",
+  },
+  custom: {
+    label: "Custom Event",
+    description: "Any custom trigger",
+    icon: Settings,
+    border: "border-white/20",
+    bg: "bg-white/5",
+    text: "text-white/60",
+    emoji: "⚡",
+  },
+};
+
+const STATUS_CONFIG: Record<
+  FlowStatus,
+  { label: string; dot: string; text: string; bg: string; border: string }
+> = {
+  active: {
+    label: "Active",
+    dot: "bg-green-400",
+    text: "text-green-400",
+    bg: "bg-green-500/10",
+    border: "border-green-500/20",
+  },
+  draft: {
+    label: "Draft",
+    dot: "bg-white/30",
+    text: "text-white/40",
+    bg: "bg-white/5",
+    border: "border-white/10",
+  },
+  paused: {
+    label: "Paused",
+    dot: "bg-yellow-400",
+    text: "text-yellow-400",
+    bg: "bg-yellow-500/10",
+    border: "border-yellow-500/20",
+  },
+};
+
+// ---------------------------------------------------------------------------
+// Sub-components
+// ---------------------------------------------------------------------------
+
+function TriggerBadge({ trigger }: { trigger: TriggerType }) {
+  const cfg = TRIGGER_CONFIG[trigger];
+  const Icon = cfg.icon;
+  return (
+    <span
+      className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[11px] font-semibold border ${cfg.border} ${cfg.bg} ${cfg.text}`}
+    >
+      <Icon className="w-3 h-3" />
+      {cfg.label}
+    </span>
+  );
+}
+
+function StatusBadge({ status }: { status: FlowStatus }) {
+  const cfg = STATUS_CONFIG[status];
+  return (
+    <span
+      className={`inline-flex items-center gap-1.5 px-2 py-0.5 rounded-md text-[11px] font-semibold border ${cfg.border} ${cfg.bg} ${cfg.text}`}
+    >
+      <span className={`w-1.5 h-1.5 rounded-full ${cfg.dot}`} />
+      {cfg.label}
+    </span>
+  );
+}
+
+function StatCard({
+  label,
+  value,
+  icon: Icon,
+  color,
+}: {
+  label: string;
+  value: string | number;
+  icon: React.ElementType;
+  color: string;
+}) {
+  return (
+    <div className="flex-1 min-w-[140px] bg-white/[0.03] border border-white/[0.06] rounded-2xl px-5 py-4">
+      <div className="flex items-center gap-2 mb-2">
+        <Icon className={`w-3.5 h-3.5 ${color}`} />
+        <span className="text-[11px] text-white/35 font-medium uppercase tracking-wider">{label}</span>
+      </div>
+      <p className="text-xl font-black text-white">{value}</p>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Flow Card
+// ---------------------------------------------------------------------------
+
+function FlowCard({
+  flow,
+  onDelete,
+}: {
+  flow: EmailFlow;
+  onDelete: (id: string) => void;
+}) {
+  const router = useRouter();
+  const [confirmDelete, setConfirmDelete] = useState(false);
+  const [deleting, setDeleting] = useState(false);
+
+  async function handleDelete(e: React.MouseEvent) {
+    e.stopPropagation();
+    setDeleting(true);
+    try {
+      await fetch(`/api/email-flows/${flow.id}`, { method: "DELETE" });
+      onDelete(flow.id);
+    } catch {
+      setDeleting(false);
+      setConfirmDelete(false);
+    }
+  }
+
+  const triggerCfg = TRIGGER_CONFIG[flow.trigger];
+
+  return (
+    <div className="group relative bg-white/[0.025] border border-white/[0.07] rounded-2xl p-5 hover:border-white/[0.14] hover:bg-white/[0.04] transition-all duration-200 flex flex-col gap-4">
+      {/* Header */}
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <h3 className="text-sm font-bold text-white truncate mb-1.5">{flow.name}</h3>
+          <div className="flex items-center gap-2 flex-wrap">
+            <TriggerBadge trigger={flow.trigger} />
+            <StatusBadge status={flow.status} />
+          </div>
+        </div>
+        {confirmDelete ? (
+          <div className="flex items-center gap-1.5 shrink-0" onClick={e => e.stopPropagation()}>
+            <button
+              onClick={(e) => void handleDelete(e)}
+              disabled={deleting}
+              className="px-2.5 py-1 rounded-lg bg-red-500/20 border border-red-500/40 text-red-400 text-[11px] font-black hover:bg-red-500/30 transition disabled:opacity-50"
+            >
+              {deleting ? <Loader2 className="w-3 h-3 animate-spin" /> : "Delete"}
+            </button>
+            <button
+              onClick={() => setConfirmDelete(false)}
+              className="px-2.5 py-1 rounded-lg bg-white/[0.05] border border-white/[0.07] text-white/40 text-[11px] font-semibold hover:text-white transition"
+            >
+              Cancel
+            </button>
+          </div>
+        ) : (
+          <button
+            onClick={(e) => { e.stopPropagation(); setConfirmDelete(true); }}
+            className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg hover:bg-red-500/10 text-white/20 hover:text-red-400"
+            aria-label="Delete flow"
+          >
+            <Trash2 className="w-3.5 h-3.5" />
+          </button>
+        )}
+      </div>
+
+      {/* Stats */}
+      <div className="grid grid-cols-3 gap-3">
+        <div className="bg-white/[0.03] rounded-xl p-3 text-center">
+          <p className="text-[10px] text-white/30 font-medium uppercase tracking-wider mb-1">Enrolled</p>
+          <p className="text-sm font-bold text-white">{(flow.enrolled ?? 0).toLocaleString()}</p>
+        </div>
+        <div className="bg-white/[0.03] rounded-xl p-3 text-center">
+          <p className="text-[10px] text-white/30 font-medium uppercase tracking-wider mb-1">Open Rate</p>
+          <p className={`text-sm font-bold ${triggerCfg.text}`}>
+            {flow.openRate != null ? `${flow.openRate}%` : "—"}
+          </p>
+        </div>
+        <div className="bg-white/[0.03] rounded-xl p-3 text-center">
+          <p className="text-[10px] text-white/30 font-medium uppercase tracking-wider mb-1">Revenue</p>
+          <p className="text-sm font-bold text-green-400">
+            {flow.revenue != null ? `$${flow.revenue.toLocaleString()}` : "—"}
+          </p>
+        </div>
+      </div>
+
+      {/* Action */}
+      <button
+        onClick={() => router.push(`/emails/flows/${flow.id}`)}
+        className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] hover:border-white/[0.16] text-white/60 hover:text-white text-xs font-semibold transition-all"
+      >
+        Edit Flow
+        <ChevronRight className="w-3.5 h-3.5" />
+      </button>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Empty state
+// ---------------------------------------------------------------------------
+
+function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
+  return (
+    <div className="flex flex-col items-center justify-center py-24 text-center">
+      <div className="relative mb-6">
+        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/20 to-purple-600/20 border border-white/10 flex items-center justify-center">
+          <Mail className="w-9 h-9 text-cyan-400/70" />
+        </div>
+        <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
+          <Plus className="w-3.5 h-3.5 text-white" />
+        </div>
+      </div>
+      <h2 className="text-xl font-black text-white mb-2">Build Your First Flow</h2>
+      <p className="text-sm text-white/40 max-w-sm mb-8 leading-relaxed">
+        Automate your email marketing with intelligent flows that trigger at exactly the right moment. Start from scratch or pick a proven template.
+      </p>
+      <div className="flex flex-col sm:flex-row gap-3">
+        <button
+          onClick={onCreateClick}
+          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition-opacity"
+        >
+          <Plus className="w-4 h-4" />
+          Create Your First Flow
+        </button>
+      </div>
+      <div className="mt-12 grid grid-cols-3 gap-6 max-w-sm">
+        {[
+          { icon: Zap, label: "Smart triggers" },
+          { icon: BarChart2, label: "Real-time analytics" },
+          { icon: DollarSign, label: "Revenue tracking" },
+        ].map(({ icon: Icon, label }) => (
+          <div key={label} className="flex flex-col items-center gap-2">
+            <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.07] flex items-center justify-center">
+              <Icon className="w-4.5 h-4.5 text-white/30" />
+            </div>
+            <span className="text-[11px] text-white/25 font-medium">{label}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Create Flow Modal
+// ---------------------------------------------------------------------------
+
+function CreateFlowModal({
+  open,
+  onClose,
+  onCreated,
+}: {
+  open: boolean;
+  onClose: () => void;
+  onCreated: (flow: EmailFlow) => void;
+}) {
+  const router = useRouter();
+  const [name, setName] = useState("");
+  const [trigger, setTrigger] = useState<TriggerType>("signup");
+  const [creating, setCreating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!open) {
+      setName("");
+      setTrigger("signup");
+      setCreating(false);
+      setError(null);
+      setSelectedTemplate(null);
+    }
+  }, [open]);
+
+  function handleSelectTemplate(tpl: EmailFlowTemplate) {
+    setSelectedTemplate(tpl.id);
+    if (!name) setName(tpl.name);
+    setTrigger(tpl.trigger as TriggerType);
+  }
+
+  async function handleCreate() {
+    if (!name.trim()) {
+      setError("Flow name is required.");
+      return;
+    }
+    setCreating(true);
+    setError(null);
+
+    try {
+      const tpl = selectedTemplate
+        ? EMAIL_FLOW_TEMPLATES.find((t) => t.id === selectedTemplate)
+        : null;
+
+      const res = await fetch("/api/email-flows", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: name.trim(),
+          trigger,
+          nodes: tpl?.nodes ?? [],
+          edges: tpl?.edges ?? [],
+          tags: tpl?.tags ?? [],
+        }),
+      });
+
+      const data = (await res.json()) as { ok: boolean; flow?: EmailFlow; error?: string };
+
+      if (!data.ok || !data.flow) {
+        throw new Error(data.error ?? "Failed to create flow");
+      }
+
+      onCreated(data.flow);
+      router.push(`/emails/flows/${data.flow.id}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+      setCreating(false);
+    }
+  }
+
+  if (!open) return null;
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-end sm:items-center justify-center p-4">
+      {/* Backdrop */}
+      <div
+        className="absolute inset-0 bg-black/70 backdrop-blur-sm"
+        onClick={onClose}
+      />
+
+      {/* Modal */}
+      <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-[#0a1628] border border-white/[0.1] rounded-2xl shadow-2xl">
+        {/* Header */}
+        <div className="sticky top-0 bg-[#0a1628] border-b border-white/[0.06] px-6 py-4 flex items-center justify-between z-10">
+          <div>
+            <h2 className="text-base font-black text-white">Create Email Flow</h2>
+            <p className="text-xs text-white/35 mt-0.5">Name it, pick a trigger, or start from a template</p>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 rounded-xl hover:bg-white/[0.06] text-white/30 hover:text-white/60 transition"
+          >
+            <X className="w-4 h-4" />
+          </button>
+        </div>
+
+        <div className="p-6 space-y-6">
+          {/* Name */}
+          <div>
+            <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">
+              Flow Name
+            </label>
+            <input
+              type="text"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="e.g. Welcome Series"
+              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 focus:bg-white/[0.06] transition"
+            />
+          </div>
+
+          {/* Trigger selector */}
+          <div>
+            <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">
+              Trigger
+            </label>
+            <div className="grid grid-cols-1 gap-2">
+              {(Object.entries(TRIGGER_CONFIG) as [TriggerType, (typeof TRIGGER_CONFIG)[TriggerType]][]).map(
+                ([key, cfg]) => {
+                  const Icon = cfg.icon;
+                  const active = trigger === key;
+                  return (
+                    <button
+                      key={key}
+                      onClick={() => setTrigger(key)}
+                      className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-left transition-all ${
+                        active
+                          ? `${cfg.border} ${cfg.bg} ${cfg.text}`
+                          : "border-white/[0.06] bg-white/[0.02] text-white/50 hover:bg-white/[0.04] hover:text-white/70"
+                      }`}
+                    >
+                      <span className="text-base w-5 text-center select-none">{cfg.emoji}</span>
+                      <Icon className={`w-4 h-4 shrink-0 ${active ? cfg.text : "text-white/30"}`} />
+                      <div className="flex-1 min-w-0">
+                        <p className={`text-sm font-semibold ${active ? cfg.text : "text-white/60"}`}>
+                          {cfg.label}
+                        </p>
+                        <p className="text-xs text-white/30">{cfg.description}</p>
+                      </div>
+                      {active && (
+                        <div className={`w-2 h-2 rounded-full shrink-0 ${cfg.text.replace("text-", "bg-")}`} />
+                      )}
+                    </button>
+                  );
+                }
+              )}
+            </div>
+          </div>
+
+          {/* Templates */}
+          <div>
+            <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-1">
+              Start from a Template
+            </label>
+            <p className="text-[11px] text-white/25 mb-3">Optional — pre-built flows you can customise</p>
+            <div className="grid grid-cols-1 gap-2">
+              {EMAIL_FLOW_TEMPLATES.map((tpl) => {
+                const tCfg = TRIGGER_CONFIG[tpl.trigger as TriggerType];
+                const isSelected = selectedTemplate === tpl.id;
+                return (
+                  <button
+                    key={tpl.id}
+                    onClick={() => handleSelectTemplate(tpl)}
+                    className={`flex items-start gap-3 p-3.5 rounded-xl border text-left transition-all ${
+                      isSelected
+                        ? `${tCfg.border} ${tCfg.bg}`
+                        : "border-white/[0.06] bg-white/[0.02] hover:bg-white/[0.04]"
+                    }`}
+                  >
+                    <div
+                      className={`w-8 h-8 rounded-lg shrink-0 flex items-center justify-center border ${tCfg.border} ${tCfg.bg}`}
+                    >
+                      <tCfg.icon className={`w-3.5 h-3.5 ${tCfg.text}`} />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className={`text-sm font-bold ${isSelected ? tCfg.text : "text-white/70"}`}>
+                          {tpl.name}
+                        </span>
+                        <span className="text-[10px] text-white/25 font-medium">
+                          {tpl.emailCount} emails
+                        </span>
+                        <span
+                          className={`text-[10px] font-semibold border px-1.5 py-0.5 rounded-md ${tCfg.border} ${tCfg.bg} ${tCfg.text}`}
+                        >
+                          {tCfg.label}
+                        </span>
+                      </div>
+                      <p className="text-[11px] text-white/30 mt-0.5 leading-relaxed">{tpl.description}</p>
+                    </div>
+                    {isSelected && (
+                      <CheckCircle className={`w-4 h-4 shrink-0 mt-0.5 ${tCfg.text}`} />
+                    )}
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Error */}
+          {error && (
+            <div className="flex items-center gap-2 px-4 py-3 rounded-xl bg-red-500/10 border border-red-500/20 text-red-400 text-sm">
+              <AlertTriangle className="w-4 h-4 shrink-0" />
+              {error}
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="sticky bottom-0 bg-[#0a1628] border-t border-white/[0.06] px-6 py-4 flex gap-3">
+          <button
+            onClick={onClose}
+            className="flex-1 py-3 rounded-xl border border-white/[0.1] text-white/40 hover:text-white/60 text-sm font-semibold transition"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={handleCreate}
+            disabled={creating || !name.trim()}
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition"
+          >
+            {creating ? (
+              <>
+                <Loader2 className="w-4 h-4 animate-spin" />
+                Creating...
+              </>
+            ) : (
+              <>
+                <Zap className="w-4 h-4" />
+                Create Flow
+              </>
+            )}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
+
+export default function EmailsPage() {
+  const [flows, setFlows] = useState<EmailFlow[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const fetchFlows = useCallback(async () => {
+    try {
+      const res = await fetch("/api/email-flows");
+      const data = (await res.json()) as { ok: boolean; flows?: EmailFlow[] };
+      if (data.ok && data.flows) setFlows(data.flows);
+    } catch {
+      // non-fatal
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchFlows();
+  }, [fetchFlows]);
+
+  function handleFlowCreated(flow: EmailFlow) {
+    setFlows((prev) => [flow, ...prev]);
+    setModalOpen(false);
+  }
+
+  function handleFlowDeleted(id: string) {
+    setFlows((prev) => prev.filter((f) => f.id !== id));
+  }
+
+  // Stats
+  const totalFlows = flows.length;
+  const activeFlows = flows.filter((f) => f.status === "active").length;
+  const totalEnrolled = flows.reduce((s, f) => s + (f.enrolled ?? 0), 0);
+  const avgOpenRate =
+    flows.length > 0
+      ? Math.round(
+          flows.filter((f) => f.openRate != null).reduce((s, f) => s + (f.openRate ?? 0), 0) /
+            Math.max(flows.filter((f) => f.openRate != null).length, 1)
+        )
+      : 0;
+  const totalRevenue = flows.reduce((s, f) => s + (f.revenue ?? 0), 0);
+
+  return (
+    <div className="min-h-screen bg-[#050a14] text-white">
+      <AppNav />
+      <EmailSubNav />
+
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+        {/* Page header */}
+        <div className="flex items-center justify-between mb-8 gap-4 flex-wrap">
+          <div>
+            <h1 className="text-2xl font-black text-white tracking-tight">Email Flows</h1>
+            <p className="text-sm text-white/35 mt-1">
+              Automate your email marketing with behaviour-triggered sequences
+            </p>
+          </div>
+          {flows.length > 0 && (
+            <button
+              onClick={() => setModalOpen(true)}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition-opacity shrink-0"
+            >
+              <Plus className="w-4 h-4" />
+              Create Flow
+            </button>
+          )}
+        </div>
+
+        {/* Stats bar */}
+        {flows.length > 0 && (
+          <div className="flex gap-3 flex-wrap mb-8">
+            <StatCard label="Total Flows" value={totalFlows} icon={Mail} color="text-cyan-400" />
+            <StatCard label="Active" value={activeFlows} icon={Activity} color="text-green-400" />
+            <StatCard
+              label="Total Enrolled"
+              value={totalEnrolled.toLocaleString()}
+              icon={Users}
+              color="text-purple-400"
+            />
+            <StatCard
+              label="Avg Open Rate"
+              value={avgOpenRate > 0 ? `${avgOpenRate}%` : "—"}
+              icon={TrendingUp}
+              color="text-yellow-400"
+            />
+            <StatCard
+              label="Total Revenue"
+              value={totalRevenue > 0 ? `$${totalRevenue.toLocaleString()}` : "—"}
+              icon={DollarSign}
+              color="text-green-400"
+            />
+          </div>
+        )}
+
+        {/* Content */}
+        {loading ? (
+          <div className="flex items-center justify-center py-24">
+            <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
+          </div>
+        ) : flows.length === 0 ? (
+          <EmptyState onCreateClick={() => setModalOpen(true)} />
+        ) : (
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {flows.map((flow) => (
+              <FlowCard key={flow.id} flow={flow} onDelete={handleFlowDeleted} />
+            ))}
+          </div>
+        )}
+      </main>
+
+      <CreateFlowModal
+        open={modalOpen}
+        onClose={() => setModalOpen(false)}
+        onCreated={handleFlowCreated}
+      />
+    </div>
+  );
+}

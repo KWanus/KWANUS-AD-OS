@@ -32,11 +32,20 @@ export default function ScanBusinessesPage() {
   const [error, setError] = useState("");
   const [result, setResult] = useState<BusinessScanResult | null>(null);
 
+  function normalizeUrl(raw: string): string {
+    const trimmed = raw.trim();
+    if (!trimmed) return trimmed;
+    if (/^https?:\/\//i.test(trimmed)) return trimmed;
+    return `https://${trimmed}`;
+  }
+
   async function handleScan() {
     if (!url.trim()) {
       setError("Please enter a URL to scan.");
       return;
     }
+    const normalized = normalizeUrl(url);
+    setUrl(normalized);
     setError("");
     setIsLoading(true);
     setResult(null);
@@ -45,7 +54,7 @@ export default function ScanBusinessesPage() {
       const res = await fetch("/api/scan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode: "business", url: url.trim() }),
+        body: JSON.stringify({ mode: "business", url: normalized }),
       });
       const payload = (await res.json()) as ScanApiResponse;
       if (!payload.success || !payload.data) {
@@ -103,6 +112,12 @@ export default function ScanBusinessesPage() {
                 <span className="text-2xl text-white/30">/100</span>
               </p>
               <p className="text-white/40 text-sm mt-2">{result.url}</p>
+              <div className="flex items-center gap-4 mt-4 pt-4 border-t border-white/[0.06]">
+                <span className="text-[11px] text-white/30 font-medium">Score legend:</span>
+                <span className="text-[11px] text-green-400 font-semibold">70–100 Healthy</span>
+                <span className="text-[11px] text-yellow-400 font-semibold">40–69 Needs work</span>
+                <span className="text-[11px] text-red-400 font-semibold">0–39 Critical</span>
+              </div>
             </div>
 
             {result.strengths.length > 0 && (
@@ -146,6 +161,21 @@ export default function ScanBusinessesPage() {
                 </ul>
               </div>
             )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Link
+                href={`/skills?skill=website-builder-scout&prefill_url=${encodeURIComponent(result.url)}`}
+                className="block w-full rounded-xl border border-cyan-400/30 bg-cyan-500/10 hover:bg-cyan-500/20 px-6 py-4 text-center text-sm font-semibold text-cyan-400 transition"
+              >
+                🏗️ Build a Demo Site for This Business →
+              </Link>
+              <Link
+                href="/analyze"
+                className="block w-full rounded-xl border border-purple-400/30 bg-purple-500/10 hover:bg-purple-500/20 px-6 py-4 text-center text-sm font-semibold text-purple-400 transition"
+              >
+                ⚡ Run Full AI Campaign Analysis →
+              </Link>
+            </div>
           </div>
         )}
       </div>

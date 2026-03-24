@@ -1,0 +1,170 @@
+/**
+ * N8N Webhook Hub
+ * Handles all n8n workflow triggers for the Agency OS.
+ *
+ * POST /api/webhooks/n8n?workflow=lead-intake
+ * POST /api/webhooks/n8n?workflow=business-processing
+ * POST /api/webhooks/n8n?workflow=outreach
+ *
+ * Authenticate with header: x-webhook-secret = WEBHOOK_SECRET env var
+ */
+
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+
+function validateSecret(req: NextRequest): boolean {
+  const secret = process.env.WEBHOOK_SECRET;
+  if (!secret || secret === "REPLACE_ME") return true; // dev mode — skip auth
+  return req.headers.get("x-webhook-secret") === secret;
+}
+
+// ── Workflow: lead-intake ─────────────────────────────────────────────────────
+// Trigger: n8n finds businesses via Google Maps/SerpAPI, sends them here
+async function handleLeadIntake(body: unknown): Promise<NextResponse> {
+  const data = body as {
+    userId: string;
+    niche: string;
+    location: string;
+    businesses: {
+      name: string;
+      website?: string;
+      phone?: string;
+      email?: string;
+      address?: string;
+      rating?: number;
+      reviewCount?: number;
+      googlePlaceId?: string;
+    }[];
+  };
+
+  if (!data.userId || !data.niche || !data.location || !data.businesses?.length) {
+    return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
+  }
+
+  const businessIds: string[] = [];
+
+  for (const biz of data.businesses) {
+    if (!biz.name) continue;
+
+    const existing = await prisma.lead.findFirst({
+      where: { userId: data.userId, name: biz.name, location: data.location },
+      select: { id: true },
+    });
+
+    if (!existing) {
+      const lead = await prisma.lead.create({
+        data: {
+          userId: data.userId,
+          name: biz.name,
+          niche: data.niche,
+          location: data.location,
+          website: biz.website ?? null,
+          phone: biz.phone ?? null,
+          email: biz.email ?? null,
+          address: biz.address ?? null,
+          rating: biz.rating ?? null,
+          reviewCount: biz.reviewCount ?? null,
+          googlePlaceId: biz.googlePlaceId ?? null,
+          status: "new",
+        },
+      });
+      businessIds.push(lead.id);
+    }
+  }
+
+  return NextResponse.json({
+    success: true,
+    niche: data.niche,
+    location: data.location,
+    count: businessIds.length,
+    business_ids: businessIds,
+  });
+}
+
+// ── Workflow: business-processing ─────────────────────────────────────────────
+// Trigger: n8n sends list of business IDs to analyze + generate
+async function handleBusinessProcessing(body: unknown): Promise<NextResponse> {
+  const data = body as { business_ids: string[]; skip_analyze?: boolean };
+
+  if (!data.business_ids?.length) {
+    return NextResponse.json({ success: false, error: "No business_ids provided" }, { status: 400 });
+  }
+
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  let processed = 0;
+  let failed = 0;
+
+  for (const id of data.business_ids) {
+    try {
+      if (!data.skip_analyze) {
+        const analyzeRes = await fetch(`${baseUrl}/api/leads/${id}/analyze`, { method: "POST" });
+        if (!analyzeRes.ok) { failed++; continue; }
+      }
+
+      const generateRes = await fetch(`${baseUrl}/api/leads/${id}/generate`, { method: "POST" });
+      if (!generateRes.ok) { failed++; continue; }
+
+      processed++;
+    } catch {
+      failed++;
+    }
+  }
+
+  return NextResponse.json({ success: true, processed, failed });
+}
+
+// ── Workflow: outreach ────────────────────────────────────────────────────────
+// Trigger: n8n ready to send outreach for a business
+async function handleOutreach(body: unknown): Promise<NextResponse> {
+  const data = body as { business_id: string; to_email: string };
+
+  if (!data.business_id || !data.to_email) {
+    return NextResponse.json({ success: false, error: "Missing business_id or to_email" }, { status: 400 });
+  }
+
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const res = await fetch(`${baseUrl}/api/leads/${data.business_id}/outreach`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ toEmail: data.to_email }),
+  });
+  const result = await res.json() as { ok: boolean };
+
+  return NextResponse.json({
+    success: result.ok,
+    business_id: data.business_id,
+    email_sent: result.ok,
+    sms_sent: false,
+  });
+}
+
+// ── Router ────────────────────────────────────────────────────────────────────
+
+export async function POST(req: NextRequest) {
+  if (!validateSecret(req)) {
+    return NextResponse.json({ success: false, error: "Unauthorized" }, { status: 401 });
+  }
+
+  const workflow = req.nextUrl.searchParams.get("workflow");
+  const body = await req.json();
+
+  switch (workflow) {
+    case "lead-intake":
+      return handleLeadIntake(body);
+    case "business-processing":
+      return handleBusinessProcessing(body);
+    case "outreach":
+      return handleOutreach(body);
+    default:
+      return NextResponse.json({ success: false, error: `Unknown workflow: ${workflow ?? "none"}` }, { status: 400 });
+  }
+}
+
+// Health check
+export async function GET() {
+  return NextResponse.json({
+    ok: true,
+    workflows: ["lead-intake", "business-processing", "outreach"],
+    usage: "POST /api/webhooks/n8n?workflow=<name> with x-webhook-secret header",
+  });
+}

@@ -1,3 +1,6 @@
+// Prisma Schema
+// KWANUS AD OS - Production Infrastructure
+
 generator client {
   provider = "prisma-client-js"
 }
@@ -8,34 +11,564 @@ datasource db {
 
 model User {
   id        String   @id @default(cuid())
+  clerkId   String   @unique
   email     String   @unique
+  name      String?
+  credits   Int      @default(10) // Welcome credits
+
+  // Subscription
+  plan             String  @default("free") // free | pro | elite
+  planExpiresAt    DateTime?
+  stripeCustomerId String?
+
+  // Workspace settings
+  workspaceName    String?
+  resendApiKey     String? // stored encrypted in prod; plaintext in dev
+  sendingFromName  String?
+  sendingFromEmail String?
+  sendingDomain    String?
+
+  // Ad & Analytics Pixels
+  metaPixelId       String?  // Facebook/Meta Pixel ID
+  googleAnalyticsId String?  // GA4 Measurement ID (G-XXXXXXXX)
+  tiktokPixelId     String?  // TikTok Pixel ID
+  googleAdsId       String?  // Google Ads conversion ID (AW-XXXXXXXXX)
+
+  // Automation & Webhooks
+  webhookUrl        String?  // N8N / Zapier / custom webhook endpoint
+  businessUrl       String?  // Their primary business URL
+  businessType      String?  // consultant | ecommerce | service | affiliate | dropship
+  onboardingCompleted Boolean @default(false)
+
+  // Affiliate Account IDs
+  clickbankNickname    String?
+  amazonTrackingId     String?
+  jvzooAffiliateId     String?
+  warriorplusId        String?
+  sharesaleAffiliateId String?
+
+  products             Product[]
+
+  campaigns    Campaign[]
+  creatives    CreativeWork[]
+  reports      ReportIntake[]
+  emailFlows      EmailFlow[]
+  emailContacts   EmailContact[]
+  emailBroadcasts EmailBroadcast[]
+  clients         Client[]
+  optInForms      OptInForm[]
+  sites           Site[]
+  leads           Lead[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model OptInForm {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  name        String
+  headline    String?
+  subheadline String?
+  buttonText  String   @default("Subscribe")
+  tags        String[] @default([])  // auto-tag contacts who submit
+  redirectUrl String?
+  active      Boolean  @default(true)
+  // Stats
+  views       Int      @default(0)
+  submissions Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AnalysisRun {
+  id                    String                  @id @default(cuid())
+  userId                String?
+  mode                  String
+  inputUrl              String
+  linkType              String?
+  title                 String?
+  score                 Int?
+  verdict               String?
+  confidence            String?
+  summary               String?
+  rawSignals            Json?
+  decisionPacket        Json?
+  createdAt             DateTime                @default(now())
+  opportunityAssessments OpportunityAssessment[]
+  assetPackages          AssetPackage[]
+  campaigns              Campaign[]
+}
+
+model OpportunityAssessment {
+  id                      String   @id @default(cuid())
+  analysisRunId           String
+  status                  String
+  totalScore              Int?
+  demandPotential         Int?
+  offerStrength           Int?
+  emotionalLeverage       Int?
+  trustCredibility        Int?
+  conversionReadiness     Int?
+  adViability             Int?
+  emailLifecyclePotential Int?
+  seoPotential            Int?
+  differentiation         Int?
+  risk                    Int?
+  topGaps                 Json?
+  topStrengths            Json?
+  recommendedPath         String?
+  opportunityPacket       Json?
+  createdAt               DateTime @default(now())
+
+  analysisRun    AnalysisRun     @relation(fields: [analysisRunId], references: [id], onDelete: Cascade)
+  assetPackages  AssetPackage[]
+}
+
+model AssetPackage {
+  id                    String   @id @default(cuid())
+  analysisRunId         String
+  opportunityAssessmentId String?
+  mode                  String
+  adHooks               Json
+  adScripts             Json
+  adBriefs              Json?
+  landingPage           Json
+  emailSequences        Json
+  executionChecklist    Json
+  createdAt             DateTime @default(now())
+
+  analysisRun          AnalysisRun          @relation(fields: [analysisRunId], references: [id], onDelete: Cascade)
+  opportunityAssessment OpportunityAssessment? @relation(fields: [opportunityAssessmentId], references: [id])
+}
+
+// ─── Campaign Workspace ───────────────────────────────────────────────────────
+
+model Campaign {
+  id            String   @id @default(cuid())
+  userId        String?
+  user          User?    @relation(fields: [userId], references: [id])
+  name          String
+  mode          String   // operator | consultant | saas
+  status        String   @default("draft") // draft | active | testing | scaling | dead
+  productName   String?
+  productUrl    String?
+  sourceUrl     String?
+  sourceType    String?   // winner | url | niche
+  
+  // Workflow Phase Tracking
+  currentPhase  Int      @default(1) // 1: SOURCE, 2: AUDIT, 3: STRATEGIZE, 4: PRODUCE, 5: DEPLOY
+  workflowState Json?    // Stores data for each phase { audit: {}, strategy: {}, etc. }
+  
+  analysisRunId String?
+  analysisRun   AnalysisRun? @relation(fields: [analysisRunId], references: [id])
+  
+  notes         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  adVariations   AdVariation[]
+  landingDraft   LandingDraft?
+  emailDrafts    EmailDraft[]
+  checklistItems ChecklistItem[]
+  creatives      CreativeWork[]
+}
+
+model CreativeWork {
+  id          String   @id @default(cuid())
+  name        String
+  type        String   // image | video
+  
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  
+  campaignId  String?
+  campaign    Campaign? @relation(fields: [campaignId], references: [id])
+  
+  // Canvas or scene state
+  state       Json     // For images: KonvaCanvas state. For videos: scene params.
+  
+  outputUrl   String?  // Generated file URL
+  
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model AdVariation {
+  id         String   @id @default(cuid())
+  campaignId String
+  name       String
+  type       String   // hook | script | brief
+  content    Json     // { format?, hook?, title?, sections?, platform? }
+  platform   String?
+  status     String   @default("draft") // draft | testing | live | winner | dead
+  notes      String?
+  metrics    Json?    // { impressions?, clicks?, ctr?, roas?, spend?, conversions? }
+  sortOrder  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+}
+
+model LandingDraft {
+  id          String   @id @default(cuid())
+  campaignId  String   @unique
+  headline    String?
+  subheadline String?
+  trustBar    Json?
+  bullets     Json?
+  socialProof String?
+  guarantee   String?
+  faqItems    Json?
+  ctaCopy     String?
+  urgencyLine String?
+  status      String   @default("draft") // draft | ready | live
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+}
+
+model EmailDraft {
+  id         String   @id @default(cuid())
+  campaignId String
+  sequence   String   // welcome | cart | post-purchase
+  position   Int
+  subject    String?
+  preview    String?
+  body       String?
+  timing     String?
+  status     String   @default("draft") // draft | ready | live
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+}
+
+model ChecklistItem {
+  id         String   @id @default(cuid())
+  campaignId String
+  day        String   // day1 | day2 | day3 | week2 | scaling | kill
+  position   Int
+  text       String
+  done       Boolean  @default(false)
+  createdAt  DateTime @default(now())
+
+  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+}
+
+model ReportIntake {
+  id         String   @id @default(cuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id])
+  reportType String
+  fileUrl    String?
+  notes      String?
+  status     String   @default("submitted")
+  createdAt  DateTime @default(now())
+}
+
+// ─── Email Marketing Workflows ───────────────────────────────────────────────
+
+model EmailFlow {
+  id          String   @id @default(cuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
+  name        String
+  trigger     String   // signup | purchase | abandoned_cart | browse_abandon | custom | manual
+  triggerConfig Json?  // { event?, tag?, segment?, delay? }
+  status      String   @default("draft") // draft | active | paused | archived
+  nodes       Json     @default("[]")  // ReactFlow node array
+  edges       Json     @default("[]")  // ReactFlow edge array
+  tags        String[] @default([])
+  // Stats
+  enrolled    Int      @default(0)
+  sent        Int      @default(0)
+  opens       Int      @default(0)
+  clicks      Int      @default(0)
+  conversions Int      @default(0)
+  revenue     Float    @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model EmailContact {
+  id         String   @id @default(cuid())
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id])
+  email      String
+  firstName  String?
+  lastName   String?
+  tags       String[] @default([])
+  properties Json?    // custom key-value properties
+  status     String   @default("subscribed") // subscribed | unsubscribed | bounced
+  source     String?  // signup | import | manual
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  @@unique([userId, email])
+}
+
+model EmailBroadcast {
+  id           String   @id @default(cuid())
+  userId       String?
+  user         User?    @relation(fields: [userId], references: [id])
+  name         String
+  subject      String
+  previewText  String?
+  body         String   @db.Text
+  fromName     String?
+  fromEmail    String?
+  status       String   @default("draft") // draft | scheduled | sending | sent | cancelled
+  segmentTags  String[] @default([]) // empty = all contacts
+  scheduledAt  DateTime?
+  sentAt       DateTime?
+  // Stats
+  recipients   Int      @default(0)
+  opens        Int      @default(0)
+  clicks       Int      @default(0)
+  bounces      Int      @default(0)
+  unsubscribes Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+// ─── CRM Workspace ────────────────────────────────────────────────────────────
+
+model Client {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+
+  // Identity
+  name          String
+  email         String?
+  phone         String?
+  company       String?
+  website       String?
+  niche         String?
+  tags          String[] @default([])
+  customFields  Json?
+
+  // Pipeline
+  pipelineStage String   @default("lead") // lead | qualified | proposal | active | won | churned
+  dealValue     Float?
+  priority      String   @default("normal") // low | normal | high
+
+  // Health (computed + stored)
+  healthScore   Int      @default(50) // 0-100
+  healthStatus  String   @default("yellow") // green | yellow | red
+  lastContactAt DateTime?
+
+  // Notes
+  notes         String?  @db.Text
+
+  // Attribution
+  sourceCampaignId String?
+
+  // Relations
+  activities    ClientActivity[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId, pipelineStage])
+  @@index([userId, healthScore])
+}
+
+model ClientActivity {
+  id        String   @id @default(cuid())
+  clientId  String
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
+  type      String   // email | call | note | stage_change | meeting | task
+  content   String?  @db.Text
+  metadata  Json?    // { from?, to? for stage_change, subject?, duration? }
+  createdBy String?
   createdAt DateTime @default(now())
 }
 
-model Project {
-  id        String      @id @default(cuid())
-  name      String
-  type      ProjectType
-  createdAt DateTime    @default(now())
-  scans     ScanResult[]
+// ─── Website Builder ──────────────────────────────────────────────────────────
+
+model Site {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  name         String
+  slug         String   @unique  // kwanus.co/s/[slug]
+  description  String?
+  faviconEmoji String?  @default("🚀")
+  theme        Json     @default("{\"primaryColor\":\"#06b6d4\",\"font\":\"inter\",\"mode\":\"dark\"}")
+  customDomain String?
+  published    Boolean  @default(false)
+  // Stats
+  totalViews   Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  pages    SitePage[]
+  products SiteProduct[]
+
+  @@index([userId])
+}
+
+model SitePage {
+  id        String   @id @default(cuid())
+  siteId    String
+  site      Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  title     String
+  slug      String   @default("home")  // "home" = site root
+  blocks    Json     @default("[]")    // Block[]
+  seoTitle  String?
+  seoDesc   String?
+  published Boolean  @default(true)
+  order     Int      @default(0)
+  views     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([siteId, slug])
+  @@index([siteId])
+}
+
+model SiteProduct {
+  id          String   @id @default(cuid())
+  siteId      String
+  site        Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
+  name        String
+  description String?  @db.Text
+  price       Int      // cents
+  compareAt   Int?     // cents — for "was $X" display
+  images      String[] @default([])
+  slug        String
+  inventory   Int?     // null = unlimited
+  status      String   @default("active") // active | draft | archived
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([siteId, slug])
+  @@index([siteId])
+}
+
+model SiteOrder {
+  id           String   @id @default(cuid())
+  siteId       String
+  productId    String
+  customerEmail String
+  customerName  String?
+  amountCents  Int
+  currency     String   @default("usd")
+  status       String   @default("pending") // pending | paid | fulfilled | refunded
+  stripePaymentId String?
+  shippingAddress Json?
+  notes        String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([siteId])
+  @@index([siteId, status])
 }
 
 model ScanResult {
   id          String   @id @default(cuid())
-  mode        ScanMode
+  mode        String   // product | business
   title       String
   payloadJson Json
   createdAt   DateTime @default(now())
-  projectId   String?
-  project     Project? @relation(fields: [projectId], references: [id])
 }
 
-enum ProjectType {
-  product
-  business
+// ─── Agency Lead Engine ────────────────────────────────────────────────────────
+
+model Lead {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+
+  // Found business info (from search)
+  name         String
+  niche        String
+  location     String
+  website      String?
+  phone        String?
+  email        String?
+  address      String?
+  rating       Float?
+  reviewCount  Int?
+  googlePlaceId String?
+
+  // AI Analysis output
+  score        Int?
+  verdict      String?
+  summary      String?
+  audience     String?
+  painPoints   String?
+  angle        String?
+  topGaps      Json?        // string[]
+  topStrengths Json?        // string[]
+  weaknesses   Json?        // string[]
+
+  // Generated assets (raw AI outputs, stored as JSON)
+  adHooks       Json?       // legacy — use adsJson
+  outreachEmail Json?       // legacy — use emailsJson
+  landingPage   Json?       // legacy — use websiteJson
+
+  // Full skill outputs (exact shapes from Agency OS spec)
+  profileJson   Json?       // profile-builder output
+  websiteJson   Json?       // website-generator output
+  adsJson       Json?       // ad-generator output (platform-specific)
+  emailsJson    Json?       // email-generator output (outreach + follow-ups + SMS)
+  analyzerJson  Json?       // business-analyzer detailed output
+
+  // Status pipeline
+  status        String      @default("new")
+  // new | analyzing | analyzed | generating | ready | outreach_sent | replied | converted | rejected
+
+  // Outreach tracking
+  outreachSentAt  DateTime?
+  emailOpened     Boolean   @default(false)
+  emailReplied    Boolean   @default(false)
+
+  // CRM link if converted
+  clientId        String?
+
+  notes           String?   @db.Text
+
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([userId, status])
+  @@index([userId, niche])
 }
 
-enum ScanMode {
-  product
-  business
+// ─── Product Library ───────────────────────────────────────────────────────────
+
+model Product {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+
+  name          String
+  description   String?  @db.Text
+  price         String?
+  originalPrice String?
+  platform      String   // clickbank | amazon | aliexpress | jvzoo | warriorplus | cj | teespring | shopify | custom | dropship
+  productUrl    String
+  affiliateUrl  String?  // constructed with user's affiliate ID
+  imageUrl      String?
+  category      String?
+  niche         String?
+  commission    String?  // "75%" or "$47/sale"
+  gravity       Float?   // ClickBank gravity
+  scanData      Json?    // full scan from analyze pipeline
+
+  status        String   @default("active") // active | archived
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId])
+  @@index([userId, platform])
+  @@index([userId, niche])
 }

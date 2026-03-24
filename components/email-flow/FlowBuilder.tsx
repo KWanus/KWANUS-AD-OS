@@ -1,0 +1,787 @@
+"use client";
+
+import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  ReactFlow,
+  Background,
+  BackgroundVariant,
+  Controls,
+  MiniMap,
+  addEdge,
+  useNodesState,
+  useEdgesState,
+  type Node,
+  type Edge,
+  type Connection,
+  type NodeTypes,
+  type OnConnect,
+  Panel,
+  MarkerType,
+} from "@xyflow/react";
+import "@xyflow/react/dist/style.css";
+
+import Link from "next/link";
+import {
+  ArrowLeft,
+  Save,
+  Play,
+  Pause,
+  LayoutGrid,
+  Mail,
+  Clock,
+  GitBranch,
+  Tag,
+  Target,
+  ChevronDown,
+  Users,
+  MousePointer,
+  Eye,
+  DollarSign,
+  Check,
+  Loader2,
+} from "lucide-react";
+
+import TriggerNode from "@/components/email-flow/nodes/TriggerNode";
+import EmailNode from "@/components/email-flow/nodes/EmailNode";
+import WaitNode from "@/components/email-flow/nodes/WaitNode";
+import ConditionNode from "@/components/email-flow/nodes/ConditionNode";
+import TagNode from "@/components/email-flow/nodes/TagNode";
+import GoalNode from "@/components/email-flow/nodes/GoalNode";
+import NodeEditor from "@/components/email-flow/NodeEditor";
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
+type FlowStatus = "draft" | "active" | "paused";
+
+interface FlowData {
+  id: string;
+  name: string;
+  trigger: string;
+  triggerConfig?: Record<string, unknown>;
+  nodes: Node[];
+  edges: Edge[];
+  status: FlowStatus;
+  tags?: string[];
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+type AnyRecord = any;
+
+// ---------------------------------------------------------------------------
+// Node types registration
+// ---------------------------------------------------------------------------
+
+const nodeTypes: NodeTypes = {
+  trigger: TriggerNode,
+  email: EmailNode,
+  wait: WaitNode,
+  condition: ConditionNode,
+  tag: TagNode,
+  goal: GoalNode,
+};
+
+// ---------------------------------------------------------------------------
+// Default edge style
+// ---------------------------------------------------------------------------
+
+const edgeDefaults = {
+  style: { stroke: "#06b6d4", strokeWidth: 2 },
+  markerEnd: { type: MarkerType.ArrowClosed, color: "#06b6d4" },
+  animated: false,
+};
+
+function makeAnimatedEdge(isActive: boolean) {
+  return {
+    ...edgeDefaults,
+    animated: isActive,
+  };
+}
+
+// ---------------------------------------------------------------------------
+// Node palette item
+// ---------------------------------------------------------------------------
+
+const PALETTE_NODES = [
+  {
+    type: "email",
+    label: "Email",
+    desc: "Send an email",
+    icon: Mail,
+    color: "border-purple-500/30 bg-purple-500/10 text-purple-300",
+    dot: "bg-purple-400",
+  },
+  {
+    type: "wait",
+    label: "Wait",
+    desc: "Delay before next step",
+    icon: Clock,
+    color: "border-amber-500/30 bg-amber-500/10 text-amber-300",
+    dot: "bg-amber-400",
+  },
+  {
+    type: "condition",
+    label: "Condition",
+    desc: "Branch on yes/no",
+    icon: GitBranch,
+    color: "border-orange-500/30 bg-orange-500/10 text-orange-300",
+    dot: "bg-orange-400",
+  },
+  {
+    type: "tag",
+    label: "Tag",
+    desc: "Add or remove a tag",
+    icon: Tag,
+    color: "border-emerald-500/30 bg-emerald-500/10 text-emerald-300",
+    dot: "bg-emerald-400",
+  },
+  {
+    type: "goal",
+    label: "Goal",
+    desc: "Track a conversion",
+    icon: Target,
+    color: "border-yellow-500/30 bg-yellow-500/10 text-yellow-300",
+    dot: "bg-yellow-400",
+  },
+];
+
+// ---------------------------------------------------------------------------
+// Status config
+// ---------------------------------------------------------------------------
+
+const STATUS_CONFIG: Record<FlowStatus, { label: string; dot: string; text: string; border: string }> = {
+  draft:  { label: "Draft",  dot: "bg-white/20",      text: "text-white/40",   border: "border-white/10" },
+  active: { label: "Active", dot: "bg-green-400",     text: "text-green-400",  border: "border-green-500/30" },
+  paused: { label: "Paused", dot: "bg-yellow-400",    text: "text-yellow-400", border: "border-yellow-500/30" },
+};
+
+// ---------------------------------------------------------------------------
+// Auto-layout utility (simple vertical stack)
+// ---------------------------------------------------------------------------
+
+function autoLayout(nodes: Node[], edges: Edge[]): Node[] {
+  // Build a simple adjacency: node → children
+  const childMap = new Map<string, string[]>();
+  const parentMap = new Map<string, string>();
+
+  nodes.forEach((n) => childMap.set(n.id, []));
+
+  edges.forEach((e) => {
+    const src = e.source;
+    const tgt = e.target;
+    childMap.get(src)?.push(tgt);
+    parentMap.set(tgt, src);
+  });
+
+  // Find roots (no parent)
+  const roots = nodes.filter((n) => !parentMap.has(n.id)).map((n) => n.id);
+
+  const positions = new Map<string, { x: number; y: number }>();
+  const visited = new Set<string>();
+
+  const GAP_Y = 140;
+  const GAP_X = 260;
+
+  function place(id: string, x: number, y: number) {
+    if (visited.has(id)) return;
+    visited.add(id);
+    positions.set(id, { x, y });
+    const children = childMap.get(id) ?? [];
+    children.forEach((child, i) => {
+      const cx = x + (i - (children.length - 1) / 2) * GAP_X;
+      place(child, cx, y + GAP_Y);
+    });
+  }
+
+  roots.forEach((r, i) => place(r, i * 400, 0));
+
+  return nodes.map((n) => {
+    const pos = positions.get(n.id);
+    if (!pos) return n;
+    return { ...n, position: pos };
+  });
+}
+
+// ---------------------------------------------------------------------------
+// FlowBuilder component
+// ---------------------------------------------------------------------------
+
+export default function FlowBuilder({ flowId }: { flowId: string }) {
+  const [flowMeta, setFlowMeta] = useState<Omit<FlowData, "nodes" | "edges">>({
+    id: flowId,
+    name: "Untitled Flow",
+    trigger: "new_subscriber",
+    status: "draft",
+  });
+
+  const [nodes, setNodes, onNodesChange] = useNodesState<AnyRecord>([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
+
+  const [selectedNode, setSelectedNode] = useState<Node<AnyRecord> | null>(null);
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
+  const [loading, setLoading] = useState(true);
+  const [editingName, setEditingName] = useState(false);
+  const [showStatusMenu, setShowStatusMenu] = useState(false);
+
+  const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const pendingSaveRef = useRef(false);
+
+  // -------------------------------------------------------------------------
+  // Fetch flow on mount
+  // -------------------------------------------------------------------------
+
+  useEffect(() => {
+    fetch(`/api/email-flows/${flowId}`)
+      .then((r) => r.json() as Promise<{ ok: boolean; flow?: FlowData }>)
+      .then((data) => {
+        if (data.ok && data.flow) {
+          const f = data.flow;
+          setFlowMeta({ id: f.id, name: f.name, trigger: f.trigger, triggerConfig: f.triggerConfig, status: f.status, tags: f.tags });
+
+          const loadedNodes: Node<AnyRecord>[] = Array.isArray(f.nodes)
+            ? (f.nodes as Node<AnyRecord>[])
+            : defaultNodes(f.trigger);
+
+          const loadedEdges: Edge[] = Array.isArray(f.edges) && f.edges.length > 0
+            ? (f.edges as Edge[])
+            : [];
+
+          setNodes(loadedNodes.length > 0 ? loadedNodes : defaultNodes(f.trigger));
+          setEdges(loadedEdges);
+        }
+      })
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, [flowId, setNodes, setEdges]);
+
+  // -------------------------------------------------------------------------
+  // Default scaffold when new flow
+  // -------------------------------------------------------------------------
+
+  function defaultNodes(trigger: string): Node<AnyRecord>[] {
+    return [
+      {
+        id: "trigger-1",
+        type: "trigger",
+        position: { x: 250, y: 50 },
+        data: { trigger, label: undefined },
+        deletable: false,
+      },
+      {
+        id: "email-1",
+        type: "email",
+        position: { x: 220, y: 220 },
+        data: { subject: "", previewText: "", body: "" },
+      },
+    ];
+  }
+
+  // -------------------------------------------------------------------------
+  // Debounced auto-save
+  // -------------------------------------------------------------------------
+
+  function scheduleSave(newNodes: Node<AnyRecord>[], newEdges: Edge[], meta?: typeof flowMeta) {
+    pendingSaveRef.current = true;
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    saveTimerRef.current = setTimeout(() => {
+      void doSave(newNodes, newEdges, meta ?? flowMeta);
+    }, 1500);
+  }
+
+  async function doSave(
+    saveNodes: Node<AnyRecord>[],
+    saveEdges: Edge[],
+    meta: typeof flowMeta
+  ) {
+    setSaveState("saving");
+    try {
+      await fetch(`/api/email-flows/${flowId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: meta.name,
+          status: meta.status,
+          nodes: saveNodes,
+          edges: saveEdges,
+        }),
+      });
+      setSaveState("saved");
+      pendingSaveRef.current = false;
+      setTimeout(() => setSaveState("idle"), 2000);
+    } catch {
+      setSaveState("idle");
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Edge connection
+  // -------------------------------------------------------------------------
+
+  const onConnect: OnConnect = useCallback(
+    (connection: Connection) => {
+      setEdges((eds) => {
+        const newEdges = addEdge(
+          {
+            ...connection,
+            ...makeAnimatedEdge(flowMeta.status === "active"),
+          },
+          eds
+        );
+        scheduleSave(nodes, newEdges);
+        return newEdges;
+      });
+    },
+    [nodes, flowMeta.status, setEdges] // eslint-disable-line react-hooks/exhaustive-deps
+  );
+
+  // -------------------------------------------------------------------------
+  // Node selection
+  // -------------------------------------------------------------------------
+
+  function handleNodeClick(_: React.MouseEvent, node: Node<AnyRecord>) {
+    setSelectedNode(node);
+  }
+
+  function handlePaneClick() {
+    setSelectedNode(null);
+    setShowStatusMenu(false);
+  }
+
+  // -------------------------------------------------------------------------
+  // Node data update (from editor panel)
+  // -------------------------------------------------------------------------
+
+  function handleNodeDataUpdate(nodeId: string, newData: AnyRecord) {
+    setNodes((nds) => {
+      const updated = nds.map((n) =>
+        n.id === nodeId ? { ...n, data: newData } : n
+      ) as Node<AnyRecord>[];
+      scheduleSave(updated, edges);
+      return updated;
+    });
+    setSelectedNode((prev) =>
+      prev?.id === nodeId ? { ...prev, data: newData } : prev
+    );
+  }
+
+  // -------------------------------------------------------------------------
+  // Drag-and-drop from palette
+  // -------------------------------------------------------------------------
+
+  function handleDragStart(e: React.DragEvent, nodeType: string) {
+    e.dataTransfer.setData("application/reactflow-node-type", nodeType);
+    e.dataTransfer.effectAllowed = "move";
+  }
+
+  function handleDrop(e: React.DragEvent) {
+    e.preventDefault();
+    const type = e.dataTransfer.getData("application/reactflow-node-type");
+    if (!type) return;
+
+    const reactFlowBounds = (e.currentTarget as HTMLElement).getBoundingClientRect();
+    const position = {
+      x: e.clientX - reactFlowBounds.left - 100,
+      y: e.clientY - reactFlowBounds.top - 40,
+    };
+
+    const id = `${type}-${Date.now()}`;
+    const defaultData = getDefaultData(type);
+
+    const newNode: Node<AnyRecord> = { id, type, position, data: defaultData };
+    setNodes((nds) => {
+      const updated = [...nds, newNode] as Node<AnyRecord>[];
+      scheduleSave(updated, edges);
+      return updated;
+    });
+  }
+
+  function handleDragOver(e: React.DragEvent) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = "move";
+  }
+
+  function getDefaultData(type: string): AnyRecord {
+    switch (type) {
+      case "email":
+        return { subject: "", previewText: "", body: "" };
+      case "wait":
+        return { duration: 1, unit: "days" };
+      case "condition":
+        return { conditionType: "opened_email" };
+      case "tag":
+        return { tagName: "", action: "add" };
+      case "goal":
+        return { goalName: "", metric: "purchase" };
+      default:
+        return {};
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Auto-layout
+  // -------------------------------------------------------------------------
+
+  function handleAutoLayout() {
+    setNodes((nds) => {
+      const laid = autoLayout(nds as Node<AnyRecord>[], edges) as Node<AnyRecord>[];
+      scheduleSave(laid, edges);
+      return laid;
+    });
+  }
+
+  // -------------------------------------------------------------------------
+  // Manual save
+  // -------------------------------------------------------------------------
+
+  async function handleManualSave() {
+    if (saveTimerRef.current) clearTimeout(saveTimerRef.current);
+    await doSave(nodes as Node<AnyRecord>[], edges, flowMeta);
+  }
+
+  // -------------------------------------------------------------------------
+  // Flow name update
+  // -------------------------------------------------------------------------
+
+  function handleNameChange(name: string) {
+    const updated = { ...flowMeta, name };
+    setFlowMeta(updated);
+    scheduleSave(nodes as Node<AnyRecord>[], edges, updated);
+  }
+
+  // -------------------------------------------------------------------------
+  // Status update
+  // -------------------------------------------------------------------------
+
+  function handleStatusChange(status: FlowStatus) {
+    const updated = { ...flowMeta, status };
+    setFlowMeta(updated);
+    setShowStatusMenu(false);
+
+    // Re-apply edge animation based on new status
+    setEdges((eds) =>
+      eds.map((e) => ({
+        ...e,
+        ...makeAnimatedEdge(status === "active"),
+      }))
+    );
+
+    void (async () => {
+      await fetch(`/api/email-flows/${flowId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status }),
+      });
+    })();
+  }
+
+  // -------------------------------------------------------------------------
+  // Nodes change handler — sync with auto-save
+  // -------------------------------------------------------------------------
+
+  function handleNodesChange(changes: Parameters<typeof onNodesChange>[0]) {
+    onNodesChange(changes);
+    // For position changes: schedule save after drag ends
+    const hasPositionChange = changes.some((c) => c.type === "position" && !c.dragging);
+    if (hasPositionChange) {
+      scheduleSave(nodes as Node<AnyRecord>[], edges);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // Render
+  // -------------------------------------------------------------------------
+
+  const sc = STATUS_CONFIG[flowMeta.status];
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#050a14] flex items-center justify-center">
+        <Loader2 className="w-6 h-6 text-cyan-400 animate-spin" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex h-screen w-screen overflow-hidden bg-[#050a14]">
+
+      {/* ------------------------------------------------------------------ */}
+      {/* LEFT SIDEBAR                                                         */}
+      {/* ------------------------------------------------------------------ */}
+      <aside
+        className="flex flex-col h-full border-r border-white/[0.07] bg-[#06091a] shrink-0 overflow-y-auto"
+        style={{ width: 260 }}
+      >
+        {/* Back + branding */}
+        <div className="px-4 pt-4 pb-3 border-b border-white/[0.06]">
+          <Link
+            href="/emails"
+            className="inline-flex items-center gap-1.5 text-[10px] text-white/30 hover:text-white/60 transition mb-3"
+          >
+            <ArrowLeft className="w-3 h-3" /> Back to Flows
+          </Link>
+
+          {/* Editable flow name */}
+          {editingName ? (
+            <input
+              autoFocus
+              className="w-full bg-white/[0.04] border border-cyan-500/40 rounded-xl px-3 py-2 text-sm font-black text-white outline-none"
+              value={flowMeta.name}
+              onChange={(e) => handleNameChange(e.target.value)}
+              onBlur={() => setEditingName(false)}
+              onKeyDown={(e) => e.key === "Enter" && setEditingName(false)}
+            />
+          ) : (
+            <button
+              className="w-full text-left text-sm font-black text-white hover:text-cyan-300 transition truncate"
+              onClick={() => setEditingName(true)}
+              title="Click to rename"
+            >
+              {flowMeta.name}
+            </button>
+          )}
+
+          {/* Status toggle */}
+          <div className="relative mt-2">
+            <button
+              onClick={() => setShowStatusMenu((v) => !v)}
+              className={`flex items-center gap-2 px-2.5 py-1.5 rounded-lg border text-[10px] font-black transition w-full ${sc.border} ${sc.text}`}
+              style={{ background: "rgba(255,255,255,0.02)" }}
+            >
+              <div className={`w-1.5 h-1.5 rounded-full shrink-0 ${sc.dot}`} />
+              {sc.label}
+              <ChevronDown className="w-3 h-3 ml-auto" />
+            </button>
+
+            {showStatusMenu && (
+              <div className="absolute top-full left-0 right-0 mt-1 rounded-xl border border-white/10 bg-[#0d1525] overflow-hidden z-50 shadow-2xl">
+                {(["draft", "active", "paused"] as FlowStatus[]).map((s) => {
+                  const c = STATUS_CONFIG[s];
+                  return (
+                    <button
+                      key={s}
+                      onClick={() => handleStatusChange(s)}
+                      className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-bold hover:bg-white/5 transition ${c.text} ${flowMeta.status === s ? "bg-white/[0.04]" : ""}`}
+                    >
+                      <div className={`w-1.5 h-1.5 rounded-full ${c.dot}`} />
+                      {c.label}
+                      {flowMeta.status === s && <Check className="w-3 h-3 ml-auto" />}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Trigger card */}
+        <div className="px-4 py-3 border-b border-white/[0.06]">
+          <p className="text-[10px] font-black uppercase tracking-widest text-white/25 mb-2">Trigger</p>
+          <div className="flex items-center gap-2 px-3 py-2 rounded-xl border border-cyan-500/20 bg-cyan-500/[0.06]">
+            <div className="w-5 h-5 rounded-md bg-cyan-500/20 flex items-center justify-center text-xs">⚡</div>
+            <div>
+              <p className="text-[10px] font-bold text-cyan-300 capitalize">
+                {flowMeta.trigger.replace(/_/g, " ")}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Node palette */}
+        <div className="px-4 py-3 border-b border-white/[0.06] flex-1">
+          <p className="text-[10px] font-black uppercase tracking-widest text-white/25 mb-3">
+            Add Step
+          </p>
+          <div className="space-y-2">
+            {PALETTE_NODES.map(({ type, label, desc, icon: Icon, color }) => (
+              <div
+                key={type}
+                draggable
+                onDragStart={(e) => handleDragStart(e, type)}
+                className={`flex items-center gap-2.5 px-3 py-2 rounded-xl border cursor-grab active:cursor-grabbing transition hover:opacity-90 ${color}`}
+              >
+                <Icon className="w-3.5 h-3.5 shrink-0" />
+                <div>
+                  <p className="text-xs font-bold leading-tight">{label}</p>
+                  <p className="text-[9px] opacity-60">{desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Flow stats */}
+        <div className="px-4 py-3 border-b border-white/[0.06]">
+          <p className="text-[10px] font-black uppercase tracking-widest text-white/25 mb-3">Stats</p>
+          <div className="grid grid-cols-2 gap-2">
+            {[
+              { icon: Users,        label: "Enrolled",   value: "—" },
+              { icon: Eye,          label: "Open Rate",  value: "—" },
+              { icon: MousePointer, label: "Click Rate", value: "—" },
+              { icon: DollarSign,   label: "Revenue",    value: "—" },
+            ].map(({ icon: Icon, label, value }) => (
+              <div key={label} className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-3 py-2">
+                <div className="flex items-center gap-1 mb-1">
+                  <Icon className="w-2.5 h-2.5 text-white/25" />
+                  <p className="text-[9px] text-white/30 font-medium">{label}</p>
+                </div>
+                <p className="text-sm font-black text-white/50">{value}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Save button */}
+        <div className="px-4 py-4">
+          <button
+            onClick={() => void handleManualSave()}
+            disabled={saveState === "saving"}
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-[#050a14] text-xs font-black transition disabled:opacity-60 shadow-[0_0_20px_rgba(6,182,212,0.2)]"
+          >
+            {saveState === "saving" ? (
+              <>
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                Saving...
+              </>
+            ) : saveState === "saved" ? (
+              <>
+                <Check className="w-3.5 h-3.5" />
+                Saved
+              </>
+            ) : (
+              <>
+                <Save className="w-3.5 h-3.5" />
+                Save Flow
+              </>
+            )}
+          </button>
+        </div>
+      </aside>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* MAIN CANVAS                                                          */}
+      {/* ------------------------------------------------------------------ */}
+      <div
+        className="flex-1 h-full"
+        onDrop={handleDrop}
+        onDragOver={handleDragOver}
+      >
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={handleNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          onNodeClick={handleNodeClick}
+          onPaneClick={handlePaneClick}
+          nodeTypes={nodeTypes}
+          defaultEdgeOptions={edgeDefaults}
+          fitView
+          fitViewOptions={{ padding: 0.3 }}
+          minZoom={0.3}
+          maxZoom={1.8}
+          proOptions={{ hideAttribution: true }}
+          className="bg-[#050a14]"
+        >
+          {/* Dot-grid background */}
+          <Background
+            variant={BackgroundVariant.Dots}
+            gap={24}
+            size={1}
+            color="rgba(255,255,255,0.06)"
+          />
+
+          {/* Controls */}
+          <Controls
+            className="!border-white/10 !bg-[#0a1020] !shadow-2xl"
+            showInteractive={false}
+          />
+
+          {/* Minimap */}
+          <MiniMap
+            nodeColor={(n) => {
+              if (n.type === "trigger") return "#06b6d4";
+              if (n.type === "email") return "#a855f7";
+              if (n.type === "wait") return "#f59e0b";
+              if (n.type === "condition") return "#f97316";
+              if (n.type === "tag") return "#10b981";
+              if (n.type === "goal") return "#eab308";
+              return "#334155";
+            }}
+            maskColor="rgba(5,10,20,0.7)"
+            className="!border-white/10 !bg-[#06091a] !rounded-2xl !overflow-hidden"
+            style={{ bottom: 16, right: 16 }}
+          />
+
+          {/* Top-right toolbar panel */}
+          <Panel position="top-right">
+            <div className="flex items-center gap-2 mr-2 mt-2">
+              {/* Auto-save indicator */}
+              <div
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl border text-[10px] font-bold transition ${
+                  saveState === "saving"
+                    ? "border-cyan-500/30 text-cyan-400 bg-cyan-500/10"
+                    : saveState === "saved"
+                    ? "border-green-500/30 text-green-400 bg-green-500/10"
+                    : "border-white/10 text-white/20 bg-white/[0.02]"
+                }`}
+              >
+                {saveState === "saving" && <Loader2 className="w-2.5 h-2.5 animate-spin" />}
+                {saveState === "saved" && <Check className="w-2.5 h-2.5" />}
+                {saveState === "idle" && <div className="w-1.5 h-1.5 rounded-full bg-white/20" />}
+                {saveState === "saving" ? "Saving..." : saveState === "saved" ? "Saved" : "Auto-save on"}
+              </div>
+
+              {/* Auto-layout button */}
+              <button
+                onClick={handleAutoLayout}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.07] text-white/40 hover:text-white/70 text-[10px] font-bold transition"
+              >
+                <LayoutGrid className="w-3 h-3" />
+                Auto Layout
+              </button>
+
+              {/* Status quick-toggle */}
+              {flowMeta.status === "active" ? (
+                <button
+                  onClick={() => handleStatusChange("paused")}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-yellow-500/30 bg-yellow-500/10 text-yellow-400 text-[10px] font-bold hover:bg-yellow-500/20 transition"
+                >
+                  <Pause className="w-3 h-3" />
+                  Pause
+                </button>
+              ) : (
+                <button
+                  onClick={() => handleStatusChange("active")}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-green-500/30 bg-green-500/10 text-green-400 text-[10px] font-bold hover:bg-green-500/20 transition"
+                >
+                  <Play className="w-3 h-3" />
+                  Activate
+                </button>
+              )}
+            </div>
+          </Panel>
+        </ReactFlow>
+      </div>
+
+      {/* ------------------------------------------------------------------ */}
+      {/* RIGHT PANEL — Node Editor                                            */}
+      {/* ------------------------------------------------------------------ */}
+      <div
+        className={`h-full shrink-0 transition-all duration-300 overflow-hidden ${
+          selectedNode ? "opacity-100" : "opacity-0 pointer-events-none"
+        }`}
+        style={{ width: selectedNode ? 320 : 0 }}
+      >
+        {selectedNode && (
+          <NodeEditor
+            node={selectedNode as Node<Record<string, unknown>>}
+            flowContext={{ trigger: flowMeta.trigger, flowName: flowMeta.name }}
+            onClose={() => setSelectedNode(null)}
+            onUpdate={(nodeId, newData) => handleNodeDataUpdate(nodeId, newData)}
+          />
+        )}
+      </div>
+    </div>
+  );
+}

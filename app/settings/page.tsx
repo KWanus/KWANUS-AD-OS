@@ -1,0 +1,806 @@
+"use client";
+
+import { useState, useEffect } from "react";
+import AppNav from "@/components/AppNav";
+import Link from "next/link";
+import { toast } from "sonner";
+import {
+  Settings,
+  Mail,
+  Zap,
+  Check,
+  Eye,
+  EyeOff,
+  ExternalLink,
+  Crown,
+  Shield,
+  AlertTriangle,
+  Loader2,
+  Copy,
+  Globe,
+  BarChart3,
+  Webhook,
+  TrendingUp,
+} from "lucide-react";
+
+// ---------------------------------------------------------------------------
+// Types
+// ---------------------------------------------------------------------------
+
+interface UserSettings {
+  workspaceName: string;
+  sendingFromName: string;
+  sendingFromEmail: string;
+  sendingDomain: string;
+  hasResendKey: boolean;
+  plan: string;
+  email: string;
+  name: string;
+  // Ad & Analytics
+  metaPixelId: string;
+  googleAnalyticsId: string;
+  tiktokPixelId: string;
+  googleAdsId: string;
+  // Automation
+  webhookUrl: string;
+  businessUrl: string;
+  businessType: string;
+  // Connected Accounts
+  clickbankNickname: string;
+  amazonTrackingId: string;
+  jvzooAffiliateId: string;
+  warriorplusId: string;
+  sharesaleAffiliateId: string;
+}
+
+// ---------------------------------------------------------------------------
+// Plan config
+// ---------------------------------------------------------------------------
+
+const PLAN_CONFIG: Record<string, { label: string; color: string; bg: string; border: string; icon: React.ElementType }> = {
+  free:  { label: "Free",  color: "text-white/50",   bg: "bg-white/5",        border: "border-white/10",       icon: Zap },
+  pro:   { label: "Pro",   color: "text-cyan-400",   bg: "bg-cyan-500/10",    border: "border-cyan-500/20",    icon: Crown },
+  elite: { label: "Elite", color: "text-purple-400", bg: "bg-purple-500/10",  border: "border-purple-500/20",  icon: Shield },
+};
+
+// ---------------------------------------------------------------------------
+// Section wrapper
+// ---------------------------------------------------------------------------
+
+function Section({ title, sub, children }: { title: string; sub?: string; children: React.ReactNode }) {
+  return (
+    <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl overflow-hidden">
+      <div className="px-6 py-4 border-b border-white/[0.06]">
+        <h2 className="text-sm font-black text-white">{title}</h2>
+        {sub && <p className="text-[11px] text-white/35 mt-0.5">{sub}</p>}
+      </div>
+      <div className="p-6">{children}</div>
+    </div>
+  );
+}
+
+function Field({ label, sub, children }: { label: string; sub?: string; children: React.ReactNode }) {
+  return (
+    <div className="flex flex-col gap-1.5">
+      <label className="text-[10px] font-black uppercase tracking-widest text-white/30">{label}</label>
+      {sub && <p className="text-[10px] text-white/20 -mt-1">{sub}</p>}
+      {children}
+    </div>
+  );
+}
+
+function Input({
+  value, onChange, placeholder, type = "text",
+}: {
+  value: string;
+  onChange: (v: string) => void;
+  placeholder?: string;
+  type?: string;
+}) {
+  return (
+    <input
+      type={type}
+      value={value}
+      onChange={(e) => onChange(e.target.value)}
+      placeholder={placeholder}
+      className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+    />
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Page
+// ---------------------------------------------------------------------------
+
+export default function SettingsPage() {
+  const [settings, setSettings] = useState<UserSettings>({
+    workspaceName: "", sendingFromName: "", sendingFromEmail: "",
+    sendingDomain: "", hasResendKey: false, plan: "free", email: "", name: "",
+    metaPixelId: "", googleAnalyticsId: "", tiktokPixelId: "", googleAdsId: "",
+    webhookUrl: "", businessUrl: "", businessType: "",
+    clickbankNickname: "", amazonTrackingId: "", jvzooAffiliateId: "",
+    warriorplusId: "", sharesaleAffiliateId: "",
+  });
+  const [resendKey, setResendKey] = useState("");
+  const [showKey, setShowKey] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [savingAccounts, setSavingAccounts] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/settings")
+      .then((r) => r.json() as Promise<{ ok: boolean; settings?: UserSettings }>)
+      .then((data) => {
+        if (data.ok && data.settings) setSettings(data.settings);
+      })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+
+    fetch("/api/settings/accounts")
+      .then((r) => r.json() as Promise<{ ok: boolean; accounts?: Partial<Pick<UserSettings, "clickbankNickname" | "amazonTrackingId" | "jvzooAffiliateId" | "warriorplusId" | "sharesaleAffiliateId">> }>)
+      .then((data) => {
+        if (data.ok && data.accounts) {
+          const accounts = data.accounts;
+          setSettings((s) => ({ ...s,
+            clickbankNickname: accounts.clickbankNickname ?? "",
+            amazonTrackingId: accounts.amazonTrackingId ?? "",
+            jvzooAffiliateId: accounts.jvzooAffiliateId ?? "",
+            warriorplusId: accounts.warriorplusId ?? "",
+            sharesaleAffiliateId: accounts.sharesaleAffiliateId ?? "",
+          }));
+        }
+      }).catch(() => {});
+  }, []);
+
+  async function save(fields: Partial<UserSettings & { resendApiKey: string }>) {
+    setSaving(true);
+    try {
+      const res = await fetch("/api/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(fields),
+      });
+      const data = await res.json() as { ok: boolean };
+      if (data.ok) {
+        toast.success("Saved");
+        if (fields.resendApiKey !== undefined) {
+          setSettings((s) => ({ ...s, hasResendKey: !!fields.resendApiKey }));
+          setResendKey("");
+        }
+      } else {
+        toast.error("Failed to save");
+      }
+    } catch {
+      toast.error("Network error");
+    } finally {
+      setSaving(false);
+    }
+  }
+
+  async function saveAffiliateAccounts() {
+    setSavingAccounts(true);
+    try {
+      const res = await fetch("/api/settings/accounts", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          clickbankNickname: settings.clickbankNickname,
+          amazonTrackingId: settings.amazonTrackingId,
+          jvzooAffiliateId: settings.jvzooAffiliateId,
+          warriorplusId: settings.warriorplusId,
+          sharesaleAffiliateId: settings.sharesaleAffiliateId,
+        }),
+      });
+      const data = await res.json() as { ok: boolean };
+      if (data.ok) {
+        toast.success("Accounts saved");
+      } else {
+        toast.error("Failed to save accounts");
+      }
+    } catch {
+      toast.error("Network error");
+    } finally {
+      setSavingAccounts(false);
+    }
+  }
+
+  const planCfg = PLAN_CONFIG[settings.plan] ?? PLAN_CONFIG.free;
+  const PlanIcon = planCfg.icon;
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#050a14] text-white">
+        <AppNav />
+        <div className="flex items-center justify-center py-24">
+          <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-[#050a14] text-white">
+      <AppNav />
+
+      <main className="max-w-2xl mx-auto px-4 sm:px-6 py-10 space-y-6">
+        {/* Header */}
+        <div className="flex items-center gap-3 mb-2">
+          <div className="w-9 h-9 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
+            <Settings className="w-4 h-4 text-white/50" />
+          </div>
+          <div>
+            <h1 className="text-xl font-black text-white">Settings</h1>
+            <p className="text-xs text-white/30">Workspace configuration and integrations</p>
+          </div>
+        </div>
+
+        {/* Plan badge */}
+        <div className={`flex items-center justify-between p-4 rounded-2xl border ${planCfg.border} ${planCfg.bg}`}>
+          <div className="flex items-center gap-3">
+            <PlanIcon className={`w-5 h-5 ${planCfg.color}`} />
+            <div>
+              <p className={`text-sm font-black ${planCfg.color}`}>{planCfg.label} Plan</p>
+              <p className="text-[11px] text-white/30">{settings.email}</p>
+            </div>
+          </div>
+          <Link
+            href="/billing"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] border border-white/[0.1] text-xs text-white/50 hover:text-white font-bold transition"
+          >
+            {settings.plan === "free" ? "Upgrade" : "Manage"}
+            <ExternalLink className="w-3 h-3" />
+          </Link>
+        </div>
+
+        {/* Workspace */}
+        <Section title="Workspace" sub="Your workspace name shown across the platform">
+          <div className="space-y-4">
+            <Field label="Workspace Name">
+              <Input
+                value={settings.workspaceName}
+                onChange={(v) => setSettings((s) => ({ ...s, workspaceName: v }))}
+                placeholder="e.g. My Agency"
+              />
+            </Field>
+            <button
+              onClick={() => void save({ workspaceName: settings.workspaceName })}
+              disabled={saving}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.05] hover:bg-white/[0.08] border border-white/[0.08] text-xs font-bold text-white/60 hover:text-white transition disabled:opacity-40"
+            >
+              {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+              Save
+            </button>
+          </div>
+        </Section>
+
+        {/* Email Delivery */}
+        <Section
+          title="Email Delivery"
+          sub="Connect Resend to send broadcasts and flow emails from your own domain"
+        >
+          <div className="space-y-5">
+            {/* Resend key status */}
+            <div className={`flex items-center gap-3 p-3 rounded-xl border ${
+              settings.hasResendKey
+                ? "border-green-500/20 bg-green-500/5"
+                : "border-amber-500/20 bg-amber-500/5"
+            }`}>
+              {settings.hasResendKey ? (
+                <>
+                  <Check className="w-4 h-4 text-green-400 shrink-0" />
+                  <div>
+                    <p className="text-xs font-bold text-green-400">Resend connected</p>
+                    <p className="text-[10px] text-white/30">Email delivery is active</p>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                  <div>
+                    <p className="text-xs font-bold text-amber-400">No API key — emails won&apos;t send</p>
+                    <p className="text-[10px] text-white/30">
+                      Get a free key at{" "}
+                      <a href="https://resend.com" target="_blank" rel="noreferrer" className="text-cyan-400 hover:underline">
+                        resend.com
+                      </a>
+                    </p>
+                  </div>
+                </>
+              )}
+            </div>
+
+            <Field
+              label="Resend API Key"
+              sub={settings.hasResendKey ? "Enter a new key to replace the existing one" : "Starts with re_"}
+            >
+              <div className="relative">
+                <input
+                  type={showKey ? "text" : "password"}
+                  value={resendKey}
+                  onChange={(e) => setResendKey(e.target.value)}
+                  placeholder={settings.hasResendKey ? "••••••••••••••••" : "re_..."}
+                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 pr-10 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition font-mono"
+                />
+                <button
+                  onClick={() => setShowKey((v) => !v)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-white/20 hover:text-white/50 transition"
+                >
+                  {showKey ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                </button>
+              </div>
+            </Field>
+
+            <div className="grid grid-cols-2 gap-4">
+              <Field label="From Name">
+                <Input
+                  value={settings.sendingFromName}
+                  onChange={(v) => setSettings((s) => ({ ...s, sendingFromName: v }))}
+                  placeholder="Your Name or Brand"
+                />
+              </Field>
+              <Field label="From Email" sub="Must be verified in Resend">
+                <Input
+                  value={settings.sendingFromEmail}
+                  onChange={(v) => setSettings((s) => ({ ...s, sendingFromEmail: v }))}
+                  placeholder="hello@yourdomain.com"
+                  type="email"
+                />
+              </Field>
+            </div>
+
+            <button
+              onClick={() => void save({
+                resendApiKey: resendKey || undefined,
+                sendingFromName: settings.sendingFromName,
+                sendingFromEmail: settings.sendingFromEmail,
+              })}
+              disabled={saving}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 text-cyan-400 text-xs font-bold transition disabled:opacity-40"
+            >
+              {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Mail className="w-3.5 h-3.5" />}
+              Save Email Settings
+            </button>
+
+            {/* Resend guide */}
+            <div className="bg-white/[0.02] rounded-xl p-4 text-xs text-white/30 space-y-1.5">
+              <p className="font-bold text-white/50 mb-2">Quick setup guide</p>
+              <p>1. Sign up at <a href="https://resend.com" target="_blank" rel="noreferrer" className="text-cyan-400">resend.com</a> (free — 3,000 emails/mo)</p>
+              <p>2. Add your domain under Domains → Verify DNS records</p>
+              <p>3. Create an API key under API Keys</p>
+              <p>4. Paste the key here and set your From email to your verified domain</p>
+            </div>
+          </div>
+        </Section>
+
+        {/* Opt-in Forms */}
+        <Section
+          title="Opt-in Forms"
+          sub="Embeddable forms that capture leads into your email list"
+        >
+          <OptInFormsManager />
+        </Section>
+
+        {/* Ad & Analytics Pixels */}
+        <Section
+          title="Ad & Analytics Pixels"
+          sub="Pixels fire on every public site page you publish — track conversions and retarget visitors"
+        >
+          <div className="space-y-5">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <Field label="Meta Pixel ID" sub="Facebook & Instagram ads">
+                <div className="relative">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 flex items-center justify-center">
+                    <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-[#1877f2]"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                  </div>
+                  <input
+                    type="text"
+                    value={settings.metaPixelId}
+                    onChange={(e) => setSettings((s) => ({ ...s, metaPixelId: e.target.value }))}
+                    placeholder="123456789012345"
+                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-8 pr-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition font-mono"
+                  />
+                </div>
+              </Field>
+
+              <Field label="TikTok Pixel ID" sub="TikTok for Business">
+                <div className="relative">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                    <svg viewBox="0 0 24 24" className="w-3.5 h-3.5 fill-white/50"><path d="M19.59 6.69a4.83 4.83 0 01-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 01-2.88 2.5 2.89 2.89 0 01-2.89-2.89 2.89 2.89 0 012.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 00-.79-.05 6.34 6.34 0 00-6.34 6.34 6.34 6.34 0 006.34 6.34 6.34 6.34 0 006.33-6.34V8.69a8.18 8.18 0 004.78 1.52V6.73a4.85 4.85 0 01-1.01-.04z"/></svg>
+                  </div>
+                  <input
+                    type="text"
+                    value={settings.tiktokPixelId}
+                    onChange={(e) => setSettings((s) => ({ ...s, tiktokPixelId: e.target.value }))}
+                    placeholder="C1A2B3D4E5F6G7H8I9J0"
+                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-8 pr-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition font-mono"
+                  />
+                </div>
+              </Field>
+
+              <Field label="Google Analytics ID (GA4)" sub="Measurement ID starts with G-">
+                <div className="relative">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                    <svg viewBox="0 0 24 24" className="w-3.5 h-3.5"><path fill="#F9AB00" d="M22.84 20.33a2.86 2.86 0 01-2.86 2.86 2.86 2.86 0 01-2.86-2.86V3.67a2.86 2.86 0 012.86-2.86 2.86 2.86 0 012.86 2.86z"/><path fill="#E37400" d="M13.71 20.33a2.86 2.86 0 01-2.86 2.86 2.86 2.86 0 01-2.86-2.86v-7.14a2.86 2.86 0 012.86-2.86 2.86 2.86 0 012.86 2.86z"/><circle fill="#E37400" cx="5" cy="20.33" r="2.86"/></svg>
+                  </div>
+                  <input
+                    type="text"
+                    value={settings.googleAnalyticsId}
+                    onChange={(e) => setSettings((s) => ({ ...s, googleAnalyticsId: e.target.value }))}
+                    placeholder="G-XXXXXXXXXX"
+                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-8 pr-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition font-mono"
+                  />
+                </div>
+              </Field>
+
+              <Field label="Google Ads Conversion ID" sub="For conversion tracking (AW-XXXXXXXXX)">
+                <div className="relative">
+                  <div className="absolute left-3 top-1/2 -translate-y-1/2">
+                    <svg viewBox="0 0 24 24" className="w-3.5 h-3.5"><path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+                  </div>
+                  <input
+                    type="text"
+                    value={settings.googleAdsId}
+                    onChange={(e) => setSettings((s) => ({ ...s, googleAdsId: e.target.value }))}
+                    placeholder="AW-XXXXXXXXX"
+                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-8 pr-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition font-mono"
+                  />
+                </div>
+              </Field>
+            </div>
+
+            <div className="bg-white/[0.02] rounded-xl p-3 text-[10px] text-white/25 flex items-start gap-2">
+              <BarChart3 className="w-3.5 h-3.5 text-cyan-400/50 shrink-0 mt-0.5" />
+              <span>All pixels are injected into every published site page automatically. You only need to add the IDs — no manual code editing required.</span>
+            </div>
+
+            <button
+              onClick={() => void save({
+                metaPixelId: settings.metaPixelId,
+                googleAnalyticsId: settings.googleAnalyticsId,
+                tiktokPixelId: settings.tiktokPixelId,
+                googleAdsId: settings.googleAdsId,
+              })}
+              disabled={saving}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 text-cyan-400 text-xs font-bold transition disabled:opacity-40"
+            >
+              {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <TrendingUp className="w-3.5 h-3.5" />}
+              Save Pixels
+            </button>
+          </div>
+        </Section>
+
+        {/* Automation / Webhooks */}
+        <Section
+          title="Automation & Webhooks"
+          sub="Connect to N8N, Zapier, or any webhook endpoint to trigger automations"
+        >
+          <div className="space-y-4">
+            <Field
+              label="Webhook URL"
+              sub="We POST JSON events here: new_contact, broadcast_sent, order_placed, campaign_launched"
+            >
+              <Input
+                value={settings.webhookUrl}
+                onChange={(v) => setSettings((s) => ({ ...s, webhookUrl: v }))}
+                placeholder="https://your-n8n.com/webhook/abc123"
+              />
+            </Field>
+
+            <Field label="Business Website URL" sub="Used for auto-analysis and AI-generated content">
+              <Input
+                value={settings.businessUrl}
+                onChange={(v) => setSettings((s) => ({ ...s, businessUrl: v }))}
+                placeholder="https://yourbusiness.com"
+              />
+            </Field>
+
+            <Field label="Business Type" sub="Helps AI generate better campaigns and copy">
+              <select
+                value={settings.businessType}
+                onChange={(e) => setSettings((s) => ({ ...s, businessType: e.target.value }))}
+                className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500/50 transition appearance-none"
+              >
+                <option value="" className="bg-[#050a14]">Select business type…</option>
+                <option value="consultant" className="bg-[#050a14]">Consultant / Freelancer</option>
+                <option value="ecommerce" className="bg-[#050a14]">E-commerce / Product Store</option>
+                <option value="service" className="bg-[#050a14]">Local Service Business</option>
+                <option value="affiliate" className="bg-[#050a14]">Affiliate / Dropshipping</option>
+                <option value="agency" className="bg-[#050a14]">Agency / SaaS</option>
+              </select>
+            </Field>
+
+            <div className="bg-white/[0.02] rounded-xl p-3 space-y-2">
+              <p className="text-[10px] font-bold text-white/40 uppercase tracking-widest">Webhook Event Payload</p>
+              <pre className="text-[10px] text-white/25 font-mono leading-relaxed overflow-x-auto">{`{
+  "event": "new_contact",
+  "timestamp": "2025-01-01T00:00:00Z",
+  "data": { "email": "...", "tags": [...] }
+}`}</pre>
+            </div>
+
+            <button
+              onClick={() => void save({
+                webhookUrl: settings.webhookUrl,
+                businessUrl: settings.businessUrl,
+                businessType: settings.businessType,
+              })}
+              disabled={saving}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 text-purple-400 text-xs font-bold transition disabled:opacity-40"
+            >
+              {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Webhook className="w-3.5 h-3.5" />}
+              Save Automation Settings
+            </button>
+          </div>
+        </Section>
+
+        {/* Connected Accounts */}
+        <Section title="Connected Accounts" sub="Link your affiliate and platform accounts to auto-generate affiliate URLs">
+          <div className="space-y-4">
+            <Field label="ClickBank Nickname" sub="Your ClickBank account nickname (for hoplinks)">
+              <Input
+                value={settings.clickbankNickname}
+                onChange={(v) => setSettings((s) => ({ ...s, clickbankNickname: v }))}
+                placeholder="yourname"
+              />
+            </Field>
+            {settings.clickbankNickname && (
+              <p className="text-[11px] text-white/30 -mt-2">
+                Hoplinks will use: <span className="text-cyan-400/70">https://{settings.clickbankNickname}.hop.clickbank.net</span>
+              </p>
+            )}
+
+            <Field label="Amazon Associates Tracking ID" sub="Your Amazon tracking/tag ID">
+              <Input
+                value={settings.amazonTrackingId}
+                onChange={(v) => setSettings((s) => ({ ...s, amazonTrackingId: v }))}
+                placeholder="yourtag-20"
+              />
+            </Field>
+
+            <Field label="JVZoo Affiliate ID" sub="Your JVZoo affiliate account ID">
+              <Input
+                value={settings.jvzooAffiliateId}
+                onChange={(v) => setSettings((s) => ({ ...s, jvzooAffiliateId: v }))}
+                placeholder="123456"
+              />
+            </Field>
+
+            <Field label="WarriorPlus ID" sub="Your WarriorPlus affiliate username">
+              <Input
+                value={settings.warriorplusId}
+                onChange={(v) => setSettings((s) => ({ ...s, warriorplusId: v }))}
+                placeholder="yourhandle"
+              />
+            </Field>
+
+            <Field label="ShareASale Affiliate ID">
+              <Input
+                value={settings.sharesaleAffiliateId}
+                onChange={(v) => setSettings((s) => ({ ...s, sharesaleAffiliateId: v }))}
+                placeholder="1234567"
+              />
+            </Field>
+
+            <button
+              onClick={() => void saveAffiliateAccounts()}
+              disabled={savingAccounts}
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 text-cyan-400 text-xs font-bold transition disabled:opacity-40"
+            >
+              {savingAccounts ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
+              {savingAccounts ? "Saving..." : "Save Accounts"}
+            </button>
+          </div>
+        </Section>
+
+        {/* Integrations */}
+        <Section title="Integrations" sub="Connect external tools">
+          <div className="space-y-3">
+            {[
+              { name: "Shopify", desc: "Sync customers to email contacts", status: "coming_soon" },
+              { name: "Stripe Webhooks", desc: "Trigger flows on purchase events", status: "coming_soon" },
+              { name: "Zapier", desc: "Connect 5,000+ apps", status: "coming_soon" },
+              { name: "API Access", desc: "Push contacts and events via REST", status: settings.plan === "elite" ? "active" : "upgrade" },
+            ].map(({ name, desc, status }) => (
+              <div key={name} className="flex items-center justify-between p-3 rounded-xl bg-white/[0.02] border border-white/[0.05]">
+                <div>
+                  <p className="text-xs font-bold text-white/60">{name}</p>
+                  <p className="text-[10px] text-white/25">{desc}</p>
+                </div>
+                <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${
+                  status === "active"
+                    ? "text-green-400 bg-green-500/10 border-green-500/20"
+                    : status === "upgrade"
+                    ? "text-purple-400 bg-purple-500/10 border-purple-500/20"
+                    : "text-white/20 bg-white/5 border-white/10"
+                }`}>
+                  {status === "active" ? "Active" : status === "upgrade" ? "Elite" : "Soon"}
+                </span>
+              </div>
+            ))}
+          </div>
+        </Section>
+      </main>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Opt-in Forms Manager (inline in settings)
+// ---------------------------------------------------------------------------
+
+interface OptInForm {
+  id: string;
+  name: string;
+  headline?: string;
+  subheadline?: string;
+  buttonText: string;
+  tags: string[];
+  redirectUrl?: string;
+  active: boolean;
+  views: number;
+  submissions: number;
+}
+
+function OptInFormsManager() {
+  const [forms, setForms] = useState<OptInForm[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [creating, setCreating] = useState(false);
+  const [showNew, setShowNew] = useState(false);
+  const [newForm, setNewForm] = useState({ name: "", headline: "", subheadline: "", buttonText: "Subscribe", tags: "", redirectUrl: "" });
+  const [copiedId, setCopiedId] = useState<string | null>(null);
+
+  useEffect(() => {
+    fetch("/api/opt-in-forms")
+      .then((r) => r.json() as Promise<{ ok: boolean; forms?: OptInForm[] }>)
+      .then((data) => { if (data.ok) setForms(data.forms ?? []); })
+      .catch(() => {})
+      .finally(() => setLoading(false));
+  }, []);
+
+  async function handleCreate() {
+    if (!newForm.name.trim()) return;
+    setCreating(true);
+    try {
+      const res = await fetch("/api/opt-in-forms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: newForm.name,
+          headline: newForm.headline || undefined,
+          subheadline: newForm.subheadline || undefined,
+          buttonText: newForm.buttonText || "Subscribe",
+          tags: newForm.tags.split(",").map((t) => t.trim()).filter(Boolean),
+          redirectUrl: newForm.redirectUrl || undefined,
+        }),
+      });
+      const data = await res.json() as { ok: boolean; form?: OptInForm };
+      if (data.ok && data.form) {
+        setForms((p) => [data.form!, ...p]);
+        setShowNew(false);
+        setNewForm({ name: "", headline: "", subheadline: "", buttonText: "Subscribe", tags: "", redirectUrl: "" });
+        toast.success("Form created");
+      }
+    } catch {
+      toast.error("Failed to create form");
+    } finally {
+      setCreating(false);
+    }
+  }
+
+  function copyUrl(formId: string) {
+    const url = `${window.location.origin}/forms/${formId}`;
+    void navigator.clipboard.writeText(url);
+    setCopiedId(formId);
+    toast.success("Form URL copied!");
+    setTimeout(() => setCopiedId(null), 2000);
+  }
+
+  function getEmbedCode(formId: string) {
+    const url = `${window.location.origin}/forms/${formId}`;
+    return `<iframe src="${url}" width="100%" height="400" frameborder="0" style="border-radius:12px"></iframe>`;
+  }
+
+  if (loading) return <Loader2 className="w-4 h-4 text-white/20 animate-spin" />;
+
+  return (
+    <div className="space-y-4">
+      {forms.map((form) => (
+        <div key={form.id} className="bg-white/[0.02] border border-white/[0.07] rounded-xl p-4">
+          <div className="flex items-start justify-between gap-3 mb-3">
+            <div>
+              <p className="text-sm font-bold text-white">{form.name}</p>
+              {form.headline && <p className="text-[11px] text-white/35 mt-0.5">{form.headline}</p>}
+            </div>
+            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border shrink-0 ${
+              form.active ? "text-green-400 bg-green-500/10 border-green-500/20" : "text-white/30 bg-white/5 border-white/10"
+            }`}>
+              {form.active ? "Active" : "Paused"}
+            </span>
+          </div>
+
+          <div className="flex gap-4 mb-3 text-xs text-white/30">
+            <span><span className="font-bold text-white/50">{form.views}</span> views</span>
+            <span><span className="font-bold text-white/50">{form.submissions}</span> submissions</span>
+            {form.submissions > 0 && form.views > 0 && (
+              <span><span className="font-bold text-cyan-400">{Math.round((form.submissions / form.views) * 100)}%</span> conversion</span>
+            )}
+          </div>
+
+          <div className="flex gap-2">
+            <button
+              onClick={() => copyUrl(form.id)}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.07] border border-white/[0.08] text-[11px] text-white/50 hover:text-white font-semibold transition"
+            >
+              {copiedId === form.id ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}
+              Copy URL
+            </button>
+            <button
+              onClick={() => {
+                void navigator.clipboard.writeText(getEmbedCode(form.id));
+                toast.success("Embed code copied!");
+              }}
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.07] border border-white/[0.08] text-[11px] text-white/50 hover:text-white font-semibold transition"
+            >
+              <Globe className="w-3 h-3" />
+              Embed Code
+            </button>
+            <a
+              href={`/forms/${form.id}`}
+              target="_blank"
+              rel="noreferrer"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.07] border border-white/[0.08] text-[11px] text-white/50 hover:text-white font-semibold transition"
+            >
+              <ExternalLink className="w-3 h-3" />
+              Preview
+            </a>
+          </div>
+        </div>
+      ))}
+
+      {!showNew ? (
+        <button
+          onClick={() => setShowNew(true)}
+          className="w-full py-2.5 rounded-xl border border-dashed border-white/[0.12] text-white/30 hover:text-white/60 hover:border-white/[0.25] text-xs font-bold transition"
+        >
+          + Create New Form
+        </button>
+      ) : (
+        <div className="bg-white/[0.02] border border-white/[0.1] rounded-xl p-4 space-y-3">
+          <p className="text-xs font-black text-white/50 uppercase tracking-wider">New Form</p>
+          {[
+            { field: "name", label: "Internal Name *", placeholder: "e.g. Newsletter Signup" },
+            { field: "headline", label: "Headline", placeholder: "Join our newsletter" },
+            { field: "subheadline", label: "Subheadline", placeholder: "Get weekly tips straight to your inbox" },
+            { field: "buttonText", label: "Button Text", placeholder: "Subscribe" },
+            { field: "tags", label: "Auto-tag (comma separated)", placeholder: "newsletter, leads" },
+            { field: "redirectUrl", label: "Redirect URL after submit", placeholder: "https://yoursite.com/thank-you" },
+          ].map(({ field, label, placeholder }) => (
+            <div key={field}>
+              <label className="block text-[10px] font-black uppercase tracking-widest text-white/25 mb-1">{label}</label>
+              <input
+                type="text"
+                value={newForm[field as keyof typeof newForm]}
+                onChange={(e) => setNewForm((f) => ({ ...f, [field]: e.target.value }))}
+                placeholder={placeholder}
+                className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+              />
+            </div>
+          ))}
+          <div className="flex gap-2">
+            <button onClick={() => setShowNew(false)} className="flex-1 py-2 rounded-lg border border-white/[0.08] text-white/30 text-xs font-bold hover:text-white/50 transition">
+              Cancel
+            </button>
+            <button
+              onClick={() => void handleCreate()}
+              disabled={creating || !newForm.name.trim()}
+              className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 text-xs font-bold hover:bg-cyan-500/30 transition disabled:opacity-40"
+            >
+              {creating ? <Loader2 className="w-3 h-3 animate-spin" /> : <Check className="w-3 h-3" />}
+              Create
+            </button>
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}

@@ -1,0 +1,132 @@
+import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
+import { getOrCreateUser } from "@/lib/auth";
+import { computeHealthScore } from "@/lib/clients/healthScore";
+
+export async function GET(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const { userId: clerkId } = await auth();
+    if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    const user = await getOrCreateUser();
+    if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    const client = await prisma.client.findFirst({
+      where: { id, userId: user.id },
+      include: {
+        activities: { orderBy: { createdAt: "desc" }, take: 50 },
+        _count: { select: { activities: true } },
+      },
+    });
+    if (!client) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
+    return NextResponse.json({ ok: true, client });
+  } catch (err) {
+    console.error("Client GET:", err);
+    return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });
+  }
+}
+
+export async function PATCH(
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const { userId: clerkId } = await auth();
+    if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    const user = await getOrCreateUser();
+    if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    const body = await req.json() as {
+      name?: string;
+      email?: string;
+      phone?: string;
+      company?: string;
+      website?: string;
+      niche?: string;
+      tags?: string[];
+      pipelineStage?: string;
+      dealValue?: number | null;
+      notes?: string;
+      priority?: string;
+      lastContactAt?: string | null;
+    };
+
+    // If stage is changing, log it
+    const existing = await prisma.client.findFirst({ where: { id, userId: user.id } });
+    if (!existing) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
+
+    const newStage = body.pipelineStage ?? existing.pipelineStage;
+    const newLastContact = body.lastContactAt !== undefined
+      ? (body.lastContactAt ? new Date(body.lastContactAt) : null)
+      : existing.lastContactAt;
+
+    const { score, status } = computeHealthScore({
+      lastContactAt: newLastContact,
+      pipelineStage: newStage,
+      dealValue: body.dealValue !== undefined ? body.dealValue : existing.dealValue,
+      createdAt: existing.createdAt,
+    });
+
+    const client = await prisma.client.update({
+      where: { id },
+      data: {
+        ...(body.name !== undefined && { name: body.name }),
+        ...(body.email !== undefined && { email: body.email || null }),
+        ...(body.phone !== undefined && { phone: body.phone || null }),
+        ...(body.company !== undefined && { company: body.company || null }),
+        ...(body.website !== undefined && { website: body.website || null }),
+        ...(body.niche !== undefined && { niche: body.niche || null }),
+        ...(body.tags !== undefined && { tags: body.tags }),
+        ...(body.pipelineStage !== undefined && { pipelineStage: body.pipelineStage }),
+        ...(body.dealValue !== undefined && { dealValue: body.dealValue }),
+        ...(body.notes !== undefined && { notes: body.notes || null }),
+        ...(body.priority !== undefined && { priority: body.priority }),
+        ...(body.lastContactAt !== undefined && { lastContactAt: newLastContact }),
+        healthScore: score,
+        healthStatus: status,
+      },
+    });
+
+    // Log stage change activity
+    if (body.pipelineStage && body.pipelineStage !== existing.pipelineStage) {
+      await prisma.clientActivity.create({
+        data: {
+          clientId: id,
+          type: "stage_change",
+          content: `Moved from ${existing.pipelineStage} to ${body.pipelineStage}`,
+          metadata: { from: existing.pipelineStage, to: body.pipelineStage },
+          createdBy: user.id,
+        },
+      });
+    }
+
+    return NextResponse.json({ ok: true, client });
+  } catch (err) {
+    console.error("Client PATCH:", err);
+    return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { id } = await params;
+    const { userId: clerkId } = await auth();
+    if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    const user = await getOrCreateUser();
+    if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    await prisma.client.deleteMany({ where: { id, userId: user.id } });
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("Client DELETE:", err);
+    return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });
+  }
+}

@@ -102,6 +102,12 @@ export default function ScanProductsPage() {
                 <span className="text-2xl text-white/30">/100</span>
               </p>
               <p className="text-white/40 text-sm mt-2 truncate">{result.name}</p>
+              <div className="flex items-center gap-4 mt-4 pt-4 border-t border-white/[0.06]">
+                <span className="text-[11px] text-white/30 font-medium">Score legend:</span>
+                <span className="text-[11px] text-green-400 font-semibold">70–100 Strong opportunity</span>
+                <span className="text-[11px] text-yellow-400 font-semibold">40–69 Moderate</span>
+                <span className="text-[11px] text-red-400 font-semibold">0–39 Avoid</span>
+              </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -114,17 +120,32 @@ export default function ScanProductsPage() {
               </div>
               <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
                 <p className="text-xs uppercase tracking-widest text-white/40 mb-1">Competition</p>
-                <p className="text-4xl font-bold text-yellow-400">
+                <p className={`text-4xl font-bold ${result.competitionScore >= 70 ? "text-red-400" : result.competitionScore >= 40 ? "text-yellow-400" : "text-green-400"}`}>
                   {result.competitionScore}
                   <span className="text-lg text-white/30">/100</span>
                 </p>
-                <p className="text-xs text-white/30 mt-1">moderate</p>
+                <p className="text-xs text-white/30 mt-1">{result.competitionScore >= 70 ? "high — crowded" : result.competitionScore >= 40 ? "moderate" : "low — open market"}</p>
               </div>
             </div>
 
             <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
               <h3 className="text-sm font-semibold text-white/60 uppercase tracking-widest mb-3">Analysis</h3>
               <p className="text-sm text-white/70 leading-relaxed">{result.reasoning}</p>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Link
+                href="/analyze"
+                className="block w-full rounded-xl border border-cyan-400/30 bg-cyan-500/10 hover:bg-cyan-500/20 px-6 py-4 text-center text-sm font-semibold text-cyan-400 transition"
+              >
+                ⚡ Run Full AI Campaign Analysis →
+              </Link>
+              <Link
+                href={`/skills?skill=ad-campaign`}
+                className="block w-full rounded-xl border border-purple-400/30 bg-purple-500/10 hover:bg-purple-500/20 px-6 py-4 text-center text-sm font-semibold text-purple-400 transition"
+              >
+                🎯 Build an Ad Campaign →
+              </Link>
             </div>
           </div>
         )}
