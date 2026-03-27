@@ -2,13 +2,23 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import Stripe from "stripe";
 
-// @ts-ignore
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-    apiVersion: "2024-11-20.acacia" as any,
-});
+function getStripe() {
+    const stripeKey = process.env.STRIPE_SECRET_KEY;
+    if (!stripeKey) return null;
+
+    // @ts-ignore
+    return new Stripe(stripeKey, {
+        apiVersion: "2024-11-20.acacia" as any,
+    });
+}
 
 export async function POST(req: NextRequest) {
     try {
+        const stripe = getStripe();
+        if (!stripe) {
+            return NextResponse.json({ ok: false, error: "Stripe is not configured" }, { status: 503 });
+        }
+
         const body = await req.json();
         const { siteId, productId, returnUrl } = body;
 

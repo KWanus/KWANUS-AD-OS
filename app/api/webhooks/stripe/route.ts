@@ -2,15 +2,25 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import Stripe from "stripe";
 
-// @ts-ignore
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY || "", {
-    apiVersion: "2024-11-20.acacia" as any,
-});
+function getStripe() {
+    const stripeKey = process.env.STRIPE_SECRET_KEY;
+    if (!stripeKey) return null;
+
+    // @ts-ignore
+    return new Stripe(stripeKey, {
+        apiVersion: "2024-11-20.acacia" as any,
+    });
+}
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
 export async function POST(req: NextRequest) {
     try {
+        const stripe = getStripe();
+        if (!stripe) {
+            return NextResponse.json({ error: "Stripe not configured" }, { status: 400 });
+        }
+
         const rawBody = await req.text();
         const signature = req.headers.get("stripe-signature");
 
