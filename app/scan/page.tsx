@@ -14,6 +14,7 @@ type ScanMode = "consultant" | "operator";
 type ScanResult = {
   ok: boolean;
   analysis: {
+    id?: string;
     inputUrl: string;
     title: string;
     score: number;
@@ -605,9 +606,24 @@ export default function ScanPage() {
               </div>
             </div>
 
-            {/* Ask Copilot */}
-            <div className="flex items-center justify-between pt-2">
-              <p className="text-xs text-white/25">Not sure which path to take?</p>
+            {/* Actions row */}
+            <div className="flex items-center justify-between pt-2 flex-wrap gap-3">
+              <div className="flex items-center gap-4">
+                {analysis.id && (
+                  <Link
+                    href={`/analyses/${analysis.id}`}
+                    className="flex items-center gap-1.5 text-xs font-bold text-purple-400/70 hover:text-purple-400 transition"
+                  >
+                    View Full Report <ChevronRight className="w-3 h-3" />
+                  </Link>
+                )}
+                <Link
+                  href="/analyses"
+                  className="flex items-center gap-1.5 text-xs font-semibold text-white/25 hover:text-white/50 transition"
+                >
+                  Scan History <ChevronRight className="w-3 h-3" />
+                </Link>
+              </div>
               <Link
                 href={`/copilot?prefill=${encodeURIComponent(`I scanned ${analysis.inputUrl} and got a score of ${analysis.score}/100 (${analysis.verdict}). What should I do next?`)}`}
                 className="flex items-center gap-1.5 text-xs font-bold text-cyan-400/70 hover:text-cyan-400 transition"
@@ -624,6 +640,9 @@ export default function ScanPage() {
             <Search className="w-10 h-10 mx-auto mb-3 opacity-20" />
             <p className="text-sm">Enter a URL above to get started</p>
             <p className="text-xs mt-1 opacity-60">Works on any public website — business, product, ecommerce, landing page</p>
+            <Link href="/analyses" className="inline-flex items-center gap-1.5 text-xs text-white/25 hover:text-cyan-400/60 transition mt-4">
+              View past scans <ChevronRight className="w-3 h-3" />
+            </Link>
           </div>
         )}
 
