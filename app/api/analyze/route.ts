@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
+import { getOrCreateUser } from "@/lib/auth";
 import { normalizeInput } from "@/src/logic/ad-os/normalizeInput";
 import { fetchPage } from "@/src/logic/ad-os/fetchPage";
 import { classifyLink } from "@/src/logic/ad-os/classifyLink";
@@ -21,6 +23,18 @@ export async function POST(req: NextRequest) {
 
     if (!input.valid) {
       return NextResponse.json({ ok: false, error: input.error }, { status: 400 });
+    }
+
+    // Resolve user (non-blocking — analysis still works if auth fails)
+    let userId: string | null = null;
+    try {
+      const { userId: clerkId } = await auth();
+      if (clerkId) {
+        const user = await getOrCreateUser();
+        userId = user?.id ?? null;
+      }
+    } catch {
+      // Auth is optional for analysis
     }
 
     const page = await fetchPage(input.url);
@@ -75,6 +89,7 @@ export async function POST(req: NextRequest) {
     try {
       const run = await prisma.analysisRun.create({
         data: {
+          ...(userId ? { userId } : {}),
           mode: input.mode,
           inputUrl: input.url,
           linkType,

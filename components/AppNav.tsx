@@ -5,7 +5,7 @@ import { usePathname } from "next/navigation";
 import { UserButton, SignInButton, useUser } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
-import { LayoutDashboard, Globe, Mail, Users, Settings, Zap, BotMessageSquare, FolderOpen, Sparkles, ScanSearch, Building2, Package, Briefcase, MapPin, TrendingUp, ShoppingCart, Building, Layers3 } from "lucide-react";
+import { LayoutDashboard, Globe, Mail, Users, Settings, Zap, BotMessageSquare, FolderOpen, Sparkles, ScanSearch, Building2, Package, Briefcase, MapPin, TrendingUp, ShoppingCart, Building, Layers3, BarChart2 } from "lucide-react";
 
 const CreditsDisplay = dynamic(() => import("@/components/CreditsDisplay"), { ssr: false });
 
@@ -15,6 +15,7 @@ const NAV_ITEMS = [
   { href: "/copilot",   label: "AI Copilot",icon: BotMessageSquare },
   { href: "/leads",     label: "Leads",     icon: Building2 },
   { href: "/scan",      label: "Scan",      icon: ScanSearch },
+  { href: "/analyses",  label: "History",   icon: BarChart2 },
   { href: "/skills",    label: "Skills",    icon: Sparkles },
   { href: "/websites",  label: "Sites",     icon: Globe },
   { href: "/campaigns", label: "Campaigns", icon: FolderOpen },
