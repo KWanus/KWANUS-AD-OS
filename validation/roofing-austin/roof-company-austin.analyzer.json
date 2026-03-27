@@ -1,0 +1,51 @@
+{
+  "business_name": "Roof Company Austin",
+  "niche": "Roofing",
+  "location": "Austin, TX",
+  "summary": "Roof Company Austin is a local roofing contractor targeting homeowners in the Austin, TX market. The site scores well on structure and trust signals but falls short on emotional resonance — failing to articulate the pain behind the problem (leaks, storm damage, insurance stress, rising repair costs). The offer is visible but feels transactional rather than urgent. With strong ad viability and a solid conversion foundation, this business is one or two copy pivots away from meaningfully higher close rates.",
+  "scores": {
+    "design_score": 78,
+    "trust_score": 80,
+    "clarity_score": 72,
+    "cta_score": 68,
+    "conversion_score": 74
+  },
+  "issues": [
+    {
+      "title": "No Pain-First Messaging",
+      "severity": "high",
+      "reason": "The site leads with the offer rather than the problem. Austin homeowners dealing with hail damage, storm season stress, or a failing roof need to feel immediately understood before they trust any contractor. Skipping pain language makes the offer feel generic and interchangeable with every other roofer in the market."
+    },
+    {
+      "title": "Weak Demand Signals Above the Fold",
+      "severity": "high",
+      "reason": "The hero section does not communicate urgency or relevance to seasonal triggers like hail storms, insurance claims, or Texas heat damage — all high-intent reasons Austin homeowners search for roofers. Missing these signals means cold traffic bounces before the offer lands."
+    },
+    {
+      "title": "CTA Lacks Specificity and Urgency",
+      "severity": "medium",
+      "reason": "Generic CTAs like 'Get a Free Quote' do not differentiate or create urgency. In a high-competition local market, a CTA framed around speed, ease, or a specific outcome (e.g., 'Get Your Roof Inspected in 24 Hours') will significantly improve click-through and form completions."
+    }
+  ],
+  "missed_opportunities": [
+    "Storm damage and insurance claim assistance is one of the highest-converting angles in the roofing niche — Austin's hail season creates seasonal urgency that could be leveraged with a dedicated landing page or homepage banner targeting 'storm damage roof repair Austin' searches.",
+    "No visible social proof loop — customer count, roofs replaced this year, or a live review feed from Google would reinforce trust continuously rather than as a one-time static element buried below the fold.",
+    "A before/after photo section or project gallery tied to specific Austin neighborhoods (e.g., 'Recent job in Round Rock' or 'Mueller homeowner — full replacement') would increase local relevance and perceived expertise dramatically."
+  ],
+  "strengths": [
+    "The site has a well-structured layout that guides visitors through the offer logically — trust signals, services, and contact pathways are all present and organized, reducing friction for warm traffic.",
+    "Ad viability is strong — the offer framing and page structure are compatible with paid traffic campaigns, meaning this business can scale lead volume without a full rebuild.",
+    "Trust signals are present (likely reviews, credentials, or guarantees), which lowers cold-traffic skepticism and creates a credible first impression for new visitors."
+  ],
+  "quick_wins": [
+    "Rewrite the hero headline to lead with pain: swap a generic tagline for something like 'Austin's Roof Taking a Beating? We Fix It Fast — Guaranteed' to immediately connect with the homeowner's emotional state before pitching the offer.",
+    "Add a urgency-driven CTA with a specific promise: replace 'Get a Free Quote' with 'Book a Free 24-Hour Roof Inspection' to increase perceived value and set a clear next step that feels low-risk and fast.",
+    "Insert a storm damage or insurance claim callout section near the top of the page — a simple banner or icon block that says 'Storm or Hail Damage? We Handle the Insurance Claim For You' will capture a high-intent segment that currently has no entry point on the page."
+  ],
+  "assumptions": [
+    "The site includes some form of trust signals (Google reviews, years in business, or a guarantee badge) based on the known trust score of 80 — exact placement and prominence were not confirmed.",
+    "The current primary CTA is assumed to be a free quote form or phone number based on standard roofing site conventions — specific CTA copy was not provided.",
+    "The business likely serves residential roofing (repairs and replacements) as its core service, with potential secondary offerings in gutters or storm damage restoration — service mix was not explicitly confirmed.",
+    "Austin's active hail and storm season is assumed to be a relevant and underutilized demand trigger that the site is not currently capitalizing on."
+  ]
+}

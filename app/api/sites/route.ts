@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
+import { isDatabaseUnavailable } from "@/lib/db/runtime";
 
 function slugify(name: string) {
   return name
@@ -30,6 +31,9 @@ export async function GET() {
     return NextResponse.json({ ok: true, sites });
   } catch (err) {
     console.error("Sites GET:", err);
+    if (isDatabaseUnavailable(err)) {
+      return NextResponse.json({ ok: true, sites: [], databaseUnavailable: true });
+    }
     return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });
   }
 }

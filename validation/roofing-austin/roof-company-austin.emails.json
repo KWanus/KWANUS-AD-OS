@@ -1,0 +1,24 @@
+{
+  "business_name": "Roof Company Austin",
+  "outreach_email": {
+    "subject": "Your roof business is one copy pivot from more calls",
+    "body": "Hey — I pulled up Roof Company Austin and built a quick preview showing what your site could look like with sharper messaging. The structure is solid, but right now the copy skips past the real pain — storm damage stress, insurance confusion, rising repair costs. Homeowners in Austin aren't just shopping for a roofer, they're looking for someone to take the headache off their plate. I've reframed your offer around exactly that. Takes 60 seconds to see. Want me to send the preview over?"
+  },
+  "follow_ups": [
+    {
+      "subject": "The preview is still here when you're ready",
+      "body": "Wanted to follow up on the note I sent about Roof Company Austin. I know roofing season in Austin gets hectic fast — storm calls pile up and marketing falls to the back burner. That's exactly why I wanted to show you this now, before the next wave hits. The preview I built repositions your offer so homeowners feel the urgency to call you first, not a competitor. No cost to look. Want me to send the link?"
+    },
+    {
+      "subject": "Last nudge — then I'll leave you alone",
+      "body": "Last follow-up, I promise. I built a preview for Roof Company Austin showing how a few copy changes — especially around insurance navigation and storm damage urgency — could turn more site visitors into booked inspections. Austin homeowners are searching right now. The business that speaks to their stress wins the call. If the timing's off, no hard feelings. But if you want to see the preview before I move on, just reply and I'll send it over today."
+    }
+  ],
+  "sms": {
+    "message": "Hey — sent you an email about Roof Company Austin. Built a quick preview showing how sharper copy around storm damage and insurance stress could get you more calls. Takes 60 seconds to see. Want me to send it over? – Alex from Himalaya"
+  },
+  "notes": {
+    "tone": "Direct, consultative, low-pressure — speaks like a peer who spotted a real gap, not a vendor pitching services",
+    "goal": "Get a reply or click to view the preview site — qualify interest and open a conversation about a full website or copy engagement"
+  }
+}

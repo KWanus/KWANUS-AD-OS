@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 import CreativeStudio, { type StudioBrief } from "@/components/studio/CreativeStudio";
+import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -87,6 +88,18 @@ type Campaign = {
   analysisRun: AnalysisRun | null;
 };
 
+type BusinessProfileSummary = {
+  businessType: string;
+  businessName: string | null;
+  niche: string | null;
+  location: string | null;
+  mainOffer: string | null;
+  targetAudience: string | null;
+  mainGoal: string | null;
+  stage: string;
+  activeSystems: string[];
+};
+
 // ── Constants ────────────────────────────────────────────────────────────────
 
 type WorkspaceTab = "overview" | "briefs" | "hooks" | "landing" | "emails" | "checklist";
@@ -165,6 +178,8 @@ function NavItem({
 export default function CampaignWorkspace() {
   const { id } = useParams() as { id: string };
   const [campaign, setCampaign] = useState<Campaign | null>(null);
+  const [databaseUnavailable, setDatabaseUnavailable] = useState(false);
+  const [businessProfile, setBusinessProfile] = useState<BusinessProfileSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<WorkspaceTab>("overview");
   const [saving, setSaving] = useState(false);
@@ -211,8 +226,9 @@ export default function CampaignWorkspace() {
 
   useEffect(() => {
     fetch(`/api/campaigns/${id}`)
-      .then((r) => r.json() as Promise<{ ok: boolean; campaign?: Campaign }>)
+      .then((r) => r.json() as Promise<{ ok: boolean; campaign?: Campaign | null; databaseUnavailable?: boolean }>)
       .then((data) => {
+        setDatabaseUnavailable(Boolean(data.databaseUnavailable));
         if (data.ok && data.campaign) {
           setCampaign(data.campaign);
           // Seed landing edits from existing data
@@ -224,6 +240,15 @@ export default function CampaignWorkspace() {
       })
       .catch(() => setLoading(false));
   }, [id]);
+
+  useEffect(() => {
+    fetch("/api/business-profile")
+      .then((r) => r.json() as Promise<{ ok: boolean; profile?: BusinessProfileSummary | null }>)
+      .then((data) => {
+        if (data.ok && data.profile) setBusinessProfile(data.profile);
+      })
+      .catch(() => {});
+  }, []);
 
   async function updateCampaign(patch: { name?: string; status?: string; notes?: string }) {
     setSaving(true);
@@ -453,10 +478,13 @@ export default function CampaignWorkspace() {
 
   if (!campaign) {
     return (
-      <main className="min-h-screen bg-[#0a0f1e] text-white flex items-center justify-center">
-        <div className="text-center">
-          <p className="text-white/40 mb-4">Campaign not found.</p>
+      <main className="min-h-screen bg-[#0a0f1e] px-4 text-white flex items-center justify-center">
+        <div className="w-full max-w-3xl space-y-4">
+          <DatabaseFallbackNotice visible={databaseUnavailable} />
+          <div className="text-center rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8">
+          <p className="text-white/40 mb-4">{databaseUnavailable ? "Campaign data is temporarily unavailable." : "Campaign not found."}</p>
           <Link href="/campaigns" className="text-cyan-400 hover:underline text-sm">← Back to campaigns</Link>
+          </div>
         </div>
       </main>
     );
@@ -581,6 +609,39 @@ export default function CampaignWorkspace() {
           {/* ── Overview ── */}
           {activeTab === "overview" && (
             <div className="space-y-4">
+              {businessProfile && (
+                <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/[0.06] p-6">
+                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                    <div className="max-w-2xl">
+                      <p className="text-xs uppercase tracking-widest text-cyan-200/70 mb-3">Business Context</p>
+                      <h3 className="text-xl font-bold text-white">
+                        {businessProfile.businessName || campaign.productName || campaign.name}
+                      </h3>
+                      <p className="mt-2 text-sm leading-relaxed text-white/65">
+                        This campaign is being shaped around your saved Business OS, so hooks, landing copy, emails, and next actions can stay aligned with the same niche, audience, offer, and goal.
+                      </p>
+                    </div>
+                    <Link
+                      href="/my-system"
+                      className="inline-flex items-center gap-2 rounded-xl border border-cyan-400/20 bg-black/20 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-cyan-200 transition hover:bg-black/30"
+                    >
+                      Open My System →
+                    </Link>
+                  </div>
+
+                  <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+                    <ContextChip label="Business Type" value={businessProfile.businessType.replace(/_/g, " ")} />
+                    <ContextChip label="Niche" value={businessProfile.niche || "Not set"} />
+                    <ContextChip label="Audience" value={businessProfile.targetAudience || "Not set"} />
+                    <ContextChip label="Goal" value={businessProfile.mainGoal?.replace(/_/g, " ") || "Not set"} />
+                    <ContextChip label="Offer" value={businessProfile.mainOffer || "Not set"} />
+                    <ContextChip label="Location" value={businessProfile.location || "Online"} />
+                    <ContextChip label="Stage" value={businessProfile.stage} />
+                    <ContextChip label="Active Systems" value={businessProfile.activeSystems.length ? businessProfile.activeSystems.join(", ") : "None active"} />
+                  </div>
+                </div>
+              )}
+
               {campaign.analysisRun && (
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
                   <p className="text-xs uppercase tracking-widest text-white/30 mb-3">Analysis Summary</p>
@@ -1252,6 +1313,15 @@ export default function CampaignWorkspace() {
         />
       )}
     </main>
+  );
+}
+
+function ContextChip({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3">
+      <p className="text-[10px] uppercase tracking-[0.2em] text-white/25">{label}</p>
+      <p className="mt-2 text-sm font-medium leading-relaxed text-white/75">{value}</p>
+    </div>
   );
 }
 

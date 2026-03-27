@@ -3,6 +3,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import AppNav from "@/components/AppNav";
+import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
+import { WorkspaceHero, WorkspaceShell } from "@/components/ui/WorkspaceShell";
 import { Search, Plus, Trash2, ArrowRight, BarChart2, Mail, CheckSquare, Clock, Zap } from "lucide-react";
 
 type Campaign = {
@@ -14,6 +16,30 @@ type Campaign = {
   productUrl: string | null;
   createdAt: string;
   _count: { adVariations: number; emailDrafts: number; checklistItems: number };
+};
+
+type BusinessProfileSummary = {
+  businessType: string;
+  businessName: string | null;
+  niche: string | null;
+  mainGoal: string | null;
+  activeSystems: string[];
+  recommendedSystems?: {
+    firstAction?: string;
+    strategicSummary?: string;
+    prioritizedSystems?: Array<{ slug: string; priority: string; personalizedReason?: string }>;
+  } | null;
+};
+
+type StatsSummary = {
+  effectiveSystemScore?: number;
+  unsyncedSystems?: string[];
+  databaseUnavailable?: boolean;
+  osVerdict?: {
+    status?: string;
+    label?: string;
+    reason?: string;
+  };
 };
 
 const STATUS_STYLES: Record<string, { border: string; text: string; bg: string; dot: string; glow: string }> = {
@@ -38,22 +64,78 @@ const STATUS_LABELS: Record<string, string> = {
   dead: "Paused or shut down — no longer running",
 };
 
+function verdictTone(status?: string) {
+  if (status === "healthy") return "border-emerald-500/20 bg-emerald-500/10 text-emerald-200";
+  if (status === "stale") return "border-cyan-500/20 bg-cyan-500/10 text-cyan-100";
+  return "border-amber-500/20 bg-amber-500/10 text-amber-100";
+}
+
 export default function CampaignsPage() {
   const [campaigns, setCampaigns] = useState<Campaign[]>([]);
+  const [businessProfile, setBusinessProfile] = useState<BusinessProfileSummary | null>(null);
+  const [osStats, setOsStats] = useState<StatsSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [syncingSystem, setSyncingSystem] = useState(false);
+  const [refreshingRecommendations, setRefreshingRecommendations] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
-    fetch("/api/campaigns")
-      .then((r) => r.json() as Promise<{ ok: boolean; campaigns?: Campaign[] }>)
-      .then((data) => {
-        if (data.ok && data.campaigns) setCampaigns(data.campaigns);
+    Promise.all([
+      fetch("/api/campaigns").then((r) => r.json() as Promise<{ ok: boolean; campaigns?: Campaign[] }>),
+      fetch("/api/business-profile").then((r) => r.json() as Promise<{ ok: boolean; profile?: BusinessProfileSummary | null }>),
+      fetch("/api/stats").then((r) => r.json() as Promise<{ ok: boolean; stats?: StatsSummary | null }>),
+    ])
+      .then(([campaignData, profileData, statsData]) => {
+        if (campaignData.ok && campaignData.campaigns) setCampaigns(campaignData.campaigns);
+        if (profileData.ok && profileData.profile) setBusinessProfile(profileData.profile);
+        if (statsData.ok && statsData.stats) setOsStats(statsData.stats);
         setLoading(false);
       })
       .catch(() => setLoading(false));
   }, []);
+
+  async function syncBusinessSystem() {
+    try {
+      setSyncingSystem(true);
+      const res = await fetch("/api/business-profile/sync", { method: "POST" });
+      const data = await res.json() as { ok?: boolean };
+      if (!res.ok || !data.ok) throw new Error("Failed");
+      const [profileRes, statsRes] = await Promise.all([fetch("/api/business-profile"), fetch("/api/stats")]);
+      const profileData = await profileRes.json() as { ok: boolean; profile?: BusinessProfileSummary | null };
+      const statsData = await statsRes.json() as { ok: boolean; stats?: StatsSummary | null };
+      if (profileData.ok) setBusinessProfile(profileData.profile ?? null);
+      if (statsData.ok) setOsStats(statsData.stats ?? null);
+    } finally {
+      setSyncingSystem(false);
+    }
+  }
+
+  async function refreshBusinessSystem() {
+    if (!businessProfile?.businessType) return;
+    try {
+      setRefreshingRecommendations(true);
+      const res = await fetch("/api/business-profile/recommend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          businessType: businessProfile.businessType,
+          niche: businessProfile.niche,
+          goal: businessProfile.mainGoal,
+        }),
+      });
+      const data = await res.json() as { ok?: boolean };
+      if (!res.ok || !data.ok) throw new Error("Failed");
+      const [profileRes, statsRes] = await Promise.all([fetch("/api/business-profile"), fetch("/api/stats")]);
+      const profileData = await profileRes.json() as { ok: boolean; profile?: BusinessProfileSummary | null };
+      const statsData = await statsRes.json() as { ok: boolean; stats?: StatsSummary | null };
+      if (profileData.ok) setBusinessProfile(profileData.profile ?? null);
+      if (statsData.ok) setOsStats(statsData.stats ?? null);
+    } finally {
+      setRefreshingRecommendations(false);
+    }
+  }
 
   async function handleDelete(e: React.MouseEvent, id: string) {
     e.stopPropagation();
@@ -69,65 +151,53 @@ export default function CampaignsPage() {
 
   const totalAds = campaigns.reduce((acc, c) => acc + c._count.adVariations, 0);
   const totalEmails = campaigns.reduce((acc, c) => acc + c._count.emailDrafts, 0);
+  const recommendedCampaignSlug =
+    businessProfile?.recommendedSystems?.prioritizedSystems?.find((system) =>
+      ["google_ads", "facebook_ads", "tiktok_ads", "website"].includes(system.slug)
+    )?.slug ?? null;
+  const recommendedTypeParam =
+    recommendedCampaignSlug === "google_ads"
+      ? "google"
+      : recommendedCampaignSlug === "facebook_ads"
+        ? "facebook"
+        : recommendedCampaignSlug === "tiktok_ads"
+          ? "tiktok"
+          : null;
+  const recommendedLabel =
+    recommendedCampaignSlug === "google_ads"
+      ? "Google Search Campaign"
+      : recommendedCampaignSlug === "facebook_ads"
+        ? "Facebook / Instagram Campaign"
+        : recommendedCampaignSlug === "tiktok_ads"
+          ? "TikTok Campaign"
+          : "Campaign Workspace";
 
   return (
     <div className="min-h-screen bg-[#020509] text-white flex flex-col">
-      {/* Background */}
-      <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 right-1/4 w-[700px] h-[350px] opacity-[0.04] blur-[130px] bg-cyan-500 rounded-full" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[300px] opacity-[0.03] blur-[100px] bg-purple-500 rounded-full" />
-        <div className="absolute inset-0 opacity-[0.018]"
-          style={{ backgroundImage: "radial-gradient(circle, #fff 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
-      </div>
-
       <AppNav />
+      <WorkspaceShell>
+        <WorkspaceHero
+          eyebrow="Campaigns"
+          title="Campaign Workspaces"
+          description={campaigns.length > 0
+            ? `${campaigns.length} workspace${campaigns.length !== 1 ? "s" : ""} tracking hooks, landing copy, emails, and launch actions in one place.`
+            : "Analyze a product or offer to generate your first full campaign package, then refine it here."}
+          actions={(
+            <Link href="/analyze"
+              className="shrink-0 flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-sm font-black shadow-[0_0_30px_rgba(6,182,212,0.3)] hover:shadow-[0_0_50px_rgba(6,182,212,0.45)] hover:scale-[1.02] transition-all duration-200">
+              <Zap className="w-4 h-4" /> New Scan
+            </Link>
+          )}
+          stats={campaigns.length > 0 ? [
+            { label: "Campaigns", value: campaigns.length.toString() },
+            { label: "Ad Variations", value: totalAds.toString(), tone: "text-cyan-300" },
+            { label: "Email Drafts", value: totalEmails.toString(), tone: "text-blue-300" },
+            { label: "Active", value: campaigns.filter(c => c.status === "active" || c.status === "scaling").length.toString(), tone: "text-emerald-300" },
+          ] : undefined}
+        />
 
-      <div className="relative z-10 flex-1 max-w-6xl mx-auto w-full px-6">
-        {/* Header */}
-        <header className="pt-12 pb-10 flex items-end justify-between gap-6 border-b border-white/[0.06]">
-          <div>
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
-              <span className="text-[11px] font-black tracking-[0.25em] text-cyan-400/70 uppercase">Campaigns</span>
-            </div>
-            <h1 className="text-4xl font-black tracking-tight">
-              Your{" "}
-              <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
-                Campaign Workspaces
-              </span>
-            </h1>
-            <p className="text-white/30 mt-2 text-sm">
-              {campaigns.length > 0
-                ? `${campaigns.length} workspace${campaigns.length !== 1 ? "s" : ""} — every one a living launch plan`
-                : "Analyze a product URL to generate your first complete campaign package"}
-            </p>
-          </div>
-          <Link href="/analyze"
-            className="shrink-0 flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black shadow-[0_0_30px_rgba(6,182,212,0.3)] hover:shadow-[0_0_50px_rgba(6,182,212,0.45)] hover:scale-[1.02] transition-all duration-200">
-            <Zap className="w-4 h-4" /> New Scan
-          </Link>
-        </header>
-
-        {/* Stats bar */}
         {campaigns.length > 0 && (
-          <div className="mt-8 mb-6 grid grid-cols-2 md:grid-cols-4 gap-4">
-            {[
-              { label: "Campaigns", value: campaigns.length.toString() },
-              { label: "Ad Variations", value: totalAds.toString(), color: "text-purple-400" },
-              { label: "Email Drafts", value: totalEmails.toString(), color: "text-cyan-400" },
-              { label: "Active", value: (campaigns.filter(c => c.status === "active" || c.status === "scaling").length).toString(), color: "text-green-400" },
-            ].map((stat) => (
-              <div key={stat.label} className="rounded-2xl border border-white/[0.06] bg-white/[0.02] px-5 py-4">
-                <p className="text-[10px] font-bold text-white/25 uppercase tracking-widest mb-1">{stat.label}</p>
-                <p className={`text-2xl font-black ${stat.color || "text-white"}`}>{stat.value}</p>
-              </div>
-            ))}
-          </div>
-        )}
-
-        {/* Filter bar */}
-        {campaigns.length > 0 && (
-          <div className="flex items-center gap-3 mb-6">
+          <div className="mb-6 flex items-center gap-3">
             <div className="relative flex-1 max-w-sm">
               <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-white/20" />
               <input
@@ -136,6 +206,89 @@ export default function CampaignsPage() {
                 placeholder="Search campaigns..."
                 className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-cyan-500/40 transition placeholder-white/20 font-medium"
               />
+            </div>
+          </div>
+        )}
+
+        {businessProfile && (
+          <div className="mb-6 rounded-[28px] border border-white/[0.08] bg-white/[0.03] p-5">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-3xl">
+                <p className="text-[10px] font-black uppercase tracking-[0.26em] text-white/35">Business OS Status</p>
+                <div className="mt-2 flex flex-wrap items-center gap-3">
+                  {osStats?.osVerdict?.label && (
+                    <span className={`inline-flex items-center rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] ${verdictTone(osStats.osVerdict.status)}`}>
+                      {osStats.osVerdict.label}
+                    </span>
+                  )}
+                  <span className="text-sm font-black text-white">{osStats?.effectiveSystemScore ?? 0}/100</span>
+                  {(osStats?.unsyncedSystems?.length ?? 0) > 0 && (
+                    <span className="text-xs text-amber-200/80">{osStats?.unsyncedSystems?.length} unsynced systems</span>
+                  )}
+                </div>
+                <p className="mt-3 text-sm leading-7 text-white/58">
+                  {osStats?.osVerdict?.reason ||
+                    "The campaign workspace is reading the same Business OS health layer as Home, Copilot, and My System."}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                {(osStats?.unsyncedSystems?.length ?? 0) > 0 && (
+                  <button
+                    onClick={() => void syncBusinessSystem()}
+                    disabled={syncingSystem}
+                    className="inline-flex items-center gap-2 rounded-2xl border border-amber-500/25 bg-amber-500/10 px-5 py-3 text-sm font-bold text-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {syncingSystem ? "Syncing..." : "Sync My System"}
+                  </button>
+                )}
+                {osStats?.osVerdict?.status === "stale" && (
+                  <button
+                    onClick={() => void refreshBusinessSystem()}
+                    disabled={refreshingRecommendations}
+                    className="inline-flex items-center gap-2 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-5 py-3 text-sm font-bold text-cyan-100 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {refreshingRecommendations ? "Refreshing..." : "Refresh Recommendations"}
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="mb-6" />
+
+        {businessProfile && (
+          <div className="mb-6 rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] to-blue-500/[0.03] p-6">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-3xl">
+                <p className="text-[10px] font-black uppercase tracking-[0.26em] text-cyan-200/70">Recommended Next Campaign</p>
+                <h2 className="mt-2 text-2xl font-black text-white">
+                  {recommendedLabel} for {businessProfile.niche || businessProfile.businessType.replace(/_/g, " ")}
+                </h2>
+                <p className="mt-3 text-sm leading-7 text-white/62">
+                  {businessProfile.recommendedSystems?.firstAction ||
+                    businessProfile.recommendedSystems?.strategicSummary ||
+                    `Your Business OS says the next best move is to launch the campaign system that matches your ${businessProfile.mainGoal?.replace(/_/g, " ") || "growth"} goal.`}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  href={recommendedTypeParam ? `/campaigns/new?type=${recommendedTypeParam}` : "/analyze"}
+                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)]"
+                >
+                  <Zap className="w-4 h-4" />
+                  Start Recommended Campaign
+                </Link>
+                <Link
+                  href="/my-system"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-white/[0.1] bg-white/[0.04] px-5 py-3 text-sm font-bold text-white/70"
+                >
+                  Open My System
+                  <ArrowRight className="w-4 h-4" />
+                </Link>
+              </div>
             </div>
           </div>
         )}
@@ -267,7 +420,7 @@ export default function CampaignsPage() {
             })}
           </div>
         )}
-      </div>
+      </WorkspaceShell>
     </div>
   );
 }

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { isDatabaseUnavailable } from "@/lib/db/runtime";
 
 // GET /api/campaigns/[id] — full campaign with all assets
 export async function GET(
@@ -37,6 +38,9 @@ export async function GET(
     return NextResponse.json({ ok: true, campaign });
   } catch (err) {
     console.error("Campaign GET error:", err);
+    if (isDatabaseUnavailable(err)) {
+      return NextResponse.json({ ok: true, campaign: null, databaseUnavailable: true });
+    }
     return NextResponse.json({ ok: false, error: "Failed to load campaign" }, { status: 500 });
   }
 }

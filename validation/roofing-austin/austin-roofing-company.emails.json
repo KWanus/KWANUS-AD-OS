@@ -1,0 +1,24 @@
+{
+  "business_name": "Austin Roofing Company",
+  "outreach_email": {
+    "subject": "Your roofing page is close — here's what's holding it back",
+    "body": "Hey there, I was reviewing Austin Roofing Company's site today and you're genuinely ahead of most roofers in Austin — solid offer stack, clear trust signals, good structure. But the copy isn't converting as hard as it should. There's no urgency, the pain language is missing, and fence-sitters have no reason to act now. I've already mapped out specific fixes — sharper CTAs, emotional framing, and a risk-reversal hook that positions you as Austin's most accountable roofer. Want me to send over a quick preview?"
+  },
+  "follow_ups": [
+    {
+      "subject": "The one line that could double your roofing leads",
+      "body": "Still thinking about your site. The biggest missed opportunity is your headline — it describes what you do, not why a stressed homeowner should trust you over every other roofer in Austin. One reframe around accountability and stress-free service could meaningfully shift conversions. I've done this for contractors in competitive markets and the lift is real. Happy to show you exactly what I'd change — no cost, no pressure. Worth a 10-minute look?"
+    },
+    {
+      "subject": "Last note — roofing leads you're leaving on the table",
+      "body": "I won't keep following up after this, but I'd feel like I was doing you a disservice not saying it plainly: your page has real potential that's being wasted on weak CTAs and copy that doesn't connect emotionally. Austin homeowners are anxious about roof decisions — your messaging should meet that anxiety head-on and eliminate it. I've already outlined the fixes. If you want them, I'm ready to move fast. Either way, hope the season treats you well."
+    }
+  ],
+  "sms": {
+    "message": "Hey, sent you an email about Austin Roofing Company's site — you're close to a strong converter but a few copy fixes could push a lot more leads through. Worth a quick look? Happy to send a preview."
+  },
+  "notes": {
+    "tone": "Confident, direct, and consultative — comes across as a peer who spotted a real opportunity, not a vendor pitching services",
+    "goal": "Open a conversation by leading with specific, credible insight about their site's conversion gaps, positioning the sender as someone who has already done the thinking and can deliver immediate value"
+  }
+}

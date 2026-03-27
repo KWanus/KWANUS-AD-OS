@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { prisma } from "@/lib/prisma";
 import type { SkillInput, SkillResult } from "./types";
 import { getSkill } from "./registry";
+import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -222,6 +223,20 @@ Script structure with timestamps:
   }
 }
 
+function buildSkillSystemPrompt(skillName: string, businessContext: string): string {
+  return `You are the elite execution engine for Himalaya Marketing OS.
+You are generating output for the "${skillName}" skill.
+
+CORE DIRECTIVE:
+- Use the user's saved business profile as grounding context whenever it is relevant.
+- Think like a top 1% operator in this exact niche before writing anything.
+- Prefer sharp, specific, conversion-focused outputs over generic best practices.
+- When inputs are incomplete, infer intelligently from the business context instead of staying vague.
+- Return in the exact format requested by the skill prompt.
+
+${businessContext}`;
+}
+
 // ---------------------------------------------------------------------------
 // Post-processing: save results to DB
 // ---------------------------------------------------------------------------
@@ -358,10 +373,13 @@ export async function runSkill(
 
   try {
     const prompt = buildPrompt(slug, input);
+    const businessContext = await getBusinessContext(userId);
+    const system = buildSkillSystemPrompt(skill.name, businessContext);
 
     const message = await anthropic.messages.create({
       model: "claude-sonnet-4-6",
       max_tokens: 2048,
+      system,
       messages: [{ role: "user", content: prompt }],
     });
 

@@ -2,6 +2,8 @@
 
 import { useState, useEffect } from "react";
 import AppNav from "@/components/AppNav";
+import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
+import { WorkspaceHero, WorkspaceShell } from "@/components/ui/WorkspaceShell";
 import Link from "next/link";
 import {
   Search, Loader2, Plus, Copy, CheckCircle, Trash2,
@@ -19,6 +21,29 @@ type Product = {
   commission: string | null;
   niche: string | null;
   createdAt: string;
+};
+
+type BusinessProfileSummary = {
+  businessType: string;
+  businessName: string | null;
+  niche: string | null;
+  location: string | null;
+  mainGoal: string | null;
+  recommendedSystems?: {
+    firstAction?: string;
+    strategicSummary?: string;
+  } | null;
+};
+
+type StatsSummary = {
+  effectiveSystemScore?: number;
+  unsyncedSystems?: string[];
+  databaseUnavailable?: boolean;
+  osVerdict?: {
+    status?: string;
+    label?: string;
+    reason?: string;
+  };
 };
 
 type ScanResult = {
@@ -152,20 +177,38 @@ function ProductCard({ product, onDelete }: { product: Product; onDelete: (id: s
   );
 }
 
+function verdictTone(status?: string) {
+  if (status === "healthy") return "border-emerald-500/20 bg-emerald-500/10 text-emerald-200";
+  if (status === "stale") return "border-cyan-500/20 bg-cyan-500/10 text-cyan-100";
+  return "border-amber-500/20 bg-amber-500/10 text-amber-100";
+}
+
 export default function ProductsPage() {
   const [tab, setTab] = useState<"library" | "add">("library");
   const [products, setProducts] = useState<Product[]>([]);
+  const [businessProfile, setBusinessProfile] = useState<BusinessProfileSummary | null>(null);
+  const [osStats, setOsStats] = useState<StatsSummary | null>(null);
   const [loadingProducts, setLoadingProducts] = useState(true);
   const [url, setUrl] = useState("");
   const [scanning, setScanning] = useState(false);
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
   const [saving, setSaving] = useState(false);
   const [saved, setSaved] = useState(false);
+  const [syncingSystem, setSyncingSystem] = useState(false);
+  const [refreshingRecommendations, setRefreshingRecommendations] = useState(false);
 
   async function fetchProducts() {
-    const res = await fetch("/api/products");
-    const data = await res.json() as { ok: boolean; products: Product[] };
+    const [productRes, profileRes, statsRes] = await Promise.all([
+      fetch("/api/products"),
+      fetch("/api/business-profile"),
+      fetch("/api/stats"),
+    ]);
+    const data = await productRes.json() as { ok: boolean; products: Product[] };
+    const profileData = await profileRes.json() as { ok: boolean; profile?: BusinessProfileSummary | null };
+    const statsData = await statsRes.json() as { ok: boolean; stats?: StatsSummary | null };
     if (data.ok) setProducts(data.products);
+    if (profileData.ok) setBusinessProfile(profileData.profile ?? null);
+    if (statsData.ok) setOsStats(statsData.stats ?? null);
     setLoadingProducts(false);
   }
 
@@ -220,37 +263,151 @@ export default function ProductsPage() {
     setProducts((p) => p.filter((x) => x.id !== id));
   }
 
+  async function syncBusinessSystem() {
+    try {
+      setSyncingSystem(true);
+      const res = await fetch("/api/business-profile/sync", { method: "POST" });
+      const data = await res.json() as { ok?: boolean };
+      if (!res.ok || !data.ok) throw new Error("Failed");
+      await fetchProducts();
+    } finally {
+      setSyncingSystem(false);
+    }
+  }
+
+  async function refreshBusinessSystem() {
+    if (!businessProfile?.businessType) return;
+    try {
+      setRefreshingRecommendations(true);
+      const res = await fetch("/api/business-profile/recommend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          businessType: businessProfile.businessType,
+          niche: businessProfile.niche,
+          goal: businessProfile.mainGoal,
+        }),
+      });
+      const data = await res.json() as { ok?: boolean };
+      if (!res.ok || !data.ok) throw new Error("Failed");
+      await fetchProducts();
+    } finally {
+      setRefreshingRecommendations(false);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#050a14] text-white">
       <AppNav />
-      <div className="max-w-5xl mx-auto px-4 pt-10 pb-20">
+      <WorkspaceShell maxWidth="max-w-5xl">
+        <WorkspaceHero
+          eyebrow="Products"
+          title="Product Intelligence Library"
+          description="Capture offers from affiliate networks, Amazon, dropship sources, or direct product URLs. Save them once, then launch campaigns and sites from the same source record."
+          actions={(
+            <>
+              <Link
+                href="/settings#accounts"
+                className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-white/[0.08] text-white/45 hover:text-white/70 text-xs transition"
+              >
+                Connect Accounts
+              </Link>
+              <button
+                onClick={() => setTab("add")}
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition"
+              >
+                <Plus className="w-4 h-4" /> Add Product
+              </button>
+            </>
+          )}
+          stats={products.length > 0 ? [
+            { label: "Saved Products", value: products.length.toString() },
+            { label: "Affiliate Ready", value: products.filter((product) => Boolean(product.affiliateUrl)).length.toString(), tone: "text-emerald-300" },
+            { label: "Scanned This Session", value: scanResult ? "1" : "0", tone: "text-cyan-300" },
+          ] : undefined}
+        />
 
-        {/* Header */}
-        <div className="flex items-center justify-between mb-8">
-          <div>
-            <div className="flex items-center gap-2 mb-1">
-              <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
-                <Package className="w-4 h-4 text-white" />
+        {businessProfile && (
+          <div className="mb-6 rounded-[28px] border border-white/[0.08] bg-white/[0.03] p-5">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-3xl">
+                <p className="text-[10px] font-black uppercase tracking-[0.26em] text-white/35">Business OS Status</p>
+                <div className="mt-2 flex flex-wrap items-center gap-3">
+                  {osStats?.osVerdict?.label && (
+                    <span className={`inline-flex items-center rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] ${verdictTone(osStats.osVerdict.status)}`}>
+                      {osStats.osVerdict.label}
+                    </span>
+                  )}
+                  <span className="text-sm font-black text-white">{osStats?.effectiveSystemScore ?? 0}/100</span>
+                  {(osStats?.unsyncedSystems?.length ?? 0) > 0 && (
+                    <span className="text-xs text-amber-200/80">{osStats?.unsyncedSystems?.length} unsynced systems</span>
+                  )}
+                </div>
+                <p className="mt-3 text-sm leading-7 text-white/58">
+                  {osStats?.osVerdict?.reason ||
+                    "The product library now reads the same Business OS health layer as the rest of the app."}
+                </p>
               </div>
-              <h1 className="text-xl font-black text-white">Product Library</h1>
+
+              <div className="flex flex-wrap gap-3">
+                {(osStats?.unsyncedSystems?.length ?? 0) > 0 && (
+                  <button
+                    onClick={() => void syncBusinessSystem()}
+                    disabled={syncingSystem}
+                    className="inline-flex items-center gap-2 rounded-2xl border border-amber-500/25 bg-amber-500/10 px-5 py-3 text-sm font-bold text-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {syncingSystem ? "Syncing..." : "Sync My System"}
+                  </button>
+                )}
+                {osStats?.osVerdict?.status === "stale" && (
+                  <button
+                    onClick={() => void refreshBusinessSystem()}
+                    disabled={refreshingRecommendations}
+                    className="inline-flex items-center gap-2 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-5 py-3 text-sm font-bold text-cyan-100 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {refreshingRecommendations ? "Refreshing..." : "Refresh Recommendations"}
+                  </button>
+                )}
+              </div>
             </div>
-            <p className="text-sm text-white/35">ClickBank · Amazon · Dropship · JVZoo · WarriorPlus · Any URL</p>
           </div>
-          <div className="flex gap-2">
-            <Link
-              href="/settings#accounts"
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/[0.08] text-white/30 hover:text-white/60 text-xs transition"
-            >
-              Connect Accounts
-            </Link>
-            <button
-              onClick={() => setTab("add")}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition"
-            >
-              <Plus className="w-4 h-4" /> Add Product
-            </button>
+        )}
+
+        <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="mb-6" />
+
+        {businessProfile && (
+          <div className="mb-6 rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] to-purple-600/[0.03] p-6">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-3xl">
+                <p className="text-[10px] font-black uppercase tracking-[0.26em] text-cyan-200/70">Recommended Product Move</p>
+                <h2 className="mt-2 text-2xl font-black text-white">
+                  {businessProfile.mainGoal === "more_sales" ? "Scan and launch your next revenue offer" : "Save a product and connect it to campaigns"}
+                </h2>
+                <p className="mt-3 text-sm leading-7 text-white/62">
+                  {businessProfile.recommendedSystems?.firstAction ||
+                    businessProfile.recommendedSystems?.strategicSummary ||
+                    "Use the product library as the source record for the offers your campaigns, landing pages, and sales assets should build around."}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => setTab("add")}
+                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)]"
+                >
+                  <Plus className="w-4 h-4" />
+                  Add Product
+                </button>
+                <Link
+                  href="/my-system"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-white/[0.1] bg-white/[0.04] px-5 py-3 text-sm font-bold text-white/70"
+                >
+                  Open My System
+                </Link>
+              </div>
+            </div>
           </div>
-        </div>
+        )}
 
         {/* Tabs */}
         <div className="flex gap-2 mb-6">
@@ -412,7 +569,7 @@ export default function ProductsPage() {
             )}
           </>
         )}
-      </div>
+      </WorkspaceShell>
     </div>
   );
 }

@@ -5,6 +5,7 @@ export type FetchedPage = {
   headings: string[];
   bodyText: string;
   ctas: string[];
+  images: string[];
   error?: string;
 };
 
@@ -37,6 +38,40 @@ function extractMeta(html: string, name: string): string {
 function extractTitle(html: string): string {
   const m = html.match(/<title[^>]*>([^<]+)<\/title>/i);
   return m ? m[1].trim() : "";
+}
+
+function resolveUrl(src: string, baseUrl: string): string | null {
+  if (!src) return null;
+  try {
+    return new URL(src, baseUrl).toString();
+  } catch {
+    return null;
+  }
+}
+
+function extractImages(html: string, baseUrl: string): string[] {
+  const results = new Set<string>();
+
+  const metaMatches = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/gi) ?? [];
+  for (const tag of metaMatches) {
+    const match = tag.match(/content=["']([^"']+)["']/i);
+    if (match?.[1]) {
+      const resolved = resolveUrl(match[1], baseUrl);
+      if (resolved) results.add(resolved);
+    }
+  }
+
+  const imgPattern = /<img[^>]+src=["']([^"']+)["'][^>]*>/gi;
+  let imgMatch: RegExpExecArray | null;
+  while ((imgMatch = imgPattern.exec(html)) !== null) {
+    const resolved = resolveUrl(imgMatch[1], baseUrl);
+    if (resolved && !resolved.startsWith("data:")) {
+      results.add(resolved);
+    }
+    if (results.size >= 8) break;
+  }
+
+  return [...results].slice(0, 6);
 }
 
 // Real browser UA rotation — avoids bot blocks
@@ -113,6 +148,7 @@ export async function fetchPage(url: string): Promise<FetchedPage> {
         headings: [],
         bodyText: urlSignals.bodyText ?? "",
         ctas: [],
+        images: [],
         error: lastStatus ? `HTTP ${lastStatus} — analyzing from URL signals` : "Page unreachable — analyzing from URL signals",
       };
     }
@@ -123,6 +159,7 @@ export async function fetchPage(url: string): Promise<FetchedPage> {
       headings: [],
       bodyText: "",
       ctas: [],
+      images: [],
       error: lastStatus ? `HTTP ${lastStatus}` : "Could not reach page — check the URL is publicly accessible",
     };
   }
@@ -139,6 +176,7 @@ export async function fetchPage(url: string): Promise<FetchedPage> {
     .filter((t) => t.length < 60)
     .slice(0, 6);
   const ctas = [...new Set([...buttonTexts, ...aTexts])].slice(0, 8);
+  const images = extractImages(html, url);
 
-  return { ok: true, title, metaDescription, headings, bodyText, ctas };
+  return { ok: true, title, metaDescription, headings, bodyText, ctas, images };
 }

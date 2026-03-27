@@ -39,12 +39,27 @@ interface SiteTheme {
   mode?: "dark" | "light";
 }
 
+interface SiteProduct {
+  id: string;
+  name: string;
+  description?: string | null;
+  price: number;
+  compareAt?: number | null;
+  images: string[];
+  slug?: string;
+}
+
 interface Props {
   block: Block;
   theme?: SiteTheme;
   preview?: boolean;
   selected?: boolean;
   onClick?: () => void;
+  products?: SiteProduct[];
+  overlayActions?: Array<{
+    label: string;
+    onClick: () => void;
+  }>;
 }
 
 const DEFAULT_THEME: SiteTheme = { primaryColor: "#06b6d4", font: "inter", mode: "dark" };
@@ -1104,19 +1119,126 @@ function CheckoutBlock({ props, theme }: { props: Block["props"]; theme: SiteThe
 // PRODUCTS placeholder
 // ---------------------------------------------------------------------------
 
-function ProductsBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
+function ProductsBlock({
+  props,
+  theme,
+  products = [],
+}: {
+  props: Block["props"];
+  theme: SiteTheme;
+  products?: SiteProduct[];
+}) {
   const isDark = theme.mode !== "light";
+  const primary = px(theme.primaryColor!);
   const bg = props.bgColor ?? (isDark ? "#050a14" : "#ffffff");
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.35)" : "rgba(15,23,42,0.4)";
+  const cardBg = isDark ? "rgba(255,255,255,0.03)" : "#ffffff";
+  const cardBorder = isDark ? "rgba(255,255,255,0.08)" : "#e2e8f0";
+  const columns = Math.max(1, Math.min(Number(props.columns ?? 3), 4));
 
   return (
     <section style={sectionBase(bg)}>
       <div style={container()}>
-        {props.title && <h2 style={{ ...headingStyle(textColor), textAlign: "center", marginBottom: 40 }}>{props.title}</h2>}
-        <div style={{ color: subColor, textAlign: "center", fontSize: 14, border: `2px dashed ${isDark ? "rgba(255,255,255,0.08)" : "#e2e8f0"}`, borderRadius: 20, padding: "60px 24px" }}>
-          Products from your store will appear here once added.
-        </div>
+        {props.title && <h2 style={{ ...headingStyle(textColor), textAlign: "center", marginBottom: 16 }}>{props.title}</h2>}
+        {props.subtitle && (
+          <p style={{ color: subColor, textAlign: "center", fontSize: 15, maxWidth: 620, margin: "0 auto 40px", lineHeight: 1.7 }}>
+            {props.subtitle}
+          </p>
+        )}
+
+        {products.length === 0 ? (
+          <div style={{ color: subColor, textAlign: "center", fontSize: 14, border: `2px dashed ${isDark ? "rgba(255,255,255,0.08)" : "#e2e8f0"}`, borderRadius: 20, padding: "60px 24px" }}>
+            Products from your store will appear here once added.
+          </div>
+        ) : (
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: `repeat(${Math.min(columns, products.length)}, minmax(0, 1fr))`,
+              gap: 24,
+            }}
+          >
+            {products.map((product) => {
+              const hasSale = typeof product.compareAt === "number" && product.compareAt > product.price;
+              const price = `$${(product.price / 100).toFixed(2)}`;
+              const compareAt = hasSale ? `$${((product.compareAt ?? 0) / 100).toFixed(2)}` : null;
+
+              return (
+                <article
+                  key={product.id}
+                  style={{
+                    background: cardBg,
+                    border: `1px solid ${cardBorder}`,
+                    borderRadius: 24,
+                    overflow: "hidden",
+                    boxShadow: isDark ? "0 20px 60px rgba(0,0,0,0.25)" : "0 20px 60px rgba(15,23,42,0.06)",
+                  }}
+                >
+                  <div
+                    style={{
+                      aspectRatio: "4 / 3",
+                      background: isDark ? "linear-gradient(135deg, rgba(255,255,255,0.05), rgba(255,255,255,0.01))" : "linear-gradient(135deg, #f8fafc, #eef2ff)",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      overflow: "hidden",
+                    }}
+                  >
+                    {product.images[0] ? (
+                      // eslint-disable-next-line @next/next/no-img-element
+                      <img
+                        src={product.images[0]}
+                        alt={product.name}
+                        style={{ width: "100%", height: "100%", objectFit: "cover" }}
+                      />
+                    ) : (
+                      <div style={{ fontSize: 40, opacity: 0.35 }}>🛍️</div>
+                    )}
+                  </div>
+
+                  <div style={{ padding: 24 }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16, marginBottom: 10 }}>
+                      <h3 style={{ color: textColor, fontSize: 20, fontWeight: 800, margin: 0 }}>{product.name}</h3>
+                      <div style={{ textAlign: "right", flexShrink: 0 }}>
+                        {compareAt && (
+                          <div style={{ color: subColor, fontSize: 12, textDecoration: "line-through" }}>{compareAt}</div>
+                        )}
+                        <div style={{ color: textColor, fontSize: 18, fontWeight: 900 }}>{price}</div>
+                      </div>
+                    </div>
+
+                    {product.description && (
+                      <p style={{ color: subColor, fontSize: 14, lineHeight: 1.7, margin: "0 0 18px" }}>
+                        {product.description}
+                      </p>
+                    )}
+
+                    <a
+                      href={props.buttonUrl ?? "#"}
+                      style={{
+                        display: "inline-flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        width: "100%",
+                        padding: "14px 18px",
+                        borderRadius: 14,
+                        textDecoration: "none",
+                        background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
+                        color: "#ffffff",
+                        fontSize: 14,
+                        fontWeight: 800,
+                        boxShadow: `0 12px 30px ${primary}33`,
+                      }}
+                    >
+                      {props.buttonText ?? "Shop now"}
+                    </a>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        )}
       </div>
     </section>
   );
@@ -1190,7 +1312,7 @@ function FooterBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme
 // Main renderer
 // ---------------------------------------------------------------------------
 
-export default function BlockRenderer({ block, theme, preview, selected, onClick }: Props) {
+export default function BlockRenderer({ block, theme, preview, selected, onClick, products, overlayActions }: Props) {
   const t = { ...DEFAULT_THEME, ...theme };
 
   const rendered = (() => {
@@ -1207,7 +1329,7 @@ export default function BlockRenderer({ block, theme, preview, selected, onClick
       case "form": return <FormBlock props={block.props} theme={t} />;
       case "video": return <VideoBlock props={block.props} theme={t} />;
       case "divider": return <DividerBlock props={block.props} theme={t} />;
-      case "products": return <ProductsBlock props={block.props} theme={t} />;
+      case "products": return <ProductsBlock props={block.props} theme={t} products={products} />;
       case "checkout": return <CheckoutBlock props={block.props} theme={t} />;
       case "footer": return <FooterBlock props={block.props} theme={t} />;
       case "guarantee": return <GuaranteeBlock props={block.props} theme={t} />;
@@ -1234,14 +1356,54 @@ export default function BlockRenderer({ block, theme, preview, selected, onClick
     >
       {rendered}
       {selected && (
-        <div style={{
-          position: "absolute", top: 8, right: 8,
-          background: "#06b6d4", color: "#050a14",
-          fontSize: 10, fontWeight: 800, padding: "3px 8px",
-          borderRadius: 6, textTransform: "uppercase", letterSpacing: "0.1em", pointerEvents: "none",
-        }}>
-          {block.type}
-        </div>
+        <>
+          <div style={{
+            position: "absolute", top: 8, right: 8,
+            background: "#06b6d4", color: "#050a14",
+            fontSize: 10, fontWeight: 800, padding: "3px 8px",
+            borderRadius: 6, textTransform: "uppercase", letterSpacing: "0.1em", pointerEvents: "none",
+          }}>
+            {block.type}
+          </div>
+          {overlayActions?.length ? (
+            <div
+              style={{
+                position: "absolute",
+                top: 8,
+                left: 8,
+                display: "flex",
+                gap: 8,
+                flexWrap: "wrap",
+                zIndex: 2,
+              }}
+            >
+              {overlayActions.map((action) => (
+                <button
+                  key={action.label}
+                  type="button"
+                  onClick={(event) => {
+                    event.stopPropagation();
+                    action.onClick();
+                  }}
+                  style={{
+                    border: "1px solid rgba(255,255,255,0.18)",
+                    background: "rgba(5,10,20,0.88)",
+                    color: "#d9f5ff",
+                    borderRadius: 999,
+                    padding: "6px 12px",
+                    fontSize: 11,
+                    fontWeight: 800,
+                    letterSpacing: "0.04em",
+                    cursor: "pointer",
+                    backdropFilter: "blur(10px)",
+                  }}
+                >
+                  {action.label}
+                </button>
+              ))}
+            </div>
+          ) : null}
+        </>
       )}
     </div>
   );

@@ -3,14 +3,27 @@
 import { Suspense, useState, useRef, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import AppNav from "@/components/AppNav";
+import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import { Send, Loader2, Zap, RefreshCw, User, Sparkles } from "lucide-react";
 import { COPILOT_SUGGESTIONS } from "@/lib/copilot-prompt";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
+
+type OsStats = {
+  effectiveSystemScore?: number;
+  databaseUnavailable?: boolean;
+  osVerdict?: {
+    status?: string;
+    label?: string;
+    reason?: string;
+  };
+  unsyncedSystems?: string[];
+};
 
 function MessageBubble({ message }: { message: Message }) {
   const isUser = message.role === "user";
@@ -110,6 +123,7 @@ Tell me in your own words and I'll give you a specific 3-step plan for using Him
 
 function CopilotPageContent() {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const fromOnboarding = searchParams.get("onboarding") === "1";
   const prefill = searchParams.get("prefill") ?? "";
   const [messages, setMessages] = useState<Message[]>([
@@ -118,12 +132,32 @@ function CopilotPageContent() {
   const [input, setInput] = useState(prefill);
   const [streaming, setStreaming] = useState(false);
   const [scanning, setScanning] = useState(false);
+  const [osStats, setOsStats] = useState<OsStats | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
+
+  useEffect(() => {
+    let cancelled = false;
+    async function loadOsStats() {
+      try {
+        const res = await fetch("/api/stats");
+        const data = await res.json() as { ok: boolean; stats?: OsStats | null };
+        if (!cancelled && data.ok) {
+          setOsStats(data.stats ?? null);
+        }
+      } catch {
+        if (!cancelled) setOsStats(null);
+      }
+    }
+    void loadOsStats();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   async function sendMessage(text?: string) {
     const content = (text ?? input).trim();
@@ -188,6 +222,18 @@ function CopilotPageContent() {
     setInput("");
   }
 
+  async function skipOnboarding() {
+    try {
+      await fetch("/api/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ onboardingCompleted: true }),
+      });
+    } finally {
+      router.push("/");
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#050a14] text-white flex flex-col">
       <AppNav />
@@ -207,15 +253,44 @@ function CopilotPageContent() {
                 ? "Let's figure out where you should start →"
                 : "AI business consultant · Knows everything about the platform"}
             </p>
+            {osStats?.osVerdict?.label && (
+              <div className="mt-2 flex flex-wrap items-center gap-2">
+                <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.18em] ${
+                  osStats.osVerdict.status === "healthy"
+                    ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-200"
+                    : osStats.osVerdict.status === "stale"
+                      ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-100"
+                      : "border-amber-500/20 bg-amber-500/10 text-amber-100"
+                }`}>
+                  {osStats.osVerdict.label}
+                </span>
+                <span className="text-[11px] text-white/35">
+                  {osStats.effectiveSystemScore ?? 0}/100
+                </span>
+                {(osStats.unsyncedSystems?.length ?? 0) > 0 && (
+                  <span className="text-[11px] text-amber-200/80">
+                    {osStats?.unsyncedSystems?.length} unsynced
+                  </span>
+                )}
+              </div>
+            )}
           </div>
           <div className="flex items-center gap-2">
             {fromOnboarding && (
-              <Link
-                href="/onboarding"
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold transition hover:bg-cyan-500/20"
-              >
-                ← Back to setup
-              </Link>
+              <>
+                <Link
+                  href="/setup"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold transition hover:bg-cyan-500/20"
+                >
+                  ← Back to setup
+                </Link>
+                <button
+                  onClick={() => void skipOnboarding()}
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-white/[0.08] text-white/35 hover:text-white/60 text-xs font-bold transition hover:bg-white/[0.05]"
+                >
+                  Skip for now
+                </button>
+              </>
             )}
             <button
               onClick={reset}
@@ -241,6 +316,8 @@ function CopilotPageContent() {
             ))}
           </div>
         )}
+
+        <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} compact className="mb-4" />
 
         {/* Messages */}
         <div className="flex-1 overflow-y-auto space-y-1 mb-4 min-h-0" style={{ maxHeight: "60vh" }}>

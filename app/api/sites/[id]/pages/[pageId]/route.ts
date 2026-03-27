@@ -24,6 +24,7 @@ export async function PATCH(
       seoTitle?: string;
       seoDesc?: string;
       published?: boolean;
+      order?: number;
     };
 
     await prisma.sitePage.updateMany({
@@ -34,6 +35,7 @@ export async function PATCH(
         ...(body.seoTitle !== undefined && { seoTitle: body.seoTitle || null }),
         ...(body.seoDesc !== undefined && { seoDesc: body.seoDesc || null }),
         ...(body.published !== undefined && { published: body.published }),
+        ...(body.order !== undefined && { order: body.order }),
       },
     });
 

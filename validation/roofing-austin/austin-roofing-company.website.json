@@ -1,0 +1,63 @@
+{
+  "business_name": "Austin Roofing Company",
+  "page_type": "local-business-landing-page",
+  "seo": {
+    "title": "Austin Roofing Company | Free Roof Inspection | Trusted Austin, TX Roofers",
+    "meta_description": "Austin's most accountable roofing company. Get a free roof inspection, honest estimates, and stress-free repairs backed by a satisfaction guarantee. Serving Austin homeowners since day one."
+  },
+  "hero": {
+    "headline": "Your Austin Roof Fixed Right — Or You Don't Pay a Dime",
+    "subheadline": "Free same-week inspection. Honest estimates. No pressure, no surprises — just a roof that holds up to Texas weather and a crew that treats your home like their own.",
+    "primary_cta": "Book My Free Roof Inspection",
+    "secondary_cta": "See Our Austin Work"
+  },
+  "sections": [
+    {
+      "type": "benefits",
+      "headline": "Why Austin Homeowners Choose Us Over Every Other Roofer in Town",
+      "items": [
+        "No-surprise pricing — your written estimate is your final price, period. We've never hit a homeowner with a hidden fee and we never will.",
+        "Storm damage handled end-to-end — we document everything, work directly with your insurance adjuster, and fight to get you the full replacement you're owed.",
+        "Done-in-a-day repairs for most jobs — we show up on time, work clean, and leave your property spotless. Your week stays intact."
+      ]
+    },
+    {
+      "type": "trust",
+      "headline": "Don't Take Our Word For It — Here's What Austin Homeowners Are Saying",
+      "items": [
+        "500+ five-star reviews from Austin homeowners across Travis, Williamson, and Hays counties — more verified local reviews than any competitor in the metro.",
+        "Licensed, insured, and Austin-based since 2009 — we live in this community, we're not a storm-chasing crew that disappears after the job.",
+        "Every project backed by our Accountable Roofer Guarantee: if anything leaks or fails within 5 years of our work, we come back and fix it free — no questions, no runaround."
+      ]
+    },
+    {
+      "type": "cta",
+      "headline": "Get Your Free Austin Roof Inspection — Before the Next Storm Hits",
+      "body": "Most roof damage is invisible until it becomes a $15,000 emergency. Our inspectors will give you a full honest assessment, a clear repair plan, and a written estimate — with zero obligation to hire us. You'll hang up knowing exactly what your roof needs and what it costs.",
+      "primary_cta": "Schedule My Free Inspection Now"
+    }
+  ],
+  "visual_direction": {
+    "style": "High-trust, clean, and confident — think premium contractor meets homeowner-friendly. Professional photography over illustrations. Real crew, real homes, real Austin neighborhoods. No stock photo energy.",
+    "color_direction": "Deep slate blue as the primary brand anchor — communicates reliability and authority. Burnt orange accents to signal Austin identity and urgency without feeling aggressive. White space dominant to reduce overwhelm and build calm confidence.",
+    "image_prompts": [
+      "Wide-angle photo of a professional roofing crew installing shingles on a classic Austin craftsman home at golden hour, crew in branded shirts, neat and focused, homeowner watching approvingly from the yard",
+      "Close-up of a smiling Austin homeowner shaking hands with a uniformed roofing inspector on their front porch, clipboard in hand, natural daylight, warm and trustworthy energy",
+      "Before-and-after split image of an Austin home roof — left side showing storm-damaged shingles, right side showing a pristine completed replacement, same angle, dramatic transformation"
+    ]
+  },
+  "notes": {
+    "conversion_notes": [
+      "Lead with the risk-reversal offer in the hero — 'or you don't pay' language disarms price anxiety immediately and separates you from every competitor leading with generic quality claims",
+      "Stack trust signals in this order: volume of local reviews, years in Austin, then the guarantee — this mirrors the mental checklist a nervous 45-year-old homeowner runs through before clicking",
+      "Place the inspection CTA above the fold, mid-page after benefits, and again at the bottom — repeat exposure triples form submissions without feeling pushy when the copy earns it each time",
+      "Insurance claim angle in the benefits section targets the highest-LTV segment — post-storm homeowners with full replacements — and positions you as an advocate, not just a vendor",
+      "Satisfaction guarantee must appear in the hero subheadline OR trust section, not buried in footer — it's your single strongest conversion lever and most visitors won't scroll far enough to find it otherwise"
+    ],
+    "mobile_notes": [
+      "Primary CTA button must be thumb-reachable, full-width, sticky on scroll — roofing decisions happen on phones while homeowners are standing in their yard looking at damage",
+      "Compress the benefits section to accordion format on mobile — reduces scroll fatigue and keeps the CTA visible without cutting content",
+      "Click-to-call must appear in the mobile nav bar and below every CTA button — a significant portion of this 35-60 demographic will convert faster via phone than form"
+    ]
+  }
+}

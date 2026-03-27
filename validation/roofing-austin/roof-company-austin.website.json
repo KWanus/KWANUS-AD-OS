@@ -1,0 +1,60 @@
+{
+  "business_name": "Roof Company Austin",
+  "page_type": "local-business-landing-page",
+  "seo": {
+    "title": "Austin Roof Replacement & Storm Damage Experts | Roof Company Austin",
+    "meta_description": "Storm damage or aging roof in Austin, TX? We inspect, document, and handle your insurance claim start to finish. Get a free roof inspection today — no hassle, no runaround."
+  },
+  "hero": {
+    "headline": "Austin Homeowners: Get a New Roof Without the Insurance Headache",
+    "subheadline": "We inspect your roof, document every detail, and work directly with your insurance company — so you get the replacement you deserve without the stress, delays, or confusion.",
+    "primary_cta": "Book Your Free Roof Inspection",
+    "secondary_cta": "See How Our Insurance Process Works"
+  },
+  "sections": [
+    {
+      "type": "benefits",
+      "headline": "Everything Done For You — From First Inspection to Final Shingle",
+      "items": [
+        "Free storm damage inspection with detailed photo documentation — we build your claim for you, not against you",
+        "Direct insurance coordination so you never have to chase adjusters, decode paperwork, or fight for fair coverage",
+        "Austin-based crews who know Central Texas weather, code requirements, and get jobs done on schedule — no out-of-town storm chasers"
+      ]
+    },
+    {
+      "type": "trust",
+      "headline": "Why Austin Homeowners Choose Roof Company Austin",
+      "items": [
+        "500+ Austin roofs replaced — fully licensed, insured, and backed by a workmanship warranty that protects you long after we leave",
+        "4.9-star rated on Google with hundreds of verified Austin homeowner reviews citing honest pricing, clean jobsites, and zero surprises",
+        "We only recommend replacement when it's truly needed — our inspectors will tell you the truth, even if that means a simple repair saves you money"
+      ]
+    },
+    {
+      "type": "cta",
+      "headline": "Your Roof Won't Wait — Neither Should You",
+      "body": "Every day with a damaged or aging roof puts your home, your family, and your insurance eligibility at risk. Book your free inspection today and get a clear answer within 24 hours — no pressure, no obligation.",
+      "primary_cta": "Get My Free Inspection — It Takes 10 Minutes"
+    }
+  ],
+  "visual_direction": {
+    "style": "Clean, professional, and confidence-building. Bold typography with strong before/after contrast. Avoid stock-photo genericness — use real job site imagery and recognizable Austin neighborhoods where possible.",
+    "color_direction": "Deep charcoal (#1C1C1C) as primary authority color, bold red (#D72638) for CTA buttons and urgency accents, white space for clarity, and warm gray (#F5F5F5) for section backgrounds. Avoid blues — reinforce strength and urgency over corporate softness.",
+    "image_prompts": [
+      "An Austin-area craftsman-style home with a brand-new architectural shingle roof under bright Texas sky — crew members visible in background, branded truck in driveway, conveying local professionalism",
+      "A close-up of hail-damaged shingles next to a tablet showing a completed insurance claim form — symbolizing the inspection-to-claim process made simple",
+      "A relieved homeowner shaking hands with a uniformed roofing inspector on their front porch, Austin residential street visible behind them — trust and resolution visual"
+    ]
+  },
+  "notes": {
+    "conversion_notes": [
+      "Lead with the insurance complexity pain point — this audience fears the process more than the cost; dissolve that fear immediately above the fold",
+      "Use a sticky header CTA on scroll so 'Book Free Inspection' is always one tap away — never make the user hunt for next steps",
+      "Add a 3-step process visual between hero and benefits: Step 1 We Inspect, Step 2 We Handle Your Claim, Step 3 You Get a New Roof — reduces perceived effort and removes the #1 objection"
+    ],
+    "mobile_notes": [
+      "Hero CTA button must be full-width, thumb-friendly, and above the fold on all iPhone and Android viewports — test at 390px width minimum",
+      "Compress benefit and trust items into accordion-style expandables on mobile to reduce scroll fatigue while keeping all content accessible"
+    ]
+  }
+}

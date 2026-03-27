@@ -11,6 +11,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { createSiteFromScan } from "@/lib/sites/scanMode";
 
 function validateSecret(req: NextRequest): boolean {
   const secret = process.env.WEBHOOK_SECRET;
@@ -138,6 +139,41 @@ async function handleOutreach(body: unknown): Promise<NextResponse> {
   });
 }
 
+// ── Workflow: site-scan ──────────────────────────────────────────────────────
+// Trigger: n8n sends a reference site to clone or improve inside the Sites tab
+async function handleSiteScan(body: unknown): Promise<NextResponse> {
+  const data = body as {
+    userId: string;
+    url: string;
+    siteName?: string;
+    niche?: string;
+    notes?: string;
+    mode?: "clone" | "improve";
+    triggerN8n?: boolean;
+  };
+
+  if (!data.userId || !data.url) {
+    return NextResponse.json({ success: false, error: "Missing userId or url" }, { status: 400 });
+  }
+
+  const result = await createSiteFromScan({
+    userId: data.userId,
+    url: data.url,
+    siteName: data.siteName,
+    niche: data.niche,
+    notes: data.notes,
+    mode: data.mode === "clone" ? "clone" : "improve",
+    triggerN8n: data.triggerN8n ?? false,
+  });
+
+  return NextResponse.json({
+    success: true,
+    site: result.site,
+    source: result.source,
+    summary: result.summary,
+  });
+}
+
 // ── Router ────────────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
@@ -155,6 +191,8 @@ export async function POST(req: NextRequest) {
       return handleBusinessProcessing(body);
     case "outreach":
       return handleOutreach(body);
+    case "site-scan":
+      return handleSiteScan(body);
     default:
       return NextResponse.json({ success: false, error: `Unknown workflow: ${workflow ?? "none"}` }, { status: 400 });
   }
@@ -164,7 +202,7 @@ export async function POST(req: NextRequest) {
 export async function GET() {
   return NextResponse.json({
     ok: true,
-    workflows: ["lead-intake", "business-processing", "outreach"],
+    workflows: ["lead-intake", "business-processing", "outreach", "site-scan"],
     usage: "POST /api/webhooks/n8n?workflow=<name> with x-webhook-secret header",
   });
 }

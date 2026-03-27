@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import AppNav from "@/components/AppNav";
+import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import Link from "next/link";
 import {
   ArrowLeft, Globe, Phone, MapPin, Star, Zap, Search, Send, Loader2,
@@ -772,6 +773,7 @@ function EmptyState({ label }: { label: string }) {
 export default function LeadDetailPage() {
   const { id } = useParams<{ id: string }>();
   const [lead, setLead] = useState<Lead | null>(null);
+  const [databaseUnavailable, setDatabaseUnavailable] = useState(false);
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<Tab>("analysis");
   const [analyzing, setAnalyzing] = useState(false);
@@ -780,7 +782,8 @@ export default function LeadDetailPage() {
 
   const fetchLead = useCallback(async () => {
     const res = await fetch(`/api/leads/${id}`);
-    const data = await res.json() as { ok: boolean; lead: Lead };
+    const data = await res.json() as { ok: boolean; lead: Lead | null; databaseUnavailable?: boolean };
+    setDatabaseUnavailable(Boolean(data.databaseUnavailable));
     if (data.ok) setLead(data.lead);
     setLoading(false);
   }, [id]);
@@ -827,9 +830,15 @@ export default function LeadDetailPage() {
   if (!lead) return (
     <div className="min-h-screen bg-[#050a14] text-white flex flex-col">
       <AppNav />
-      <div className="flex-1 flex flex-col items-center justify-center gap-3">
-        <AlertCircle className="w-8 h-8 text-red-400" />
-        <Link href="/leads" className="text-cyan-400 text-sm hover:underline">← Back to Leads</Link>
+      <div className="flex-1 flex items-center justify-center px-4">
+        <div className="w-full max-w-3xl space-y-4">
+          <DatabaseFallbackNotice visible={databaseUnavailable} />
+          <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8">
+            <AlertCircle className="w-8 h-8 text-red-400" />
+            <p className="text-white/40">{databaseUnavailable ? "Lead data is temporarily unavailable" : "Lead not found"}</p>
+            <Link href="/leads" className="text-cyan-400 text-sm hover:underline">← Back to Leads</Link>
+          </div>
+        </div>
       </div>
     </div>
   );

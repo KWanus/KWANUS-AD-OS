@@ -1,0 +1,67 @@
+{
+  "business_name": "Roof Company Austin",
+  "platforms": {
+    "facebook_instagram": {
+      "hooks": [
+        "If your roof took a hit in last week's storm, your insurance company owes you more than you think.",
+        "Most Austin homeowners leave thousands on the table after storm damage — here's why."
+      ],
+      "primary_texts": [
+        "That hail storm didn't just dent your gutters. It likely cracked shingles, compromised your flashing, and started a slow leak you won't see until it's a $30,000 problem. We inspect your roof for free, document every inch of damage, and work directly with your insurance adjuster so you get the full replacement you're owed — not the lowball patch job they'd prefer. Austin homeowners trust us because we've done this hundreds of times. We know what adjusters look for. We know how to fight for you. And we don't get paid until your roof is done right."
+      ],
+      "headlines": [
+        "Free Roof Inspection + Full Insurance Support",
+        "Austin's Storm Damage Roofing Specialists"
+      ],
+      "ctas": [
+        "Book Your Free Inspection",
+        "See If You Qualify"
+      ]
+    },
+    "google_search": {
+      "headlines": [
+        "Storm Damage Roof Replacement Austin",
+        "We Handle Your Insurance Claim For You",
+        "Free Roof Inspection — Austin TX"
+      ],
+      "descriptions": [
+        "Hail damage, leaks, or aging roof? We inspect, document, and work directly with your insurer. Most homeowners pay $0 out of pocket. Book your free inspection today.",
+        "Austin's trusted roofing specialists for storm damage and full replacements. Licensed, local, and insurance-claim experienced. Call now — same-week inspections available."
+      ]
+    },
+    "short_form_video": {
+      "hooks": [
+        "If your Austin home got hit by hail and you haven't had a free inspection yet, watch this.",
+        "Your insurance company is hoping you never call a roofer like us."
+      ],
+      "script_angles": [
+        "Walk through an actual post-storm Austin roof inspection showing what homeowners miss with the naked eye — granule loss, bruised shingles, cracked ridge caps — then reveal how proper documentation turned a patch job offer into a full replacement claim.",
+        "Tell the story of a skeptical Austin homeowner who almost paid out of pocket, then found out insurance covered everything — use before/after footage and show the contractor handling all adjuster communication while the homeowner stays stress-free."
+      ]
+    }
+  },
+  "angles": [
+    {
+      "name": "Insurance Advocate",
+      "focus": "Position the company as the homeowner's expert ally against a confusing, low-paying insurance process",
+      "why_it_should_work": "The biggest fear isn't the roof — it's being denied, underpaid, or scammed. Removing that friction by owning the insurance process makes the decision nearly frictionless."
+    },
+    {
+      "name": "Hidden Damage Urgency",
+      "focus": "Educate homeowners that storm damage is invisible until it becomes catastrophic and expensive",
+      "why_it_should_work": "Austin has frequent hail events and a large base of homeowners with roofs over 10 years old. Urgency tied to real local weather history converts anxious homeowners who are already worried but haven't acted."
+    },
+    {
+      "name": "Zero Out-of-Pocket Social Proof",
+      "focus": "Lead with the outcome — a new roof at no cost to the homeowner — backed by real Austin customer stories",
+      "why_it_should_work": "Cost is the primary objection. Flipping the narrative from expense to covered replacement eliminates the barrier before it's raised and builds instant trust through local proof."
+    }
+  ],
+  "assumptions": [
+    "The business is licensed and insured in Texas and can legally assist homeowners in the insurance documentation process",
+    "The company has completed enough local jobs to provide credible before/after visuals and real customer testimonials",
+    "Service area is primarily Travis County and surrounding Austin metro zip codes",
+    "The company offers free inspections with no commitment required",
+    "Primary revenue model is insurance-claim roofing with some retail full-replacement jobs"
+  ]
+}

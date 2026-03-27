@@ -1,0 +1,57 @@
+{
+  "business_name": "Altair Austin Roofing Company",
+  "platforms": {
+    "facebook_instagram": {
+      "hooks": [
+        "If hail hit your neighborhood this season, your roof may be damaged and your insurance company may owe you a new one. Here's how to find out in 24 hours.",
+        "Most Austin homeowners overpay for roofing because they don't know these three things before getting a quote.",
+        "Your neighbor just got a full roof replacement covered by insurance. Here's exactly how Altair made it happen."
+      ],
+      "primary_texts": [
+        "Storm season in Austin is no joke and most homeowners don't realize their roof was damaged until it's too late. At Altair Austin Roofing, we do a full inspection, document everything, and deal directly with your insurance adjuster so you don't have to fight for what you're owed. No confusing paperwork. No unreliable contractors. No surprises on the bill. Just a new roof done right, on time, and fully backed by a team your Austin neighbors already trust. Tap below to book your free inspection before the next storm hits.",
+        "Tired of getting three quotes and still not knowing who to trust? Altair is Austin's full-service roofing partner. We handle everything from the first inspection to final installation, including your entire insurance claim process. We've helped hundreds of Austin homeowners get quality roofs without the stress, the guesswork, or the overcharging. Before-and-after proof from neighborhoods just like yours. Real reviews. Real results. Serving Austin and surrounding areas. Free inspections available this week."
+      ],
+      "headlines": [
+        "Austin's Most Trusted Roofing Team - We Handle Everything Including Your Insurance Claim",
+        "Free Roof Inspection + Full Insurance Claim Support - Only From Altair Austin Roofing"
+      ],
+      "ctas": [
+        "Book Your Free Inspection",
+        "See If Your Insurance Covers It"
+      ]
+    },
+    "google_search": {
+      "headlines": [
+        "Austin Roofing - Free Storm Inspection",
+        "We Handle Your Insurance Claim For You",
+        "Honest Pricing. Local Austin Roofers."
+      ],
+      "descriptions": [
+        "Hail or storm damage? Altair Austin Roofing inspects your roof, documents the damage, and manages your entire insurance claim. Book your free inspection today.",
+        "Don't overpay or get burned by unreliable contractors. Altair delivers quality roofing, transparent pricing, and full insurance support across Austin, TX."
+      ]
+    },
+    "short_form_video": {
+      "hooks": [
+        "If hail hit anywhere near your Austin neighborhood in the last 90 days, stop what you're doing. Your roof might be damaged and your insurance company might already owe you a new one.",
+        "Here's what most Austin homeowners don't find out until it costs them thousands and how to avoid it in the next 60 seconds."
+      ],
+      "script_angles": [
+        "INSURANCE MYTH-BUSTER: Open with 'Most people think filing a roof insurance claim is a nightmare. Here's how Altair makes it the easiest thing you'll do this year.' Walk through the 3-step process: free inspection, Altair handles the adjuster, new roof installed. End with a before-and-after visual from a real Austin job and a direct CTA to book the free inspection.",
+        "NEIGHBOR SOCIAL PROOF: Start with 'Your neighbor in an Austin neighborhood just got a brand new roof fully covered by insurance. Here's their story.' Cut to a testimonial-style walkthrough of the job, show the damage found, the claim filed, and the finished roof. Close with 'We're booking free inspections this week. Link in bio.'"
+      ]
+    }
+  },
+  "angles": [
+    {
+      "name": "Insurance Claim Concierge",
+      "focus": "Positioning Altair as the only roofing company in Austin that fully manages the insurance claim process end-to-end including inspection, documentation, adjuster communication, and approval.",
+      "why_it_should_work": "The biggest fear in this audience is not the roof itself but being overcharged, deceived, or left to fight an insurance company alone. Removing that pain entirely creates a category of one and makes every competitor feel incomplete by comparison."
+    },
+    {
+      "name": "Hail Season Urgency",
+      "focus": "Leveraging Austin's active storm and hail seasons to create time-sensitive demand, framing inaction as financial risk and positioning the free inspection as the obvious zero-risk next step.",
+      "why_it_should_work": "Austin homeowners who've experienced recent weather events are already primed to act but paralyzed by uncertainty. This angle converts passive awareness into immediate appointments by making the free inspection feel urgent, simple, and risk-free."
+    }
+  ]
+}

@@ -7,12 +7,17 @@ export async function GET(
 ) {
   const { slug } = await params;
 
-  const site = await prisma.site.findUnique({
-    where: { slug },
-    include: {
-      pages: { where: { published: true }, select: { slug: true, updatedAt: true } },
-    },
-  });
+  let site = null;
+  try {
+    site = await prisma.site.findUnique({
+      where: { slug },
+      include: {
+        pages: { where: { published: true }, select: { slug: true, updatedAt: true } },
+      },
+    });
+  } catch {
+    return new NextResponse("Not found", { status: 404 });
+  }
 
   if (!site || !site.published) {
     return new NextResponse("Not found", { status: 404 });

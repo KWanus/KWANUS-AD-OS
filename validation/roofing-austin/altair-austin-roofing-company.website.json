@@ -1,0 +1,63 @@
+{
+  "business_name": "Altair Austin Roofing Company",
+  "page_type": "local-business-landing-page",
+  "seo": {
+    "title": "Austin Roofing Company | Repairs, Replacement & Insurance Claims | Altair Austin Roofing",
+    "meta_description": "Austin's most trusted roofing team. Expert roof repair, full replacement, and stress-free insurance claim support. Honest pricing, licensed & insured. Get your free inspection today."
+  },
+  "hero": {
+    "headline": "Austin's Most Trusted Roofers — From Storm Damage to Final Nail, We Handle Everything",
+    "subheadline": "Roof repair, full replacement, and insurance claims managed for you — by a local Austin team that shows up on time, tells you the truth, and backs every job in writing.",
+    "primary_cta": "Get My Free Roof Inspection",
+    "secondary_cta": "See Our Work & Reviews"
+  },
+  "sections": [
+    {
+      "type": "benefits",
+      "headline": "Why Austin Homeowners Choose Altair — And Stay Loyal For Life",
+      "items": [
+        "We handle your insurance claim start to finish — no paperwork headaches, no adjuster runaround, just a faster payout and a new roof done right",
+        "Transparent, itemized quotes with no surprise charges — you know exactly what you're paying before a single shingle is lifted",
+        "Licensed, insured, and local — we've roofed Austin neighborhoods for years and we stand behind every job with a written workmanship guarantee"
+      ]
+    },
+    {
+      "type": "trust",
+      "headline": "The Proof Is On Every Rooftop We've Touched",
+      "items": [
+        "500+ five-star reviews from Austin homeowners — read real stories from your neighbors in Round Rock, Cedar Park, and South Austin",
+        "A+ BBB rating, fully licensed by the Texas Department of Licensing and Regulation, and carrying full liability and workers' comp insurance so your home is protected",
+        "Before-and-after photo galleries from real Austin jobs — see the quality difference that separates Altair from every cut-rate competitor in town"
+      ]
+    },
+    {
+      "type": "cta",
+      "headline": "Your Roof Won't Wait — Neither Should You",
+      "body": "Storm damage spreads fast. An aging roof can fail before your home sells. The longer you wait, the more it costs. Get a free, no-pressure inspection from an Altair expert today — we'll assess the damage, explain your options in plain English, and tell you exactly what your insurance should cover.",
+      "primary_cta": "Book My Free Inspection Now — It Takes 60 Seconds"
+    }
+  ],
+  "visual_direction": {
+    "style": "Bold and trustworthy — clean layout with strong contrast between sections, large social proof callouts, and zero visual clutter. Professional but approachable, never corporate. Think: local authority meets premium craftsmanship.",
+    "color_direction": "Deep navy (#1B2A4A) as the primary trust anchor, warm slate gray (#4A5568) for body sections, and a high-energy amber-orange (#F59E0B) for all CTAs and highlight accents. White space used aggressively to keep the page breathing and focused.",
+    "image_prompts": [
+      "A licensed roofer in a branded Altair shirt standing confidently on a completed Austin home with a clear blue Texas sky behind him — shot from a slight low angle to convey authority and pride of craftsmanship",
+      "A side-by-side before-and-after of an Austin residential roof — left side showing hail or storm damage with lifted shingles, right side showing a pristine new architectural shingle roof with clean ridge lines",
+      "A homeowner in their 40s shaking hands with an Altair inspector in the driveway, both smiling, clipboard in hand — conveying trust, transparency, and a stress-free process"
+    ]
+  },
+  "notes": {
+    "conversion_notes": [
+      "Lead with the insurance claim angle above the fold — this is the single highest-anxiety pain point for storm-damage homeowners and the fastest way to differentiate from competitors who make owners fight their own battles",
+      "Place a sticky click-to-call bar on mobile at all times — this audience converts heavily by phone, especially homeowners 45+ who want to speak to a human before committing",
+      "Embed a short 60-90 second video testimonial from a real Austin customer near the trust section — video social proof increases form conversion rates by up to 80% in home services",
+      "Add a urgency-trigger element near the CTA section referencing recent Austin hail or storm events by name to make the threat feel immediate and local",
+      "Use a two-field lead form max — name and phone number only — to minimize friction and increase submission rate; qualify on the follow-up call"
+    ],
+    "mobile_notes": [
+      "The primary CTA button must be thumb-reachable, full-width, and fixed at the bottom of the viewport on mobile — never let it scroll out of view",
+      "Compress all hero images to under 150kb and use next-gen formats to ensure sub-2-second load times on mobile — roofing searchers are often on-site or stressed and will abandon slow pages instantly",
+      "Stack benefit items as single-column cards with icons on mobile — avoid dense text blocks that cause scroll fatigue and drop-off before the CTA section"
+    ]
+  }
+}

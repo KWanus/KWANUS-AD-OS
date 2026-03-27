@@ -1,0 +1,50 @@
+{
+  "business_name": "Austin Roofing Company",
+  "niche": "Roofing",
+  "location": "Austin, TX",
+  "summary": "Austin Roofing Company runs a value-stack, offer-led landing page with solid structural bones and decent trust signals. The page speaks to the right audience but fails to connect emotionally — there's little pain-language, weak benefit framing, and no urgency mechanism to push fence-sitters into action. The positioning is differentiated enough to stand out in a commoditized market, but the copy leaves conversion points on the table. With targeted copy upgrades and sharper CTAs, this page could meaningfully improve lead volume without a redesign.",
+  "scores": {
+    "design_score": 72,
+    "trust_score": 78,
+    "clarity_score": 68,
+    "cta_score": 62,
+    "conversion_score": 65
+  },
+  "issues": [
+    {
+      "title": "Weak Benefit Language Throughout",
+      "severity": "high",
+      "reason": "The page lists services and features but doesn't translate them into outcomes homeowners care about — protection, peace of mind, home value, cost savings. Without benefit framing, the offer feels transactional rather than compelling."
+    },
+    {
+      "title": "No Pain or Problem Language",
+      "severity": "high",
+      "reason": "Roofing decisions are almost always triggered by stress — leaks, storm damage, aging roofs, fear of overpaying. The page doesn't acknowledge these triggers, making the copy feel generic and failing to create emotional resonance with visitors who are already anxious."
+    },
+    {
+      "title": "CTA Lacks Urgency and Specificity",
+      "severity": "medium",
+      "reason": "Generic CTAs like 'Get a Quote' don't communicate what happens next or why now. In a high-ticket, low-frequency purchase category, weak CTAs directly kill conversion rates."
+    }
+  ],
+  "missed_opportunities": [
+    "Austin-specific social proof — mentioning neighborhoods served, local storm events, or Austin homeowner testimonials would dramatically increase local trust and relevance",
+    "A risk-reversal mechanism such as a free inspection offer, satisfaction guarantee, or price-match promise to reduce the hesitation inherent in high-ticket roofing decisions",
+    "Before/after photo gallery or project showcase to build visual credibility and help homeowners visualize the outcome before committing"
+  ],
+  "strengths": [
+    "Page structure is conversion-aware — sections are logically sequenced to move visitors from awareness to action without confusion",
+    "Differentiated positioning sets it apart from the sea of generic Austin roofers, giving cold traffic a reason to keep reading"
+  ],
+  "quick_wins": [
+    "Rewrite the hero headline to lead with a pain point and outcome — e.g., 'Austin's Roof Took a Hit? We'll Fix It Fast, Right, and For a Fair Price' — this alone can lift engagement within days",
+    "Add 2–3 short customer testimonials with specifics (neighborhood, job type, outcome) directly beneath the primary CTA to reduce friction at the decision point",
+    "Change the primary CTA button copy to something action-oriented and low-commitment — e.g., 'Get My Free Roof Inspection' — and add a single line of micro-copy underneath like 'No pressure. No obligation. Results same day.'"
+  ],
+  "assumptions": [
+    "Website relies primarily on paid search or local SEO traffic given the offer-led page structure",
+    "Primary buyer persona is a stressed Austin homeowner dealing with storm damage, aging roof, or a pre-sale inspection requirement",
+    "Business likely has positive reviews on Google or Yelp that are not being surfaced effectively on the landing page",
+    "No active email follow-up sequence exists for leads who don't convert on first visit"
+  ]
+}

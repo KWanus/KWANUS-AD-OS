@@ -1,0 +1,67 @@
+{
+  "business_name": "Austin Roofing Company",
+  "platforms": {
+    "facebook_instagram": {
+      "hooks": [
+        "Your roof took a hit in that last storm. Here's how Austin homeowners are getting it fixed — without the runaround.",
+        "Most Austin roofers give you a quote and disappear. We do it differently — and we can prove it."
+      ],
+      "primary_texts": [
+        "After a storm, the last thing you need is a contractor who ghosts you after the deposit. At Austin Roofing Company, every job comes with a free roof inspection, a written estimate you can actually understand, and a satisfaction guarantee — because your home deserves accountability, not excuses. Locally owned. Austin-focused. Book your free inspection today and see why your neighbors trust us."
+      ],
+      "headlines": [
+        "Free Roof Inspection — No Pressure, No Games",
+        "Austin's Most Accountable Roofers",
+        "Storm Damage? We've Got You Covered — Literally"
+      ],
+      "ctas": [
+        "Book Your Free Inspection",
+        "Claim Your Free Roof Assessment"
+      ]
+    },
+    "google_search": {
+      "headlines": [
+        "Austin Roofers You Can Actually Trust",
+        "Free Inspection + Satisfaction Guarantee",
+        "Storm Damage Repairs — Fast Austin Response"
+      ],
+      "descriptions": [
+        "Roof damage shouldn't mean contractor headaches. Austin Roofing Company offers free inspections, honest quotes, and a satisfaction guarantee. Book online today.",
+        "Comparing roofers in Austin? See why local homeowners choose us — transparent pricing, local proof, zero pressure. Get your free assessment now."
+      ]
+    },
+    "short_form_video": {
+      "hooks": [
+        "If you're getting multiple roofing quotes in Austin right now, watch this before you sign anything.",
+        "I'm going to show you exactly what a shady roofing estimate looks like — and how to spot it before it costs you thousands."
+      ],
+      "script_angles": [
+        "Walk through a real Austin home post-storm: show the damage, explain what to look for, then offer the free inspection as the natural next step — builds trust before pitching.",
+        "Side-by-side comparison: 'What a bad roofer does vs. what we do' — cover communication, cleanup, warranties, and pricing transparency. End with a direct CTA to book a free inspection."
+      ]
+    }
+  },
+  "angles": [
+    {
+      "name": "The Accountability Roofer",
+      "focus": "Risk reversal — free inspection, written guarantee, no-ghost policy",
+      "why_it_should_work": "Homeowners comparing contractors are most afraid of being ripped off or ignored post-payment. Leading with accountability language and a zero-risk offer eliminates the biggest objection before it's raised."
+    },
+    {
+      "name": "Storm Season Urgency",
+      "focus": "Tap into post-storm anxiety with timely, empathetic messaging",
+      "why_it_should_work": "Austin's hail and storm cycles create high-intent, time-sensitive demand. Mirroring the homeowner's current emotional state — stress, urgency, uncertainty — immediately earns attention and relevance."
+    },
+    {
+      "name": "Local Trust Stack",
+      "focus": "Hyperlocal social proof — neighborhood names, review counts, years in Austin",
+      "why_it_should_work": "35-60 year old homeowners respond strongly to community familiarity. Naming specific Austin neighborhoods and referencing real customer outcomes shortcircuits skepticism faster than any national brand claim."
+    }
+  ],
+  "assumptions": [
+    "Austin Roofing Company offers a free inspection — if not, a low-cost or no-obligation estimate should be substituted as the lead offer",
+    "The business has Google or Facebook reviews that can be referenced in ad creative for social proof",
+    "Service area is Central Austin and surrounding suburbs — hyperlocal references like Round Rock, Cedar Park, or South Congress should be tested if applicable",
+    "The business handles both insurance claims and out-of-pocket repairs, making it relevant to a wide post-storm audience"
+  ]
+}

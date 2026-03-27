@@ -26,6 +26,7 @@ import {
   AlertTriangle,
   Layers,
 } from "lucide-react";
+import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 
 // ---------------------------------------------------------------------------
 // Types
@@ -316,6 +317,7 @@ function LogActivity({ clientId, onLogged }: { clientId: string; onLogged: (acti
 export default function ClientProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const [client, setClient] = useState<Client | null>(null);
+  const [databaseUnavailable, setDatabaseUnavailable] = useState(false);
   const [loading, setLoading] = useState(true);
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
@@ -323,8 +325,9 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
 
   useEffect(() => {
     fetch(`/api/clients/${id}`)
-      .then((r) => r.json() as Promise<{ ok: boolean; client?: Client }>)
+      .then((r) => r.json() as Promise<{ ok: boolean; client?: Client | null; databaseUnavailable?: boolean }>)
       .then((data) => {
+        setDatabaseUnavailable(Boolean(data.databaseUnavailable));
         if (data.ok && data.client) setClient(data.client);
       })
       .catch(console.error)
@@ -371,10 +374,13 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
 
   if (!client) {
     return (
-      <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4">
-        <AlertTriangle className="w-8 h-8 text-red-400/50" />
-        <p className="text-white/40">Client not found</p>
-        <Link href="/clients" className="text-sm text-cyan-400 hover:text-cyan-300">← Back to Clients</Link>
+      <div className="mx-auto flex min-h-[50vh] max-w-3xl flex-col justify-center gap-4 px-4">
+        <DatabaseFallbackNotice visible={databaseUnavailable} />
+        <div className="flex flex-col items-center gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8">
+          <AlertTriangle className="w-8 h-8 text-red-400/50" />
+          <p className="text-white/40">{databaseUnavailable ? "Client data is temporarily unavailable" : "Client not found"}</p>
+          <Link href="/clients" className="text-sm text-cyan-400 hover:text-cyan-300">← Back to Clients</Link>
+        </div>
       </div>
     );
   }

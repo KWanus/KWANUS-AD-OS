@@ -1,8 +1,19 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/prisma";
 import BlockRenderer, { Block } from "@/components/site-builder/BlockRenderer";
+import PublicSiteShell from "@/components/site-builder/PublicSiteShell";
 import { Metadata } from "next";
 import Script from "next/script";
+
+type PublicProduct = {
+  id: string;
+  name: string;
+  description: string | null;
+  price: number;
+  compareAt: number | null;
+  images: string[];
+  slug: string;
+};
 
 export const revalidate = 10; // ISR for blazing fast loads
 
@@ -10,14 +21,20 @@ export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
   const { slug } = await params;
-  const site = await prisma.site.findUnique({
-    where: { slug },
-    include: { pages: { where: { slug: "home", published: true } } },
-  });
+  let site = null;
+  try {
+    site = await prisma.site.findUnique({
+      where: { slug },
+      include: { pages: { where: { published: true }, orderBy: { order: "asc" } } },
+    });
+  } catch {
+    return { title: "Not Found" };
+  }
 
   if (!site || site.pages.length === 0) return { title: "Not Found" };
 
-  const home = site.pages[0];
+  const home = site.pages.find((page) => page.slug === "home");
+  if (!home) return { title: "Not Found" };
   const title = home.seoTitle || site.name;
   const description = home.seoDesc || site.description || "";
   const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://himalaya.app";
@@ -53,27 +70,34 @@ export default async function PublicSitePage({
 }) {
   const { slug } = await params;
 
-  const site = await prisma.site.findUnique({
-    where: { slug },
-    include: {
-      pages: { where: { slug: "home", published: true } },
-      products: { where: { status: "active" } },
-      user: {
-        select: {
-          metaPixelId: true,
-          googleAnalyticsId: true,
-          tiktokPixelId: true,
-          googleAdsId: true,
+  let site = null;
+  try {
+    site = await prisma.site.findUnique({
+      where: { slug },
+      include: {
+        pages: { where: { published: true }, orderBy: { order: "asc" } },
+        products: { where: { status: "active" } },
+        user: {
+          select: {
+            metaPixelId: true,
+            googleAnalyticsId: true,
+            tiktokPixelId: true,
+            googleAdsId: true,
+          },
         },
       },
-    },
-  });
+    });
+  } catch {
+    notFound();
+  }
 
   if (!site || !site.published || site.pages.length === 0) notFound();
 
-  const page = site.pages[0];
+  const page = site.pages.find((entry) => entry.slug === "home");
+  if (!page) notFound();
   const theme = (site.theme as { primaryColor?: string; font?: string; mode?: "dark" | "light" }) || {};
   const blocks = (page.blocks as unknown as Block[]) || [];
+  const products = (site.products as unknown as PublicProduct[]) || [];
   const pixels = site.user;
 
   // Track view async (fire-and-forget)
@@ -127,22 +151,26 @@ export default async function PublicSitePage({
       )}
 
       {/* ── Site content ── */}
-      <div
-        className="min-h-screen w-full flex flex-col"
-        style={{ borderTop: `4px solid ${theme.primaryColor || "#06b6d4"}` }}
+      <PublicSiteShell
+        siteName={site.name}
+        siteSlug={site.slug}
+        currentPageSlug="home"
+        faviconEmoji={site.faviconEmoji}
+        theme={theme}
+        pages={site.pages.map((entry) => ({ id: entry.id, title: entry.title, slug: entry.slug }))}
       >
-        <main className="flex-1">
+        <div className="flex-1">
           {blocks.length === 0 ? (
             <div className="flex items-center justify-center min-h-[50vh] text-center px-4">
               <h1 className="text-2xl font-black opacity-30">This site has no content yet.</h1>
             </div>
           ) : (
             blocks.map((block) => (
-              <BlockRenderer key={block.id} block={block} theme={theme} preview={false} />
+              <BlockRenderer key={block.id} block={block} theme={theme} preview={false} products={products} />
             ))
           )}
-        </main>
-      </div>
+        </div>
+      </PublicSiteShell>
     </>
   );
 }

@@ -1,0 +1,56 @@
+{
+  "business_name": "Altair Austin Roofing Company",
+  "niche": "Roofing",
+  "location": "Austin, TX",
+  "audience": {
+    "primary_audience": "Austin-area homeowners aged 35-65 who are actively searching for roofing repair or replacement, motivated by storm damage, aging roofs, or home sale preparation, and who are cost-conscious but unwilling to compromise on quality or reliability",
+    "customer_pains": [
+      "Worried about getting overcharged or hiring an unreliable contractor who disappears after payment",
+      "Stressed about storm or hail damage and unsure how to navigate the insurance claim process alone"
+    ],
+    "customer_desires": [
+      "A trustworthy, local roofing expert who gives them a fair price, shows up on time, and handles everything from inspection to completion",
+      "A roof that protects their home and holds up against Austin's unpredictable weather without needing constant repairs"
+    ],
+    "customer_objections": [
+      "How do I know this company is legit and not just another fly-by-night contractor?",
+      "I can't afford a full roof replacement right now — is there a payment option or will insurance cover this?"
+    ]
+  },
+  "brand_direction": {
+    "recommended_tone": "Confident, straight-talking, and neighborly — the tone of a seasoned Austin local who knows roofing inside and out, respects the homeowner's time and budget, and backs every word with proof. No fluff, no fear tactics, just clarity and competence.",
+    "offer_angle": "Austin's Most Trusted Roofing Team — Quality Roofs, Honest Pricing, and Insurance Claims Handled For You. Position Altair as the full-service roofing partner that removes every pain point between damage and done."
+  },
+  "conversion_strategy": {
+    "primary_cta": "Get Your Free Roof Inspection — We'll Check For Storm Damage And Handle Your Insurance Claim If You Have One",
+    "trust_elements_needed": [
+      "Hyper-local Google reviews with neighborhood callouts (e.g., 'We just completed a roof in South Congress — here's what the homeowner said') displayed prominently above the fold and near every CTA",
+      "Visible financing banner and insurance claim badge on the homepage hero section to immediately neutralize the two biggest objections before the visitor scrolls"
+    ],
+    "recommended_sections": [
+      "Storm Damage and Insurance Claim landing page — a dedicated page with a step-by-step claim walkthrough, urgency copy tied to Austin hail season, and a single high-intent CTA to book a free damage inspection",
+      "Neighborhood Project Gallery — before/after photo sets and short video testimonials segmented by Austin zip code and roof type to create instant local recognition and visual proof of quality"
+    ]
+  },
+  "content_strategy": {
+    "top_hooks": [
+      "If hail hit your neighborhood this season, your roof may be damaged and your insurance company owes you a new one — here's how to find out in 24 hours",
+      "Most Austin homeowners overpay for roofing because they don't know these three things before getting a quote"
+    ],
+    "top_benefits": [
+      "Full insurance claim support from inspection to approval — we deal with the adjuster so you don't have to",
+      "Locally verified quality backed by before-and-after proof from Austin neighborhoods just like yours"
+    ],
+    "top_problems_to_call_out": [
+      "Contractors who give vague estimates, disappear mid-job, or leave homeowners to fight insurance companies alone",
+      "Homeowners leaving thousands of dollars on the table by not filing a legitimate storm damage claim after Austin hail events"
+    ]
+  },
+  "assumptions": [
+    "Business is currently active and accepting new roofing leads in the Austin metro area",
+    "The existing website has basic trust elements such as reviews and licensing info but lacks urgency triggers and financing visibility in the hero section",
+    "Altair has completed enough local projects to populate a neighborhood gallery with real before-and-after content",
+    "The business has the capacity to handle insurance claim-related leads and has some existing familiarity with the adjuster process",
+    "No dedicated storm damage landing page currently exists based on the identified missed opportunity"
+  ]
+}

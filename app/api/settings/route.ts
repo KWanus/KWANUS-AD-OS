@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
+import { isDatabaseUnavailable } from "@/lib/db/runtime";
 
 export async function GET() {
   try {
@@ -35,6 +36,30 @@ export async function GET() {
     });
   } catch (err) {
     console.error("Settings GET:", err);
+    if (isDatabaseUnavailable(err)) {
+      return NextResponse.json({
+        ok: true,
+        settings: {
+          workspaceName: null,
+          sendingFromName: null,
+          sendingFromEmail: null,
+          sendingDomain: null,
+          hasResendKey: false,
+          plan: "free",
+          email: null,
+          name: null,
+          metaPixelId: null,
+          googleAnalyticsId: null,
+          tiktokPixelId: null,
+          googleAdsId: null,
+          webhookUrl: null,
+          businessUrl: null,
+          businessType: null,
+          onboardingCompleted: true,
+          databaseUnavailable: true,
+        },
+      });
+    }
     return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });
   }
 }
@@ -59,6 +84,7 @@ export async function PATCH(req: NextRequest) {
       webhookUrl?: string;
       businessUrl?: string;
       businessType?: string;
+      onboardingCompleted?: boolean;
     };
 
     await prisma.user.update({
@@ -76,6 +102,7 @@ export async function PATCH(req: NextRequest) {
         ...(body.webhookUrl !== undefined && { webhookUrl: body.webhookUrl || null }),
         ...(body.businessUrl !== undefined && { businessUrl: body.businessUrl || null }),
         ...(body.businessType !== undefined && { businessType: body.businessType || null }),
+        ...(body.onboardingCompleted !== undefined && { onboardingCompleted: body.onboardingCompleted }),
       },
     });
 

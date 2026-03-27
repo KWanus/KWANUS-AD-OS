@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { computeHealthScore } from "@/lib/clients/healthScore";
+import { isDatabaseUnavailable } from "@/lib/db/runtime";
 
 export async function GET(
   _req: NextRequest,
@@ -26,6 +27,9 @@ export async function GET(
     return NextResponse.json({ ok: true, client });
   } catch (err) {
     console.error("Client GET:", err);
+    if (isDatabaseUnavailable(err)) {
+      return NextResponse.json({ ok: true, client: null, databaseUnavailable: true });
+    }
     return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });
   }
 }

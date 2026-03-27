@@ -66,6 +66,17 @@ interface FlowData {
   tags?: string[];
 }
 
+interface BusinessProfileSummary {
+  businessType: string;
+  businessName: string | null;
+  niche: string | null;
+  location: string | null;
+  mainOffer: string | null;
+  targetAudience: string | null;
+  mainGoal: string | null;
+  stage: string;
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type AnyRecord = any;
 
@@ -219,6 +230,7 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
   const [edges, setEdges, onEdgesChange] = useEdgesState<Edge>([]);
 
   const [selectedNode, setSelectedNode] = useState<Node<AnyRecord> | null>(null);
+  const [businessProfile, setBusinessProfile] = useState<BusinessProfileSummary | null>(null);
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
   const [loading, setLoading] = useState(true);
   const [editingName, setEditingName] = useState(false);
@@ -254,6 +266,15 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [flowId, setNodes, setEdges]);
+
+  useEffect(() => {
+    fetch("/api/business-profile")
+      .then((r) => r.json() as Promise<{ ok: boolean; profile?: BusinessProfileSummary | null }>)
+      .then((data) => {
+        if (data.ok && data.profile) setBusinessProfile(data.profile);
+      })
+      .catch(() => {});
+  }, []);
 
   // -------------------------------------------------------------------------
   // Default scaffold when new flow
@@ -587,6 +608,25 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
           </div>
         </div>
 
+        {businessProfile && (
+          <div className="px-4 py-3 border-b border-white/[0.06]">
+            <div className="flex items-center justify-between gap-3 mb-3">
+              <p className="text-[10px] font-black uppercase tracking-widest text-white/25">Business Context</p>
+              <Link href="/my-system" className="text-[10px] font-bold text-cyan-300/70 hover:text-cyan-300 transition">
+                View System
+              </Link>
+            </div>
+            <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/[0.05] p-3 space-y-2">
+              <ContextRow label="Business" value={businessProfile.businessName || "Unnamed business"} />
+              <ContextRow label="Type" value={businessProfile.businessType.replace(/_/g, " ")} />
+              <ContextRow label="Niche" value={businessProfile.niche || "Not set"} />
+              <ContextRow label="Goal" value={businessProfile.mainGoal?.replace(/_/g, " ") || "Not set"} />
+              <ContextRow label="Audience" value={businessProfile.targetAudience || "Not set"} />
+              <ContextRow label="Offer" value={businessProfile.mainOffer || "Not set"} />
+            </div>
+          </div>
+        )}
+
         {/* Node palette */}
         <div className="px-4 py-3 border-b border-white/[0.06] flex-1">
           <p className="text-[10px] font-black uppercase tracking-widest text-white/25 mb-3">
@@ -782,6 +822,15 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
           />
         )}
       </div>
+    </div>
+  );
+}
+
+function ContextRow({ label, value }: { label: string; value: string }) {
+  return (
+    <div>
+      <p className="text-[9px] font-black uppercase tracking-[0.18em] text-white/25">{label}</p>
+      <p className="mt-1 text-[11px] leading-relaxed text-white/70">{value}</p>
     </div>
   );
 }

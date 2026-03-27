@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
+import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -51,6 +52,7 @@ export async function POST(
 
     const lead = await prisma.lead.findFirst({ where: { id, userId: user.id } });
     if (!lead) return NextResponse.json({ ok: false, error: "Lead not found" }, { status: 404 });
+    const businessContext = await getBusinessContext(user.id);
 
     await prisma.lead.update({ where: { id }, data: { status: "generating" } });
 
@@ -83,7 +85,8 @@ Input:
 - known_summary: ${lead.summary ?? "No website analysis available"}
 - known_gaps: ${gaps.join(", ") || "none"}
 - known_weaknesses: ${weaknesses.join(", ") || "none"}
-- known_strengths: ${strengths.join(", ") || "none"}`;
+- known_strengths: ${strengths.join(", ") || "none"}
+${businessContext}`;
 
     const analyzerJson = await callSkill(analyzerPrompt);
 
@@ -137,7 +140,8 @@ Input:
 - analysis_summary: ${analyzer.summary ?? lead.summary ?? ""}
 - issues: ${analyzer.issues?.map((i) => i.title).join(", ") ?? gaps.join(", ")}
 - strengths: ${(analyzer.strengths ?? strengths).join(", ")}
-- missed_opportunities: ${(analyzer.missed_opportunities ?? gaps).join(", ")}`;
+- missed_opportunities: ${(analyzer.missed_opportunities ?? gaps).join(", ")}
+${businessContext}`;
 
     const profileJson = await callSkill(profilePrompt);
 
@@ -179,7 +183,8 @@ Input:
 - brand_direction: tone=${profile.brand_direction?.recommended_tone ?? ""}, angle=${profile.brand_direction?.offer_angle ?? lead.angle ?? ""}
 - primary_cta: ${profile.conversion_strategy?.primary_cta ?? "Call Now"}
 - top_hooks: ${profile.content_strategy?.top_hooks?.join(", ") ?? ""}
-- top_problems: ${profile.content_strategy?.top_problems_to_call_out?.join(", ") ?? ""}`;
+- top_problems: ${profile.content_strategy?.top_problems_to_call_out?.join(", ") ?? ""}
+${businessContext}`;
 
     const websiteJson = await callSkill(websitePrompt);
 
@@ -218,6 +223,7 @@ Input:
 - location: ${lead.location}
 - audience: ${profile.audience?.primary_audience ?? lead.audience ?? ""}
 - customer_pains: ${profile.audience?.customer_pains?.join(", ") ?? lead.painPoints ?? ""}
+${businessContext}
 - top_hooks: ${profile.content_strategy?.top_hooks?.join(", ") ?? ""}
 - offer_angle: ${profile.brand_direction?.offer_angle ?? lead.angle ?? ""}
 - top_benefits: ${profile.content_strategy?.top_benefits?.join(", ") ?? ""}`;

@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
+import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
 
 const TRIGGER_PROMPTS: Record<string, string> = {
   signup: "a welcome email for a new subscriber who just joined the list",
@@ -25,9 +27,11 @@ export async function POST(req: NextRequest) {
       existingSubject?: string;
       brandVoice?: string;
     };
+    const profile = await prisma.businessProfile.findUnique({ where: { userId: user.id } });
+    const businessContext = await getBusinessContext(user.id);
 
     const triggerContext = TRIGGER_PROMPTS[body.trigger ?? "custom"] ?? TRIGGER_PROMPTS.custom;
-    const flowName = body.flowName ?? "Email Flow";
+    const flowName = body.flowName ?? (profile?.businessName ? `${profile.businessName} Email Flow` : "Email Flow");
 
     const prompt = `You are an expert email marketer. Write ${triggerContext} for the "${flowName}" flow.
 
@@ -35,6 +39,9 @@ Requirements:
 - Subject line: punchy, curiosity-driven, under 50 chars, no emojis
 - Preview text: complements subject, 80-100 chars, creates urgency/curiosity
 - Body: conversational, high-converting email body in plain text (2-4 short paragraphs). Include a clear CTA.${body.brandVoice ? `\n- Brand voice: ${body.brandVoice}` : ""}${body.existingSubject ? `\n- Existing subject for context (improve upon it): ${body.existingSubject}` : ""}
+- Use the business profile below to keep the copy niche-aware and audience-aware when relevant.
+
+${businessContext}
 
 Respond ONLY with valid JSON in this exact format:
 {

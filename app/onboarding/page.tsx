@@ -88,6 +88,18 @@ export default function OnboardingPage() {
   const [result, setResult] = useState<GeneratedResult | null>(null);
   const [error, setError] = useState("");
 
+  async function skipForNow() {
+    try {
+      await fetch("/api/settings", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ onboardingCompleted: true }),
+      });
+    } finally {
+      router.push("/");
+    }
+  }
+
   // ── Affiliate/Dropship states ─────────────────────────────────────────────
   const [hasProduct, setHasProduct] = useState<"yes" | "no" | null>(null);
   const [selectedNiche, setSelectedNiche] = useState<Niche | null>(null);
@@ -517,6 +529,13 @@ export default function OnboardingPage() {
               >
                 <Sparkles className="w-3.5 h-3.5 text-purple-400/60" />
                 Not sure yet? Talk to Himalaya Copilot →
+              </button>
+
+              <button
+                onClick={() => void skipForNow()}
+                className="text-xs text-white/25 hover:text-white/50 transition py-1"
+              >
+                Skip setup for now
               </button>
             </div>
           </div>

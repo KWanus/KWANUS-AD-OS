@@ -34,6 +34,7 @@ import {
 } from "lucide-react";
 import BlockRenderer, { Block, BlockType } from "@/components/site-builder/BlockRenderer";
 import BlockPropsEditor from "@/components/site-builder/BlockPropsEditor";
+import WebsiteCopilotPanel from "@/components/site-builder/WebsiteCopilotPanel";
 
 // ---------------------------------------------------------------------------
 // Block library
@@ -124,7 +125,27 @@ interface Site {
   slug: string;
   theme: Record<string, unknown>;
   published: boolean;
+  pages: Array<{ id: string; title: string; slug: string }>;
 }
+
+type GenerationContext = {
+  sourceMode?: string;
+  sourceUrl?: string;
+  niche?: string;
+  location?: string;
+  templateId?: string;
+  pageType?: string;
+  blueprintScore?: { overall?: number };
+  conversionNotes?: {
+    primary_goal?: string;
+    trust_elements_used?: string[];
+    objections_addressed?: string[];
+  };
+  generationTrace?: {
+    template_reason?: string;
+    analysis_summary?: string[];
+  };
+};
 
 function nanoid() {
   return Math.random().toString(36).slice(2, 10);
@@ -141,10 +162,12 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
   const [saved, setSaved] = useState(false);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [tab, setTab] = useState<"blocks" | "add" | "seo">("blocks");
+  const [rightTab, setRightTab] = useState<"properties" | "copilot">("copilot");
   const [seoSaving, setSeoSaving] = useState(false);
   const [addCategory, setAddCategory] = useState("Layout");
   const [previewMode, setPreviewMode] = useState(false);
   const [publishing, setPublishing] = useState(false);
+  const [queuedCopilotInstruction, setQueuedCopilotInstruction] = useState<{ id: number; text: string } | null>(null);
   const saveTimer = useRef<NodeJS.Timeout | null>(null);
 
   const sensors = useSensors(
@@ -282,8 +305,52 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
     setSite((prev) => prev ? { ...prev, theme: newTheme } : prev);
   }
 
+  async function saveShellTheme(shellFields: Record<string, unknown>) {
+    if (!site) return;
+    const currentShell = (site.theme.shell as Record<string, unknown> | undefined) ?? {};
+    await saveTheme({
+      shell: {
+        ...currentShell,
+        ...shellFields,
+      },
+    });
+  }
+
+  async function createPageFromTemplate(title: string, blocks: Block[]) {
+    const response = await fetch(`/api/sites/${siteId}/pages`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title }),
+    });
+    const data = await response.json() as { ok: boolean; page?: SitePage; error?: string };
+    if (!data.ok || !data.page) {
+      throw new Error(data.error ?? "Failed to create page");
+    }
+
+    await fetch(`/api/sites/${siteId}/pages/${data.page.id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ blocks }),
+    });
+
+    router.push(`/websites/${siteId}/editor/${data.page.id}`);
+  }
+
+  function queueCopilotInstruction(text: string) {
+    setRightTab("copilot");
+    setQueuedCopilotInstruction({ id: Date.now(), text });
+  }
+
   const selectedBlock = page?.blocks.find((b) => b.id === selectedId) ?? null;
   const theme = site?.theme ?? {};
+  const shellTheme = (theme.shell as {
+    navLabels?: Record<string, string>;
+    headerCtaLabel?: string;
+    headerCtaHref?: string;
+    footerDescription?: string;
+    footerLinks?: Array<{ label?: string; url?: string }>;
+  } | undefined) ?? {};
+  const generationContext = (theme.generation as GenerationContext | undefined) ?? null;
 
   if (loading) {
     return (
@@ -518,6 +585,171 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                       ))}
                     </div>
                   </div>
+
+                  <div className="border-t border-white/[0.06] pt-4 space-y-3">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-white/25">Public Shell</p>
+
+                    <div className="space-y-1.5">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-white/20">Header CTA Label</label>
+                      <input
+                        type="text"
+                        value={shellTheme.headerCtaLabel ?? ""}
+                        onChange={(e) => setSite((prev) => prev ? {
+                          ...prev,
+                          theme: {
+                            ...prev.theme,
+                            shell: {
+                              ...(((prev.theme.shell as Record<string, unknown> | undefined) ?? {})),
+                              headerCtaLabel: e.target.value,
+                            },
+                          },
+                        } : prev)}
+                        onBlur={(e) => void saveShellTheme({ headerCtaLabel: e.target.value })}
+                        placeholder="Book Now"
+                        className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-white/20">Header CTA URL</label>
+                      <input
+                        type="text"
+                        value={shellTheme.headerCtaHref ?? ""}
+                        onChange={(e) => setSite((prev) => prev ? {
+                          ...prev,
+                          theme: {
+                            ...prev.theme,
+                            shell: {
+                              ...(((prev.theme.shell as Record<string, unknown> | undefined) ?? {})),
+                              headerCtaHref: e.target.value,
+                            },
+                          },
+                        } : prev)}
+                        onBlur={(e) => void saveShellTheme({ headerCtaHref: e.target.value })}
+                        placeholder="#contact"
+                        className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+                      />
+                    </div>
+
+                    <div className="space-y-1.5">
+                      <label className="block text-[10px] font-black uppercase tracking-widest text-white/20">Footer Description</label>
+                      <textarea
+                        rows={3}
+                        value={shellTheme.footerDescription ?? ""}
+                        onChange={(e) => setSite((prev) => prev ? {
+                          ...prev,
+                          theme: {
+                            ...prev.theme,
+                            shell: {
+                              ...(((prev.theme.shell as Record<string, unknown> | undefined) ?? {})),
+                              footerDescription: e.target.value,
+                            },
+                          },
+                        } : prev)}
+                        onBlur={(e) => void saveShellTheme({ footerDescription: e.target.value })}
+                        placeholder="Built as a multi-page conversion site with connected navigation."
+                        className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition resize-none"
+                      />
+                    </div>
+
+                    <div className="space-y-2">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-white/20">Nav Labels</p>
+                      {site.pages.map((sitePage) => (
+                        <div key={sitePage.id} className="space-y-1">
+                          <label className="block text-[10px] font-bold uppercase tracking-widest text-white/20">{sitePage.slug}</label>
+                          <input
+                            type="text"
+                            value={shellTheme.navLabels?.[sitePage.slug] ?? ""}
+                            onChange={(e) => {
+                              const nextNavLabels = {
+                                ...(shellTheme.navLabels ?? {}),
+                                [sitePage.slug]: e.target.value,
+                              };
+                              setSite((prev) => prev ? {
+                                ...prev,
+                                theme: {
+                                  ...prev.theme,
+                                  shell: {
+                                    ...(((prev.theme.shell as Record<string, unknown> | undefined) ?? {})),
+                                    navLabels: nextNavLabels,
+                                  },
+                                },
+                              } : prev);
+                            }}
+                            onBlur={(e) => void saveShellTheme({
+                              navLabels: {
+                                ...(shellTheme.navLabels ?? {}),
+                                [sitePage.slug]: e.target.value,
+                              },
+                            })}
+                            placeholder={sitePage.title}
+                            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+                          />
+                        </div>
+                      ))}
+                    </div>
+
+                    <div className="space-y-2">
+                      <p className="text-[10px] font-black uppercase tracking-widest text-white/20">Footer Links</p>
+                      {[0, 1].map((index) => {
+                        const footerLink = shellTheme.footerLinks?.[index] ?? {};
+                        return (
+                          <div key={index} className="grid grid-cols-2 gap-2">
+                            <input
+                              type="text"
+                              value={footerLink.label ?? ""}
+                              onChange={(e) => {
+                                const nextFooterLinks = [...(shellTheme.footerLinks ?? [])];
+                                nextFooterLinks[index] = { ...nextFooterLinks[index], label: e.target.value };
+                                setSite((prev) => prev ? {
+                                  ...prev,
+                                  theme: {
+                                    ...prev.theme,
+                                    shell: {
+                                      ...(((prev.theme.shell as Record<string, unknown> | undefined) ?? {})),
+                                      footerLinks: nextFooterLinks,
+                                    },
+                                  },
+                                } : prev);
+                              }}
+                              onBlur={(e) => {
+                                const nextFooterLinks = [...(shellTheme.footerLinks ?? [])];
+                                nextFooterLinks[index] = { ...nextFooterLinks[index], label: e.target.value };
+                                void saveShellTheme({ footerLinks: nextFooterLinks });
+                              }}
+                              placeholder={`Link ${index + 1} label`}
+                              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+                            />
+                            <input
+                              type="text"
+                              value={footerLink.url ?? ""}
+                              onChange={(e) => {
+                                const nextFooterLinks = [...(shellTheme.footerLinks ?? [])];
+                                nextFooterLinks[index] = { ...nextFooterLinks[index], url: e.target.value };
+                                setSite((prev) => prev ? {
+                                  ...prev,
+                                  theme: {
+                                    ...prev.theme,
+                                    shell: {
+                                      ...(((prev.theme.shell as Record<string, unknown> | undefined) ?? {})),
+                                      footerLinks: nextFooterLinks,
+                                    },
+                                  },
+                                } : prev);
+                              }}
+                              onBlur={(e) => {
+                                const nextFooterLinks = [...(shellTheme.footerLinks ?? [])];
+                                nextFooterLinks[index] = { ...nextFooterLinks[index], url: e.target.value };
+                                void saveShellTheme({ footerLinks: nextFooterLinks });
+                              }}
+                              placeholder="/privacy"
+                              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+                            />
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
                 </div>
 
                 {/* Google preview */}
@@ -555,6 +787,11 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                   theme={theme as { primaryColor?: string; font?: string; mode?: "dark" | "light" }}
                   preview={!previewMode}
                   selected={selectedId === block.id && !previewMode}
+                  overlayActions={selectedId === block.id && !previewMode ? [
+                    { label: "Regenerate", onClick: () => queueCopilotInstruction(`regenerate this ${block.type} section`) },
+                    { label: "Improve Copy", onClick: () => queueCopilotInstruction(`improve the copy in this ${block.type} section`) },
+                    { label: "Swap Variant", onClick: () => queueCopilotInstruction(`swap the variant of this ${block.type} section while keeping its goal`) },
+                  ] : undefined}
                   onClick={() => !previewMode && setSelectedId(block.id === selectedId ? null : block.id)}
                 />
               ))}
@@ -565,7 +802,39 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
         {/* Right panel — properties */}
         {!previewMode && (
           <aside className="w-64 shrink-0 border-l border-white/[0.07] bg-[#07101f] overflow-hidden flex flex-col">
-            {selectedBlock ? (
+            <div className="flex border-b border-white/[0.07] shrink-0">
+              {([
+                ["copilot", Search, "Copilot"] as const,
+                ["properties", Settings2, "Properties"] as const,
+              ]).map(([key, Icon, label]) => (
+                <button
+                  key={key}
+                  onClick={() => setRightTab(key)}
+                  className={`flex-1 flex items-center justify-center gap-1 py-3 text-[10px] font-black uppercase tracking-widest transition-all ${
+                    rightTab === key ? "text-cyan-300 border-b-2 border-cyan-500" : "text-white/25 hover:text-white/50"
+                  }`}
+                >
+                  <Icon className="w-3 h-3" />
+                  {label}
+                </button>
+              ))}
+            </div>
+
+            {rightTab === "copilot" ? (
+              <WebsiteCopilotPanel
+                siteId={siteId}
+                pageId={pageId}
+                siteName={site.name}
+                pageTitle={page.title}
+                blocks={page.blocks}
+                selectedBlock={selectedBlock}
+                published={site.published}
+                queuedInstruction={queuedCopilotInstruction}
+                generationContext={generationContext}
+                onApplyBlocks={updateBlocks}
+                onCreatePageFromTemplate={createPageFromTemplate}
+              />
+            ) : selectedBlock ? (
               <BlockPropsEditor
                 block={selectedBlock}
                 onChange={updateBlock}

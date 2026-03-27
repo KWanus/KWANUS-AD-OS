@@ -19,6 +19,30 @@ import {
   ArrowUpDown,
   Trash2,
 } from "lucide-react";
+import AppNav from "@/components/AppNav";
+import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
+
+type BusinessProfileSummary = {
+  businessType: string;
+  businessName: string | null;
+  niche: string | null;
+  mainGoal: string | null;
+  recommendedSystems?: {
+    firstAction?: string;
+    strategicSummary?: string;
+  } | null;
+};
+
+type StatsSummary = {
+  effectiveSystemScore?: number;
+  unsyncedSystems?: string[];
+  databaseUnavailable?: boolean;
+  osVerdict?: {
+    status?: string;
+    label?: string;
+    reason?: string;
+  };
+};
 
 // ---------------------------------------------------------------------------
 // Types
@@ -60,6 +84,12 @@ const HEALTH_CONFIG = {
   yellow: { label: "At Risk",    dot: "bg-amber-400",  text: "text-amber-400",  ring: "ring-amber-500/20" },
   red:    { label: "Critical",   dot: "bg-red-400",    text: "text-red-400",    ring: "ring-red-500/20" },
 };
+
+function verdictTone(status?: string) {
+  if (status === "healthy") return "border-emerald-500/20 bg-emerald-500/10 text-emerald-200";
+  if (status === "stale") return "border-cyan-500/20 bg-cyan-500/10 text-cyan-100";
+  return "border-amber-500/20 bg-amber-500/10 text-amber-100";
+}
 
 // ---------------------------------------------------------------------------
 // Health Badge
@@ -270,11 +300,15 @@ function EmptyState({ filtered }: { filtered: boolean }) {
 export default function ClientsPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [total, setTotal] = useState(0);
+  const [businessProfile, setBusinessProfile] = useState<BusinessProfileSummary | null>(null);
+  const [osStats, setOsStats] = useState<StatsSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [stageFilter, setStageFilter] = useState("");
   const [healthFilter, setHealthFilter] = useState("");
   const [sortBy, setSortBy] = useState("updatedAt");
+  const [syncingSystem, setSyncingSystem] = useState(false);
+  const [refreshingRecommendations, setRefreshingRecommendations] = useState(false);
 
   const fetchClients = useCallback(async () => {
     setLoading(true);
@@ -285,12 +319,20 @@ export default function ClientsPage() {
       if (healthFilter) params.set("health", healthFilter);
       if (sortBy) params.set("sortBy", sortBy);
 
-      const res = await fetch(`/api/clients?${params}`);
-      const data = await res.json() as { ok: boolean; clients?: Client[]; total?: number };
+      const [clientRes, profileRes, statsRes] = await Promise.all([
+        fetch(`/api/clients?${params}`),
+        fetch("/api/business-profile"),
+        fetch("/api/stats"),
+      ]);
+      const data = await clientRes.json() as { ok: boolean; clients?: Client[]; total?: number };
+      const profileData = await profileRes.json() as { ok: boolean; profile?: BusinessProfileSummary | null };
+      const statsData = await statsRes.json() as { ok: boolean; stats?: StatsSummary | null };
       if (data.ok) {
         setClients(data.clients ?? []);
         setTotal(data.total ?? 0);
       }
+      if (profileData.ok) setBusinessProfile(profileData.profile ?? null);
+      if (statsData.ok) setOsStats(statsData.stats ?? null);
     } catch {
       // non-fatal
     } finally {
@@ -310,8 +352,124 @@ export default function ClientsPage() {
   const pipelineValue = clients.reduce((s, c) => s + (c.dealValue ?? 0), 0);
   const active = clients.filter((c) => c.pipelineStage === "active").length;
 
+  async function syncBusinessSystem() {
+    try {
+      setSyncingSystem(true);
+      const res = await fetch("/api/business-profile/sync", { method: "POST" });
+      const data = await res.json() as { ok?: boolean };
+      if (!res.ok || !data.ok) throw new Error("Failed");
+      await fetchClients();
+    } finally {
+      setSyncingSystem(false);
+    }
+  }
+
+  async function refreshBusinessSystem() {
+    if (!businessProfile?.businessType) return;
+    try {
+      setRefreshingRecommendations(true);
+      const res = await fetch("/api/business-profile/recommend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          businessType: businessProfile.businessType,
+          niche: businessProfile.niche,
+          goal: businessProfile.mainGoal,
+        }),
+      });
+      const data = await res.json() as { ok?: boolean };
+      if (!res.ok || !data.ok) throw new Error("Failed");
+      await fetchClients();
+    } finally {
+      setRefreshingRecommendations(false);
+    }
+  }
+
   return (
-    <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+    <div className="min-h-screen bg-[#050a14] text-white">
+      <AppNav />
+      <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
+      {businessProfile && (
+        <>
+          <div className="mb-6 rounded-[28px] border border-white/[0.08] bg-white/[0.03] p-5">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-3xl">
+                <p className="text-[10px] font-black uppercase tracking-[0.26em] text-white/35">Business OS Status</p>
+                <div className="mt-2 flex flex-wrap items-center gap-3">
+                  {osStats?.osVerdict?.label && (
+                    <span className={`inline-flex items-center rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] ${verdictTone(osStats.osVerdict.status)}`}>
+                      {osStats.osVerdict.label}
+                    </span>
+                  )}
+                  <span className="text-sm font-black text-white">{osStats?.effectiveSystemScore ?? 0}/100</span>
+                  {(osStats?.unsyncedSystems?.length ?? 0) > 0 && (
+                    <span className="text-xs text-amber-200/80">{osStats?.unsyncedSystems?.length} unsynced systems</span>
+                  )}
+                </div>
+                <p className="mt-3 text-sm leading-7 text-white/58">
+                  {osStats?.osVerdict?.reason ||
+                    "The CRM workspace now reads the same Business OS health layer as the rest of the app."}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                {(osStats?.unsyncedSystems?.length ?? 0) > 0 && (
+                  <button
+                    onClick={() => void syncBusinessSystem()}
+                    disabled={syncingSystem}
+                    className="inline-flex items-center gap-2 rounded-2xl border border-amber-500/25 bg-amber-500/10 px-5 py-3 text-sm font-bold text-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {syncingSystem ? "Syncing..." : "Sync My System"}
+                  </button>
+                )}
+                {osStats?.osVerdict?.status === "stale" && (
+                  <button
+                    onClick={() => void refreshBusinessSystem()}
+                    disabled={refreshingRecommendations}
+                    className="inline-flex items-center gap-2 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-5 py-3 text-sm font-bold text-cyan-100 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {refreshingRecommendations ? "Refreshing..." : "Refresh Recommendations"}
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="mb-6" />
+
+          <div className="mb-6 rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] to-emerald-500/[0.03] p-6">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-3xl">
+                <p className="text-[10px] font-black uppercase tracking-[0.26em] text-cyan-200/70">Recommended CRM Move</p>
+                <h2 className="mt-2 text-2xl font-black text-white">
+                  Turn {businessProfile.niche || businessProfile.businessType.replace(/_/g, " ")} prospects into tracked relationships
+                </h2>
+                <p className="mt-3 text-sm leading-7 text-white/62">
+                  {businessProfile.recommendedSystems?.firstAction ||
+                    businessProfile.recommendedSystems?.strategicSummary ||
+                    "Your Business OS can now steer the CRM layer too, so pipeline follow-up and client management stay connected to the rest of your system."}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <Link
+                  href="/clients/new"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-emerald-500 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)]"
+                >
+                  Add Client
+                </Link>
+                <Link
+                  href="/my-system"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-white/[0.1] bg-white/[0.04] px-5 py-3 text-sm font-bold text-white/70"
+                >
+                  Open My System
+                </Link>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+
       {/* Header */}
       <div className="flex items-center justify-between mb-6 gap-4 flex-wrap">
         <div>
@@ -418,5 +576,6 @@ export default function ClientsPage() {
         )}
       </div>
     </main>
+    </div>
   );
 }

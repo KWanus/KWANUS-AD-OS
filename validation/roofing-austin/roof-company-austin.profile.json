@@ -1,0 +1,55 @@
+{
+  "business_name": "Roof Company Austin",
+  "niche": "Roofing",
+  "location": "Austin, TX",
+  "audience": {
+    "primary_audience": "Austin-area homeowners aged 35-65 dealing with storm damage, aging roofs, or active leaks — often stressed about cost, insurance complexity, and finding a contractor they can trust",
+    "customer_pains": [
+      "Roof is leaking or damaged after a hailstorm and they don't know if insurance will cover it — or who to call first",
+      "Worried about getting overcharged or underserved by a contractor who won't stand behind their work"
+    ],
+    "customer_desires": [
+      "A fast, honest assessment from a local expert who handles the hard parts — including insurance claims — so they don't have to figure it out alone",
+      "Confidence that their home is protected and the job will be done right the first time, with zero surprises on the invoice"
+    ],
+    "customer_objections": [
+      "'How do I know this company is trustworthy and not just chasing storm work?'",
+      "'I'm not sure if my damage is covered — I don't want to start a claim and get denied'"
+    ]
+  },
+  "brand_direction": {
+    "recommended_tone": "Direct, calm, and authoritative — the voice of a seasoned local expert who has seen every roof problem in Austin and knows exactly how to fix it. Reassuring without being soft. Confident without being aggressive.",
+    "offer_angle": "Austin's most trusted storm damage and roof replacement specialists — we inspect, document, and work directly with your insurance company so you get a new roof without the headache"
+  },
+  "conversion_strategy": {
+    "primary_cta": "Get Your Free Roof Inspection — We'll Tell You Exactly What You Need (No Pressure, No Guesswork)",
+    "trust_elements_needed": [
+      "A live or frequently updated social proof counter — '847 Austin roofs replaced' or '4.9 stars across 200+ Google reviews' — displayed above the fold to immediately signal scale and credibility",
+      "Insurance claim expertise badge or callout — explicitly stating 'We work with all major insurers' removes the #1 objection before it's voiced"
+    ],
+    "recommended_sections": [
+      "Storm Damage Emergency Banner — a sticky or hero-level section targeting hail season with a direct CTA to book a same-week inspection, optimized for 'storm damage roof repair Austin' search intent",
+      "Austin Neighborhood Project Gallery — before/after photos tagged by neighborhood (Mueller, Round Rock, Pflugerville) to build hyper-local relevance and prove active presence in the community"
+    ]
+  },
+  "content_strategy": {
+    "top_hooks": [
+      "That ceiling stain isn't going away on its own — and every week you wait, the repair bill gets bigger",
+      "Austin just got hit again. Here's how to find out if your insurance covers a full replacement — before you spend a dollar"
+    ],
+    "top_benefits": [
+      "We handle the insurance paperwork, adjuster meetings, and documentation — most homeowners pay little to nothing out of pocket",
+      "Local Austin crew, not a storm-chasing out-of-state outfit — we'll be here after the job is done if anything needs attention"
+    ],
+    "top_problems_to_call_out": [
+      "Ignoring hail damage because it looks minor — small dents on shingles accelerate wear and void manufacturer warranties within months",
+      "Calling a contractor who quotes repairs without ever checking whether insurance would cover a full replacement — leaving thousands on the table"
+    ]
+  },
+  "assumptions": [
+    "Business offers insurance claim assistance based on common roofing niche services — this should be confirmed and made a primary offer pillar if true",
+    "Austin hail season assumed to be a recurring seasonal driver — campaigns and landing pages should be built and ready to activate each spring",
+    "Google Reviews are present but assumed to be static and below the fold — moving social proof above the fold is treated as a high-priority quick win",
+    "Target homeowner age range of 35-65 assumed based on Austin homeownership demographics and typical roofing purchase behavior"
+  ]
+}

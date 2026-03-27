@@ -1,0 +1,52 @@
+{
+  "business_name": "Altair Austin Roofing Company",
+  "niche": "Roofing",
+  "location": "Austin, TX",
+  "summary": "Altair Austin Roofing Company is a well-positioned roofing contractor serving the Austin, TX market. With a strong 89/100 opportunity score, the business demonstrates solid trust signals, clear market demand, and a value-driven offer structure that supports both organic and paid traffic strategies. The site's current angle is offer-led, which aligns well with high-intent roofing buyers who are motivated by urgency, cost, and reliability. The business is in an enviable position — most competitors are weak on trust and clarity — making this a prime candidate for aggressive growth through conversion optimization and targeted paid campaigns.",
+  "scores": {
+    "design_score": 78,
+    "trust_score": 85,
+    "clarity_score": 80,
+    "cta_score": 74,
+    "conversion_score": 79
+  },
+  "issues": [
+    {
+      "title": "CTA Hierarchy Lacks Urgency Triggers",
+      "severity": "medium",
+      "reason": "Roofing buyers are often in reactive, high-stress moments — storm damage, active leaks, insurance deadlines. CTAs likely default to generic 'Get a Quote' language without leveraging urgency, fear-of-delay, or risk-reduction framing that converts cold traffic faster."
+    },
+    {
+      "title": "Limited Hyper-Local Social Proof",
+      "severity": "medium",
+      "reason": "Austin has distinct neighborhoods with strong community identity — South Congress, Westlake, Mueller, Cedar Park. Generic testimonials miss the trust multiplier of neighborhood-specific reviews and project showcases that make local buyers feel immediately understood."
+    },
+    {
+      "title": "No Visible Financing or Cost Transparency Hook",
+      "severity": "medium",
+      "reason": "Roof replacements average $8,000–$20,000 in Austin. Without a financing mention or cost-range anchor on the homepage, high-intent visitors may bounce to competitors who reduce sticker-shock friction upfront."
+    }
+  ],
+  "missed_opportunities": [
+    "Storm damage and insurance claim funnel — Austin experiences frequent hail events. A dedicated storm damage landing page with an insurance claim walkthrough offer could capture a massive surge of high-intent, time-sensitive traffic that generic roofing pages completely miss.",
+    "Video social proof and before/after project galleries segmented by roof type and neighborhood — visual proof is the single highest-converting trust asset in home services and can dramatically increase time-on-site and form submissions.",
+    "Google LSA and retargeting stack — given strong ad viability scores, a layered paid strategy combining Local Service Ads for guaranteed lead placement with retargeting for site visitors who didn't convert would compound lead volume significantly."
+  ],
+  "strengths": [
+    "Strong trust signal infrastructure already in place — this lowers cold-traffic friction and means paid traffic campaigns can be profitable faster than competitors who have to earn trust from scratch.",
+    "Value-stack offer angle is correctly positioned for the Austin market where homeowners are cost-conscious but quality-driven — this framing naturally handles price objections before they arise.",
+    "High buyer motivation niche with clear market demand means the business benefits from pull marketing — customers are already searching, reducing the cost and effort needed to generate interest."
+  ],
+  "quick_wins": [
+    "Rewrite the primary homepage CTA to include a risk-reversal phrase and urgency trigger — for example, 'Get Your Free Roof Assessment — Most Inspections Completed Within 24 Hours' converts significantly better than static quote buttons.",
+    "Add a sticky header bar or exit-intent popup featuring a financing hook such as '$0 Down Roofing — See If You Qualify in 60 Seconds' to capture visitors who are interested but hesitating on cost.",
+    "Create a Google Business Profile post series featuring completed Austin-area projects with neighborhood tags — this boosts local SEO signals, reinforces hyper-local credibility, and drives zero-cost map pack traffic."
+  ],
+  "assumptions": [
+    "Website CTA copy defaults to standard quote-request language without advanced urgency or risk-reversal framing, based on typical patterns for roofing sites at this optimization level.",
+    "Social proof exists on-site but is likely not segmented by Austin neighborhood or roof type, which is a common gap even among higher-scoring roofing businesses.",
+    "Financing options may be available through contractor relationships but are not prominently featured as a conversion mechanism on the homepage.",
+    "The business likely has Google reviews but may not be actively leveraging them through structured schema markup or homepage embedding for maximum trust signal amplification.",
+    "Paid traffic is not yet running at full capacity, representing a significant untapped growth lever given the strong ad viability score."
+  ]
+}

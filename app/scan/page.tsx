@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AppNav from "@/components/AppNav";
+import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import Link from "next/link";
 import {
   Search, Loader2, Globe, Megaphone, Mail, Zap, AlertTriangle,
@@ -41,10 +42,39 @@ type ScanResult = {
   error?: string;
 };
 
+type BusinessProfileSummary = {
+  businessType: string;
+  businessName: string | null;
+  niche: string | null;
+  location: string | null;
+  mainGoal: string | null;
+  recommendedSystems?: {
+    firstAction?: string;
+    strategicSummary?: string;
+  } | null;
+};
+
+type StatsSummary = {
+  effectiveSystemScore?: number;
+  unsyncedSystems?: string[];
+  databaseUnavailable?: boolean;
+  osVerdict?: {
+    status?: string;
+    label?: string;
+    reason?: string;
+  };
+};
+
 const SCORE_COLOR = (s: number) =>
   s >= 70 ? "text-emerald-400" : s >= 45 ? "text-amber-400" : "text-red-400";
 const SCORE_BG = (s: number) =>
   s >= 70 ? "bg-emerald-500/10 border-emerald-500/20" : s >= 45 ? "bg-amber-500/10 border-amber-500/20" : "bg-red-500/10 border-red-500/20";
+
+function verdictTone(status?: string) {
+  if (status === "healthy") return "border-emerald-500/20 bg-emerald-500/10 text-emerald-200";
+  if (status === "stale") return "border-cyan-500/20 bg-cyan-500/10 text-cyan-100";
+  return "border-amber-500/20 bg-amber-500/10 text-amber-100";
+}
 
 type BuildAction = {
   icon: React.ReactNode;
@@ -151,9 +181,37 @@ function ScoreGauge({ score }: { score: number }) {
 export default function ScanPage() {
   const [mode, setMode] = useState<ScanMode>("consultant");
   const [url, setUrl] = useState("");
+  const [businessProfile, setBusinessProfile] = useState<BusinessProfileSummary | null>(null);
+  const [osStats, setOsStats] = useState<StatsSummary | null>(null);
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ScanResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [syncingSystem, setSyncingSystem] = useState(false);
+  const [refreshingRecommendations, setRefreshingRecommendations] = useState(false);
+
+  useEffect(() => {
+    async function fetchContext() {
+      try {
+        const [profileRes, statsRes] = await Promise.all([
+          fetch("/api/business-profile"),
+          fetch("/api/stats"),
+        ]);
+        const profileData = await profileRes.json() as { ok: boolean; profile?: BusinessProfileSummary | null };
+        const statsData = await statsRes.json() as { ok: boolean; stats?: StatsSummary | null };
+        if (profileData.ok && profileData.profile) {
+          setBusinessProfile(profileData.profile);
+          if (!url && profileData.profile.businessName && profileData.profile.businessType === "local_service") {
+            setMode("consultant");
+          }
+        }
+        if (statsData.ok) setOsStats(statsData.stats ?? null);
+      } catch (scanError) {
+        console.error(scanError);
+      }
+    }
+
+    void fetchContext();
+  }, [url]);
 
   async function runScan() {
     const trimmed = url.trim();
@@ -203,11 +261,145 @@ export default function ScanPage() {
     return `/skills?${params.toString()}`;
   }
 
+  async function syncBusinessSystem() {
+    try {
+      setSyncingSystem(true);
+      const res = await fetch("/api/business-profile/sync", { method: "POST" });
+      const data = await res.json() as { ok?: boolean };
+      if (!res.ok || !data.ok) throw new Error("Failed");
+      const [profileRes, statsRes] = await Promise.all([
+        fetch("/api/business-profile"),
+        fetch("/api/stats"),
+      ]);
+      const profileData = await profileRes.json() as { ok: boolean; profile?: BusinessProfileSummary | null };
+      const statsData = await statsRes.json() as { ok: boolean; stats?: StatsSummary | null };
+      if (profileData.ok) setBusinessProfile(profileData.profile ?? null);
+      if (statsData.ok) setOsStats(statsData.stats ?? null);
+    } finally {
+      setSyncingSystem(false);
+    }
+  }
+
+  async function refreshBusinessSystem() {
+    if (!businessProfile?.businessType) return;
+    try {
+      setRefreshingRecommendations(true);
+      const res = await fetch("/api/business-profile/recommend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          businessType: businessProfile.businessType,
+          niche: businessProfile.niche,
+          goal: businessProfile.mainGoal,
+        }),
+      });
+      const data = await res.json() as { ok?: boolean };
+      if (!res.ok || !data.ok) throw new Error("Failed");
+      const [profileRes, statsRes] = await Promise.all([
+        fetch("/api/business-profile"),
+        fetch("/api/stats"),
+      ]);
+      const profileData = await profileRes.json() as { ok: boolean; profile?: BusinessProfileSummary | null };
+      const statsData = await statsRes.json() as { ok: boolean; stats?: StatsSummary | null };
+      if (profileData.ok) setBusinessProfile(profileData.profile ?? null);
+      if (statsData.ok) setOsStats(statsData.stats ?? null);
+    } finally {
+      setRefreshingRecommendations(false);
+    }
+  }
+
   return (
     <div className="min-h-screen bg-[#050a14] text-white">
       <AppNav />
 
       <div className="max-w-3xl mx-auto px-4 pt-10 pb-20">
+        {businessProfile && (
+          <>
+            <div className="mb-6 rounded-[28px] border border-white/[0.08] bg-white/[0.03] p-5">
+              <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                <div className="max-w-3xl">
+                  <p className="text-[10px] font-black uppercase tracking-[0.26em] text-white/35">Business OS Status</p>
+                  <div className="mt-2 flex flex-wrap items-center gap-3">
+                    {osStats?.osVerdict?.label && (
+                      <span className={`inline-flex items-center rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] ${verdictTone(osStats.osVerdict.status)}`}>
+                        {osStats.osVerdict.label}
+                      </span>
+                    )}
+                    <span className="text-sm font-black text-white">{osStats?.effectiveSystemScore ?? 0}/100</span>
+                    {(osStats?.unsyncedSystems?.length ?? 0) > 0 && (
+                      <span className="text-xs text-amber-200/80">{osStats?.unsyncedSystems?.length} unsynced systems</span>
+                    )}
+                  </div>
+                  <p className="mt-3 text-sm leading-7 text-white/58">
+                    {osStats?.osVerdict?.reason ||
+                      "The scan workspace now reads the same Business OS health layer as the rest of the product."}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-3">
+                  {(osStats?.unsyncedSystems?.length ?? 0) > 0 && (
+                    <button
+                      onClick={() => void syncBusinessSystem()}
+                      disabled={syncingSystem}
+                      className="inline-flex items-center gap-2 rounded-2xl border border-amber-500/25 bg-amber-500/10 px-5 py-3 text-sm font-bold text-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {syncingSystem ? "Syncing..." : "Sync My System"}
+                    </button>
+                  )}
+                  {osStats?.osVerdict?.status === "stale" && (
+                    <button
+                      onClick={() => void refreshBusinessSystem()}
+                      disabled={refreshingRecommendations}
+                      className="inline-flex items-center gap-2 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-5 py-3 text-sm font-bold text-cyan-100 disabled:cursor-not-allowed disabled:opacity-60"
+                    >
+                      {refreshingRecommendations ? "Refreshing..." : "Refresh Recommendations"}
+                    </button>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="mb-6" />
+
+            <div className="mb-6 rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] to-purple-600/[0.03] p-6">
+              <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+                <div className="max-w-3xl">
+                  <p className="text-[10px] font-black uppercase tracking-[0.26em] text-cyan-200/70">Recommended Scan Move</p>
+                  <h2 className="mt-2 text-2xl font-black text-white">
+                    {businessProfile.businessType === "local_service" || businessProfile.businessType === "agency"
+                      ? "Scan a weak site and rebuild the better version"
+                      : "Scan a winning offer and turn it into your next campaign system"}
+                  </h2>
+                  <p className="mt-3 text-sm leading-7 text-white/62">
+                    {businessProfile.recommendedSystems?.firstAction ||
+                      businessProfile.recommendedSystems?.strategicSummary ||
+                      "The scan engine should act like the top-of-funnel intelligence layer for whatever your Business OS says to build next."}
+                  </p>
+                </div>
+
+                <div className="flex flex-wrap gap-3">
+                  <button
+                    onClick={() => setMode(
+                      businessProfile.businessType === "local_service" || businessProfile.businessType === "agency"
+                        ? "consultant"
+                        : "operator"
+                    )}
+                    className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)]"
+                  >
+                    <Sparkles className="w-4 h-4" />
+                    Set Recommended Mode
+                  </button>
+                  <Link
+                    href="/my-system"
+                    className="inline-flex items-center gap-2 rounded-2xl border border-white/[0.1] bg-white/[0.04] px-5 py-3 text-sm font-bold text-white/70"
+                  >
+                    Open My System
+                  </Link>
+                </div>
+              </div>
+            </div>
+          </>
+        )}
 
         {/* Header */}
         <div className="mb-8">

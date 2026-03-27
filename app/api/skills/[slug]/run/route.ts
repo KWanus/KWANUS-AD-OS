@@ -35,10 +35,20 @@ export async function POST(
     }
 
     const input = await req.json() as Record<string, string>;
+    const profile = await prisma.businessProfile.findUnique({ where: { userId: user.id } });
+    const enrichedInput: Record<string, string> = {
+      ...input,
+      ...(profile?.businessName && !input.business_name ? { business_name: profile.businessName } : {}),
+      ...(profile?.businessName && !input.businessName ? { businessName: profile.businessName } : {}),
+      ...(profile?.mainOffer && !input.offer ? { offer: profile.mainOffer } : {}),
+      ...(profile?.targetAudience && !input.audience ? { audience: profile.targetAudience } : {}),
+      ...(profile?.location && !input.location ? { location: profile.location } : {}),
+      ...(profile?.niche && !input.niche ? { niche: profile.niche } : {}),
+    };
 
     // Validate required fields
     for (const field of skill.inputs.filter((f) => f.required)) {
-      if (!input[field.key]?.trim()) {
+      if (!enrichedInput[field.key]?.trim()) {
         return NextResponse.json(
           { ok: false, error: `${field.label} is required` },
           { status: 400 }
@@ -56,14 +66,14 @@ export async function POST(
     let result;
     if (PIPELINE_SKILLS.has(slug)) {
       if (slug === "website-builder-scout") {
-        result = await runWebsiteBuilderScout({ url: input.url, businessName: input.businessName, niche: input.niche, outreachGoal: input.outreachGoal, userId: user.id });
+        result = await runWebsiteBuilderScout({ url: enrichedInput.url, businessName: enrichedInput.businessName, niche: enrichedInput.niche, outreachGoal: enrichedInput.outreachGoal, userId: user.id });
       } else if (slug === "ad-campaign") {
-        result = await runAdCampaignSkill({ url: input.url, mode: input.mode as "operator" | "consultant" | "saas" | undefined, platform: input.platform, campaignName: input.campaignName, userId: user.id });
+        result = await runAdCampaignSkill({ url: enrichedInput.url, mode: enrichedInput.mode as "operator" | "consultant" | "saas" | undefined, platform: enrichedInput.platform, campaignName: enrichedInput.campaignName, userId: user.id });
       } else {
-        result = await runEmailCampaignSkill({ url: input.url, flowType: input.flowType, listGoal: input.listGoal, tone: input.tone, userId: user.id });
+        result = await runEmailCampaignSkill({ url: enrichedInput.url, flowType: enrichedInput.flowType, listGoal: enrichedInput.listGoal, tone: enrichedInput.tone, userId: user.id });
       }
     } else {
-      result = await runSkill(slug, user.id, input);
+      result = await runSkill(slug, user.id, enrichedInput);
     }
 
     if (!result.ok) {

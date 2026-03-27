@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
+import { isDatabaseUnavailable } from "@/lib/db/runtime";
 
 export async function GET(req: NextRequest) {
   try {
@@ -27,6 +28,9 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ ok: true, leads });
   } catch (err) {
     console.error("Leads fetch error:", err);
+    if (isDatabaseUnavailable(err)) {
+      return NextResponse.json({ ok: true, leads: [], databaseUnavailable: true });
+    }
     return NextResponse.json({ ok: false, error: "Failed to fetch leads" }, { status: 500 });
   }
 }

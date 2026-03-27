@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import AppNav from "@/components/AppNav";
+import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import EmailSubNav from "@/components/EmailSubNav";
 import {
   Mail,
@@ -50,6 +51,30 @@ interface EmailFlow {
   revenue?: number;
   createdAt: string;
   updatedAt: string;
+}
+
+interface BusinessProfileSummary {
+  businessType: string;
+  businessName: string | null;
+  niche: string | null;
+  mainGoal: string | null;
+  activeSystems: string[];
+  recommendedSystems?: {
+    firstAction?: string;
+    strategicSummary?: string;
+    prioritizedSystems?: Array<{ slug: string; priority: string; personalizedReason?: string }>;
+  } | null;
+}
+
+interface StatsSummary {
+  effectiveSystemScore?: number;
+  unsyncedSystems?: string[];
+  databaseUnavailable?: boolean;
+  osVerdict?: {
+    status?: string;
+    label?: string;
+    reason?: string;
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -150,6 +175,12 @@ const STATUS_CONFIG: Record<
     border: "border-yellow-500/20",
   },
 };
+
+function verdictTone(status?: string) {
+  if (status === "healthy") return "border-emerald-500/20 bg-emerald-500/10 text-emerald-200";
+  if (status === "stale") return "border-cyan-500/20 bg-cyan-500/10 text-cyan-100";
+  return "border-amber-500/20 bg-amber-500/10 text-amber-100";
+}
 
 // ---------------------------------------------------------------------------
 // Sub-components
@@ -597,14 +628,35 @@ function CreateFlowModal({
 
 export default function EmailsPage() {
   const [flows, setFlows] = useState<EmailFlow[]>([]);
+  const [businessProfile, setBusinessProfile] = useState<BusinessProfileSummary | null>(null);
+  const [osStats, setOsStats] = useState<StatsSummary | null>(null);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
+  const [recommendedTemplateId, setRecommendedTemplateId] = useState<string | null>(null);
+  const [syncingSystem, setSyncingSystem] = useState(false);
+  const [refreshingRecommendations, setRefreshingRecommendations] = useState(false);
 
   const fetchFlows = useCallback(async () => {
     try {
-      const res = await fetch("/api/email-flows");
-      const data = (await res.json()) as { ok: boolean; flows?: EmailFlow[] };
+      const [flowRes, profileRes, statsRes] = await Promise.all([
+        fetch("/api/email-flows"),
+        fetch("/api/business-profile"),
+        fetch("/api/stats"),
+      ]);
+      const data = (await flowRes.json()) as { ok: boolean; flows?: EmailFlow[] };
+      const profileData = (await profileRes.json()) as { ok: boolean; profile?: BusinessProfileSummary | null };
+      const statsData = (await statsRes.json()) as { ok: boolean; stats?: StatsSummary | null };
       if (data.ok && data.flows) setFlows(data.flows);
+      if (profileData.ok && profileData.profile) {
+        setBusinessProfile(profileData.profile);
+        const recommendedSlug = profileData.profile.recommendedSystems?.prioritizedSystems?.find((system) =>
+          ["email_sequence", "sms_followup", "abandoned_cart"].includes(system.slug)
+        )?.slug;
+        if (recommendedSlug === "abandoned_cart") setRecommendedTemplateId("abandoned-cart");
+        else if (recommendedSlug === "sms_followup") setRecommendedTemplateId("lead-nurture");
+        else setRecommendedTemplateId("welcome-sequence");
+      }
+      if (statsData.ok && statsData.stats) setOsStats(statsData.stats);
     } catch {
       // non-fatal
     } finally {
@@ -623,6 +675,59 @@ export default function EmailsPage() {
 
   function handleFlowDeleted(id: string) {
     setFlows((prev) => prev.filter((f) => f.id !== id));
+  }
+
+  async function createRecommendedFlow() {
+    const template = EMAIL_FLOW_TEMPLATES.find((item) => item.id === (recommendedTemplateId ?? "welcome-sequence"))
+      ?? EMAIL_FLOW_TEMPLATES[0];
+    const res = await fetch("/api/email-flows", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: businessProfile?.businessName ? `${businessProfile.businessName} — ${template.name}` : template.name,
+        trigger: template.trigger,
+        nodes: template.nodes ?? [],
+        edges: template.edges ?? [],
+        tags: template.tags ?? [],
+      }),
+    });
+    const data = (await res.json()) as { ok: boolean; flow?: EmailFlow };
+    if (data.ok && data.flow) {
+      handleFlowCreated(data.flow);
+    }
+  }
+
+  async function syncBusinessSystem() {
+    try {
+      setSyncingSystem(true);
+      const res = await fetch("/api/business-profile/sync", { method: "POST" });
+      const data = await res.json() as { ok?: boolean };
+      if (!res.ok || !data.ok) throw new Error("Failed");
+      await fetchFlows();
+    } finally {
+      setSyncingSystem(false);
+    }
+  }
+
+  async function refreshBusinessSystem() {
+    if (!businessProfile?.businessType) return;
+    try {
+      setRefreshingRecommendations(true);
+      const res = await fetch("/api/business-profile/recommend", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          businessType: businessProfile.businessType,
+          niche: businessProfile.niche,
+          goal: businessProfile.mainGoal,
+        }),
+      });
+      const data = await res.json() as { ok?: boolean };
+      if (!res.ok || !data.ok) throw new Error("Failed");
+      await fetchFlows();
+    } finally {
+      setRefreshingRecommendations(false);
+    }
   }
 
   // Stats
@@ -644,6 +749,93 @@ export default function EmailsPage() {
       <EmailSubNav />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+        {businessProfile && (
+          <div className="mb-6 rounded-[28px] border border-white/[0.08] bg-white/[0.03] p-5">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-3xl">
+                <p className="text-[10px] font-black uppercase tracking-[0.26em] text-white/35">Business OS Status</p>
+                <div className="mt-2 flex flex-wrap items-center gap-3">
+                  {osStats?.osVerdict?.label && (
+                    <span className={`inline-flex items-center rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] ${verdictTone(osStats.osVerdict.status)}`}>
+                      {osStats.osVerdict.label}
+                    </span>
+                  )}
+                  <span className="text-sm font-black text-white">{osStats?.effectiveSystemScore ?? 0}/100</span>
+                  {(osStats?.unsyncedSystems?.length ?? 0) > 0 && (
+                    <span className="text-xs text-amber-200/80">{osStats?.unsyncedSystems?.length} unsynced systems</span>
+                  )}
+                </div>
+                <p className="mt-3 text-sm leading-7 text-white/58">
+                  {osStats?.osVerdict?.reason ||
+                    "The email workspace is reading the same Business OS health layer as Home, Copilot, and My System."}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                {(osStats?.unsyncedSystems?.length ?? 0) > 0 && (
+                  <button
+                    onClick={() => void syncBusinessSystem()}
+                    disabled={syncingSystem}
+                    className="inline-flex items-center gap-2 rounded-2xl border border-amber-500/25 bg-amber-500/10 px-5 py-3 text-sm font-bold text-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {syncingSystem ? "Syncing..." : "Sync My System"}
+                  </button>
+                )}
+                {osStats?.osVerdict?.status === "stale" && (
+                  <button
+                    onClick={() => void refreshBusinessSystem()}
+                    disabled={refreshingRecommendations}
+                    className="inline-flex items-center gap-2 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-5 py-3 text-sm font-bold text-cyan-100 disabled:cursor-not-allowed disabled:opacity-60"
+                  >
+                    {refreshingRecommendations ? "Refreshing..." : "Refresh Recommendations"}
+                  </button>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
+        <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="mb-6" />
+
+        {businessProfile && (
+          <div className="mb-6 rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] to-purple-600/[0.03] p-6">
+            <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-3xl">
+                <p className="text-[10px] font-black uppercase tracking-[0.26em] text-cyan-200/70">Recommended Email System</p>
+                <h2 className="mt-2 text-2xl font-black text-white">
+                  {recommendedTemplateId === "abandoned-cart"
+                    ? "Abandoned Cart Recovery"
+                    : recommendedTemplateId === "lead-nurture"
+                      ? "Lead Follow-Up Sequence"
+                      : "Welcome / Nurture Sequence"} for {businessProfile.niche || businessProfile.businessType.replace(/_/g, " ")}
+                </h2>
+                <p className="mt-3 text-sm leading-7 text-white/62">
+                  {businessProfile.recommendedSystems?.firstAction ||
+                    businessProfile.recommendedSystems?.strategicSummary ||
+                    "Your Business OS says email automation should be one of the next systems you turn on."}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-3">
+                <button
+                  onClick={() => void createRecommendedFlow()}
+                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)]"
+                >
+                  <Zap className="w-4 h-4" />
+                  Create Recommended Flow
+                </button>
+                <button
+                  onClick={() => setModalOpen(true)}
+                  className="inline-flex items-center gap-2 rounded-2xl border border-white/[0.1] bg-white/[0.04] px-5 py-3 text-sm font-bold text-white/70"
+                >
+                  <Plus className="w-4 h-4" />
+                  Create Custom Flow
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
+
         {/* Page header */}
         <div className="flex items-center justify-between mb-8 gap-4 flex-wrap">
           <div>

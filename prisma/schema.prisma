@@ -48,6 +48,13 @@ model User {
   sharesaleAffiliateId String?
 
   products             Product[]
+  consultPackages      ConsultPackage[]
+  proposals            Proposal[]
+  servicePackages      ServicePackage[]
+  localAudits          LocalAudit[]
+  affiliateOffers      AffiliateOffer[]
+  dropshipProducts     DropshipProduct[]
+  agencyAudits         AgencyAudit[]
 
   campaigns    Campaign[]
   creatives    CreativeWork[]
@@ -59,6 +66,7 @@ model User {
   optInForms      OptInForm[]
   sites           Site[]
   leads           Lead[]
+  businessProfile BusinessProfile?
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
@@ -571,4 +579,284 @@ model Product {
   @@index([userId])
   @@index([userId, platform])
   @@index([userId, niche])
+}
+
+// ─── Consultant / Coach Vertical ──────────────────────────────────────────────
+
+model ConsultPackage {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  name         String
+  type         String   // hourly | retainer | project | productized | vip_day
+  price        Float
+  currency     String   @default("USD")
+  billingCycle String   @default("one_time") // one_time | monthly | quarterly | yearly
+  duration     String?  // "90 min", "30 days", "12 weeks"
+  deliverables Json     @default("[]") // string[]
+  isHighTicket Boolean  @default(false)
+  targetNiche  String?
+  active       Boolean  @default(true)
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Proposal {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  leadId      String?
+  clientId    String?
+  title       String
+  problemStatement String? @db.Text
+  solution         String? @db.Text
+  socialProof      String? @db.Text
+  guarantee        String?
+  urgency          String?
+  // Package tiers embedded in the proposal
+  packages    Json     @default("[]")  // { name, price, deliverables[], bestFor }[]
+  totalValue  Float?
+  // Tracking
+  status      String   @default("draft") // draft | sent | viewed | accepted | rejected | expired
+  sentAt      DateTime?
+  viewedAt    DateTime?
+  respondedAt DateTime?
+  expiresAt   DateTime?
+  viewCount   Int      @default(0)
+  // Full AI-generated content
+  aiJson      Json?
+  notes       String?  @db.Text
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([userId, status])
+}
+
+// ─── Local Service Business Vertical ─────────────────────────────────────────
+
+model ServicePackage {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  name         String
+  tier         String   // basic | pro | elite | custom
+  price        Float
+  billingCycle String   @default("monthly") // one_time | monthly | quarterly | yearly
+  deliverables Json     @default("[]") // string[]
+  targetNiche  String?
+  targetLocation String?
+  active       Boolean  @default(true)
+  sortOrder    Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model LocalAudit {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  leadId       String?
+  // Business info
+  businessName String
+  businessUrl  String?
+  niche        String?
+  location     String?
+  phone        String?
+  // Scores (0-100)
+  overallScore    Int?
+  gmbScore        Int?
+  reviewScore     Int?
+  citationScore   Int?
+  websiteScore    Int?
+  seoScore        Int?
+  competitorScore Int?
+  // Analysis output
+  auditJson       Json?  // full structured audit
+  reportJson      Json?  // formatted report for client delivery
+  packagesJson    Json?  // 3-tier recommended packages
+  reviewTemplates Json?  // SMS + email review request templates
+  gmbPostsJson    Json?  // 30 days of GMB posts
+  keywordsJson    Json?  // local keyword opportunities
+  status          String @default("pending") // pending | scanning | complete | error
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+  @@index([userId, niche])
+}
+
+// ─── Affiliate Marketing Vertical ─────────────────────────────────────────────
+
+model AffiliateOffer {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  name          String
+  platform      String   // clickbank | jvzoo | warriorplus | cj | amazon | digistore24 | custom
+  niche         String
+  url           String
+  affiliateUrl  String?
+  vendorId      String?
+  commission    String?  // "75%" or "$47/sale"
+  recurringComm String?  // monthly recurring commission
+  epc           Float?   // estimated earnings per click
+  gravity       Float?   // ClickBank gravity score
+  convRate      Float?   // estimated conversion rate %
+  refundRate    Float?   // historical refund rate %
+  avgOrderValue Float?
+  cookieDuration String? // "60 days", "lifetime"
+  // AI Analysis
+  offerAnalysis Json?    // full deep-dive analysis
+  funnelJson    Json?    // recommended funnel structure
+  trafficAngles Json?    // best traffic sources + targeting
+  swipeJson     Json?    // email swipes (5 broadcasts + 7-day sequence)
+  adHooksJson   Json?    // FB/IG/TT hooks and scripts
+  landingJson   Json?    // bridge page / presell page content
+  keywordsJson  Json?    // SEO + PPC keyword research
+  competitorJson Json?   // top affiliate competitor analysis
+  // Status pipeline
+  status        String   @default("researching") // researching | approved | building | running | paused | dropped
+  notes         String?  @db.Text
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId])
+  @@index([userId, platform])
+  @@index([userId, niche])
+  @@index([userId, status])
+}
+
+// ─── Dropshipping Vertical ─────────────────────────────────────────────────────
+
+model DropshipProduct {
+  id            String   @id @default(cuid())
+  userId        String
+  user          User     @relation(fields: [userId], references: [id])
+  name          String
+  niche         String
+  category      String?
+  // Supplier info
+  supplierUrl   String?
+  supplierName  String?  // aliexpress | cjdropshipping | zendrop | spocket | private
+  supplierPrice Float?
+  shippingCost  Float?
+  shippingTime  String?  // "7-14 days"
+  moq           Int?     // minimum order quantity
+  // Pricing
+  suggestedPrice  Float?
+  suggestedMsrp   Float?
+  profitMargin    Float?  // percentage
+  profitPerUnit   Float?  // dollars
+  breakEvenRoas   Float?  // min ROAS to be profitable
+  // Research scores (0-100)
+  demandScore     Int?
+  competitionScore Int?
+  trendScore      Int?
+  marginScore     Int?
+  winnerScore     Int?   // composite
+  // Analysis outputs
+  productJson     Json?  // full product deep-dive
+  storeJson       Json?  // product page content: title, bullets, desc, FAQ
+  adAnglesJson    Json?  // FB/IG/TT hooks, scripts, thumbnails
+  emailsJson      Json?  // abandoned cart + post-purchase flows
+  supplierJson    Json?  // multi-supplier comparison
+  ugcBriefJson    Json?  // UGC creator brief for product
+  // Status
+  status          String @default("researching") // researching | testing | winning | scaling | dead
+  notes           String? @db.Text
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+  @@index([userId, niche])
+  @@index([userId, status])
+  @@index([userId, winnerScore])
+}
+
+// ─── Agency / White-Label Vertical ────────────────────────────────────────────
+
+model AgencyAudit {
+  id           String   @id @default(cuid())
+  userId       String
+  user         User     @relation(fields: [userId], references: [id])
+  leadId       String?
+  clientId     String?
+  // Business context
+  businessName String
+  businessUrl  String?
+  niche        String
+  location     String?
+  businessType String   // consultant | local | ecommerce | saas | affiliate | agency
+  // Overall scoring
+  overallScore    Int?
+  trafficScore    Int?
+  conversionScore Int?
+  offerScore      Int?
+  trustScore      Int?
+  automationScore Int?
+  // Full outputs
+  auditJson       Json?  // 20-point audit with severity ratings
+  strategyJson    Json?  // 90-day growth roadmap
+  proposalJson    Json?  // white-label proposal to send to client
+  deliverableJson Json?  // what to deliver + timeline
+  pricingJson     Json?  // recommended agency pricing
+  status          String @default("pending") // pending | scanning | complete
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+  @@index([userId, businessType])
+}
+
+model BusinessProfile {
+  id                  String   @id @default(cuid())
+  userId              String   @unique
+  user                User     @relation(fields: [userId], references: [id])
+
+  // Core identity
+  businessType        String
+  businessName        String?
+  niche               String?
+  location            String?
+  website             String?
+
+  // Offer
+  mainOffer           String?
+  offerPrice          String?
+  offerType           String?
+
+  // Audience
+  targetAudience      String?
+  audienceAge         String?
+  audienceGender      String?
+  audiencePains       Json?
+  audienceDesires     Json?
+
+  // Business stage
+  stage               String   @default("starting")
+  monthlyRevenue      String?
+  mainGoal            String?
+
+  // Active systems
+  activeSystems       Json     @default("[]")
+
+  // System score
+  systemScore         Int      @default(0)
+
+  // Workflow state
+  setupCompleted      Boolean  @default(false)
+  setupStep           Int      @default(0)
+
+  // AI-generated recommendations
+  recommendedSystems  Json?
+  recommendedAt       DateTime?
+
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
 }

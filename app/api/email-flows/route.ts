@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
+import { isDatabaseUnavailable } from "@/lib/db/runtime";
 
 export async function GET(_req: NextRequest) {
   try {
@@ -16,6 +17,9 @@ export async function GET(_req: NextRequest) {
     return NextResponse.json({ ok: true, flows });
   } catch (err) {
     console.error("EmailFlows GET:", err);
+    if (isDatabaseUnavailable(err)) {
+      return NextResponse.json({ ok: true, flows: [], databaseUnavailable: true });
+    }
     return NextResponse.json({ ok: false, error: "Failed to load flows" }, { status: 500 });
   }
 }
