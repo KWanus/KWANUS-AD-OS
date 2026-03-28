@@ -444,6 +444,35 @@ export default function AnalysesPage() {
           </div>
         )}
 
+        {/* Quick filter chips */}
+        {!loading && analyses.length > 0 && (
+          <div className="flex items-center gap-2 flex-wrap mb-3">
+            {[
+              { label: "Pursue", filter: () => setVerdictFilter("Pursue"), active: verdictFilter === "Pursue" },
+              { label: "Consider", filter: () => setVerdictFilter("Consider"), active: verdictFilter === "Consider" },
+              { label: "Reject", filter: () => setVerdictFilter("Reject"), active: verdictFilter === "Reject" },
+              { label: "High Score (70+)", filter: () => setSortBy("score"), active: sortBy === "score" },
+            ].map(chip => (
+              <button
+                key={chip.label}
+                onClick={() => { if (chip.active) { setVerdictFilter(""); setSortBy("createdAt"); } else chip.filter(); }}
+                className={`px-3 py-1.5 rounded-lg text-[10px] font-bold transition ${
+                  chip.active
+                    ? "bg-cyan-500/15 text-cyan-400 border border-cyan-500/30"
+                    : "bg-white/[0.03] text-white/30 border border-white/[0.06] hover:text-white/50 hover:border-white/[0.12]"
+                }`}
+              >
+                {chip.label}
+              </button>
+            ))}
+            {(verdictFilter || sortBy !== "createdAt") && (
+              <button onClick={() => { setVerdictFilter(""); setSortBy("createdAt"); }} className="text-[10px] text-white/25 hover:text-white/50 transition">
+                Clear
+              </button>
+            )}
+          </div>
+        )}
+
         {/* Filters */}
         <div className="flex items-center gap-3 flex-wrap mb-6">
           <div className="relative flex-1 min-w-[200px] max-w-sm">

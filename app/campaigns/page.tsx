@@ -80,6 +80,7 @@ export default function CampaignsPage() {
   const [businessProfile, setBusinessProfile] = useState<BusinessProfileSummary | null>(null);
   const [osStats, setOsStats] = useState<StatsSummary | null>(null);
   const [loading, setLoading] = useState(true);
+  const [statusFilter, setStatusFilter] = useState("");
   const [search, setSearch] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
   const [syncingSystem, setSyncingSystem] = useState(false);
@@ -155,10 +156,12 @@ export default function CampaignsPage() {
     }
   }
 
-  const filtered = campaigns.filter(c =>
-    c.name.toLowerCase().includes(search.toLowerCase()) ||
-    (c.productName ?? "").toLowerCase().includes(search.toLowerCase())
-  );
+  const filtered = campaigns.filter(c => {
+    const matchesSearch = c.name.toLowerCase().includes(search.toLowerCase()) ||
+      (c.productName ?? "").toLowerCase().includes(search.toLowerCase());
+    const matchesStatus = !statusFilter || c.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   const totalAds = campaigns.reduce((acc, c) => acc + c._count.adVariations, 0);
   const totalEmails = campaigns.reduce((acc, c) => acc + c._count.emailDrafts, 0);
@@ -207,6 +210,30 @@ export default function CampaignsPage() {
             { label: "Active", value: campaigns.filter(c => c.status === "active" || c.status === "scaling").length.toString(), tone: "text-emerald-300" },
           ] : undefined}
         />
+
+        {campaigns.length > 0 && (
+          <div className="flex items-center gap-2 flex-wrap mb-3">
+            {[
+              { label: "All", value: "" },
+              { label: "Draft", value: "draft" },
+              { label: "Active", value: "active" },
+              { label: "Testing", value: "testing" },
+              { label: "Scaling", value: "scaling" },
+            ].map(chip => (
+              <button
+                key={chip.value}
+                onClick={() => setStatusFilter(chip.value)}
+                className={`px-3 py-1.5 rounded-lg text-[10px] font-bold transition ${
+                  statusFilter === chip.value
+                    ? "bg-cyan-500/15 text-cyan-400 border border-cyan-500/30"
+                    : "bg-white/[0.03] text-white/30 border border-white/[0.06] hover:text-white/50 hover:border-white/[0.12]"
+                }`}
+              >
+                {chip.label}
+              </button>
+            ))}
+          </div>
+        )}
 
         {campaigns.length > 0 && (
           <div className="mb-6 flex items-center gap-3">
