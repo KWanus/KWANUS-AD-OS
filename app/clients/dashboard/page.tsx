@@ -223,20 +223,24 @@ export default function ClientDashboardPage() {
     avgDealSize: number;
   } | null>(null);
   const [growth, setGrowth] = useState<{ clients: { thisMonth: number; growth: number } } | null>(null);
+  const [quickActions, setQuickActions] = useState<{ id: string; priority: string; title: string; href: string; description: string }[]>([]);
 
   const fetchClients = useCallback(async () => {
     try {
-      const [clientRes, pipelineRes, growthRes] = await Promise.all([
+      const [clientRes, pipelineRes, growthRes, actionsRes] = await Promise.all([
         fetch("/api/clients?limit=100"),
         fetch("/api/stats/pipeline"),
         fetch("/api/stats/growth"),
+        fetch("/api/quick-actions"),
       ]);
       const data = await clientRes.json() as { ok: boolean; clients?: Client[] };
       const pData = await pipelineRes.json() as { ok: boolean; pipeline?: { weightedPipeline: number; winRate: number; avgDealSize: number } };
       const gData = await growthRes.json() as { ok: boolean; metrics?: { clients: { thisMonth: number; growth: number } } };
+      const aData = await actionsRes.json() as { ok: boolean; actions?: typeof quickActions };
       if (data.ok) setClients(data.clients ?? []);
       if (pData.ok && pData.pipeline) setPipelineStats(pData.pipeline);
       if (gData.ok && gData.metrics) setGrowth(gData.metrics);
+      if (aData.ok && aData.actions) setQuickActions(aData.actions.filter(a => a.priority === "critical" || a.priority === "high").slice(0, 3));
     } catch {
       // non-fatal
     } finally {
@@ -362,6 +366,24 @@ export default function ClientDashboardPage() {
                     )}
                   </div>
                 </div>
+              </div>
+            </div>
+          )}
+
+          {/* Quick actions */}
+          {quickActions.length > 0 && (
+            <div className="bg-gradient-to-r from-amber-900/15 to-cyan-900/15 border border-amber-500/20 rounded-2xl p-5">
+              <h3 className="text-xs font-black uppercase tracking-widest text-white/30 mb-3">Priority Actions</h3>
+              <div className="space-y-2">
+                {quickActions.map(a => (
+                  <Link key={a.id} href={a.href} className="flex items-start gap-3 p-3 rounded-xl bg-black/20 border border-white/[0.06] hover:border-white/[0.12] transition group">
+                    <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${a.priority === "critical" ? "bg-red-400 animate-pulse" : "bg-amber-400"}`} />
+                    <div className="flex-1 min-w-0">
+                      <p className="text-xs font-bold text-white/70 group-hover:text-white transition">{a.title}</p>
+                      <p className="text-[10px] text-white/30 mt-0.5 line-clamp-1">{a.description}</p>
+                    </div>
+                  </Link>
+                ))}
               </div>
             </div>
           )}
