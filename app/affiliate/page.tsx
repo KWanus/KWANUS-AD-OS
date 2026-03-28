@@ -297,6 +297,8 @@ function MyOffersTab() {
 
   async function handleAdd(e: React.FormEvent) {
     e.preventDefault();
+    if (!form.name.trim()) { toast.error("Offer name is required"); return; }
+    if (!form.url.trim()) { toast.error("Product URL is required"); return; }
     setSaving(true);
     try {
       const res = await fetch("/api/affiliate/offers", {
