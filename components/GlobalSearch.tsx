@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useHotkeys } from "react-hotkeys-hook";
+import { getRecentPages } from "@/lib/useRecentPages";
 import {
   Search,
   Users,
@@ -14,6 +15,7 @@ import {
   TrendingUp,
   FileText,
   Loader2,
+  Clock,
 } from "lucide-react";
 
 type SearchResult = {
@@ -156,11 +158,34 @@ export default function GlobalSearch() {
             </div>
           )}
 
-          {results.length === 0 && query.length < 2 && (
-            <div className="px-4 py-6 text-center text-xs text-white/20">
-              Type 2+ characters to search across your entire workspace
-            </div>
-          )}
+          {results.length === 0 && query.length < 2 && (() => {
+            const recent = getRecentPages();
+            return (
+              <div className="px-4 py-4">
+                {recent.length > 0 && (
+                  <div className="mb-4">
+                    <p className="text-[10px] font-black uppercase tracking-widest text-white/20 mb-2">Recently Viewed</p>
+                    {recent.slice(0, 5).map((page) => (
+                      <button
+                        key={page.path}
+                        onClick={() => navigate(page.path)}
+                        className="w-full flex items-center gap-3 px-3 py-2 text-left rounded-lg hover:bg-white/[0.03] transition"
+                      >
+                        <Clock className="w-3.5 h-3.5 text-white/15 shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-white/50 truncate">{page.title}</p>
+                          <p className="text-[10px] text-white/20 truncate">{page.path}</p>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+                <p className="text-center text-xs text-white/20">
+                  Type 2+ characters to search across your entire workspace
+                </p>
+              </div>
+            );
+          })()}
 
           {results.map((result, i) => {
             const cfg = TYPE_CONFIG[result.type] ?? TYPE_CONFIG.client;

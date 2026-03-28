@@ -5,6 +5,7 @@ import { Toaster } from "sonner";
 import GlobalCopilotDock from "@/components/GlobalCopilotDock";
 import KeyboardShortcuts from "@/components/KeyboardShortcuts";
 import GlobalSearch from "@/components/GlobalSearch";
+import RecentPageTracker from "@/components/RecentPageTracker";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -28,6 +29,7 @@ export default function RootLayout({
           <GlobalCopilotDock />
           <KeyboardShortcuts />
           <GlobalSearch />
+          <RecentPageTracker />
           <Toaster position="bottom-right" theme="dark" richColors />
         </body>
       </html>
