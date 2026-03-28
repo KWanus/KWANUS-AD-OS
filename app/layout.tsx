@@ -4,6 +4,7 @@ import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "sonner";
 import GlobalCopilotDock from "@/components/GlobalCopilotDock";
 import KeyboardShortcuts from "@/components/KeyboardShortcuts";
+import GlobalSearch from "@/components/GlobalSearch";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -26,6 +27,7 @@ export default function RootLayout({
           {children}
           <GlobalCopilotDock />
           <KeyboardShortcuts />
+          <GlobalSearch />
           <Toaster position="bottom-right" theme="dark" richColors />
         </body>
       </html>
