@@ -83,6 +83,10 @@ export default function CampaignsPage() {
   const [statusFilter, setStatusFilter] = useState("");
   const [search, setSearch] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState<string | null>(null);
+  const [showCreate, setShowCreate] = useState(false);
+  const [newName, setNewName] = useState("");
+  const [newMode, setNewMode] = useState("operator");
+  const [creating, setCreating] = useState(false);
   const [syncingSystem, setSyncingSystem] = useState(false);
   const [refreshingRecommendations, setRefreshingRecommendations] = useState(false);
   const router = useRouter();
@@ -153,6 +157,29 @@ export default function CampaignsPage() {
       toast.success("Campaign deleted");
     } catch {
       toast.error("Failed to delete campaign");
+    }
+  }
+
+  async function handleCreate() {
+    if (!newName.trim()) { toast.error("Campaign name required"); return; }
+    setCreating(true);
+    try {
+      const res = await fetch("/api/campaigns", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: newName.trim(), mode: newMode }),
+      });
+      const data = await res.json() as { ok: boolean; campaign?: { id: string }; error?: string };
+      if (data.ok && data.campaign) {
+        toast.success("Campaign created");
+        router.push(`/campaigns/${data.campaign.id}`);
+      } else {
+        toast.error(data.error ?? "Failed to create");
+      }
+    } catch {
+      toast.error("Failed to create campaign");
+    } finally {
+      setCreating(false);
     }
   }
 
@@ -235,8 +262,14 @@ export default function CampaignsPage() {
           </div>
         )}
 
-        {campaigns.length > 0 && (
-          <div className="mb-6 flex items-center gap-3">
+        <div className="mb-6 flex items-center gap-3">
+          <button
+            onClick={() => setShowCreate(v => !v)}
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition shrink-0"
+          >
+            <Plus className="w-3.5 h-3.5" /> New Campaign
+          </button>
+          {campaigns.length > 0 && (
             <div className="relative flex-1 max-w-sm">
               <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-white/20" />
               <input
@@ -245,6 +278,40 @@ export default function CampaignsPage() {
                 placeholder="Search campaigns..."
                 className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-cyan-500/40 transition placeholder-white/20 font-medium"
               />
+            </div>
+          )}
+        </div>
+
+        {/* Quick create form */}
+        {showCreate && (
+          <div className="mb-6 bg-white/[0.02] border border-white/[0.07] rounded-2xl p-4">
+            <h3 className="text-xs font-black uppercase tracking-widest text-white/30 mb-3">New Campaign</h3>
+            <div className="flex items-end gap-3">
+              <div className="flex-1">
+                <input
+                  autoFocus
+                  value={newName}
+                  onChange={e => setNewName(e.target.value)}
+                  onKeyDown={e => e.key === "Enter" && void handleCreate()}
+                  placeholder="Campaign name..."
+                  className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-cyan-500/50 transition"
+                />
+              </div>
+              <select
+                value={newMode}
+                onChange={e => setNewMode(e.target.value)}
+                className="bg-white/[0.04] border border-white/[0.1] rounded-xl px-3 py-2.5 text-sm text-white/60 outline-none"
+              >
+                <option value="operator" className="bg-[#0d1525]">Operator</option>
+                <option value="consultant" className="bg-[#0d1525]">Consultant</option>
+              </select>
+              <button
+                onClick={() => void handleCreate()}
+                disabled={creating || !newName.trim()}
+                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 disabled:opacity-40 transition"
+              >
+                {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : "Create"}
+              </button>
             </div>
           </div>
         )}
