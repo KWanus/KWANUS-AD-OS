@@ -737,6 +737,32 @@ export default function ClientsPage() {
           ))
         )}
       </div>
+
+      {/* Load more */}
+      {clients.length < total && !loading && (
+        <div className="mt-4 text-center">
+          <button
+            onClick={async () => {
+              try {
+                const params = new URLSearchParams();
+                if (search) params.set("search", search);
+                if (stageFilter) params.set("stage", stageFilter);
+                if (healthFilter) params.set("health", healthFilter);
+                if (sortBy) params.set("sortBy", sortBy);
+                params.set("page", String(Math.floor(clients.length / 50) + 1));
+                const res = await fetch(`/api/clients?${params}`);
+                const data = await res.json() as { ok: boolean; clients?: Client[] };
+                if (data.ok && data.clients) {
+                  setClients(prev => [...prev, ...data.clients!]);
+                }
+              } catch { /* non-fatal */ }
+            }}
+            className="px-5 py-2.5 rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/50 text-xs font-bold hover:text-white hover:border-white/[0.15] transition"
+          >
+            Load more ({total - clients.length} remaining)
+          </button>
+        </div>
+      )}
     </main>
     </div>
   );

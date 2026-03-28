@@ -535,6 +535,32 @@ export default function AnalysesPage() {
             ))
           )}
         </div>
+
+        {/* Load more */}
+        {analyses.length < total && !loading && (
+          <div className="mt-4 text-center">
+            <button
+              onClick={async () => {
+                try {
+                  const params = new URLSearchParams();
+                  if (search) params.set("search", search);
+                  if (verdictFilter) params.set("verdict", verdictFilter);
+                  if (modeFilter) params.set("mode", modeFilter);
+                  if (sortBy) params.set("sortBy", sortBy);
+                  params.set("page", String(Math.floor(analyses.length / 30) + 1));
+                  const res = await fetch(`/api/analyses?${params}`);
+                  const data = await res.json() as { ok: boolean; analyses?: Analysis[] };
+                  if (data.ok && data.analyses) {
+                    setAnalyses(prev => [...prev, ...data.analyses!]);
+                  }
+                } catch { /* non-fatal */ }
+              }}
+              className="px-5 py-2.5 rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/50 text-xs font-bold hover:text-white hover:border-white/[0.15] transition"
+            >
+              Load more ({total - analyses.length} remaining)
+            </button>
+          </div>
+        )}
       </main>
     </div>
   );
