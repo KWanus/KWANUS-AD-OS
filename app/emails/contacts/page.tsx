@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import { toast } from "sonner";
 import Link from "next/link";
 import AppNav from "@/components/AppNav";
 import CampaignSubNav from "@/components/BuildSubNav";
@@ -99,17 +100,27 @@ export default function ContactsPage() {
   }
 
   async function deleteContact(id: string) {
-    await fetch(`/api/email-contacts/${id}`, { method: "DELETE" });
-    setContacts(prev => prev.filter(c => c.id !== id));
-    setTotal(prev => prev - 1);
+    try {
+      await fetch(`/api/email-contacts/${id}`, { method: "DELETE" });
+      setContacts(prev => prev.filter(c => c.id !== id));
+      setTotal(prev => prev - 1);
+      toast.success("Contact deleted");
+    } catch {
+      toast.error("Failed to delete contact");
+    }
   }
 
   async function deleteSelected() {
     if (!confirm(`Delete ${selected.size} contacts? This cannot be undone.`)) return;
-    await Promise.all([...selected].map(id => fetch(`/api/email-contacts/${id}`, { method: "DELETE" })));
-    setContacts(prev => prev.filter(c => !selected.has(c.id)));
-    setTotal(prev => prev - selected.size);
-    setSelected(new Set());
+    try {
+      await Promise.all([...selected].map(id => fetch(`/api/email-contacts/${id}`, { method: "DELETE" })));
+      setContacts(prev => prev.filter(c => !selected.has(c.id)));
+      setTotal(prev => prev - selected.size);
+      setSelected(new Set());
+      toast.success(`${selected.size} contacts deleted`);
+    } catch {
+      toast.error("Failed to delete some contacts");
+    }
   }
 
   async function handleBulkImport() {

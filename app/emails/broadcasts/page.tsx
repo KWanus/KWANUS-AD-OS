@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { toast } from "sonner";
 import AppNav from "@/components/AppNav";
 import CampaignSubNav from "@/components/BuildSubNav";
 import {
@@ -99,7 +100,12 @@ function BroadcastCard({
     try {
       const res = await fetch(`/api/email-broadcasts/${broadcast.id}/send`, { method: "POST" });
       const data = await res.json() as { ok: boolean; broadcast?: EmailBroadcast; error?: string };
-      if (data.ok && data.broadcast) onSent(data.broadcast);
+      if (data.ok && data.broadcast) {
+        toast.success(`"${broadcast.name}" sent successfully`);
+        onSent(data.broadcast);
+      } else {
+        toast.error(data.error ?? "Failed to send broadcast");
+      }
     } finally {
       setSending(false);
     }
@@ -110,9 +116,12 @@ function BroadcastCard({
     if (!confirm(`Delete "${broadcast.name}"? This cannot be undone.`)) return;
     setDeleting(true);
     try {
-      await fetch(`/api/email-broadcasts/${broadcast.id}`, { method: "DELETE" });
+      const res = await fetch(`/api/email-broadcasts/${broadcast.id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error();
       onDelete(broadcast.id);
+      toast.success("Broadcast deleted");
     } catch {
+      toast.error("Failed to delete broadcast");
       setDeleting(false);
     }
   }
