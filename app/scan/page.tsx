@@ -48,6 +48,7 @@ type ScanResult = {
     profile: string;
     diagnostics: { severity: string; dimension: string; message: string; fix?: string }[];
     actionPlan: string[];
+    breakdown?: { dimension: string; grade: string; rawScore: number }[];
   } | null;
   assetPackage: {
     adHooks: { format: string; hook: string }[];
@@ -710,6 +711,27 @@ function ScanPageInner() {
                   <p className="text-xs font-black text-cyan-400 mb-0.5">Recommended Path</p>
                   <p className="text-xs text-white/60">{opp.recommendedPath}</p>
                 </div>
+              </div>
+            )}
+
+            {/* Truth Engine grade strip */}
+            {result.truthEngine?.breakdown && result.truthEngine.breakdown.length > 0 && (
+              <div className="flex flex-wrap gap-1.5">
+                {result.truthEngine.breakdown.map((b) => {
+                  const colors: Record<string, string> = {
+                    A: "bg-emerald-500/15 text-emerald-400 border-emerald-500/25",
+                    B: "bg-cyan-500/15 text-cyan-400 border-cyan-500/25",
+                    C: "bg-amber-500/15 text-amber-400 border-amber-500/25",
+                    D: "bg-orange-500/15 text-orange-400 border-orange-500/25",
+                    F: "bg-red-500/15 text-red-400 border-red-500/25",
+                  };
+                  return (
+                    <div key={b.dimension} className={`flex items-center gap-1.5 px-2 py-1 rounded-lg border text-[10px] font-bold ${colors[b.grade] ?? colors.C}`} title={`${b.dimension}: ${b.rawScore}/100`}>
+                      <span className="font-black text-xs">{b.grade}</span>
+                      <span className="opacity-60">{b.dimension.replace(/([A-Z])/g, " $1").trim().split(" ")[0]}</span>
+                    </div>
+                  );
+                })}
               </div>
             )}
 
