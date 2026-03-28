@@ -30,11 +30,24 @@ export async function POST(req: NextRequest) {
     const credits = parseInt(session.metadata?.credits ?? "0", 10);
 
     if (userId && credits > 0) {
-      await prisma.user.update({
+      const updatedUser = await prisma.user.update({
         where: { id: userId },
         data: { credits: { increment: credits } },
+        select: { credits: true },
       });
-      console.log(`✓ Added ${credits} credits to user ${userId}`);
+
+      // Log the credit purchase
+      await prisma.creditLog.create({
+        data: {
+          userId,
+          amount: credits,
+          balance: updatedUser.credits,
+          action: "purchase",
+          detail: `${session.metadata?.bundle ?? "credit"} bundle — $${((session.amount_total ?? 0) / 100).toFixed(2)}`,
+        },
+      });
+
+      console.log(`✓ Added ${credits} credits to user ${userId} (new balance: ${updatedUser.credits})`);
     }
   }
 
