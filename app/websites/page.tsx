@@ -912,6 +912,20 @@ export default function WebsitesDashboard() {
                                             <button
                                                 onClick={async (e) => {
                                                     e.stopPropagation();
+                                                    try {
+                                                        const res = await fetch(`/api/sites/${site.id}/clone`, { method: "POST" });
+                                                        const data = await res.json() as { ok: boolean; site?: { id: string } };
+                                                        if (data.ok && data.site) router.push(`/websites/${data.site.id}`);
+                                                    } catch { /* non-fatal */ }
+                                                }}
+                                                className="p-2 rounded-xl bg-white/[0.04] hover:bg-cyan-500/10 border border-white/[0.06] hover:border-cyan-500/20 text-white/20 hover:text-cyan-400 transition"
+                                                title="Duplicate site"
+                                            >
+                                                <Copy className="w-4 h-4" />
+                                            </button>
+                                            <button
+                                                onClick={async (e) => {
+                                                    e.stopPropagation();
                                                     if (!confirm(`Delete "${site.name}"? This cannot be undone.`)) return;
                                                     try {
                                                         await fetch(`/api/sites/${site.id}`, { method: "DELETE" });
