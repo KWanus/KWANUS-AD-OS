@@ -42,9 +42,33 @@ export async function POST(req: NextRequest) {
       targetNiche,
     } = body;
 
-    if (!name || !type || price == null || !billingCycle) {
+    if (!name?.trim() || !type?.trim() || price == null || !billingCycle?.trim()) {
       return NextResponse.json(
         { ok: false, error: "name, type, price, and billingCycle are required" },
+        { status: 400 }
+      );
+    }
+
+    const parsedPrice = Number(price);
+    if (isNaN(parsedPrice) || parsedPrice < 0) {
+      return NextResponse.json(
+        { ok: false, error: "price must be a non-negative number" },
+        { status: 400 }
+      );
+    }
+
+    const VALID_TYPES = ["hourly", "retainer", "project", "productized", "vip_day"];
+    if (!VALID_TYPES.includes(type.trim())) {
+      return NextResponse.json(
+        { ok: false, error: `type must be one of: ${VALID_TYPES.join(", ")}` },
+        { status: 400 }
+      );
+    }
+
+    const VALID_CYCLES = ["one_time", "monthly", "quarterly", "yearly"];
+    if (!VALID_CYCLES.includes(billingCycle.trim())) {
+      return NextResponse.json(
+        { ok: false, error: `billingCycle must be one of: ${VALID_CYCLES.join(", ")}` },
         { status: 400 }
       );
     }
@@ -52,14 +76,14 @@ export async function POST(req: NextRequest) {
     const pkg = await prisma.consultPackage.create({
       data: {
         userId: user.id,
-        name,
-        type,
-        price: Number(price),
-        billingCycle,
-        duration: duration ?? null,
+        name: name.trim().slice(0, 200),
+        type: type.trim(),
+        price: parsedPrice,
+        billingCycle: billingCycle.trim(),
+        duration: duration?.trim()?.slice(0, 100) ?? null,
         deliverables: deliverables ?? [],
         isHighTicket: isHighTicket ?? false,
-        targetNiche: targetNiche ?? null,
+        targetNiche: targetNiche?.trim()?.slice(0, 200) ?? null,
       },
     });
 

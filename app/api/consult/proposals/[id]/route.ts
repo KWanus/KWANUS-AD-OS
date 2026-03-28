@@ -78,10 +78,37 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
       respondedAt,
     } = body;
 
+    // Validate status if provided
+    if (status !== undefined) {
+      const VALID_STATUSES = ["draft", "sent", "viewed", "accepted", "rejected", "expired"];
+      if (!VALID_STATUSES.includes(status)) {
+        return NextResponse.json(
+          { ok: false, error: `status must be one of: ${VALID_STATUSES.join(", ")}` },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Validate totalValue if provided
+    if (totalValue !== undefined) {
+      const parsed = Number(totalValue);
+      if (isNaN(parsed) || parsed < 0) {
+        return NextResponse.json({ ok: false, error: "totalValue must be a non-negative number" }, { status: 400 });
+      }
+    }
+
+    // Validate dates if provided
+    const parseDate = (val: unknown): Date | undefined => {
+      if (val === undefined) return undefined;
+      const d = new Date(val as string);
+      if (isNaN(d.getTime())) return undefined;
+      return d;
+    };
+
     const updated = await prisma.proposal.update({
       where: { id },
       data: {
-        ...(title !== undefined && { title }),
+        ...(title !== undefined && { title: String(title).slice(0, 500) }),
         ...(problemStatement !== undefined && { problemStatement }),
         ...(solution !== undefined && { solution }),
         ...(socialProof !== undefined && { socialProof }),
@@ -91,9 +118,9 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
         ...(totalValue !== undefined && { totalValue: Number(totalValue) }),
         ...(status !== undefined && { status }),
         ...(notes !== undefined && { notes }),
-        ...(sentAt !== undefined && { sentAt: new Date(sentAt) }),
-        ...(expiresAt !== undefined && { expiresAt: new Date(expiresAt) }),
-        ...(respondedAt !== undefined && { respondedAt: new Date(respondedAt) }),
+        ...(parseDate(sentAt) && { sentAt: parseDate(sentAt) }),
+        ...(parseDate(expiresAt) && { expiresAt: parseDate(expiresAt) }),
+        ...(parseDate(respondedAt) && { respondedAt: parseDate(respondedAt) }),
       },
     });
 

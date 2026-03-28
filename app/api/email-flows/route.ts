@@ -4,17 +4,29 @@ import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { isDatabaseUnavailable } from "@/lib/db/runtime";
 
-export async function GET(_req: NextRequest) {
+export async function GET(req: NextRequest) {
   try {
     const { userId: clerkId } = await auth();
     if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
     const user = await getOrCreateUser();
     if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    const limit = Math.min(parseInt(req.nextUrl.searchParams.get("limit") ?? "50"), 100);
+    const cursor = req.nextUrl.searchParams.get("cursor") ?? undefined;
+    const status = req.nextUrl.searchParams.get("status") ?? undefined;
+
     const flows = await prisma.emailFlow.findMany({
-      where: { userId: user.id },
+      where: { userId: user.id, ...(status ? { status } : {}) },
       orderBy: { updatedAt: "desc" },
+      take: limit + 1,
+      ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
     });
-    return NextResponse.json({ ok: true, flows });
+
+    const hasMore = flows.length > limit;
+    if (hasMore) flows.pop();
+    const nextCursor = hasMore ? flows[flows.length - 1]?.id : undefined;
+
+    return NextResponse.json({ ok: true, flows, nextCursor, hasMore });
   } catch (err) {
     console.error("EmailFlows GET:", err);
     if (isDatabaseUnavailable(err)) {
@@ -46,6 +58,15 @@ export async function POST(req: NextRequest) {
     if (!body.trigger?.trim()) {
       return NextResponse.json({ ok: false, error: "Trigger type is required" }, { status: 400 });
     }
+
+    const VALID_TRIGGERS = ["signup", "purchase", "abandoned_cart", "browse_abandon", "custom", "manual"];
+    if (!VALID_TRIGGERS.includes(body.trigger.trim())) {
+      return NextResponse.json(
+        { ok: false, error: `trigger must be one of: ${VALID_TRIGGERS.join(", ")}` },
+        { status: 400 }
+      );
+    }
+
     const executionTier = body.executionTier === "core" ? "core" : "elite";
 
     const flow = await prisma.emailFlow.create({

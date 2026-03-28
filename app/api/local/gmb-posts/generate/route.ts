@@ -1,28 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import Anthropic from "@anthropic-ai/sdk";
+import { callClaude, LOCAL_SYSTEM_PROMPT } from "@/lib/ai/claude";
 import { ExecutionTier } from "@/lib/sites/conversionEngine";
-
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-const GLOBAL_RULE = `You are the world's best local SEO and digital marketing expert inside Himalaya Agency OS.
-Return valid JSON only. No markdown. No commentary outside JSON.
-Before generating any output, analyze what the TOP 1% local marketing agencies charge and deliver for this niche/location.
-Then produce outputs that BEAT those benchmarks — more specific, higher ROI, better positioned.`;
-
-async function callClaude(system: string, prompt: string) {
-  const r = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
-    max_tokens: 4096,
-    system,
-    messages: [{ role: "user", content: prompt }],
-  });
-  const raw = r.content[0].type === "text" ? r.content[0].text : "{}";
-  const match = raw.match(/\{[\s\S]+\}/);
-  if (!match) throw new Error("No JSON in Claude response");
-  return JSON.parse(match[0]);
-}
 
 export async function POST(req: NextRequest) {
   try {
@@ -95,7 +75,7 @@ Return this exact JSON structure:
   "strategy": "brief explanation of the 30-day content strategy and what business outcomes it's designed to achieve"
 }`;
 
-    const result = await callClaude(GLOBAL_RULE, prompt);
+    const result = await callClaude(LOCAL_SYSTEM_PROMPT, prompt);
 
     // If auditId provided, store gmbPostsJson on the LocalAudit
     if (auditId) {

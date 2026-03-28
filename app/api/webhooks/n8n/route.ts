@@ -15,7 +15,14 @@ import { createSiteFromScan } from "@/lib/sites/scanMode";
 
 function validateSecret(req: NextRequest): boolean {
   const secret = process.env.WEBHOOK_SECRET;
-  if (!secret || secret === "REPLACE_ME") return true; // dev mode — skip auth
+  if (!secret || secret === "REPLACE_ME") {
+    if (process.env.NODE_ENV === "production") {
+      console.error("WEBHOOK_SECRET not configured in production — rejecting request");
+      return false;
+    }
+    console.warn("WEBHOOK_SECRET not configured — allowing request in dev mode");
+    return true;
+  }
   return req.headers.get("x-webhook-secret") === secret;
 }
 

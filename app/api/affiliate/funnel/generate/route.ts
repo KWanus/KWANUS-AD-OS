@@ -1,30 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import Anthropic from "@anthropic-ai/sdk";
+import { callClaude, AFFILIATE_SYSTEM_PROMPT } from "@/lib/ai/claude";
 import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
 import type { ExecutionTier } from "@/lib/sites/conversionEngine";
-
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-const GLOBAL_RULE = `You are the world's best affiliate marketing strategist inside Himalaya Agency OS.
-Return valid JSON only. No markdown. No commentary outside JSON.
-Before generating any output, analyze what the TOP 1% 7-figure affiliate marketers do in this niche.
-Study the best bridge pages, email sequences, ad angles, and traffic strategies used by super-affiliates.
-Then produce outputs that BEAT those benchmarks.`;
-
-async function callClaude(system: string, prompt: string) {
-  const r = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
-    max_tokens: 4096,
-    system,
-    messages: [{ role: "user", content: prompt }],
-  });
-  const raw = r.content[0].type === "text" ? r.content[0].text : "{}";
-  const match = raw.match(/\{[\s\S]+\}/);
-  if (!match) throw new Error("No JSON in Claude response");
-  return JSON.parse(match[0]);
-}
 
 // POST /api/affiliate/funnel/generate
 export async function POST(req: NextRequest) {
@@ -105,7 +84,7 @@ Return this exact JSON structure:
 
 The emailSequence should have at least 5 emails (days 0, 1, 2, 4, 7).`;
 
-    const funnel = await callClaude(GLOBAL_RULE, prompt);
+    const funnel = await callClaude(AFFILIATE_SYSTEM_PROMPT, prompt);
 
     await prisma.affiliateOffer.update({
       where: { id: offer.id },

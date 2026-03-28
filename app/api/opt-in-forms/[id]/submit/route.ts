@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { fireWebhook } from "@/lib/webhooks";
+import { rateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 
 const EXECUTION_TIER_PREFIX = "__execution_tier:";
 
@@ -14,6 +15,11 @@ export async function POST(
 ) {
   try {
     const { id } = await params;
+
+    // Rate limit public form submissions by IP to prevent spam
+    const ip = req.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "unknown";
+    const limited = rateLimit(`form:${ip}`, RATE_LIMITS.publicEndpoint);
+    if (limited) return limited;
 
     const form = await prisma.optInForm.findUnique({
       where: { id },
@@ -30,7 +36,8 @@ export async function POST(
       lastName?: string;
     };
 
-    if (!body.email?.includes("@")) {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!body.email || !emailRegex.test(body.email.trim())) {
       return NextResponse.json({ ok: false, error: "Valid email required" }, { status: 400 });
     }
 

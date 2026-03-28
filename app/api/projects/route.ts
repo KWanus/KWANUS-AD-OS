@@ -1,8 +1,8 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 
-export async function GET() {
+export async function GET(req: NextRequest) {
   try {
     const { userId: clerkId } = await auth();
     if (!clerkId) {
@@ -18,15 +18,24 @@ export async function GET() {
       return NextResponse.json({ ok: false, message: "User not synced" }, { status: 400 });
     }
 
+    const limit = Math.min(parseInt(req.nextUrl.searchParams.get("limit") ?? "50"), 100);
+    const cursor = req.nextUrl.searchParams.get("cursor") ?? undefined;
+    const status = req.nextUrl.searchParams.get("status") ?? undefined;
+
+    const where = {
+      userId: user.id,
+      OR: [
+        { sourceUrl: { not: null } },
+        { currentPhase: { gte: 1 } },
+      ],
+      ...(status ? { status } : {}),
+    };
+
     const projects = await prisma.campaign.findMany({
-      where: {
-        userId: user.id,
-        OR: [
-          { sourceUrl: { not: null } },
-          { currentPhase: { gte: 1 } },
-        ],
-      },
+      where,
       orderBy: { updatedAt: "desc" },
+      take: limit + 1,
+      ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
       include: {
         _count: {
           select: {
@@ -39,7 +48,11 @@ export async function GET() {
       },
     });
 
-    return NextResponse.json({ ok: true, projects });
+    const hasMore = projects.length > limit;
+    if (hasMore) projects.pop();
+    const nextCursor = hasMore ? projects[projects.length - 1]?.id : undefined;
+
+    return NextResponse.json({ ok: true, projects, nextCursor, hasMore });
   } catch (error) {
     const message = error instanceof Error ? error.message : "Failed to load projects";
     return NextResponse.json({ ok: false, message }, { status: 500 });

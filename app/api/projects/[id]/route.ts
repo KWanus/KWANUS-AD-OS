@@ -47,7 +47,21 @@ export async function PATCH(
     if (!user) return NextResponse.json({ ok: false, message: "Unauthorized" }, { status: 401 });
 
     const { id } = await params;
-    const updates = await req.json() as Record<string, unknown>;
+    const body = await req.json() as Record<string, unknown>;
+
+    // Whitelist allowed fields to prevent overwriting userId, id, etc.
+    const ALLOWED_FIELDS = new Set([
+      "name", "mode", "status", "productName", "productUrl", "sourceUrl", "sourceType",
+      "currentPhase", "workflowState", "analysisRunId", "notes",
+    ]);
+    const updates: Record<string, unknown> = {};
+    for (const [key, val] of Object.entries(body)) {
+      if (ALLOWED_FIELDS.has(key)) updates[key] = val;
+    }
+    if (Object.keys(updates).length === 0) {
+      return NextResponse.json({ ok: false, message: "No valid fields to update" }, { status: 400 });
+    }
+
     const existing = await prisma.campaign.findFirst({
       where: { id, userId: user.id },
       select: { id: true },

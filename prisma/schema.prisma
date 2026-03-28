@@ -76,7 +76,7 @@ model User {
 model OptInForm {
   id          String   @id @default(cuid())
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   name        String
   headline    String?
   subheadline String?
@@ -89,6 +89,8 @@ model OptInForm {
   submissions Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([userId])
 }
 
 model AnalysisRun {
@@ -108,13 +110,15 @@ model AnalysisRun {
   opportunityAssessments OpportunityAssessment[]
   assetPackages          AssetPackage[]
   campaigns              Campaign[]
+
+  @@index([userId])
 }
 
 model OpportunityAssessment {
   id                      String   @id @default(cuid())
   analysisRunId           String
-  status                  String
-  totalScore              Int?
+  status                  String   @default("pending")
+  totalScore              Int      @default(0)
   demandPotential         Int?
   offerStrength           Int?
   emotionalLeverage       Int?
@@ -133,6 +137,8 @@ model OpportunityAssessment {
 
   analysisRun    AnalysisRun     @relation(fields: [analysisRunId], references: [id], onDelete: Cascade)
   assetPackages  AssetPackage[]
+
+  @@index([analysisRunId])
 }
 
 model AssetPackage {
@@ -149,7 +155,10 @@ model AssetPackage {
   createdAt             DateTime @default(now())
 
   analysisRun          AnalysisRun          @relation(fields: [analysisRunId], references: [id], onDelete: Cascade)
-  opportunityAssessment OpportunityAssessment? @relation(fields: [opportunityAssessmentId], references: [id])
+  opportunityAssessment OpportunityAssessment? @relation(fields: [opportunityAssessmentId], references: [id], onDelete: Cascade)
+
+  @@index([analysisRunId])
+  @@index([opportunityAssessmentId])
 }
 
 // ─── Campaign Workspace ───────────────────────────────────────────────────────
@@ -157,7 +166,7 @@ model AssetPackage {
 model Campaign {
   id            String   @id @default(cuid())
   userId        String?
-  user          User?    @relation(fields: [userId], references: [id])
+  user          User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   name          String
   mode          String   // operator | consultant | saas
   status        String   @default("draft") // draft | active | testing | scaling | dead
@@ -171,7 +180,7 @@ model Campaign {
   workflowState Json?    // Stores data for each phase { audit: {}, strategy: {}, etc. }
   
   analysisRunId String?
-  analysisRun   AnalysisRun? @relation(fields: [analysisRunId], references: [id])
+  analysisRun   AnalysisRun? @relation(fields: [analysisRunId], references: [id], onDelete: SetNull)
   
   notes         String?
   createdAt     DateTime @default(now())
@@ -182,6 +191,9 @@ model Campaign {
   emailDrafts    EmailDraft[]
   checklistItems ChecklistItem[]
   creatives      CreativeWork[]
+
+  @@index([userId])
+  @@index([userId, status])
 }
 
 model CreativeWork {
@@ -190,18 +202,21 @@ model CreativeWork {
   type        String   // image | video
   
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
   campaignId  String?
-  campaign    Campaign? @relation(fields: [campaignId], references: [id])
+  campaign    Campaign? @relation(fields: [campaignId], references: [id], onDelete: Cascade)
   
   // Canvas or scene state
   state       Json     // For images: KonvaCanvas state. For videos: scene params.
   
   outputUrl   String?  // Generated file URL
-  
+
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([campaignId])
 }
 
 model AdVariation {
@@ -219,6 +234,9 @@ model AdVariation {
   updatedAt  DateTime @updatedAt
 
   campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
+  @@index([campaignId, status])
 }
 
 model LandingDraft {
@@ -254,6 +272,8 @@ model EmailDraft {
   updatedAt  DateTime @updatedAt
 
   campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
 }
 
 model ChecklistItem {
@@ -266,17 +286,21 @@ model ChecklistItem {
   createdAt  DateTime @default(now())
 
   campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
 }
 
 model ReportIntake {
   id         String   @id @default(cuid())
   userId     String?
-  user       User?    @relation(fields: [userId], references: [id])
+  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   reportType String
   fileUrl    String?
   notes      String?
   status     String   @default("submitted")
   createdAt  DateTime @default(now())
+
+  @@index([userId])
 }
 
 // ─── Email Marketing Workflows ───────────────────────────────────────────────
@@ -284,7 +308,7 @@ model ReportIntake {
 model EmailFlow {
   id          String   @id @default(cuid())
   userId      String?
-  user        User?    @relation(fields: [userId], references: [id])
+  user        User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   name        String
   trigger     String   // signup | purchase | abandoned_cart | browse_abandon | custom | manual
   triggerConfig Json?  // { event?, tag?, segment?, delay? }
@@ -301,12 +325,15 @@ model EmailFlow {
   revenue     Float    @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+
+  @@index([userId])
+  @@index([userId, status])
 }
 
 model EmailContact {
   id         String   @id @default(cuid())
   userId     String?
-  user       User?    @relation(fields: [userId], references: [id])
+  user       User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   email      String
   firstName  String?
   lastName   String?
@@ -318,12 +345,14 @@ model EmailContact {
   updatedAt  DateTime @updatedAt
 
   @@unique([userId, email])
+  @@index([userId])
+  @@index([userId, status])
 }
 
 model EmailBroadcast {
   id           String   @id @default(cuid())
   userId       String?
-  user         User?    @relation(fields: [userId], references: [id])
+  user         User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   name         String
   subject      String
   previewText  String?
@@ -342,6 +371,9 @@ model EmailBroadcast {
   unsubscribes Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  @@index([userId])
+  @@index([userId, status])
 }
 
 // ─── CRM Workspace ────────────────────────────────────────────────────────────
@@ -349,7 +381,7 @@ model EmailBroadcast {
 model Client {
   id            String   @id @default(cuid())
   userId        String
-  user          User     @relation(fields: [userId], references: [id])
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // Identity
   name          String
@@ -396,6 +428,9 @@ model ClientActivity {
   metadata  Json?    // { from?, to? for stage_change, subject?, duration? }
   createdBy String?
   createdAt DateTime @default(now())
+
+  @@index([clientId])
+  @@index([clientId, type])
 }
 
 // ─── Website Builder ──────────────────────────────────────────────────────────
@@ -522,7 +557,7 @@ model CreditLog {
 model Lead {
   id           String   @id @default(cuid())
   userId       String
-  user         User     @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // Found business info (from search)
   name         String
@@ -586,7 +621,7 @@ model Lead {
 model Product {
   id            String   @id @default(cuid())
   userId        String
-  user          User     @relation(fields: [userId], references: [id])
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   name          String
   description   String?  @db.Text
@@ -617,7 +652,7 @@ model Product {
 model ConsultPackage {
   id           String   @id @default(cuid())
   userId       String
-  user         User     @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   name         String
   type         String   // hourly | retainer | project | productized | vip_day
   price        Float
@@ -638,7 +673,7 @@ model ConsultPackage {
 model Proposal {
   id          String   @id @default(cuid())
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   leadId      String?
   clientId    String?
   title       String
@@ -672,7 +707,7 @@ model Proposal {
 model ServicePackage {
   id           String   @id @default(cuid())
   userId       String
-  user         User     @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   name         String
   tier         String   // basic | pro | elite | custom
   price        Float
@@ -691,7 +726,7 @@ model ServicePackage {
 model LocalAudit {
   id           String   @id @default(cuid())
   userId       String
-  user         User     @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   leadId       String?
   // Business info
   businessName String
@@ -727,7 +762,7 @@ model LocalAudit {
 model AffiliateOffer {
   id            String   @id @default(cuid())
   userId        String
-  user          User     @relation(fields: [userId], references: [id])
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   name          String
   platform      String   // clickbank | jvzoo | warriorplus | cj | amazon | digistore24 | custom
   niche         String
@@ -768,7 +803,7 @@ model AffiliateOffer {
 model DropshipProduct {
   id            String   @id @default(cuid())
   userId        String
-  user          User     @relation(fields: [userId], references: [id])
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   name          String
   niche         String
   category      String?
@@ -815,7 +850,7 @@ model DropshipProduct {
 model AgencyAudit {
   id           String   @id @default(cuid())
   userId       String
-  user         User     @relation(fields: [userId], references: [id])
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   leadId       String?
   clientId     String?
   // Business context
@@ -848,7 +883,7 @@ model AgencyAudit {
 model BusinessProfile {
   id                  String   @id @default(cuid())
   userId              String   @unique
-  user                User     @relation(fields: [userId], references: [id])
+  user                User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   // Core identity
   businessType        String
@@ -897,7 +932,7 @@ model BusinessProfile {
 model Automation {
   id          String   @id @default(cuid())
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   campaignId  String?
   name        String
   description String?

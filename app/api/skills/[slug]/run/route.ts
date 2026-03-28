@@ -7,6 +7,7 @@ import { prisma } from "@/lib/prisma";
 import { runWebsiteBuilderScout } from "@/lib/skills/websiteBuilderScout";
 import { runAdCampaignSkill } from "@/lib/skills/adCampaignSkill";
 import { runEmailCampaignSkill } from "@/lib/skills/emailCampaignSkill";
+import { rateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 
 // Slugs handled by the analysis-pipeline executor (not Claude AI executor)
 const PIPELINE_SKILLS = new Set(["website-builder-scout", "ad-campaign", "email-campaign"]);
@@ -22,6 +23,10 @@ export async function POST(
 
     const user = await getOrCreateUser();
     if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    // Rate limit AI generation per user
+    const limited = rateLimit(`skill:${user.id}`, RATE_LIMITS.aiGeneration);
+    if (limited) return limited;
 
     const skill = getSkill(slug);
     if (!skill) return NextResponse.json({ ok: false, error: "Skill not found" }, { status: 404 });
