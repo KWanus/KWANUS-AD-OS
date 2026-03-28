@@ -487,6 +487,22 @@ model ScanResult {
   createdAt   DateTime @default(now())
 }
 
+// ─── Webhook Event Log ───────────────────────────────────────────────────────
+
+model WebhookLog {
+  id        String   @id @default(cuid())
+  source    String   // n8n | stripe | clerk | custom
+  workflow  String?  // workflow name for n8n webhooks
+  status    String   @default("received") // received | processed | failed
+  payload   Json
+  response  Json?
+  error     String?
+  durationMs Int?
+  createdAt DateTime @default(now())
+
+  @@index([source, createdAt])
+}
+
 // ─── Agency Lead Engine ────────────────────────────────────────────────────────
 
 model Lead {

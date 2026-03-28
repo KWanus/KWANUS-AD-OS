@@ -116,6 +116,27 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "Name is required" }, { status: 400 });
     }
 
+    // Duplicate detection — check by name or email
+    const duplicateCheck = await prisma.client.findFirst({
+      where: {
+        userId: user.id,
+        OR: [
+          { name: body.name.trim() },
+          ...(body.email?.trim() ? [{ email: body.email.trim() }] : []),
+        ],
+      },
+      select: { id: true, name: true, email: true },
+    });
+
+    if (duplicateCheck) {
+      return NextResponse.json({
+        ok: false,
+        error: `A client with this ${duplicateCheck.name === body.name.trim() ? "name" : "email"} already exists`,
+        existingClientId: duplicateCheck.id,
+        duplicate: true,
+      }, { status: 409 });
+    }
+
     const executionTier = normalizeExecutionTier(body.executionTier);
 
     const { score, status } = computeHealthScore({
