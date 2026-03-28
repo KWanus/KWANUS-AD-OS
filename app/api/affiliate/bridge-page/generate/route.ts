@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
+import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -33,7 +34,8 @@ export async function POST(req: NextRequest) {
     const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } });
     if (!user) return NextResponse.json({ ok: false, error: "User not found" }, { status: 404 });
 
-    const body = await req.json() as { offerId: string };
+    const body = await req.json() as { offerId: string; executionTier?: ExecutionTier };
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
     if (!body.offerId) return NextResponse.json({ ok: false, error: "offerId is required" }, { status: 400 });
 
     const offer = await prisma.affiliateOffer.findFirst({
@@ -58,7 +60,11 @@ Offer:
 - Vendor URL: ${offer.url}
 ${offer.affiliateUrl ? `- Affiliate Link: ${offer.affiliateUrl}` : ""}
 ${offer.commission != null ? `- Commission: ${offer.commission}%` : ""}
-${offer.notes ? `- Notes: ${offer.notes}` : ""}${analysisContext}${funnelContext}
+${offer.notes ? `- Notes: ${offer.notes}` : ""}
+Execution Tier: ${executionTier}
+${executionTier === "elite"
+  ? "Elite mode: write this like a top bridge-page operator. Push for a stronger emotional hook, better belief-shifting story, more credible proof, and tighter click-through psychology."
+  : "Core mode: write a strong, trustworthy bridge page with practical persuasion and clear CTA flow."}${analysisContext}${funnelContext}
 
 Return this exact JSON structure:
 {
@@ -89,7 +95,7 @@ The story section should use the PAS (Problem-Agitate-Solution) or Hero's Journe
       data: { landingJson: landing as object },
     });
 
-    return NextResponse.json({ ok: true, landing, offerId: offer.id });
+    return NextResponse.json({ ok: true, landing, offerId: offer.id, executionTier });
   } catch (err) {
     console.error("Bridge page generate error:", err);
     return NextResponse.json({ ok: false, error: "Bridge page generation failed" }, { status: 500 });

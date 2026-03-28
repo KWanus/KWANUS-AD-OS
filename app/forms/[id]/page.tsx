@@ -9,6 +9,7 @@ interface FormData {
   subheadline?: string;
   buttonText: string;
   redirectUrl?: string;
+  executionTier?: "core" | "elite";
 }
 
 export default function PublicFormPage({ params }: { params: Promise<{ id: string }> }) {
@@ -88,6 +89,8 @@ export default function PublicFormPage({ params }: { params: Promise<{ id: strin
     );
   }
 
+  const executionTier = form.executionTier === "core" ? "core" : "elite";
+
   return (
     <div className="min-h-screen bg-[#050a14] flex flex-col items-center justify-center px-4">
       {/* Glow */}
@@ -97,6 +100,15 @@ export default function PublicFormPage({ params }: { params: Promise<{ id: strin
 
       <div className="relative w-full max-w-md">
         <div className="bg-white/[0.03] border border-white/[0.08] rounded-2xl p-8 shadow-2xl">
+          <div className="mb-4 flex justify-center">
+            <span className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.24em] ${
+              executionTier === "elite"
+                ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
+                : "border-white/10 bg-white/5 text-white/45"
+            }`}>
+              {executionTier} opt-in
+            </span>
+          </div>
           {form.headline && (
             <h1 className="text-2xl font-black text-white text-center mb-2 leading-tight">
               {form.headline}
@@ -134,7 +146,11 @@ export default function PublicFormPage({ params }: { params: Promise<{ id: strin
             <button
               type="submit"
               disabled={submitting || !email}
-              className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-bold text-sm hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition"
+              className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-white font-bold text-sm hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition ${
+                executionTier === "elite"
+                  ? "bg-gradient-to-r from-cyan-500 to-purple-600 shadow-[0_0_30px_rgba(6,182,212,0.18)]"
+                  : "bg-gradient-to-r from-cyan-500 to-blue-500"
+              }`}
             >
               {submitting ? (
                 <><Loader2 className="w-4 h-4 animate-spin" /> Subscribing...</>

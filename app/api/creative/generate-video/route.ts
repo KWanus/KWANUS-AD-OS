@@ -5,6 +5,13 @@ import { auth } from "@clerk/nextjs/server";
 // Runway Gen-3 Alpha Turbo via REST API
 // Docs: https://docs.dev.runwayml.com/
 
+function buildVideoPrompt(prompt: string, executionTier: "core" | "elite") {
+  if (executionTier === "elite") {
+    return `Create a premium commercial video shot with top-operator ad polish, stronger product readability, cleaner motion discipline, sharper focal hierarchy, richer buyer emotion, and a conversion-first finish.\n\nOriginal brief:\n${prompt}`;
+  }
+  return `Create a strong performance-marketing video shot with clear motion, practical composition, and ad-ready clarity.\n\nOriginal brief:\n${prompt}`;
+}
+
 export async function POST(req: NextRequest) {
   const { userId: clerkId } = await auth();
   if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
@@ -27,7 +34,9 @@ export async function POST(req: NextRequest) {
       imageUrl?: string;
       duration?: 5 | 10;
       ratio?: "768:1344" | "1344:768" | "1024:1024";
+      executionTier?: "core" | "elite";
     };
+    const executionTier = body.executionTier === "core" ? "core" : "elite";
 
     // Credit check
     try {
@@ -38,7 +47,7 @@ export async function POST(req: NextRequest) {
 
     const payload: Record<string, unknown> = {
       model: "gen3a_turbo",
-      promptText: body.prompt,
+      promptText: buildVideoPrompt(body.prompt, executionTier),
       duration: body.duration ?? 5,
       ratio: body.ratio ?? "768:1344", // 9:16
     };
@@ -64,7 +73,7 @@ export async function POST(req: NextRequest) {
     }
 
     const data = await res.json() as { id: string; status: string };
-    return NextResponse.json({ ok: true, jobId: data.id, status: data.status });
+    return NextResponse.json({ ok: true, jobId: data.id, status: data.status, executionTier });
 
   } catch (err) {
     const message = err instanceof Error ? err.message : "Video generation failed";

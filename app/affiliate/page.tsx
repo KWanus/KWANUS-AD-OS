@@ -12,6 +12,7 @@ import {
 
 type Platform = "clickbank" | "jvzoo" | "warriorplus" | "cj" | "amazon" | "digistore24" | "custom";
 type OfferStatus = "researching" | "approved" | "building" | "running" | "paused" | "dropped";
+type ExecutionTier = "core" | "elite";
 
 interface AffiliateOffer {
   id: string;
@@ -108,6 +109,55 @@ function CopyBlock({ label, content }: { label: string; content: string }) {
   );
 }
 
+function ExecutionTierPicker({
+  value,
+  onChange,
+}: {
+  value: ExecutionTier;
+  onChange: (tier: ExecutionTier) => void;
+}) {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {[
+        {
+          id: "core" as const,
+          label: "Core",
+          description: "Strong launch-ready affiliate execution with practical angles and assets.",
+        },
+        {
+          id: "elite" as const,
+          label: "Elite",
+          description: "Sharper super-affiliate positioning, better angle logic, and stronger operator-grade outputs.",
+        },
+      ].map((tier) => {
+        const active = value === tier.id;
+        return (
+          <button
+            key={tier.id}
+            type="button"
+            onClick={() => onChange(tier.id)}
+            className={`rounded-2xl border p-4 text-left transition-all ${
+              active
+                ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
+            }`}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <span className={`text-sm font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
+              <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+                {tier.id}
+              </span>
+            </div>
+            <p className={`mt-2 text-xs leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+              {tier.description}
+            </p>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 // ─── Detail Panel ─────────────────────────────────────────────────────────────
 
 function OfferDetailPanel({
@@ -121,6 +171,7 @@ function OfferDetailPanel({
 }) {
   const [loading, setLoading] = useState<string | null>(null);
   const [result, setResult] = useState<{ type: string; data: unknown } | null>(null);
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
 
   async function callAction(action: string, endpoint: string, body: object = {}) {
     setLoading(action);
@@ -129,7 +180,7 @@ function OfferDetailPanel({
       const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ offerId: offer.id, ...body }),
+        body: JSON.stringify({ offerId: offer.id, executionTier, ...body }),
       });
       const data = (await res.json()) as unknown;
       setResult({ type: action, data });
@@ -221,8 +272,9 @@ function OfferDetailPanel({
           {/* Actions */}
           <div className="space-y-2">
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Actions</p>
+            <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
             {[
-              { key: "analyze",     label: "Analyze Offer",       icon: BarChart2,  endpoint: "/api/affiliate/analyze" },
+              { key: "analyze",     label: "Analyze Offer",       icon: BarChart2,  endpoint: "/api/affiliate/offers/analyze" },
               { key: "funnel",      label: "Generate Funnel",     icon: Layers,     endpoint: "/api/affiliate/funnel/generate" },
               { key: "swipe",       label: "Write Swipe Copy",    icon: Mail,       endpoint: "/api/affiliate/swipe/generate" },
               { key: "ads",         label: "Generate Ads",        icon: Megaphone,  endpoint: "/api/affiliate/ads/generate" },
@@ -462,6 +514,7 @@ function ResearchTab() {
   const [form, setForm] = useState({ niche: "", budget: "", trafficSource: "Any" });
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ResearchResult | null>(null);
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -471,10 +524,36 @@ function ResearchTab() {
       const res = await fetch("/api/affiliate/research", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, executionTier }),
       });
-      const data = (await res.json()) as { ok: boolean; result?: ResearchResult };
-      if (data.ok && data.result) setResult(data.result);
+      const data = (await res.json()) as {
+        ok: boolean;
+        research?: {
+          topNetworks?: Array<{ network: string; category: string; avgComm: string; topOffers: string[] }>;
+          topNicheAngles?: string[];
+          competitionLevel?: string;
+          recommendedTraffic?: string[];
+          offerCriteria?: string[];
+          redFlags?: string[];
+          entryStrategy?: string;
+        };
+      };
+      if (data.ok && data.research) {
+        setResult({
+          topNetworks: (data.research.topNetworks ?? []).map((n) => ({
+            name: n.network,
+            category: n.category,
+            typicalCommission: n.avgComm,
+            topOffers: n.topOffers,
+          })),
+          nicheAngles: data.research.topNicheAngles ?? [],
+          competitionLevel: data.research.competitionLevel ?? "medium",
+          recommendedTraffic: data.research.recommendedTraffic ?? [],
+          offerCriteria: data.research.offerCriteria ?? [],
+          redFlags: data.research.redFlags ?? [],
+          entryStrategy: data.research.entryStrategy ?? "",
+        });
+      }
       else toast.error("Research failed");
     } catch {
       toast.error("Research failed");
@@ -493,6 +572,9 @@ function ResearchTab() {
     <div className="max-w-3xl space-y-6">
       <form onSubmit={(e) => void handleSubmit(e)}
         className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-5 grid grid-cols-3 gap-3">
+        <div className="col-span-3">
+          <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
+        </div>
         <div className="col-span-3 md:col-span-1">
           <label className="text-[10px] font-black uppercase tracking-widest text-white/30 block mb-1">Niche *</label>
           <input required value={form.niche} onChange={(e) => setForm((f) => ({ ...f, niche: e.target.value }))}
@@ -616,6 +698,7 @@ function BuildAssetsTab({ offers }: { offers: AffiliateOffer[] }) {
   const [selectedOfferId, setSelectedOfferId] = useState("");
   const [activeCard, setActiveCard] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [results, setResults] = useState<Record<string, any>>({});
   const [subTab, setSubTab] = useState<Record<string, number>>({});
@@ -628,9 +711,21 @@ function BuildAssetsTab({ offers }: { offers: AffiliateOffer[] }) {
       const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ offerId: selectedOfferId }),
+        body: JSON.stringify({ offerId: selectedOfferId, executionTier }),
       });
-      const data = (await res.json()) as unknown;
+      const payload = (await res.json()) as {
+        swipe?: unknown;
+        ads?: unknown;
+        landing?: unknown;
+        funnel?: unknown;
+        analysis?: unknown;
+      };
+      const data =
+        cardKey === "swipe" ? payload.swipe :
+        cardKey === "ads" ? payload.ads :
+        cardKey === "bridge" ? payload.landing :
+        cardKey === "funnel" ? payload.funnel :
+        payload;
       setResults((r) => ({ ...r, [cardKey]: data }));
       toast.success("Generated successfully");
     } catch {
@@ -698,6 +793,9 @@ function BuildAssetsTab({ offers }: { offers: AffiliateOffer[] }) {
   return (
     <div className="space-y-5">
       <div className="flex items-center gap-3">
+        <div className="flex-1 min-w-[280px]">
+          <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
+        </div>
         <div>
           <label className="text-[10px] font-black uppercase tracking-widest text-white/30 block mb-1">Select Offer</label>
           <select value={selectedOfferId} onChange={(e) => setSelectedOfferId(e.target.value)}

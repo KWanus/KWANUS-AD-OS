@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { fetchPage } from "@/src/logic/ad-os/fetchPage";
 import Anthropic from "@anthropic-ai/sdk";
+import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -68,8 +69,9 @@ export async function POST(req: NextRequest) {
     });
     if (!user) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
 
-    const body = await req.json() as { url: string };
+    const body = await req.json() as { url: string; executionTier?: ExecutionTier };
     const url = body.url?.trim();
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
     if (!url) return NextResponse.json({ ok: false, error: "URL required" }, { status: 400 });
 
     const platform = detectPlatform(url);
@@ -105,6 +107,11 @@ export async function POST(req: NextRequest) {
   "topBenefit": "the biggest benefit/promise"
 }
 
+Execution tier: ${executionTier}
+${executionTier === "elite"
+  ? "Think like a top 1% offer strategist. Prefer sharper niche categorization, more specific buyer language, stronger pain articulation, and more usable hooks."
+  : "Keep the extraction clean, accurate, and launch-ready."}
+
 Page data:
 ${pageText}`
       }],
@@ -121,6 +128,7 @@ ${pageText}`
 
     return NextResponse.json({
       ok: true,
+      executionTier,
       platform,
       affiliateUrl,
       hasAffiliateId: !!affiliateUrl,

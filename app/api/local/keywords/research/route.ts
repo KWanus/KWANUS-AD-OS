@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
+import { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -40,6 +41,7 @@ export async function POST(req: NextRequest) {
       radius?: string;
       auditId?: string;
     };
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
 
     if (!niche || !location) {
       return NextResponse.json(
@@ -62,6 +64,11 @@ export async function POST(req: NextRequest) {
 Niche: ${niche}
 Location: ${location}
 ${radius ? `Service Radius: ${radius}` : ""}
+Execution Tier: ${executionTier}
+
+${executionTier === "elite"
+  ? "Elite mode: think like a premium local SEO strategist. Push for better money-keyword prioritization, stronger service-area logic, and more commercially useful content opportunities."
+  : "Core mode: produce a strong, practical local keyword plan with clear intent mapping and usable content ideas."}
 
 Include:
 - Primary money keywords (high commercial intent, local modifier)
@@ -107,7 +114,7 @@ Return this exact JSON structure:
       });
     }
 
-    return NextResponse.json({ ok: true, keywords: result });
+    return NextResponse.json({ ok: true, keywords: result, executionTier });
   } catch (err) {
     console.error("Keywords research POST error:", err);
     return NextResponse.json(

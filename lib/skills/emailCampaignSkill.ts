@@ -29,6 +29,7 @@ import { buildOpportunityPacket } from "@/src/logic/ad-os/buildOpportunityPacket
 import { buildAssetPackage } from "@/src/logic/ad-os/buildAssetPackage";
 import { prisma } from "@/lib/prisma";
 import type { SkillMeta, SkillResult } from "./types";
+import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 export const emailCampaignSkillMeta: SkillMeta = {
   slug: "email-campaign",
@@ -171,8 +172,10 @@ export async function runEmailCampaignSkill(input: {
   listGoal?: string;
   tone?: string;
   userId?: string;
+  executionTier?: ExecutionTier;
 }): Promise<SkillResult> {
   const SKILL = "email-campaign";
+  const executionTier: ExecutionTier = input.executionTier === "core" ? "core" : "elite";
 
   // ── 1. Normalize & validate ───────────────────────────────────────────────────
   const normalized = normalizeInput(input.url, "operator");
@@ -192,7 +195,7 @@ export async function runEmailCampaignSkill(input: {
   const gaps = detectOpportunityGaps(dimensions, signals);
   const recommendation = recommendOpportunityPath(classified.status, dimensions, "operator");
   const opportunityPacket = buildOpportunityPacket(classified, dimensions, gaps, recommendation);
-  const assets = buildAssetPackage(packet, opportunityPacket, "operator");
+  const assets = buildAssetPackage(packet, opportunityPacket, "operator", executionTier);
 
   const productName =
     page.title?.split(/[-|]/)[0].trim() ||
@@ -239,6 +242,10 @@ export async function runEmailCampaignSkill(input: {
         productName,
         productUrl: normalized.url,
         status: "draft",
+        workflowState: {
+          executionTier,
+          sourceSkill: SKILL,
+        } as object,
       },
     });
     campaignId = campaign.id;
@@ -294,9 +301,21 @@ export async function runEmailCampaignSkill(input: {
   const painCore = packet.painDesire?.split("→")[0].replace(/pain:/i, "").trim() || "their problem";
 
   const broadcastTemplate = {
-    subject: assets.emailSequences.welcome?.[0]?.subject || `This changes everything for ${audience}`,
-    previewText: assets.emailSequences.welcome?.[0]?.preview || "Open this before anyone else does.",
-    body: assets.emailSequences.welcome?.[0]?.body || `Hi [First Name],\n\nIf you've been dealing with ${painCore}, this is for you.\n\n${packet.summary}\n\nClick here to learn more: ${normalized.url}\n\nTalk soon,\n[Your Name]`,
+    subject:
+      assets.emailSequences.welcome?.[0]?.subject ||
+      (executionTier === "elite"
+        ? `The real reason ${audience} stalls here`
+        : `This changes everything for ${audience}`),
+    previewText:
+      assets.emailSequences.welcome?.[0]?.preview ||
+      (executionTier === "elite"
+        ? "A sharper angle on the problem that keeps this decision stuck."
+        : "Open this before anyone else does."),
+    body:
+      assets.emailSequences.welcome?.[0]?.body ||
+      (executionTier === "elite"
+        ? `Hi [First Name],\n\nIf you're still dealing with ${painCore}, the biggest mistake is treating it like a small issue when it's really the thing slowing down the result you want.\n\n${packet.summary}\n\nIf you want the faster, cleaner path forward, start here: ${normalized.url}\n\nTalk soon,\n[Your Name]`
+        : `Hi [First Name],\n\nIf you've been dealing with ${painCore}, this is for you.\n\n${packet.summary}\n\nClick here to learn more: ${normalized.url}\n\nTalk soon,\n[Your Name]`),
   };
 
   // Assemble email copy for review
@@ -309,9 +328,10 @@ export async function runEmailCampaignSkill(input: {
   return {
     ok: true,
     skill: SKILL,
-    summary: `Built email campaign for "${productName}" — ${allEmails.length} emails across ${isFullSystem ? 3 : 1} sequence(s).`,
+    summary: `Built ${executionTier} email campaign for "${productName}" — ${allEmails.length} emails across ${isFullSystem ? 3 : 1} sequence(s).`,
     created: { campaignId, emailFlowId },
     data: {
+      executionTier,
       productName,
       flowType,
       emails: allEmails,

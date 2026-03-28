@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
 import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
+import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -19,8 +20,18 @@ export async function POST(req: NextRequest) {
     const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } });
     if (!user) return NextResponse.json({ ok: false, error: "User not found" }, { status: 404 });
 
-    const body = await req.json();
+    const body = await req.json() as {
+      leadId?: string;
+      niche?: string;
+      businessName?: string;
+      businessUrl?: string;
+      location?: string;
+      problem?: string;
+      budget?: string;
+      executionTier?: ExecutionTier;
+    };
     const { leadId, niche, businessName, businessUrl, location, problem, budget } = body;
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
 
     if (!niche || !businessName) {
       return NextResponse.json(
@@ -57,6 +68,10 @@ Website: ${businessUrl ?? "Not provided"}
 Location: ${location ?? "Not specified"}
 Stated Problem: ${problem ?? "Not specified"}
 Budget Signal: ${budget ?? "Not specified"}
+Execution tier: ${executionTier}
+${executionTier === "elite"
+  ? "Write like a top-closing consultant. Sharper diagnosis, more premium positioning, stronger package logic, and a CTA that feels expensive and inevitable."
+  : "Write a strong, persuasive, practical consulting proposal that is easy to sell and easy to understand."}
 ${leadContext}
 ${businessContext}
 
@@ -133,12 +148,15 @@ Return ONLY this JSON:
         urgency: aiData.urgency,
         packages: aiData.packages as object,
         totalValue,
-        aiJson: aiData as object,
+        aiJson: {
+          ...aiData,
+          executionTier,
+        } as object,
         status: "draft",
       },
     });
 
-    return NextResponse.json({ ok: true, proposal }, { status: 201 });
+    return NextResponse.json({ ok: true, proposal, executionTier }, { status: 201 });
   } catch (err) {
     console.error("Proposal generate error:", err);
     return NextResponse.json({ ok: false, error: "Failed to generate proposal" }, { status: 500 });

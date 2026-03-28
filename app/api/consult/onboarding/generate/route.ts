@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
+import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -20,6 +21,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     const { niche, clientName, businessType } = body;
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
 
     if (!niche || !businessType) {
       return NextResponse.json(
@@ -32,6 +34,11 @@ export async function POST(req: NextRequest) {
 Niche: ${niche}
 Business Type: ${businessType}
 Client Name: ${clientName ?? "New Client"}
+Execution Tier: ${executionTier}
+
+${executionTier === "elite"
+  ? "Elite mode: write this like a top consultant diagnosing a serious business. Push for deeper decision-making, hidden constraints, financial reality, implementation blockers, and strategic clarity."
+  : "Core mode: build a strong practical onboarding questionnaire that covers goals, blockers, resources, and scope clearly."}
 
 Design questions that the TOP 1% of consultants use to deeply understand their clients before starting an engagement. Include questions that uncover hidden constraints, decision-making processes, success metrics, and prior failures. Group by logical sections.
 
@@ -144,6 +151,7 @@ Requirements:
         niche,
         businessType,
         clientName: clientName ?? null,
+        executionTier,
         sectionCount: questionnaire.sections.length,
         totalQuestions,
         generatedAt: new Date().toISOString(),

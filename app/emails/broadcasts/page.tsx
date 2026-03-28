@@ -27,6 +27,7 @@ import {
 // ---------------------------------------------------------------------------
 
 type BroadcastStatus = "draft" | "scheduled" | "sending" | "sent" | "cancelled";
+type ExecutionTier = "core" | "elite";
 
 interface EmailBroadcast {
   id: string;
@@ -38,6 +39,7 @@ interface EmailBroadcast {
   fromEmail?: string;
   status: BroadcastStatus;
   segmentTags: string[];
+  executionTier?: ExecutionTier;
   scheduledAt?: string;
   sentAt?: string;
   recipients: number;
@@ -79,6 +81,7 @@ function BroadcastCard({
   const [deleting, setDeleting] = useState(false);
   const [sending, setSending] = useState(false);
   const sc = STATUS_CONFIG[broadcast.status];
+  const executionTier: ExecutionTier = broadcast.executionTier === "core" ? "core" : "elite";
 
   const openRate =
     broadcast.recipients > 0
@@ -124,6 +127,13 @@ function BroadcastCard({
             >
               <span className={`w-1.5 h-1.5 rounded-full ${sc.dot}`} />
               {sc.label}
+            </span>
+            <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.2em] ${
+              executionTier === "elite"
+                ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
+                : "border-white/10 bg-white/5 text-white/45"
+            }`}>
+              {executionTier}
             </span>
             {broadcast.scheduledAt && broadcast.status === "scheduled" && (
               <span className="text-[10px] text-blue-400/70 flex items-center gap-1">
@@ -245,6 +255,7 @@ function ComposeModal({
   onSaved: (broadcast: EmailBroadcast) => void;
   editing: EmailBroadcast | null;
 }) {
+  const [executionTier, setExecutionTier] = useState<"core" | "elite">("elite");
   const [name, setName] = useState("");
   const [subject, setSubject] = useState("");
   const [previewText, setPreviewText] = useState("");
@@ -266,6 +277,7 @@ function ComposeModal({
         setFromName(editing.fromName ?? "");
         setFromEmail(editing.fromEmail ?? "");
         setSegmentTags(editing.segmentTags.join(", "));
+        setExecutionTier(editing.executionTier === "core" ? "core" : "elite");
       } else {
         setName("");
         setSubject("");
@@ -274,6 +286,7 @@ function ComposeModal({
         setFromName("");
         setFromEmail("");
         setSegmentTags("");
+        setExecutionTier("elite");
       }
       setError(null);
       setSaving(false);
@@ -287,7 +300,11 @@ function ComposeModal({
       const res = await fetch("/api/ai/generate-email", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ trigger: "custom", flowName: name || "Broadcast" }),
+        body: JSON.stringify({
+          trigger: "custom",
+          flowName: name || "Broadcast",
+          executionTier,
+        }),
       });
       const data = await res.json() as { ok: boolean; subject?: string; previewText?: string; body?: string };
       if (data.ok) {
@@ -317,6 +334,7 @@ function ComposeModal({
       body: body.trim(),
       fromName: fromName.trim() || undefined,
       fromEmail: fromEmail.trim() || undefined,
+      executionTier,
       segmentTags: segmentTags
         .split(",")
         .map((t) => t.trim())
@@ -368,6 +386,35 @@ function ComposeModal({
         </div>
 
         <div className="p-6 space-y-5">
+          <div>
+            <label className="block text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">
+              Execution Level
+            </label>
+            <div className="grid grid-cols-2 gap-2">
+              {[
+                { value: "core" as const, label: "Core", note: "Clean, strong, launch-ready email copy" },
+                { value: "elite" as const, label: "Elite", note: "Sharper angles, tighter objections, premium framing" },
+              ].map((option) => {
+                const active = executionTier === option.value;
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => setExecutionTier(option.value)}
+                    className={`rounded-xl border px-4 py-3 text-left transition-all ${
+                      active
+                        ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-100 shadow-[0_0_24px_rgba(6,182,212,0.12)]"
+                        : "border-white/[0.08] bg-white/[0.03] text-white/55 hover:bg-white/[0.05]"
+                    }`}
+                  >
+                    <p className="text-sm font-black">{option.label}</p>
+                    <p className="mt-1 text-[11px] leading-relaxed text-white/35">{option.note}</p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
           {/* AI Generate */}
           <button
             onClick={() => void handleAIGenerate()}
@@ -375,7 +422,7 @@ function ComposeModal({
             className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-purple-600/20 to-cyan-600/20 border border-purple-500/30 hover:border-purple-400/50 text-sm font-bold text-purple-300 hover:text-white transition disabled:opacity-40"
           >
             <Sparkles className="w-4 h-4" />
-            {generating ? "Generating content..." : "AI Generate Content"}
+            {generating ? "Generating content..." : `AI Generate ${executionTier === "elite" ? "Elite" : "Core"} Content`}
           </button>
 
           <div className="grid grid-cols-2 gap-4">

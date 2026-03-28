@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
+import { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -61,6 +62,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     const { businessName, businessUrl, niche, location, businessType, leadId, clientId } = body;
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
 
     if (!businessName || !niche || !businessType) {
       return NextResponse.json(
@@ -91,6 +93,11 @@ ${businessUrl ? `Website: ${businessUrl}` : "No website provided"}
 Niche: ${niche}
 ${location ? `Location: ${location}` : ""}
 Business Type: ${businessType}
+Execution Tier: ${executionTier}
+
+${executionTier === "elite"
+  ? "Elite mode: audit like a premium growth operator. Be tougher, more commercially specific, and clearer about revenue leaks, offer gaps, proof gaps, and conversion friction."
+  : "Core mode: deliver a sharp, practical audit with strong prioritization and clear fixes."}
 
 Audit across these categories: Traffic, Conversion, Offer, Trust, Automation.
 Score each point 0-100. Be specific about findings and actionable in recommendations.
@@ -155,7 +162,7 @@ Return this exact JSON structure:
       },
     });
 
-    return NextResponse.json({ ok: true, audit: updated }, { status: 201 });
+    return NextResponse.json({ ok: true, audit: updated, executionTier }, { status: 201 });
   } catch (err) {
     console.error("AgencyAudit POST error:", err);
     return NextResponse.json({ ok: false, error: "Failed to create audit" }, { status: 500 });

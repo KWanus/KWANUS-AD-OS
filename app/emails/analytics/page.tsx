@@ -24,6 +24,7 @@ interface EmailFlow {
   id: string;
   name: string;
   status: string;
+  triggerConfig?: { executionTier?: "core" | "elite" };
   enrolled: number;
   opens: number;
   clicks: number;
@@ -37,6 +38,7 @@ interface EmailBroadcast {
   name: string;
   subject: string;
   status: string;
+  executionTier?: "core" | "elite";
   recipients: number;
   opens: number;
   clicks: number;
@@ -47,6 +49,7 @@ interface EmailBroadcast {
 interface EmailContact {
   id: string;
   status: string;
+  executionTier?: "core" | "elite";
   source?: string;
   createdAt: string;
 }
@@ -122,9 +125,19 @@ function TopFlowsTable({ flows }: { flows: EmailFlow[] }) {
             {sorted.map((flow) => {
               const openRate = flow.sent > 0 ? Math.round((flow.opens / flow.sent) * 100) : 0;
               const clickRate = flow.opens > 0 ? Math.round((flow.clicks / flow.opens) * 100) : 0;
+              const executionTier = flow.triggerConfig?.executionTier === "core" ? "core" : "elite";
               return (
                 <tr key={flow.id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition">
-                  <td className="px-5 py-3 text-white/70 font-semibold max-w-[180px] truncate">{flow.name}</td>
+                  <td className="px-5 py-3 max-w-[180px]">
+                    <p className="truncate text-white/70 font-semibold">{flow.name}</p>
+                    <span className={`mt-1 inline-flex items-center rounded-full border px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.18em] ${
+                      executionTier === "elite"
+                        ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
+                        : "border-white/10 bg-white/5 text-white/45"
+                    }`}>
+                      {executionTier}
+                    </span>
+                  </td>
                   <td className="px-5 py-3">
                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold border ${
                       flow.status === "active"
@@ -180,11 +193,19 @@ function TopBroadcastsTable({ broadcasts }: { broadcasts: EmailBroadcast[] }) {
               const openRate = Math.round((b.opens / b.recipients) * 100);
               const clickRate = b.opens > 0 ? Math.round((b.clicks / b.opens) * 100) : 0;
               const bounceRate = Math.round((b.bounces / b.recipients) * 100);
+              const executionTier = b.executionTier === "core" ? "core" : "elite";
               return (
                 <tr key={b.id} className="border-b border-white/[0.03] hover:bg-white/[0.02] transition">
                   <td className="px-5 py-3 max-w-[180px]">
                     <p className="text-white/70 font-semibold truncate">{b.name}</p>
                     <p className="text-[10px] text-white/25 truncate">{b.subject}</p>
+                    <span className={`mt-1 inline-flex items-center rounded-full border px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.18em] ${
+                      executionTier === "elite"
+                        ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
+                        : "border-white/10 bg-white/5 text-white/45"
+                    }`}>
+                      {executionTier}
+                    </span>
                   </td>
                   <td className="px-5 py-3 text-white/40 text-[10px]">
                     {b.sentAt ? new Date(b.sentAt).toLocaleDateString() : "—"}
@@ -291,6 +312,9 @@ export default function EmailAnalyticsPage() {
   const totalContacts = contacts.length;
   const subscribedContacts = contacts.filter((c) => c.status === "subscribed").length;
   const activeFlows = flows.filter((f) => f.status === "active").length;
+  const eliteFlows = flows.filter((f) => (f.triggerConfig?.executionTier ?? "elite") === "elite").length;
+  const eliteBroadcasts = broadcasts.filter((b) => (b.executionTier ?? "elite") === "elite").length;
+  const eliteContacts = contacts.filter((c) => (c.executionTier ?? "elite") === "elite").length;
   const totalEnrolled = flows.reduce((s, f) => s + f.enrolled, 0);
   const totalRevenue = flows.reduce((s, f) => s + f.revenue, 0);
 
@@ -345,11 +369,13 @@ export default function EmailAnalyticsPage() {
             </div>
 
             {/* Secondary row */}
-            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4">
               <MetricCard label="Emails Sent" value={allSentEmails.toLocaleString()} icon={Send} color="text-white/50" />
               <MetricCard label="Total Opens" value={allOpens.toLocaleString()} icon={Eye} color="text-cyan-400" />
               <MetricCard label="Total Clicks" value={allClicks.toLocaleString()} icon={MousePointer} color="text-purple-400" />
               <MetricCard label="Flow Revenue" value={totalRevenue > 0 ? `$${totalRevenue.toLocaleString()}` : "—"} icon={DollarSign} color="text-green-400" />
+              <MetricCard label="Elite Flows" value={eliteFlows.toLocaleString()} icon={Zap} color="text-cyan-400" />
+              <MetricCard label="Elite Contacts" value={eliteContacts.toLocaleString()} icon={Users} color="text-cyan-400" />
             </div>
 
             {/* Tables */}
@@ -379,6 +405,12 @@ export default function EmailAnalyticsPage() {
                       value: `${activeFlows} / ${flows.length}`,
                       target: "At least 1 active",
                       good: activeFlows > 0,
+                    },
+                    {
+                      label: "Elite Coverage",
+                      value: `${eliteFlows + eliteBroadcasts} lane assets`,
+                      target: "Use elite where quality matters most",
+                      good: eliteFlows + eliteBroadcasts > 0,
                     },
                     {
                       label: "Broadcast Bounce Rate",

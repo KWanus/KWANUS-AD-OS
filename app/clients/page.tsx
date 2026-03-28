@@ -64,6 +64,7 @@ interface Client {
   priority: string;
   createdAt: string;
   _count: { activities: number };
+  executionTier?: "core" | "elite";
 }
 
 // ---------------------------------------------------------------------------
@@ -163,7 +164,7 @@ function ClientRow({ client, onDelete }: { client: Client; onDelete: (id: string
         <p className="text-sm font-bold text-white truncate group-hover:text-cyan-300 transition-colors">
           {client.name}
         </p>
-        <div className="flex items-center gap-2 mt-0.5">
+      <div className="flex items-center gap-2 mt-0.5">
           {client.company && (
             <span className="text-[11px] text-white/35 truncate flex items-center gap-1">
               <Building2 className="w-2.5 h-2.5 shrink-0" />
@@ -173,6 +174,11 @@ function ClientRow({ client, onDelete }: { client: Client; onDelete: (id: string
           {client.niche && (
             <span className="text-[10px] text-purple-400/60 font-medium">{client.niche}</span>
           )}
+          <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${
+            client.executionTier === "core" ? "text-white/35" : "text-cyan-300/80"
+          }`}>
+            {client.executionTier ?? "elite"}
+          </span>
         </div>
       </div>
 

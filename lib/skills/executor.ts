@@ -224,7 +224,7 @@ Script structure with timestamps:
   }
 }
 
-function buildSkillSystemPrompt(skillName: string, businessContext: string): string {
+function buildSkillSystemPrompt(skillName: string, businessContext: string, executionTier: "core" | "elite"): string {
   return `You are the elite execution engine for Himalaya Marketing OS.
 You are generating output for the "${skillName}" skill.
 
@@ -234,6 +234,10 @@ CORE DIRECTIVE:
 - Prefer sharp, specific, conversion-focused outputs over generic best practices.
 - When inputs are incomplete, infer intelligently from the business context instead of staying vague.
 - Return in the exact format requested by the skill prompt.
+- Execution tier: ${executionTier}
+- ${executionTier === "elite"
+    ? "Elite means top-operator output: tighter specificity, better proof logic, stronger angles, and higher-conviction execution."
+    : "Core means strong launch-ready output: clear, structured, useful, and conversion-focused without overextending."}
 
 ${businessContext}`;
 }
@@ -380,7 +384,8 @@ export async function runSkill(
     // Use centralized prompt library if available, fallback to inline prompts
     const prompt = hasSkillPrompt(slug) ? getSkillPrompt(slug, input) : buildPrompt(slug, input);
     const businessContext = await getBusinessContext(userId);
-    const system = buildSystemPrompt(skill.name, businessContext);
+    const executionTier = input.executionTier === "core" ? "core" : "elite";
+    const system = buildSkillSystemPrompt(skill.name, businessContext, executionTier);
 
     const message = await anthropic.messages.create({
       model: "claude-sonnet-4-6",
@@ -397,9 +402,12 @@ export async function runSkill(
     return {
       ok: true,
       skill: slug,
-      summary: `${skill.name} completed successfully.`,
+      summary: `${skill.name} completed successfully (${executionTier} execution).`,
       created,
-      data,
+      data: {
+        ...data,
+        executionTier,
+      },
     };
   } catch (err) {
     console.error(`Skill ${slug} error:`, err);

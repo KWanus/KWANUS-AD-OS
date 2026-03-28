@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+type ExecutionTier = "core" | "elite";
 
 const GLOBAL_RULE = `You are the world's best local SEO and digital marketing expert inside Himalaya Agency OS.
 Return valid JSON only. No markdown. No commentary outside JSON.
@@ -34,7 +35,8 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "User not found" }, { status: 404 });
 
     const body = await req.json();
-    const { auditId } = body as { auditId: string };
+    const { auditId, executionTier: rawExecutionTier } = body as { auditId: string; executionTier?: ExecutionTier };
+    const executionTier: ExecutionTier = rawExecutionTier === "core" ? "core" : "elite";
 
     if (!auditId) {
       return NextResponse.json(
@@ -94,6 +96,10 @@ Create a professional report that:
 - Positions your agency as the obvious solution
 - Has clear, prioritized action items with expected outcomes
 - Includes investment context (cost of inaction vs. cost of solution)
+- Execution Tier: ${executionTier}
+- ${executionTier === "elite"
+    ? "Elite mode: make this feel like a premium, executive-ready client deliverable with stronger ROI framing, more credible urgency, and sharper strategic positioning."
+    : "Core mode: keep it clear, practical, professional, and immediately useful for client communication."}
 
 Return this exact JSON structure:
 {
@@ -127,7 +133,7 @@ Return this exact JSON structure:
       data: { reportJson: result as object },
     });
 
-    return NextResponse.json({ ok: true, report: result, audit: updated });
+    return NextResponse.json({ ok: true, report: result, audit: updated, executionTier });
   } catch (err) {
     console.error("SEO report POST error:", err);
     return NextResponse.json(

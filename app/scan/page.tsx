@@ -1,16 +1,18 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import AppNav from "@/components/AppNav";
 import ScanSubNav from "@/components/ScanSubNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   Search, Loader2, Globe, Megaphone, Mail, Zap, AlertTriangle,
   CheckCircle, XCircle, ChevronRight, ArrowRight, Sparkles, Building2, ShoppingBag,
 } from "lucide-react";
 
 type ScanMode = "consultant" | "operator";
+type ExecutionTier = "core" | "elite";
 
 type ScanResult = {
   ok: boolean;
@@ -30,6 +32,7 @@ type ScanResult = {
       weaknesses: string[];
       nextActions: string[];
     };
+    executionTier?: ExecutionTier;
   };
   opportunityAssessment: {
     status: string;
@@ -183,8 +186,10 @@ function ScoreGauge({ score }: { score: number }) {
   );
 }
 
-export default function ScanPage() {
+function ScanPageInner() {
+  const searchParams = useSearchParams();
   const [mode, setMode] = useState<ScanMode>("consultant");
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
   const [url, setUrl] = useState("");
   const [businessProfile, setBusinessProfile] = useState<BusinessProfileSummary | null>(null);
   const [osStats, setOsStats] = useState<StatsSummary | null>(null);
@@ -193,6 +198,16 @@ export default function ScanPage() {
   const [error, setError] = useState<string | null>(null);
   const [syncingSystem, setSyncingSystem] = useState(false);
   const [refreshingRecommendations, setRefreshingRecommendations] = useState(false);
+
+  useEffect(() => {
+    const initialUrl = searchParams.get("url");
+    const initialMode = searchParams.get("mode");
+    const initialTier = searchParams.get("execution_tier");
+
+    if (initialUrl) setUrl(initialUrl);
+    if (initialMode === "consultant" || initialMode === "operator") setMode(initialMode);
+    if (initialTier === "core" || initialTier === "elite") setExecutionTier(initialTier);
+  }, [searchParams]);
 
   useEffect(() => {
     async function fetchContext() {
@@ -229,7 +244,7 @@ export default function ScanPage() {
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: trimmed, mode }),
+        body: JSON.stringify({ url: trimmed, mode, executionTier }),
       });
       const data = await res.json() as ScanResult;
       if (!data.ok) {
@@ -251,6 +266,7 @@ export default function ScanPage() {
   function buildSkillUrl(slug: string): string {
     if (!analysis) return `/skills?skill=${slug}`;
     const params = new URLSearchParams({ skill: slug });
+    params.set("execution_tier", analysis.executionTier ?? executionTier);
     if (slug === "ad-campaign" || slug === "email-campaign") {
       params.set("prefill_url", analysis.inputUrl);
       params.set("prefill_mode", mode);
@@ -453,6 +469,30 @@ export default function ScanPage() {
             : "Found a dropship product, affiliate offer, or competitor? Scan it and we'll build you a better funnel for the same market."}
         </p>
 
+        <div className="mb-5 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
+          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/30">Execution Level</p>
+          <div className="mt-3 grid gap-2 sm:grid-cols-2">
+            {([
+              ["core", "Core", "Strong diagnosis and launch-ready next actions."],
+              ["elite", "Elite", "Sharper operator analysis, stronger positioning, better follow-through assets."],
+            ] as const).map(([value, label, description]) => (
+              <button
+                key={value}
+                type="button"
+                onClick={() => setExecutionTier(value)}
+                className={`rounded-2xl border px-4 py-3 text-left transition ${
+                  executionTier === value
+                    ? "border-cyan-500/25 bg-cyan-500/10 text-cyan-100"
+                    : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+                }`}
+              >
+                <p className="text-sm font-black">{label}</p>
+                <p className="mt-1 text-xs leading-5 text-inherit/75">{description}</p>
+              </button>
+            ))}
+          </div>
+        </div>
+
         {/* URL input */}
         <div className="flex gap-2 mb-6">
           <div className="flex-1 relative">
@@ -513,9 +553,20 @@ export default function ScanPage() {
               </div>
               <div className="flex-1 min-w-0">
                 <p className="font-black text-white text-base truncate">{analysis.title || analysis.inputUrl}</p>
-                <p className={`text-sm font-bold mt-0.5 ${SCORE_COLOR(analysis.score)}`}>
-                  {analysis.verdict} · {analysis.confidence} confidence
-                </p>
+                <div className="mt-0.5 flex flex-wrap items-center gap-2">
+                  <p className={`text-sm font-bold ${SCORE_COLOR(analysis.score)}`}>
+                    {analysis.verdict} · {analysis.confidence} confidence
+                  </p>
+                  <span
+                    className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.18em] ${
+                      (analysis.executionTier ?? executionTier) === "elite"
+                        ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-100"
+                        : "border-white/[0.08] bg-white/[0.05] text-white/55"
+                    }`}
+                  >
+                    {(analysis.executionTier ?? executionTier).toUpperCase()}
+                  </span>
+                </div>
                 <p className="text-xs text-white/50 mt-2 leading-relaxed">{analysis.summary}</p>
               </div>
             </div>
@@ -690,5 +741,22 @@ export default function ScanPage() {
 
       </div>
     </div>
+  );
+}
+
+export default function ScanPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-h-screen bg-[#050a14] text-white">
+          <AppNav />
+          <div className="flex items-center justify-center py-24">
+            <Loader2 className="w-6 h-6 animate-spin text-white/20" />
+          </div>
+        </div>
+      }
+    >
+      <ScanPageInner />
+    </Suspense>
   );
 }

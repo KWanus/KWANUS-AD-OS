@@ -45,18 +45,26 @@ export async function PATCH(
     const body = await req.json() as {
       name?: string;
       trigger?: string;
-      triggerConfig?: object;
+      triggerConfig?: Record<string, unknown>;
       nodes?: object[];
       edges?: object[];
       status?: string;
       tags?: string[];
+      executionTier?: "core" | "elite";
     };
+    const triggerConfig =
+      body.triggerConfig !== undefined || body.executionTier !== undefined
+        ? {
+            ...(body.triggerConfig ?? {}),
+            ...(body.executionTier !== undefined ? { executionTier: body.executionTier === "core" ? "core" : "elite" } : {}),
+          }
+        : undefined;
     const flow = await prisma.emailFlow.update({
       where: { id },
       data: {
         ...(body.name !== undefined && { name: body.name }),
         ...(body.trigger !== undefined && { trigger: body.trigger }),
-        ...(body.triggerConfig !== undefined && { triggerConfig: body.triggerConfig }),
+        ...(triggerConfig !== undefined && { triggerConfig }),
         ...(body.nodes !== undefined && { nodes: body.nodes }),
         ...(body.edges !== undefined && { edges: body.edges }),
         ...(body.status !== undefined && { status: body.status }),

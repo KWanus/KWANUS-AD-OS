@@ -6,9 +6,36 @@ import AppNav from "@/components/AppNav";
 import {
     Search, Filter,
     BarChart3, Edit3, Loader2,
-    Flame
+    Flame, Sparkles, ShoppingBag, BadgeDollarSign
 } from "lucide-react";
 import type { WinnerAd } from "../api/winners/route";
+
+type ExecutionTier = "core" | "elite";
+type ResearchMode = "affiliate" | "dropship";
+
+type AffiliateResearch = {
+    topNetworks?: Array<{
+        network: string;
+        avgComm?: string;
+        topOffers?: string[];
+    }>;
+    topNicheAngles?: string[];
+    competitionLevel?: string;
+    estimatedEpc?: string;
+    entryStrategy?: string;
+};
+
+type DropshipResearch = {
+    marketAnalysis?: string;
+    productOpportunities?: Array<{
+        name: string;
+        winnerScore: number;
+        estimatedMargin?: string;
+        topAngle?: string;
+        bestSupplierPlatform?: string;
+    }>;
+    trendingNow?: string[];
+};
 
 export default function WinnerFinder() {
     const router = useRouter();
@@ -16,6 +43,15 @@ export default function WinnerFinder() {
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState("");
     const [projectLoading, setProjectLoading] = useState<string | null>(null);
+    const [researchMode, setResearchMode] = useState<ResearchMode>("affiliate");
+    const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
+    const [researching, setResearching] = useState(false);
+    const [researchNiche, setResearchNiche] = useState("");
+    const [researchBudget, setResearchBudget] = useState("");
+    const [researchExtra, setResearchExtra] = useState("");
+    const [researchError, setResearchError] = useState<string | null>(null);
+    const [affiliateResearch, setAffiliateResearch] = useState<AffiliateResearch | null>(null);
+    const [dropshipResearch, setDropshipResearch] = useState<DropshipResearch | null>(null);
 
     useEffect(() => {
         fetch("/api/winners")
@@ -35,7 +71,8 @@ export default function WinnerFinder() {
                 body: JSON.stringify({
                     name: `Winner: ${winner.title}`,
                     sourceUrl: winner.url,
-                    sourceType: "winner"
+                    sourceType: "winner",
+                    executionTier,
                 })
             });
             const data = await res.json();
@@ -52,6 +89,53 @@ export default function WinnerFinder() {
         w.niche.toLowerCase().includes(search.toLowerCase())
     );
 
+    const runResearch = async () => {
+        if (!researchNiche.trim() || researching) return;
+        setResearching(true);
+        setResearchError(null);
+        setAffiliateResearch(null);
+        setDropshipResearch(null);
+
+        try {
+            const endpoint = researchMode === "affiliate"
+                ? "/api/affiliate/research"
+                : "/api/dropship/products/research";
+            const payload = researchMode === "affiliate"
+                ? {
+                    niche: researchNiche.trim(),
+                    budget: researchBudget.trim() || undefined,
+                    trafficSource: researchExtra.trim() || undefined,
+                    executionTier,
+                }
+                : {
+                    niche: researchNiche.trim(),
+                    budget: researchBudget.trim() || undefined,
+                    targetMarket: researchExtra.trim() || undefined,
+                    executionTier,
+                };
+
+            const res = await fetch(endpoint, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(payload),
+            });
+            const data = await res.json();
+            if (!data.ok) {
+                throw new Error(data.error ?? "Research failed");
+            }
+
+            if (researchMode === "affiliate") {
+                setAffiliateResearch(data.research as AffiliateResearch);
+            } else {
+                setDropshipResearch(data.research as DropshipResearch);
+            }
+        } catch (error) {
+            setResearchError(error instanceof Error ? error.message : "Research failed");
+        } finally {
+            setResearching(false);
+        }
+    };
+
     return (
         <main className="min-h-screen bg-[#050a14] text-white flex flex-col font-inter">
             {/* Subtle background glow */}
@@ -62,6 +146,194 @@ export default function WinnerFinder() {
 
             {/* Main Grid */}
             <section className="flex-1 p-8 overflow-y-auto">
+                <div className="mb-8 rounded-3xl border border-white/[0.08] bg-white/[0.03] p-6">
+                    <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
+                        <div className="max-w-2xl">
+                            <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-200/70">Research Lab</p>
+                            <h2 className="mt-2 text-3xl font-black text-white">Find the next angle worth building around</h2>
+                            <p className="mt-3 text-sm leading-7 text-white/45">
+                                Run affiliate or dropship research with a clean validation pass in Core, or push for sharper operator-grade market selection in Elite.
+                            </p>
+                        </div>
+
+                        <div className="grid gap-2 sm:grid-cols-2 xl:w-[360px]">
+                            {([
+                                ["core", "Core", "Strong, practical niche validation."],
+                                ["elite", "Elite", "Sharper market selection and angle research."],
+                            ] as const).map(([value, label, copy]) => (
+                                <button
+                                    key={value}
+                                    type="button"
+                                    onClick={() => setExecutionTier(value)}
+                                    className={`rounded-2xl border px-4 py-3 text-left transition ${
+                                        executionTier === value
+                                            ? "border-cyan-500/25 bg-cyan-500/10 text-cyan-100"
+                                            : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+                                    }`}
+                                >
+                                    <p className="text-sm font-black">{label}</p>
+                                    <p className="mt-1 text-xs leading-5 text-inherit/75">{copy}</p>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+
+                    <div className="mt-6 grid gap-6 xl:grid-cols-[1.15fr,0.85fr]">
+                        <div className="space-y-4">
+                            <div className="flex gap-2">
+                                {([
+                                    ["affiliate", "Affiliate Niche Research", <BadgeDollarSign key="a" className="w-4 h-4" />],
+                                    ["dropship", "Dropship Product Research", <ShoppingBag key="d" className="w-4 h-4" />],
+                                ] as const).map(([value, label, icon]) => (
+                                    <button
+                                        key={value}
+                                        type="button"
+                                        onClick={() => setResearchMode(value)}
+                                        className={`inline-flex items-center gap-2 rounded-2xl border px-4 py-2.5 text-sm font-black transition ${
+                                            researchMode === value
+                                                ? "border-cyan-500/25 bg-cyan-500/10 text-cyan-100"
+                                                : "border-white/[0.08] bg-white/[0.03] text-white/55 hover:text-white/75"
+                                        }`}
+                                    >
+                                        {icon}
+                                        {label}
+                                    </button>
+                                ))}
+                            </div>
+
+                            <div className="grid gap-3 md:grid-cols-2">
+                                <input
+                                    type="text"
+                                    value={researchNiche}
+                                    onChange={(e) => setResearchNiche(e.target.value)}
+                                    placeholder={researchMode === "affiliate" ? "Niche: weight loss, dogs, finance" : "Niche: home fitness, pets, kitchen"}
+                                    className="rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-cyan-400/40 focus:outline-none"
+                                />
+                                <input
+                                    type="text"
+                                    value={researchBudget}
+                                    onChange={(e) => setResearchBudget(e.target.value)}
+                                    placeholder="Budget: $500 test, $2k/mo, etc."
+                                    className="rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-cyan-400/40 focus:outline-none"
+                                />
+                            </div>
+
+                            <input
+                                type="text"
+                                value={researchExtra}
+                                onChange={(e) => setResearchExtra(e.target.value)}
+                                placeholder={researchMode === "affiliate" ? "Traffic source: Meta, TikTok, SEO, YouTube" : "Target market: US women 25-44, homeowners, etc."}
+                                className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-cyan-400/40 focus:outline-none"
+                            />
+
+                            <button
+                                onClick={() => void runResearch()}
+                                disabled={!researchNiche.trim() || researching}
+                                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                            >
+                                {researching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
+                                {researching ? "Researching..." : `Run ${executionTier === "elite" ? "Elite" : "Core"} Research`}
+                            </button>
+
+                            {researchError && (
+                                <div className="rounded-2xl border border-red-500/20 bg-red-500/10 px-4 py-3 text-sm text-red-200">
+                                    {researchError}
+                                </div>
+                            )}
+                        </div>
+
+                        <div className="rounded-2xl border border-white/[0.08] bg-black/20 p-5">
+                            {affiliateResearch ? (
+                                <div className="space-y-4">
+                                    <div>
+                                        <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-200/70">Affiliate Snapshot</p>
+                                        <p className="mt-2 text-lg font-black text-white">
+                                            {affiliateResearch.competitionLevel ? `${affiliateResearch.competitionLevel} competition` : "Research Ready"}
+                                        </p>
+                                        <p className="mt-1 text-sm text-emerald-300">
+                                            {affiliateResearch.estimatedEpc ?? "EPC estimate unavailable"}
+                                        </p>
+                                    </div>
+                                    {!!affiliateResearch.topNetworks?.length && (
+                                        <div>
+                                            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/30">Top Networks</p>
+                                            <div className="mt-3 space-y-2">
+                                                {affiliateResearch.topNetworks.slice(0, 3).map((network) => (
+                                                    <div key={network.network} className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-3">
+                                                        <p className="text-sm font-black text-white">{network.network}</p>
+                                                        <p className="mt-1 text-xs text-white/40">{network.avgComm ?? "Commission range not noted"}</p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                    {!!affiliateResearch.topNicheAngles?.length && (
+                                        <div>
+                                            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/30">Top Angles</p>
+                                            <ul className="mt-3 space-y-2">
+                                                {affiliateResearch.topNicheAngles.slice(0, 4).map((angle, index) => (
+                                                    <li key={index} className="text-xs leading-6 text-white/55">
+                                                        <span className="mr-2 text-cyan-300/60">{index + 1}.</span>
+                                                        {angle}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+                            ) : dropshipResearch ? (
+                                <div className="space-y-4">
+                                    <div>
+                                        <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-200/70">Dropship Snapshot</p>
+                                        <p className="mt-2 text-sm leading-7 text-white/55">
+                                            {dropshipResearch.marketAnalysis ?? "Market analysis ready."}
+                                        </p>
+                                    </div>
+                                    {!!dropshipResearch.productOpportunities?.length && (
+                                        <div>
+                                            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/30">Top Opportunities</p>
+                                            <div className="mt-3 space-y-2">
+                                                {dropshipResearch.productOpportunities.slice(0, 3).map((product) => (
+                                                    <div key={product.name} className="rounded-xl border border-white/[0.06] bg-white/[0.03] p-3">
+                                                        <div className="flex items-center justify-between gap-3">
+                                                            <p className="text-sm font-black text-white">{product.name}</p>
+                                                            <span className="text-xs font-black text-emerald-300">{product.winnerScore}/100</span>
+                                                        </div>
+                                                        <p className="mt-1 text-xs text-white/40">
+                                                            {product.estimatedMargin ?? "Margin TBD"} · {product.bestSupplierPlatform ?? "Supplier TBD"}
+                                                        </p>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
+                                    {!!dropshipResearch.trendingNow?.length && (
+                                        <div>
+                                            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/30">Trending Now</p>
+                                            <ul className="mt-3 space-y-2">
+                                                {dropshipResearch.trendingNow.slice(0, 4).map((trend, index) => (
+                                                    <li key={index} className="text-xs leading-6 text-white/55">
+                                                        <span className="mr-2 text-cyan-300/60">{index + 1}.</span>
+                                                        {trend}
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+                            ) : (
+                                <div className="flex h-full min-h-[260px] flex-col items-center justify-center text-center">
+                                    <Sparkles className="w-8 h-8 text-white/15" />
+                                    <p className="mt-4 text-sm font-bold text-white/45">Research results will show up here</p>
+                                    <p className="mt-2 max-w-sm text-xs leading-6 text-white/25">
+                                        Run affiliate or dropship research to get sharper market selection, angle ideas, and product/niche intelligence before you build.
+                                    </p>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                </div>
+
                 {/* Search bar */}
                 <div className="flex items-center gap-3 mb-6">
                     <div className="relative">

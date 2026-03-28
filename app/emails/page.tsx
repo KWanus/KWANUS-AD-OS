@@ -40,12 +40,14 @@ type TriggerType =
   | "custom";
 
 type FlowStatus = "draft" | "active" | "paused";
+type ExecutionTier = "core" | "elite";
 
 interface EmailFlow {
   id: string;
   name: string;
   trigger: TriggerType;
   status: FlowStatus;
+  triggerConfig?: { executionTier?: ExecutionTier };
   enrolled?: number;
   openRate?: number;
   revenue?: number;
@@ -247,6 +249,7 @@ function FlowCard({
   const router = useRouter();
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const executionTier: ExecutionTier = flow.triggerConfig?.executionTier === "core" ? "core" : "elite";
 
   async function handleDelete(e: React.MouseEvent) {
     e.stopPropagation();
@@ -271,6 +274,13 @@ function FlowCard({
           <div className="flex items-center gap-2 flex-wrap">
             <TriggerBadge trigger={flow.trigger} />
             <StatusBadge status={flow.status} />
+            <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.2em] ${
+              executionTier === "elite"
+                ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
+                : "border-white/10 bg-white/5 text-white/45"
+            }`}>
+              {executionTier}
+            </span>
           </div>
         </div>
         {confirmDelete ? (
@@ -397,6 +407,7 @@ function CreateFlowModal({
   const [creating, setCreating] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
 
   useEffect(() => {
     if (!open) {
@@ -405,6 +416,7 @@ function CreateFlowModal({
       setCreating(false);
       setError(null);
       setSelectedTemplate(null);
+      setExecutionTier("elite");
     }
   }, [open]);
 
@@ -433,6 +445,7 @@ function CreateFlowModal({
         body: JSON.stringify({
           name: name.trim(),
           trigger,
+          executionTier,
           nodes: tpl?.nodes ?? [],
           edges: tpl?.edges ?? [],
           tags: tpl?.tags ?? [],
@@ -529,6 +542,50 @@ function CreateFlowModal({
                   );
                 }
               )}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-3">
+              Execution Lane
+            </label>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              {[
+                {
+                  id: "core" as const,
+                  label: "Core",
+                  description: "Fast, strong automation work that ships cleanly.",
+                },
+                {
+                  id: "elite" as const,
+                  label: "Elite",
+                  description: "Sharper premium email systems with stronger persuasion and retention framing.",
+                },
+              ].map((tier) => {
+                const active = executionTier === tier.id;
+                return (
+                  <button
+                    key={tier.id}
+                    type="button"
+                    onClick={() => setExecutionTier(tier.id)}
+                    className={`rounded-2xl border p-4 text-left transition-all ${
+                      active
+                        ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                        : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <span className={`text-sm font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
+                      <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+                        {tier.id}
+                      </span>
+                    </div>
+                    <p className={`mt-2 text-xs leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+                      {tier.description}
+                    </p>
+                  </button>
+                );
+              })}
             </div>
           </div>
 
@@ -686,6 +743,7 @@ export default function EmailsPage() {
       body: JSON.stringify({
         name: businessProfile?.businessName ? `${businessProfile.businessName} — ${template.name}` : template.name,
         trigger: template.trigger,
+        executionTier: "elite",
         nodes: template.nodes ?? [],
         edges: template.edges ?? [],
         tags: template.tags ?? [],

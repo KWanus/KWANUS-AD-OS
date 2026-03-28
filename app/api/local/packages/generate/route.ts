@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
+import { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -51,6 +52,7 @@ export async function POST(req: NextRequest) {
       location: string;
       auditId?: string;
     };
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
 
     if (!niche || !location) {
       return NextResponse.json(
@@ -72,6 +74,11 @@ export async function POST(req: NextRequest) {
     const prompt = `Generate 3-tier agency service packages for a local business in the following market:
 Niche: ${niche}
 Location: ${location}
+Execution Tier: ${executionTier}
+
+${executionTier === "elite"
+  ? "Elite mode: build these like a premium local agency. Use stronger package contrast, sharper value ladders, better premium anchors, and clearer buyer-fit logic."
+  : "Core mode: produce strong practical local service packages with clean value separation and credible pricing."}
 
 Create pricing and deliverables that:
 - Are competitive with top 1% local marketing agencies in this market
@@ -144,7 +151,7 @@ Return this exact JSON structure:
       });
     }
 
-    return NextResponse.json({ ok: true, packages: created, raw: result });
+    return NextResponse.json({ ok: true, packages: created, raw: result, executionTier });
   } catch (err) {
     console.error("Packages generate POST error:", err);
     return NextResponse.json({ ok: false, error: "Failed to generate packages" }, { status: 500 });

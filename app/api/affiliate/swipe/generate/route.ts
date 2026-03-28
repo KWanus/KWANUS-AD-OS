@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
+import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -33,7 +34,8 @@ export async function POST(req: NextRequest) {
     const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } });
     if (!user) return NextResponse.json({ ok: false, error: "User not found" }, { status: 404 });
 
-    const body = await req.json() as { offerId: string };
+    const body = await req.json() as { offerId: string; executionTier?: ExecutionTier };
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
     if (!body.offerId) return NextResponse.json({ ok: false, error: "offerId is required" }, { status: 400 });
 
     const offer = await prisma.affiliateOffer.findFirst({
@@ -54,7 +56,11 @@ Offer:
 - URL: ${offer.url}
 ${offer.commission != null ? `- Commission: ${offer.commission}%` : ""}
 ${offer.affiliateUrl ? `- Affiliate URL: ${offer.affiliateUrl}` : ""}
-${offer.notes ? `- Notes: ${offer.notes}` : ""}${analysisContext}
+${offer.notes ? `- Notes: ${offer.notes}` : ""}
+Execution Tier: ${executionTier}
+${executionTier === "elite"
+  ? "Elite mode: write this like a top super-affiliate with better open-rate instincts, stronger sequencing, sharper urgency, and clearer psychological progression."
+  : "Core mode: write strong practical swipe copy with clear persuasion and clean sequencing."}${analysisContext}
 
 Return this exact JSON structure:
 {
@@ -99,7 +105,7 @@ Requirements:
       data: { swipeJson: swipe as object },
     });
 
-    return NextResponse.json({ ok: true, swipe, offerId: offer.id });
+    return NextResponse.json({ ok: true, swipe, offerId: offer.id, executionTier });
   } catch (err) {
     console.error("Swipe generate error:", err);
     return NextResponse.json({ ok: false, error: "Swipe file generation failed" }, { status: 500 });

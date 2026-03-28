@@ -54,6 +54,7 @@ type CreateSiteFromScanInput = {
   niche?: string;
   notes?: string;
   mode: SiteScanMode;
+  executionTier?: "core" | "elite";
   triggerN8n?: boolean;
 };
 
@@ -64,6 +65,7 @@ type CreateSiteFromScanResult = {
     slug: string;
     published: boolean;
   };
+  executionTier: "core" | "elite";
   source: {
     url: string;
     title: string;
@@ -467,16 +469,19 @@ async function triggerN8nSiteScan(payload: Record<string, unknown>) {
 }
 
 export async function createSiteFromScan(input: CreateSiteFromScanInput): Promise<CreateSiteFromScanResult> {
+  const executionTier = input.executionTier === "core" ? "core" : "elite";
   const siteInput = await buildSiteInputFromScan({
     businessName: input.siteName,
     niche: input.niche,
     location: input.notes?.match(/location:\s*([^\n]+)/i)?.[1],
     url: input.url,
+    executionTier,
     notes: input.notes,
   });
   const generated = await generateConversionSiteBlueprint(siteInput);
   const generationMetadata: SiteGenerationMetadata = {
     sourceMode: input.mode === "clone" ? "scan_clone" : "scan_improve",
+    executionTier,
     sourceUrl: siteInput.currentSite?.url,
     sourceTitle: siteInput.currentSite?.title,
     sourceHeadings: siteInput.currentSite?.headings ?? [],
@@ -500,7 +505,7 @@ export async function createSiteFromScan(input: CreateSiteFromScanInput): Promis
         : `Conversion-focused site draft generated from ${siteInput.currentSite?.url ?? input.url}`,
     blueprint: generated.blueprint,
     referenceImages: siteInput.currentSite?.images ?? [],
-    elevateVisuals: input.mode === "improve",
+    elevateVisuals: input.mode === "improve" || executionTier === "elite",
     generationMetadata,
   });
 
@@ -530,6 +535,7 @@ export async function createSiteFromScan(input: CreateSiteFromScanInput): Promis
 
   return {
     site: created.site,
+    executionTier,
     source: {
       url: currentSite?.url ?? input.url,
       title: currentSite?.title ?? siteInput.businessName,

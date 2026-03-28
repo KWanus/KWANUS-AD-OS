@@ -16,6 +16,7 @@ import {
 type BusinessModel = "affiliate" | "dropship";
 type Step = "intro" | "model" | 1 | 2 | 3 | "loading" | "result";
 type AffPlatform = "tiktok" | "facebook" | "youtube" | "organic";
+type ExecutionTier = "core" | "elite";
 
 const BUDGET_OPTIONS = [
   { value: 10, label: "$10/day", sub: "Start small, learn fast" },
@@ -54,9 +55,59 @@ const LOADING_MESSAGES = [
   "Almost ready...",
 ];
 
+function ExecutionTierPicker({
+  value,
+  onChange,
+}: {
+  value: ExecutionTier;
+  onChange: (tier: ExecutionTier) => void;
+}) {
+  return (
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {[
+        {
+          id: "core" as const,
+          label: "Core",
+          description: "Strong starter kit with practical, operator-ready execution.",
+        },
+        {
+          id: "elite" as const,
+          label: "Elite",
+          description: "Sharper premium launch kit with stronger positioning and follow-through.",
+        },
+      ].map((tier) => {
+        const active = value === tier.id;
+        return (
+          <button
+            key={tier.id}
+            type="button"
+            onClick={() => onChange(tier.id)}
+            className={`rounded-2xl border p-4 text-left transition-all ${
+              active
+                ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
+            }`}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <span className={`text-sm font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
+              <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+                {tier.id}
+              </span>
+            </div>
+            <p className={`mt-2 text-xs leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+              {tier.description}
+            </p>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 export default function StartPage() {
   const [step, setStep] = useState<Step>("intro");
   const [model, setModel] = useState<BusinessModel>("affiliate");
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
 
   // Affiliate state
   const [affNiche, setAffNiche] = useState<string>("");
@@ -175,6 +226,11 @@ export default function StartPage() {
                   </div>
                 ))}
               </div>
+            </div>
+
+            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+              <p className="text-xs uppercase tracking-widest text-white/30 mb-4">Execution Lane</p>
+              <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
             </div>
 
             <button
@@ -375,6 +431,7 @@ export default function StartPage() {
             budget={affBudget}
             platform={affPlatform as AffPlatform}
             nicheName={selectedAffNiche?.label ?? ""}
+            executionTier={executionTier}
             onSwitch={setPickedOffer}
             onReset={handleReset}
           />
@@ -387,6 +444,7 @@ export default function StartPage() {
             alts={altProducts}
             budget={dropBudget}
             platform={dropPlatform as DropPlatform}
+            executionTier={executionTier}
             onSwitch={setPickedProduct}
             onReset={handleReset}
           />
@@ -401,13 +459,14 @@ export default function StartPage() {
 // ─────────────────────────────────────────────
 
 function AffiliateResult({
-  offer, allOffers, budget, platform, nicheName, onSwitch, onReset,
+  offer, allOffers, budget, platform, nicheName, executionTier, onSwitch, onReset,
 }: {
   offer: CuratedOffer;
   allOffers: CuratedOffer[];
   budget: number;
   platform: AffPlatform;
   nicheName: string;
+  executionTier: ExecutionTier;
   onSwitch: (o: CuratedOffer) => void;
   onReset: () => void;
 }) {
@@ -427,6 +486,7 @@ function AffiliateResult({
           productName: offer.name,
           productUrl: offer.networkUrl,
           assets: {
+            executionTier,
             adHooks: [{ format: "Proven Hook", hook: offer.provenHook }],
             executionChecklist: {
               day1: [
@@ -457,6 +517,9 @@ function AffiliateResult({
         <p className="text-xs text-white/30 mt-2 italic">
           Picked for {nicheName.toLowerCase()} at ${budget}/day on {platformLabel}.
         </p>
+        <div className="mt-3 inline-flex rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300">
+          {executionTier} lane
+        </div>
         <div className="mt-4 grid grid-cols-2 gap-3">
           <Stat label="You earn per sale" value={offer.avgCommission} />
           <Stat label="EPC (per click)" value={offer.avgEpc} />
@@ -529,7 +592,7 @@ function AffiliateResult({
         )}
       </div>
 
-      <DeepDiveCTA />
+      <DeepDiveCTA executionTier={executionTier} />
       <ResetButton onReset={onReset} />
     </div>
   );
@@ -540,12 +603,13 @@ function AffiliateResult({
 // ─────────────────────────────────────────────
 
 function DropshipResult({
-  product, alts, budget, platform, onSwitch, onReset,
+  product, alts, budget, platform, executionTier, onSwitch, onReset,
 }: {
   product: ProductEntry;
   alts: ProductEntry[];
   budget: number;
   platform: DropPlatform;
+  executionTier: ExecutionTier;
   onSwitch: (p: ProductEntry) => void;
   onReset: () => void;
 }) {
@@ -567,6 +631,7 @@ function DropshipResult({
           mode: "saas",
           productName: product.name,
           assets: {
+            executionTier,
             adHooks: [{ format: "Proven Hook", hook: product.marketing.primaryHook }],
             executionChecklist: {
               day1: [
@@ -598,6 +663,9 @@ function DropshipResult({
         <p className="text-xs text-white/30 mt-2 italic">
           Beginner score {product.beginnerScore}/10 · Picked for {platformLabel} at ${budget}/day.
         </p>
+        <div className="mt-3 inline-flex rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300">
+          {executionTier} lane
+        </div>
         <div className="mt-4 grid grid-cols-2 gap-3">
           <Stat label="You sell for" value={`$${price}`} />
           <Stat label="Your cost" value={`~$${cogs} + shipping`} />
@@ -693,7 +761,7 @@ function DropshipResult({
         )}
       </div>
 
-      <DeepDiveCTA />
+      <DeepDiveCTA executionTier={executionTier} />
       <ResetButton onReset={onReset} />
     </div>
   );
@@ -743,14 +811,14 @@ function DayOnePlan({ budget, platform, network, platformLabel, isDropship, sear
   );
 }
 
-function DeepDiveCTA() {
+function DeepDiveCTA({ executionTier }: { executionTier: ExecutionTier }) {
   return (
     <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
       <p className="text-sm font-semibold text-white mb-1">Want the full package?</p>
       <p className="text-xs text-white/40 mb-4">
         Paste the product or offer page into Analyze to get full ad scripts, email sequences, landing page copy, and a 2-week checklist — built specifically for what you picked.
       </p>
-      <Link href="/analyze"
+      <Link href={`/analyze?execution_tier=${executionTier}`}
         className="block w-full rounded-xl bg-cyan-500 hover:bg-cyan-400 px-6 py-3 text-sm font-semibold text-[#0a0f1e] transition text-center">
         Get My Full Launch Package →
       </Link>
