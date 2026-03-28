@@ -190,7 +190,7 @@ function ScanPageInner() {
   const searchParams = useSearchParams();
   const [mode, setMode] = useState<ScanMode>("consultant");
   const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
-  const [url, setUrl] = useState("");
+  const [url, setUrl] = useState(searchParams.get("prefill") ?? "");
   const [businessProfile, setBusinessProfile] = useState<BusinessProfileSummary | null>(null);
   const [osStats, setOsStats] = useState<StatsSummary | null>(null);
   const [loading, setLoading] = useState(false);

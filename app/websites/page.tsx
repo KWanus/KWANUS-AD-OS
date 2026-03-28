@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Globe, Loader2, Settings, ExternalLink, Sparkles, Copy, Check, BotMessageSquare, Radar, Wand2, Megaphone } from "lucide-react";
+import { Plus, Globe, Loader2, Settings, ExternalLink, Sparkles, Copy, Check, BotMessageSquare, Radar, Wand2, Megaphone, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import AppNav from "@/components/AppNav";
@@ -909,6 +909,19 @@ export default function WebsitesDashboard() {
                                         </div>
 
                                         <div className="flex gap-2">
+                                            <button
+                                                onClick={async (e) => {
+                                                    e.stopPropagation();
+                                                    if (!confirm(`Delete "${site.name}"? This cannot be undone.`)) return;
+                                                    try {
+                                                        await fetch(`/api/sites/${site.id}`, { method: "DELETE" });
+                                                        setSites(prev => prev.filter(s => s.id !== site.id));
+                                                    } catch { /* non-fatal */ }
+                                                }}
+                                                className="p-2 rounded-xl bg-white/[0.04] hover:bg-red-500/10 border border-white/[0.06] hover:border-red-500/20 text-white/20 hover:text-red-400 transition"
+                                            >
+                                                <Trash2 className="w-4 h-4" />
+                                            </button>
                                             <Link href={`/websites/${site.id}`}
                                                 className="p-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.06] text-white/40 hover:text-white transition">
                                                 <Settings className="w-4 h-4" />
