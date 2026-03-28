@@ -8,7 +8,7 @@ import dynamic from "next/dynamic";
 import NotificationBell from "@/components/NotificationBell";
 import {
   LayoutDashboard, Globe, Mail, Users, Settings, Zap,
-  ScanSearch, Sparkles, FolderOpen, ChevronDown,
+  ScanSearch, Sparkles, FolderOpen, ChevronDown, Search,
   Briefcase, MapPin, TrendingUp, ShoppingCart, Building,
   Package, BotMessageSquare, Building2,
 } from "lucide-react";
@@ -189,6 +189,17 @@ export default function AppNav() {
 
         {/* Right side */}
         <div className="flex items-center gap-2 shrink-0">
+          {/* Search trigger */}
+          {isSignedIn && (
+            <button
+              onClick={() => window.dispatchEvent(new Event("open-global-search"))}
+              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl border border-white/[0.06] bg-white/[0.02] text-white/25 hover:text-white/50 hover:border-white/[0.12] transition text-xs"
+            >
+              <Search className="w-3 h-3" />
+              <span>Search</span>
+              <kbd className="px-1 py-0.5 rounded bg-white/[0.06] border border-white/[0.08] text-[9px] font-mono text-white/30">/</kbd>
+            </button>
+          )}
           <CreditsDisplay />
           {isSignedIn && <NotificationBell />}
           {isSignedIn && (

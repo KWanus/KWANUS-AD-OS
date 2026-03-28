@@ -59,6 +59,13 @@ export default function GlobalSearch() {
     setOpen(true);
   });
 
+  // Allow opening from other components via custom event
+  useEffect(() => {
+    function handleOpen() { setOpen(true); }
+    window.addEventListener("open-global-search", handleOpen);
+    return () => window.removeEventListener("open-global-search", handleOpen);
+  }, []);
+
   useEffect(() => {
     if (open) {
       setTimeout(() => inputRef.current?.focus(), 50);
