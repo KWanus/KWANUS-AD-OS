@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
+import { getOrCreateUser } from "@/lib/auth";
 import { generateAdHooks } from "@/src/logic/ad-os/generateAdHooks";
 import { generateAdScripts } from "@/src/logic/ad-os/generateAdScripts";
 import { generateAdBriefs } from "@/src/logic/ad-os/generateAdBriefs";
@@ -21,13 +23,18 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { userId: clerkId } = await auth();
+    if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    const user = await getOrCreateUser();
+    if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
     const { id } = await params;
     const body = await req.json() as { type?: GenerateType };
     const type: GenerateType = body.type ?? "all";
 
     // Load campaign + analysis data
     const campaign = await prisma.campaign.findUnique({
-      where: { id },
+      where: { id, userId: user.id },
       include: {
         analysisRun: {
           select: {

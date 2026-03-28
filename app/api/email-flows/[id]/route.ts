@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
+import { getOrCreateUser } from "@/lib/auth";
 import { isDatabaseUnavailable } from "@/lib/db/runtime";
 
 export async function GET(
@@ -8,7 +10,12 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const flow = await prisma.emailFlow.findUnique({ where: { id } });
+    const { userId: clerkId } = await auth();
+    if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    const user = await getOrCreateUser();
+    if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    const flow = await prisma.emailFlow.findFirst({ where: { id, userId: user.id } });
     if (!flow) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
     return NextResponse.json({ ok: true, flow });
   } catch (err) {
@@ -26,6 +33,15 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
+    const { userId: clerkId } = await auth();
+    if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    const user = await getOrCreateUser();
+    if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    // Verify ownership
+    const existing = await prisma.emailFlow.findFirst({ where: { id, userId: user.id } });
+    if (!existing) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
+
     const body = await req.json() as {
       name?: string;
       trigger?: string;
@@ -60,7 +76,12 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    await prisma.emailFlow.delete({ where: { id } });
+    const { userId: clerkId } = await auth();
+    if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    const user = await getOrCreateUser();
+    if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    await prisma.emailFlow.deleteMany({ where: { id, userId: user.id } });
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("EmailFlow DELETE:", err);
