@@ -28,7 +28,7 @@ export async function PATCH(
     };
 
     const variation = await prisma.adVariation.update({
-      where: { id: vid },
+      where: { id: vid, campaignId: id },
       data: {
         ...(body.status !== undefined && { status: body.status }),
         ...(body.name !== undefined && { name: body.name }),
@@ -61,7 +61,7 @@ export async function DELETE(
 
     const campaign = await prisma.campaign.findFirst({ where: { id, userId: user.id } });
     if (!campaign) return NextResponse.json({ ok: false, error: "Campaign not found" }, { status: 404 });
-    await prisma.adVariation.delete({ where: { id: vid } });
+    await prisma.adVariation.delete({ where: { id: vid, campaignId: id } });
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Variation DELETE error:", err);

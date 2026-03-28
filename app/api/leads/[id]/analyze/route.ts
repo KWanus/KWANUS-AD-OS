@@ -33,12 +33,12 @@ export async function POST(
     const body = await req.json() as { executionTier?: ExecutionTier };
     const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
 
-    await prisma.lead.update({ where: { id }, data: { status: "analyzing" } });
+    await prisma.lead.update({ where: { id, userId: user.id }, data: { status: "analyzing" } });
 
     // No website → score as zero digital presence (huge opportunity)
     if (!lead.website) {
       await prisma.lead.update({
-        where: { id },
+        where: { id, userId: user.id },
         data: {
           status: "analyzed",
           score: 18,
@@ -58,7 +58,7 @@ export async function POST(
 
     const input = normalizeInput(lead.website, "consultant");
     if (!input.valid) {
-      await prisma.lead.update({ where: { id }, data: { status: "analyzed", score: 0, verdict: "Invalid URL" } });
+      await prisma.lead.update({ where: { id, userId: user.id }, data: { status: "analyzed", score: 0, verdict: "Invalid URL" } });
       return NextResponse.json({ ok: true });
     }
 
@@ -70,7 +70,7 @@ export async function POST(
 
     if (!page) {
       await prisma.lead.update({
-        where: { id },
+        where: { id, userId: user.id },
         data: {
           status: "analyzed",
           score: 15,
@@ -98,7 +98,7 @@ export async function POST(
     const opportunityPacket = buildOpportunityPacket(classified, dimensions, gaps, recommendation);
 
     await prisma.lead.update({
-      where: { id },
+      where: { id, userId: user.id },
       data: {
         status: "analyzed",
         score: scoreResult.total,
@@ -122,7 +122,7 @@ export async function POST(
     return NextResponse.json({ ok: true, score: scoreResult.total, verdict: scoreResult.verdict, executionTier });
   } catch (err) {
     console.error("Lead analyze error:", err);
-    await prisma.lead.update({ where: { id }, data: { status: "new" } }).catch(() => null);
+    await prisma.lead.update({ where: { id, userId: user.id }, data: { status: "new" } }).catch(() => null);
     return NextResponse.json({ ok: false, error: "Analysis failed" }, { status: 500 });
   }
 }

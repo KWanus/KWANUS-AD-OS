@@ -73,6 +73,13 @@ export async function PATCH(
       workflowState?: Prisma.InputJsonValue;
     };
 
+    // Verify ownership first, then update — include userId in WHERE to prevent cross-tenant writes
+    const existing = await prisma.campaign.findFirst({
+      where: { id, userId: user.id },
+      select: { id: true },
+    });
+    if (!existing) return NextResponse.json({ ok: false, error: "Campaign not found" }, { status: 404 });
+
     const campaign = await prisma.campaign.update({
       where: { id },
       data: {

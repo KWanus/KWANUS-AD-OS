@@ -95,8 +95,16 @@ export async function DELETE(
       return NextResponse.json({ ok: true });
     }
 
-    const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } });
-    if (!user) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
+    const user = await getOrCreateUser();
+    if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    // Verify ownership before archiving
+    const product = await prisma.product.findFirst({
+      where: { id, userId: user.id },
+      select: { id: true },
+    });
+    if (!product) return NextResponse.json({ ok: false, error: "Product not found" }, { status: 404 });
+
     await prisma.product.update({ where: { id }, data: { status: "archived" } });
     return NextResponse.json({ ok: true });
   } catch (err) {

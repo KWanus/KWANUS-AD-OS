@@ -27,7 +27,7 @@ export async function PATCH(
       order?: number;
     };
 
-    await prisma.sitePage.updateMany({
+    const result = await prisma.sitePage.updateMany({
       where: { id: pageId, siteId },
       data: {
         ...(body.title !== undefined && { title: body.title }),
@@ -39,6 +39,9 @@ export async function PATCH(
       },
     });
 
+    if (result.count === 0) {
+      return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
+    }
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Page PATCH:", err);

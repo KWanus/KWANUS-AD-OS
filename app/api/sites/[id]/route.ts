@@ -54,7 +54,7 @@ export async function PATCH(
       published?: boolean;
     };
 
-    await prisma.site.updateMany({
+    const result = await prisma.site.updateMany({
       where: { id, userId: user.id },
       data: {
         ...(body.name !== undefined && { name: body.name }),
@@ -66,6 +66,9 @@ export async function PATCH(
       },
     });
 
+    if (result.count === 0) {
+      return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
+    }
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Site PATCH:", err);

@@ -26,7 +26,7 @@ export async function PATCH(
     };
 
     const email = await prisma.emailDraft.update({
-      where: { id: eid },
+      where: { id: eid, campaignId: id },
       data: {
         ...(body.subject !== undefined && { subject: body.subject }),
         ...(body.preview !== undefined && { preview: body.preview }),

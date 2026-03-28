@@ -21,7 +21,7 @@ export async function PATCH(
     const body = await req.json() as { done?: boolean; text?: string };
 
     const item = await prisma.checklistItem.update({
-      where: { id: cid },
+      where: { id: cid, campaignId: id },
       data: {
         ...(body.done !== undefined && { done: body.done }),
         ...(body.text !== undefined && { text: body.text }),
