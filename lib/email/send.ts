@@ -52,7 +52,7 @@ function wrapHtml(body: string, fromName?: string): string {
 <div class="wrapper">
   <div class="content">${body}</div>
   <div class="footer">
-    Sent by ${fromName ?? "KWANUS"} via KWANUS AD OS &middot;
+    Sent by ${escapeHtml(fromName ?? "KWANUS")} via KWANUS AD OS &middot;
     <a href="{{unsubscribe_url}}" style="color:#999">Unsubscribe</a>
   </div>
 </div>

@@ -1,12 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import { getOrCreateUser } from "@/lib/auth";
+import { getOrCreateUser, deductCredits } from "@/lib/auth";
 import { runSkill } from "@/lib/skills/executor";
 import { getSkill } from "@/lib/skills/registry";
 import { prisma } from "@/lib/prisma";
 import { runWebsiteBuilderScout } from "@/lib/skills/websiteBuilderScout";
 import { runAdCampaignSkill } from "@/lib/skills/adCampaignSkill";
 import { runEmailCampaignSkill } from "@/lib/skills/emailCampaignSkill";
+
+const BODY_SIZE_LIMIT = 32 * 1024; // 32 KB
+const MAX_FIELD_LENGTH = 5_000;    // per input string
 
 // Slugs handled by the analysis-pipeline executor (not Claude AI executor)
 const PIPELINE_SKILLS = new Set(["website-builder-scout", "ad-campaign", "email-campaign"]);
@@ -26,15 +29,35 @@ export async function POST(
     const skill = getSkill(slug);
     if (!skill) return NextResponse.json({ ok: false, error: "Skill not found" }, { status: 404 });
 
-    // Check credits
-    if (user.credits < skill.credits) {
+    // Body size guard
+    const contentLength = parseInt(req.headers.get("content-length") ?? "0", 10);
+    if (contentLength > BODY_SIZE_LIMIT) {
+      return NextResponse.json({ ok: false, error: "Request body too large" }, { status: 413 });
+    }
+
+    const rawInput = await req.json() as Record<string, unknown>;
+
+    // Validate all string fields are within length limits
+    for (const [key, val] of Object.entries(rawInput)) {
+      if (typeof val === "string" && val.length > MAX_FIELD_LENGTH) {
+        return NextResponse.json(
+          { ok: false, error: `Field "${key}" exceeds the ${MAX_FIELD_LENGTH}-character limit` },
+          { status: 400 }
+        );
+      }
+    }
+
+    // Atomic credit check + deduction (prevents race condition)
+    try {
+      await deductCredits(skill.credits);
+    } catch {
       return NextResponse.json(
         { ok: false, error: `Not enough credits. This skill costs ${skill.credits} credits.` },
         { status: 402 }
       );
     }
 
-    const input = await req.json() as Record<string, string>;
+    const input = rawInput as Record<string, string>;
     const executionTier = input.executionTier === "core" ? "core" : "elite";
     const profile = await prisma.businessProfile.findUnique({ where: { userId: user.id } });
     const enrichedInput: Record<string, string> = {
@@ -58,12 +81,6 @@ export async function POST(
       }
     }
 
-    // Deduct credits
-    await prisma.user.update({
-      where: { id: user.id },
-      data: { credits: { decrement: skill.credits } },
-    });
-
     // Run the skill — pipeline skills use the analysis engine, others use the AI executor
     let result;
     if (PIPELINE_SKILLS.has(slug)) {
@@ -79,11 +96,11 @@ export async function POST(
     }
 
     if (!result.ok) {
-      // Refund credits on failure
+      // Refund credits on skill failure — increment is always safe (no race condition risk)
       await prisma.user.update({
         where: { id: user.id },
         data: { credits: { increment: skill.credits } },
-      });
+      }).catch(() => null); // non-fatal: credit refund failure should not mask the skill error
     }
 
     return NextResponse.json(result);

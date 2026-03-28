@@ -45,7 +45,7 @@ export async function POST(
       return NextResponse.json({ ok: false, error: "Campaign not found" }, { status: 404 });
     }
 
-    const body = await req.json().catch(() => ({})) as { phase?: number; status?: string };
+    const body = await req.json() as { phase?: number; status?: string };
 
     const currentPhase = campaign.currentPhase ?? 1;
     const nextPhase = body.phase ?? Math.min(currentPhase + 1, 5);

@@ -42,7 +42,11 @@ export async function POST(
 
     const resend = new Resend(resendKey);
     const fromEmail = user.sendingFromEmail ?? "onboarding@resend.dev";
-    const fromName = user.sendingFromName ?? "Himalaya";
+    // Strip characters that could break the RFC 5322 "Name <email>" header format
+    const fromName = (user.sendingFromName ?? "Himalaya")
+      .replace(/[<>"\\]/g, "")
+      .trim()
+      .slice(0, 100) || "Himalaya";
 
     const emailBody = body.customBody ?? outreachEmail.body;
 

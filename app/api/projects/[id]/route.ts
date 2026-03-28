@@ -47,15 +47,29 @@ export async function PATCH(
     if (!user) return NextResponse.json({ ok: false, message: "Unauthorized" }, { status: 401 });
 
     const { id } = await params;
-    const updates = await req.json() as Record<string, unknown>;
+    const body = await req.json() as Record<string, unknown>;
+
+    // Whitelist updatable fields — never allow userId, id, or internal state fields
+    const ALLOWED_FIELDS = [
+      "name", "status", "notes", "currentPhase", "workflowState",
+      "productName", "productUrl", "sourceUrl", "sourceType",
+    ] as const;
+    type AllowedKey = (typeof ALLOWED_FIELDS)[number];
+    const data: Partial<Record<AllowedKey, unknown>> = {};
+    for (const key of ALLOWED_FIELDS) {
+      if (key in body) data[key] = body[key];
+    }
+
+    // findFirst + userId ensures the user owns this project
     const existing = await prisma.campaign.findFirst({
       where: { id, userId: user.id },
       select: { id: true },
     });
     if (!existing) return NextResponse.json({ ok: false, message: "Project not found" }, { status: 404 });
+
     const project = await prisma.campaign.update({
       where: { id },
-      data: updates,
+      data,
     });
 
     return NextResponse.json({ ok: true, project });

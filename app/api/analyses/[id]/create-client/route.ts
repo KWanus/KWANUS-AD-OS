@@ -28,7 +28,7 @@ export async function POST(
       return NextResponse.json({ ok: false, error: "Analysis not found" }, { status: 404 });
     }
 
-    const body = await req.json().catch(() => ({})) as {
+    const body = await req.json() as {
       name?: string;
       pipelineStage?: string;
       dealValue?: number;

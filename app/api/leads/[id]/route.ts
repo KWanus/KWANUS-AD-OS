@@ -48,10 +48,20 @@ export async function PATCH(
       emailReplied: boolean;
     }>;
 
+    // Whitelist: only allow these fields to be updated
+    const ALLOWED_FIELDS = ["status", "email", "notes", "emailOpened", "emailReplied"] as const;
+    type AllowedKey = (typeof ALLOWED_FIELDS)[number];
+    const data: Partial<Record<AllowedKey, unknown>> = {};
+    for (const key of ALLOWED_FIELDS) {
+      if (key in body) data[key] = body[key as keyof typeof body];
+    }
+
+    // Include userId in WHERE so users can only update their own leads
     const lead = await prisma.lead.update({
-      where: { id },
-      data: body,
+      where: { id, userId: user.id },
+      data,
     });
+    if (!lead) return NextResponse.json({ ok: false, error: "Lead not found" }, { status: 404 });
 
     return NextResponse.json({ ok: true, lead });
   } catch (err) {

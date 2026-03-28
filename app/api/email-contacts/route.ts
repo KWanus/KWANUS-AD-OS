@@ -59,13 +59,15 @@ export async function GET(req: NextRequest) {
       prisma.emailContact.count({ where }),
     ]);
 
-    // Get unique tags across all contacts
-    const allContacts = await prisma.emailContact.findMany({
+    // Collect unique tags from a capped sample — avoid loading all contacts into memory
+    const tagSample = await prisma.emailContact.findMany({
       where: { userId: user.id },
       select: { tags: true },
+      take: 2000,
+      orderBy: { createdAt: "desc" },
     });
     const allTags = [
-      ...new Set(allContacts.flatMap((c: { tags: string[] }) => visibleTags(c.tags))),
+      ...new Set(tagSample.flatMap((c: { tags: string[] }) => visibleTags(c.tags))),
     ].sort();
 
     return NextResponse.json({

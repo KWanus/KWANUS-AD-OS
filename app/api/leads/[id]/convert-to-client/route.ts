@@ -41,16 +41,28 @@ export async function POST(
       }, { status: 409 });
     }
 
-    const body = await req.json().catch(() => ({})) as {
+    const body = await req.json() as {
       pipelineStage?: string;
       dealValue?: number;
       tags?: string[];
     };
 
+    const ALLOWED_STAGES = ["lead", "qualified", "prospect", "proposal", "negotiation", "won", "lost"] as const;
+    const pipelineStage = ALLOWED_STAGES.includes(body.pipelineStage as never)
+      ? body.pipelineStage!
+      : "qualified";
+
+    if (body.dealValue !== undefined && body.dealValue !== null) {
+      if (typeof body.dealValue !== "number" || !isFinite(body.dealValue) || body.dealValue < 0) {
+        return NextResponse.json({ ok: false, error: "dealValue must be a non-negative number" }, { status: 400 });
+      }
+    }
+    const dealValue = body.dealValue ?? undefined;
+
     const { score, status } = computeHealthScore({
-      lastContactAt: new Date(), // just converted = just contacted
-      pipelineStage: body.pipelineStage ?? "qualified",
-      dealValue: body.dealValue,
+      lastContactAt: new Date(),
+      pipelineStage,
+      dealValue,
       createdAt: new Date(),
     });
 
@@ -63,9 +75,9 @@ export async function POST(
         company: lead.name,
         website: lead.website ?? undefined,
         niche: lead.niche ?? undefined,
-        pipelineStage: body.pipelineStage ?? "qualified",
-        dealValue: body.dealValue ?? undefined,
-        tags: body.tags ?? ["converted-from-lead"],
+        pipelineStage,
+        dealValue,
+        tags: Array.isArray(body.tags) ? body.tags.slice(0, 20) : ["converted-from-lead"],
         healthScore: score,
         healthStatus: status,
         lastContactAt: new Date(),

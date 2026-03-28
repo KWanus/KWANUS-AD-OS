@@ -55,7 +55,7 @@ export async function POST(
 
     const lead = await prisma.lead.findFirst({ where: { id, userId: user.id } });
     if (!lead) return NextResponse.json({ ok: false, error: "Lead not found" }, { status: 404 });
-    const body = await req.json().catch(() => ({})) as { executionTier?: ExecutionTier };
+    const body = await req.json() as { executionTier?: ExecutionTier };
     const storedExecutionTier =
       ((lead.analyzerJson as { executionTier?: ExecutionTier } | null | undefined)?.executionTier === "core"
         ? "core"

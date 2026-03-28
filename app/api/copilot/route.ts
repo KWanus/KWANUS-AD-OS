@@ -357,8 +357,20 @@ export async function POST(req: NextRequest) {
     };
     const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
 
-    if (!body.messages?.length) {
+    if (!Array.isArray(body.messages) || body.messages.length === 0) {
       return NextResponse.json({ ok: false, error: "No messages" }, { status: 400 });
+    }
+
+    // Guard against oversized conversation history
+    const MAX_MESSAGES = 50;
+    const MAX_MSG_LENGTH = 10_000;
+    if (body.messages.length > MAX_MESSAGES) {
+      return NextResponse.json({ ok: false, error: `Conversation exceeds ${MAX_MESSAGES} messages` }, { status: 400 });
+    }
+    for (const msg of body.messages) {
+      if (typeof msg.content === "string" && msg.content.length > MAX_MSG_LENGTH) {
+        return NextResponse.json({ ok: false, error: `Message exceeds ${MAX_MSG_LENGTH}-character limit` }, { status: 400 });
+      }
     }
 
     // Resolve internal user ID for DB queries
