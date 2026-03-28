@@ -503,6 +503,20 @@ model WebhookLog {
   @@index([source, createdAt])
 }
 
+// ─── Credit Usage Log ─────────────────────────────────────────────────────────
+
+model CreditLog {
+  id        String   @id @default(cuid())
+  userId    String
+  amount    Int      // positive = credit added, negative = credit used
+  balance   Int      // balance after this transaction
+  action    String   // skill_run | purchase | refund | admin | signup_bonus
+  detail    String?  // e.g. "ad-copy skill" or "Growth bundle ($29)"
+  createdAt DateTime @default(now())
+
+  @@index([userId, createdAt])
+}
+
 // ─── Agency Lead Engine ────────────────────────────────────────────────────────
 
 model Lead {
