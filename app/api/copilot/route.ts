@@ -298,6 +298,13 @@ Rules:
 
 export async function POST(req: NextRequest) {
   try {
+    if (!process.env.ANTHROPIC_API_KEY) {
+      return NextResponse.json(
+        { ok: false, error: "AI service not configured. Please set ANTHROPIC_API_KEY in your environment." },
+        { status: 503 }
+      );
+    }
+
     const { userId: clerkId } = await auth();
     if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 

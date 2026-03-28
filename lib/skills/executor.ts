@@ -373,6 +373,10 @@ export async function runSkill(
   }
 
   try {
+    if (!process.env.ANTHROPIC_API_KEY) {
+      return { ok: false, skill: slug, summary: "", created: {}, data: {}, error: "AI service not configured. Please set ANTHROPIC_API_KEY." };
+    }
+
     // Use centralized prompt library if available, fallback to inline prompts
     const prompt = hasSkillPrompt(slug) ? getSkillPrompt(slug, input) : buildPrompt(slug, input);
     const businessContext = await getBusinessContext(userId);
