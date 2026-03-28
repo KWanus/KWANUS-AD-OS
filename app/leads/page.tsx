@@ -24,6 +24,7 @@ import {
   Star,
   Zap,
 } from "lucide-react";
+import { toast } from "sonner";
 
 type Lead = {
   id: string;
@@ -304,6 +305,9 @@ export default function LeadsPage() {
         setError(data.error ?? "Search failed");
       } else {
         setSearchResult(data);
+        if (data.ok) {
+          toast.success(`Found ${data.found} businesses${data.isDemo ? " (demo mode)" : ""}`);
+        }
         await fetchLeads();
       }
     } catch {
