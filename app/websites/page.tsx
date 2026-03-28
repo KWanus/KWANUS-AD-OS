@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { Plus, Globe, Loader2, Settings, ExternalLink, Sparkles, Copy, Check, BotMessageSquare, Radar, Wand2, Megaphone, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
 import Link from "next/link";
 import AppNav from "@/components/AppNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
@@ -915,8 +916,13 @@ export default function WebsitesDashboard() {
                                                     try {
                                                         const res = await fetch(`/api/sites/${site.id}/clone`, { method: "POST" });
                                                         const data = await res.json() as { ok: boolean; site?: { id: string } };
-                                                        if (data.ok && data.site) router.push(`/websites/${data.site.id}`);
-                                                    } catch { /* non-fatal */ }
+                                                        if (data.ok && data.site) {
+                                                            toast.success("Site duplicated");
+                                                            router.push(`/websites/${data.site.id}`);
+                                                        } else {
+                                                            toast.error("Failed to duplicate site");
+                                                        }
+                                                    } catch { toast.error("Failed to duplicate"); }
                                                 }}
                                                 className="p-2 rounded-xl bg-white/[0.04] hover:bg-cyan-500/10 border border-white/[0.06] hover:border-cyan-500/20 text-white/20 hover:text-cyan-400 transition"
                                                 title="Duplicate site"
@@ -928,9 +934,11 @@ export default function WebsitesDashboard() {
                                                     e.stopPropagation();
                                                     if (!confirm(`Delete "${site.name}"? This cannot be undone.`)) return;
                                                     try {
-                                                        await fetch(`/api/sites/${site.id}`, { method: "DELETE" });
+                                                        const res = await fetch(`/api/sites/${site.id}`, { method: "DELETE" });
+                                                        if (!res.ok) throw new Error();
                                                         setSites(prev => prev.filter(s => s.id !== site.id));
-                                                    } catch { /* non-fatal */ }
+                                                        toast.success("Site deleted");
+                                                    } catch { toast.error("Failed to delete site"); }
                                                 }}
                                                 className="p-2 rounded-xl bg-white/[0.04] hover:bg-red-500/10 border border-white/[0.06] hover:border-red-500/20 text-white/20 hover:text-red-400 transition"
                                             >
