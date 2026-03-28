@@ -1,13 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
+import { getOrCreateUser } from "@/lib/auth";
 import { isDatabaseUnavailable } from "@/lib/db/runtime";
 
 // GET /api/campaigns — list campaigns scoped to user
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
-    const userId = req.headers.get("x-user-id");
+    const { userId: clerkId } = await auth();
+    if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    const user = await getOrCreateUser();
+    if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
     const campaigns = await prisma.campaign.findMany({
-      where: userId ? { userId } : {},
+      where: { userId: user.id },
       orderBy: { createdAt: "desc" },
       include: {
         _count: {
@@ -87,7 +93,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "Name is required" }, { status: 400 });
     }
 
-    const userId = req.headers.get("x-user-id");
+    const { userId: clerkId } = await auth();
+    if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    const user = await getOrCreateUser();
+    if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 
     // Create campaign
     const campaign = await prisma.campaign.create({
@@ -97,7 +106,7 @@ export async function POST(req: NextRequest) {
         productName: body.productName,
         productUrl: body.productUrl,
         analysisRunId: body.analysisRunId,
-        userId: userId ?? undefined,
+        userId: user.id,
         status: "draft",
       },
     });

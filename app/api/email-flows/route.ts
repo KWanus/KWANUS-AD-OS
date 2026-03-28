@@ -39,6 +39,13 @@ export async function POST(req: NextRequest) {
       tags?: string[];
     };
 
+    if (!body.name?.trim()) {
+      return NextResponse.json({ ok: false, error: "Flow name is required" }, { status: 400 });
+    }
+    if (!body.trigger?.trim()) {
+      return NextResponse.json({ ok: false, error: "Trigger type is required" }, { status: 400 });
+    }
+
     const flow = await prisma.emailFlow.create({
       data: {
         userId: user.id,

@@ -42,6 +42,9 @@ export async function POST(req: NextRequest) {
     if (!body.name?.trim() || !body.subject?.trim()) {
       return NextResponse.json({ ok: false, error: "Name and subject are required" }, { status: 400 });
     }
+    if (!body.body?.trim()) {
+      return NextResponse.json({ ok: false, error: "Email body content is required" }, { status: 400 });
+    }
 
     const broadcast = await prisma.emailBroadcast.create({
       data: {

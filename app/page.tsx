@@ -22,6 +22,9 @@ import {
   TrendingUp,
   Users,
   Zap,
+  BarChart2,
+  AlertTriangle,
+  ExternalLink,
 } from "lucide-react";
 
 interface Lead {
@@ -48,6 +51,24 @@ interface Site {
 interface EmailFlow {
   id: string;
   status: string;
+}
+
+interface RecentAnalysis {
+  id: string;
+  title: string | null;
+  inputUrl: string;
+  score: number | null;
+  verdict: string | null;
+  createdAt: string;
+}
+
+interface ClientSummary {
+  id: string;
+  name: string;
+  healthScore: number;
+  healthStatus: "green" | "yellow" | "red";
+  pipelineStage: string;
+  lastContactAt: string | null;
 }
 
 interface SettingsState {
@@ -174,6 +195,9 @@ export default function Dashboard() {
   const [businessProfile, setBusinessProfile] = useState<BusinessProfileSummary | null>(null);
   const [stats, setStats] = useState<StatsSummary | null>(null);
   const [settings, setSettings] = useState<SettingsState | null>(null);
+  const [recentAnalyses, setRecentAnalyses] = useState<RecentAnalysis[]>([]);
+  const [atRiskClients, setAtRiskClients] = useState<ClientSummary[]>([]);
+  const [totalClients, setTotalClients] = useState(0);
   const [loading, setLoading] = useState(true);
   const [syncingSystem, setSyncingSystem] = useState(false);
   const [refreshingRecommendations, setRefreshingRecommendations] = useState(false);
@@ -188,7 +212,7 @@ export default function Dashboard() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const [settingsRes, leadsRes, campaignsRes, sitesRes, profileRes, emailFlowsRes, statsRes] = await Promise.allSettled([
+      const [settingsRes, leadsRes, campaignsRes, sitesRes, profileRes, emailFlowsRes, statsRes, analysesRes, clientsRes] = await Promise.allSettled([
         fetch("/api/settings").then((r) => r.json() as Promise<{ ok: boolean; settings?: SettingsState }>),
         fetch("/api/leads").then((r) => r.json() as Promise<{ ok: boolean; leads?: Lead[] }>),
         fetch("/api/campaigns").then((r) => r.json() as Promise<{ ok: boolean; campaigns?: Campaign[] }>),
@@ -196,6 +220,8 @@ export default function Dashboard() {
         fetch("/api/business-profile").then((r) => r.json() as Promise<{ ok: boolean; profile?: BusinessProfileSummary | null }>),
         fetch("/api/email-flows").then((r) => r.json() as Promise<{ ok: boolean; flows?: EmailFlow[] }>),
         fetch("/api/stats").then((r) => r.json() as Promise<{ ok: boolean; stats?: StatsSummary | null }>),
+        fetch("/api/analyses?limit=5").then((r) => r.json() as Promise<{ ok: boolean; analyses?: RecentAnalysis[]; total?: number }>),
+        fetch("/api/clients?sortBy=healthScore&limit=5").then((r) => r.json() as Promise<{ ok: boolean; clients?: ClientSummary[]; total?: number }>),
       ]);
 
       if (settingsRes.status === "fulfilled" && settingsRes.value.ok) {
@@ -222,6 +248,13 @@ export default function Dashboard() {
       }
       if (statsRes.status === "fulfilled" && statsRes.value.ok) {
         setStats(statsRes.value.stats ?? null);
+      }
+      if (analysesRes.status === "fulfilled" && analysesRes.value.ok) {
+        setRecentAnalyses(analysesRes.value.analyses ?? []);
+      }
+      if (clientsRes.status === "fulfilled" && clientsRes.value.ok) {
+        setAtRiskClients((clientsRes.value.clients ?? []).filter((c) => c.healthStatus === "red" || c.healthStatus === "yellow"));
+        setTotalClients(clientsRes.value.total ?? 0);
       }
     } finally {
       setLoading(false);
@@ -527,6 +560,115 @@ export default function Dashboard() {
             ))}
           </div>
         </section>
+
+        {/* Recent Analyses + Client Health Row */}
+        {(!loading && (recentAnalyses.length > 0 || atRiskClients.length > 0)) && (
+          <section className="mb-8">
+            <SectionLabel>Intelligence Feed</SectionLabel>
+            <div className="grid gap-4 lg:grid-cols-2">
+              {/* Recent Analyses */}
+              <div className="rounded-[28px] border border-white/[0.07] bg-white/[0.03] p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <BarChart2 className="w-4 h-4 text-cyan-400/60" />
+                    <p className="text-[10px] font-black uppercase tracking-[0.24em] text-white/30">Recent Scans</p>
+                  </div>
+                  <Link href="/analyses" className="text-[10px] text-cyan-400/50 hover:text-cyan-400 transition font-bold">
+                    View all →
+                  </Link>
+                </div>
+                {recentAnalyses.length === 0 ? (
+                  <div className="text-center py-4">
+                    <p className="text-xs text-white/25">No scans yet</p>
+                    <Link href="/scan" className="text-xs text-cyan-400/60 hover:text-cyan-400 transition mt-1 inline-block">Run first scan →</Link>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {recentAnalyses.slice(0, 4).map((a) => {
+                      const scoreColor = (a.score ?? 0) >= 70 ? "text-emerald-400" : (a.score ?? 0) >= 45 ? "text-amber-400" : "text-red-400";
+                      const verdictBg = a.verdict === "Pursue" ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
+                        : a.verdict === "Reject" ? "bg-red-500/10 border-red-500/20 text-red-400"
+                        : "bg-amber-500/10 border-amber-500/20 text-amber-400";
+                      return (
+                        <Link
+                          key={a.id}
+                          href={`/analyses/${a.id}`}
+                          className="flex items-center gap-3 p-2.5 rounded-xl bg-black/20 border border-white/[0.05] hover:border-white/[0.12] transition group"
+                        >
+                          <span className={`text-base font-black ${scoreColor} w-8 text-center`}>{a.score ?? "—"}</span>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-bold text-white/60 truncate group-hover:text-white transition">{a.title || a.inputUrl}</p>
+                            <p className="text-[10px] text-white/25 truncate flex items-center gap-1">
+                              <ExternalLink className="w-2 h-2 shrink-0" />{a.inputUrl}
+                            </p>
+                          </div>
+                          <span className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded border ${verdictBg}`}>
+                            {a.verdict ?? "—"}
+                          </span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+
+              {/* Client Health */}
+              <div className="rounded-[28px] border border-white/[0.07] bg-white/[0.03] p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <Users className="w-4 h-4 text-purple-400/60" />
+                    <p className="text-[10px] font-black uppercase tracking-[0.24em] text-white/30">Client Health</p>
+                  </div>
+                  <Link href="/clients/dashboard" className="text-[10px] text-cyan-400/50 hover:text-cyan-400 transition font-bold">
+                    Dashboard →
+                  </Link>
+                </div>
+                {totalClients === 0 ? (
+                  <div className="text-center py-4">
+                    <p className="text-xs text-white/25">No clients yet</p>
+                    <Link href="/clients/new" className="text-xs text-cyan-400/60 hover:text-cyan-400 transition mt-1 inline-block">Add first client →</Link>
+                  </div>
+                ) : atRiskClients.length === 0 ? (
+                  <div className="flex items-center justify-center gap-3 py-6 rounded-xl bg-emerald-500/5 border border-emerald-500/15">
+                    <CheckCircle2 className="w-5 h-5 text-emerald-400/60" />
+                    <div>
+                      <p className="text-sm font-bold text-emerald-300">All {totalClients} clients healthy</p>
+                      <p className="text-[10px] text-white/30">No attention needed right now</p>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="space-y-2">
+                    {atRiskClients.length > 0 && (
+                      <div className="flex items-center gap-2 mb-2 px-1">
+                        <AlertTriangle className="w-3 h-3 text-amber-400/60" />
+                        <p className="text-[10px] text-amber-400/60 font-bold">{atRiskClients.length} client{atRiskClients.length !== 1 ? "s" : ""} need attention</p>
+                      </div>
+                    )}
+                    {atRiskClients.slice(0, 4).map((c) => {
+                      const dot = c.healthStatus === "red" ? "bg-red-400 animate-pulse" : "bg-amber-400";
+                      return (
+                        <Link
+                          key={c.id}
+                          href={`/clients/${c.id}`}
+                          className="flex items-center gap-3 p-2.5 rounded-xl bg-black/20 border border-white/[0.05] hover:border-white/[0.12] transition group"
+                        >
+                          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-500/20 to-purple-600/20 flex items-center justify-center text-xs font-black text-white/60 shrink-0">
+                            {c.name.charAt(0).toUpperCase()}
+                          </div>
+                          <div className="flex-1 min-w-0">
+                            <p className="text-xs font-bold text-white/60 truncate group-hover:text-white transition">{c.name}</p>
+                            <p className="text-[10px] text-white/25">{c.pipelineStage} · Score: {c.healthScore}</p>
+                          </div>
+                          <div className={`w-2 h-2 rounded-full ${dot} shrink-0`} />
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            </div>
+          </section>
+        )}
 
         <section className="mb-8">
           <SectionLabel>Choose Your Business Lane</SectionLabel>
