@@ -37,6 +37,14 @@ type ScanResult = {
     topStrengths: string[];
     recommendedPath: string;
   } | null;
+  truthEngine?: {
+    totalScore: number;
+    verdict: string;
+    confidence: string;
+    profile: string;
+    diagnostics: { severity: string; dimension: string; message: string; fix?: string }[];
+    actionPlan: string[];
+  } | null;
   assetPackage: {
     adHooks: { format: string; hook: string }[];
   } | null;
@@ -578,6 +586,43 @@ export default function ScanPage() {
                   <p className="text-xs font-black text-cyan-400 mb-0.5">Recommended Path</p>
                   <p className="text-xs text-white/60">{opp.recommendedPath}</p>
                 </div>
+              </div>
+            )}
+
+            {/* Truth Engine diagnostics */}
+            {result.truthEngine?.diagnostics && result.truthEngine.diagnostics.filter(d => d.severity === "critical" || d.severity === "warning").length > 0 && (
+              <div className="bg-white/[0.03] border border-white/[0.07] rounded-xl p-4">
+                <p className="text-xs font-black text-white/50 uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                  <AlertTriangle className="w-3.5 h-3.5" /> Diagnostics
+                </p>
+                <div className="space-y-2">
+                  {result.truthEngine.diagnostics
+                    .filter(d => d.severity === "critical" || d.severity === "warning")
+                    .slice(0, 4)
+                    .map((d, i) => (
+                      <div key={i} className={`flex items-start gap-2 p-2.5 rounded-lg border ${
+                        d.severity === "critical" ? "bg-red-500/5 border-red-500/15" : "bg-amber-500/5 border-amber-500/15"
+                      }`}>
+                        <span className={`text-[9px] font-black uppercase px-1.5 py-0.5 rounded ${
+                          d.severity === "critical" ? "bg-red-500/20 text-red-400" : "bg-amber-500/20 text-amber-400"
+                        }`}>{d.severity}</span>
+                        <div className="flex-1">
+                          <p className="text-xs text-white/60">{d.message}</p>
+                          {d.fix && <p className="text-[10px] text-white/30 mt-0.5">Fix: {d.fix}</p>}
+                        </div>
+                      </div>
+                    ))}
+                </div>
+                {result.truthEngine.actionPlan.length > 0 && (
+                  <div className="mt-3 pt-3 border-t border-white/[0.05]">
+                    <p className="text-[10px] font-black text-cyan-400/60 uppercase tracking-wider mb-1.5">Action Plan</p>
+                    {result.truthEngine.actionPlan.slice(0, 3).map((a, i) => (
+                      <p key={i} className="text-xs text-white/50 flex items-start gap-2 mb-1">
+                        <span className="text-cyan-400 font-black">{i + 1}.</span> {a}
+                      </p>
+                    ))}
+                  </div>
+                )}
               </div>
             )}
 

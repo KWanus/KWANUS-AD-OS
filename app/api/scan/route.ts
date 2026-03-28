@@ -1,9 +1,22 @@
 import { NextRequest, NextResponse } from "next/server";
 import { executeBusinessScan, executeProductScan } from "@/lib/scanOrchestrator";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
+import { getOrCreateUser } from "@/lib/auth";
 
 export async function POST(req: NextRequest) {
   try {
+    // Auth is optional for scans — allow unauthenticated usage
+    let user = null;
+    try {
+      const { userId: clerkId } = await auth();
+      if (clerkId) {
+        user = await getOrCreateUser();
+      }
+    } catch (_authErr) {
+      // Auth failed — continue without user
+    }
+
     const body = await req.json();
     const { mode, url, productInput } = body;
 

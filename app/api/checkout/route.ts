@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import Stripe from "stripe";
+import { auth } from "@clerk/nextjs/server";
+import { getOrCreateUser } from "@/lib/auth";
 
 function getStripe() {
     const stripeKey = process.env.STRIPE_SECRET_KEY;
@@ -14,6 +16,11 @@ function getStripe() {
 
 export async function POST(req: NextRequest) {
     try {
+        const { userId: clerkId } = await auth();
+        if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+        const user = await getOrCreateUser();
+        if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
         const stripe = getStripe();
         if (!stripe) {
             return NextResponse.json({ ok: false, error: "Stripe is not configured" }, { status: 503 });
