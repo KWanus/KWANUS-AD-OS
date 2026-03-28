@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
+import { toast } from "sonner";
 import {
   Search,
   Filter,
@@ -327,6 +328,8 @@ export default function ClientsPage() {
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [bulkAction, setBulkAction] = useState("");
   const [bulkLoading, setBulkLoading] = useState(false);
+  const [bulkStage, setBulkStage] = useState("lead");
+  const [bulkTags, setBulkTags] = useState("");
 
   const fetchClients = useCallback(async () => {
     setLoading(true);
@@ -386,28 +389,30 @@ export default function ClientsPage() {
     setBulkLoading(true);
     try {
       const body: Record<string, unknown> = { action: bulkAction, clientIds: [...selectedIds] };
-      if (bulkAction === "stage_change") {
-        const stage = prompt("Enter new pipeline stage (lead, qualified, proposal, active, won, churned):");
-        if (!stage) { setBulkLoading(false); return; }
-        body.pipelineStage = stage;
-      }
+      if (bulkAction === "stage_change") body.pipelineStage = bulkStage;
       if (bulkAction === "add_tags") {
-        const tags = prompt("Enter tags to add (comma separated):");
-        if (!tags) { setBulkLoading(false); return; }
-        body.tags = tags.split(",").map(t => t.trim()).filter(Boolean);
+        const tags = bulkTags.split(",").map(t => t.trim()).filter(Boolean);
+        if (tags.length === 0) { toast.error("Enter at least one tag"); setBulkLoading(false); return; }
+        body.tags = tags;
       }
-      if (bulkAction === "delete") {
-        if (!confirm(`Delete ${selectedIds.size} client(s)? This cannot be undone.`)) { setBulkLoading(false); return; }
-      }
-      await fetch("/api/clients/bulk", {
+      const res = await fetch("/api/clients/bulk", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-      setSelectedIds(new Set());
-      setBulkAction("");
-      await fetchClients();
-    } catch { /* non-fatal */ } finally {
+      const data = await res.json() as { ok: boolean; affected?: number; error?: string };
+      if (data.ok) {
+        toast.success(`${bulkAction.replace("_", " ")} applied to ${data.affected ?? selectedIds.size} client(s)`);
+        setSelectedIds(new Set());
+        setBulkAction("");
+        setBulkTags("");
+        await fetchClients();
+      } else {
+        toast.error(data.error ?? "Bulk action failed");
+      }
+    } catch {
+      toast.error("Something went wrong — please try again");
+    } finally {
       setBulkLoading(false);
     }
   }
@@ -633,32 +638,67 @@ export default function ClientsPage() {
 
       {/* Bulk action bar */}
       {selectedIds.size > 0 && (
-        <div className="flex items-center gap-3 mb-4 px-4 py-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/20">
-          <span className="text-xs font-bold text-cyan-300">{selectedIds.size} selected</span>
-          <select
-            value={bulkAction}
-            onChange={e => setBulkAction(e.target.value)}
-            className="bg-white/[0.06] border border-white/[0.1] rounded-lg px-2 py-1.5 text-xs text-white/60 outline-none"
-          >
-            <option value="">Choose action...</option>
-            <option value="stage_change">Change stage</option>
-            <option value="add_tags">Add tags</option>
-            <option value="recalculate_health">Recalculate health</option>
-            <option value="delete">Delete</option>
-          </select>
-          <button
-            onClick={() => void executeBulkAction()}
-            disabled={!bulkAction || bulkLoading}
-            className="px-3 py-1.5 rounded-lg bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 text-xs font-bold hover:bg-cyan-500/30 transition disabled:opacity-40"
-          >
-            {bulkLoading ? "Running..." : "Apply"}
-          </button>
-          <button
-            onClick={() => { setSelectedIds(new Set()); setBulkAction(""); }}
-            className="text-xs text-white/30 hover:text-white/60 transition ml-auto"
-          >
-            Clear
-          </button>
+        <div className="mb-4 px-4 py-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/20">
+          <div className="flex items-center gap-3 flex-wrap">
+            <span className="text-xs font-bold text-cyan-300">{selectedIds.size} selected</span>
+            <select
+              value={bulkAction}
+              onChange={e => { setBulkAction(e.target.value); setBulkTags(""); }}
+              className="bg-white/[0.06] border border-white/[0.1] rounded-lg px-2 py-1.5 text-xs text-white/60 outline-none"
+            >
+              <option value="">Choose action...</option>
+              <option value="stage_change">Change stage</option>
+              <option value="add_tags">Add tags</option>
+              <option value="recalculate_health">Recalculate health</option>
+              <option value="delete">Delete</option>
+            </select>
+
+            {/* Stage picker */}
+            {bulkAction === "stage_change" && (
+              <select value={bulkStage} onChange={e => setBulkStage(e.target.value)} className="bg-white/[0.06] border border-white/[0.1] rounded-lg px-2 py-1.5 text-xs text-white/60 outline-none">
+                <option value="lead">Lead</option>
+                <option value="qualified">Qualified</option>
+                <option value="proposal">Proposal</option>
+                <option value="active">Active</option>
+                <option value="won">Won</option>
+                <option value="churned">Churned</option>
+              </select>
+            )}
+
+            {/* Tags input */}
+            {bulkAction === "add_tags" && (
+              <input
+                type="text"
+                value={bulkTags}
+                onChange={e => setBulkTags(e.target.value)}
+                placeholder="vip, priority, retainer"
+                className="bg-white/[0.06] border border-white/[0.1] rounded-lg px-2 py-1.5 text-xs text-white placeholder-white/25 outline-none w-48"
+              />
+            )}
+
+            {/* Delete warning */}
+            {bulkAction === "delete" && (
+              <span className="text-[10px] text-red-400 font-bold">This will permanently delete {selectedIds.size} client(s)</span>
+            )}
+
+            <button
+              onClick={() => void executeBulkAction()}
+              disabled={!bulkAction || bulkLoading}
+              className={`px-3 py-1.5 rounded-lg text-xs font-bold transition disabled:opacity-40 ${
+                bulkAction === "delete"
+                  ? "bg-red-500/20 border border-red-500/30 text-red-400 hover:bg-red-500/30"
+                  : "bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/30"
+              }`}
+            >
+              {bulkLoading ? "Running..." : bulkAction === "delete" ? "Delete" : "Apply"}
+            </button>
+            <button
+              onClick={() => { setSelectedIds(new Set()); setBulkAction(""); setBulkTags(""); }}
+              className="text-xs text-white/30 hover:text-white/60 transition ml-auto"
+            >
+              Clear
+            </button>
+          </div>
         </div>
       )}
 

@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { Zap, Check, Loader2, ChevronLeft, Crown, Sparkles, TrendingUp, Shield, Star } from "lucide-react";
+import { toast } from "sonner";
 import AppNav from "@/components/AppNav";
 
 type BundleKey = "starter" | "growth" | "scale" | "pro";
@@ -170,7 +171,7 @@ function BillingContent() {
       const data = await res.json() as { ok: boolean; url?: string; error?: string };
 
       if (data.error === "no_stripe_key") {
-        alert("Stripe is not configured yet. Add STRIPE_SECRET_KEY to your .env file.");
+        toast.error("Payment processing is not configured yet. Contact support.");
         return;
       }
       if (data.ok && data.url) {

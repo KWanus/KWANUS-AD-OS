@@ -3,6 +3,7 @@
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import { formatDistanceToNow, format } from "date-fns";
+import { toast } from "sonner";
 import {
   ArrowLeft,
   Mail,
@@ -376,10 +377,14 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ [field]: value }),
       });
-      const data = await res.json() as { ok: boolean; client?: Client };
-      if (data.ok && data.client) setClient(data.client);
+      const data = await res.json() as { ok: boolean; client?: Client; error?: string };
+      if (data.ok && data.client) {
+        setClient(data.client);
+      } else {
+        toast.error(data.error ?? `Failed to update ${field}`);
+      }
     } catch {
-      // non-fatal
+      toast.error("Network error — changes not saved");
     }
   }
 
