@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
+import { getOrCreateUser } from "@/lib/auth";
 import { isDatabaseUnavailable } from "@/lib/db/runtime";
 
 // GET /api/campaigns/[id] — full campaign with all assets
@@ -9,8 +11,13 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const campaign = await prisma.campaign.findUnique({
-      where: { id },
+    const { userId: clerkId } = await auth();
+    if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    const user = await getOrCreateUser();
+    if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    const campaign = await prisma.campaign.findFirst({
+      where: { id, userId: user.id },
       include: {
         adVariations: { orderBy: [{ type: "asc" }, { sortOrder: "asc" }] },
         landingDraft: true,
@@ -52,6 +59,15 @@ export async function PATCH(
 ) {
   try {
     const { id } = await params;
+    const { userId: clerkId } = await auth();
+    if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    const user = await getOrCreateUser();
+    if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    // Verify ownership
+    const existing = await prisma.campaign.findFirst({ where: { id, userId: user.id } });
+    if (!existing) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
+
     const body = await req.json() as { name?: string; status?: string; notes?: string };
 
     const campaign = await prisma.campaign.update({
@@ -77,7 +93,12 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    await prisma.campaign.delete({ where: { id } });
+    const { userId: clerkId } = await auth();
+    if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    const user = await getOrCreateUser();
+    if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    await prisma.campaign.deleteMany({ where: { id, userId: user.id } });
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Campaign DELETE error:", err);

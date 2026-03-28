@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
+import { getOrCreateUser } from "@/lib/auth";
 
 // PATCH /api/campaigns/[id]/variations/[vid] — update status, name, notes, content
 export async function PATCH(
@@ -7,7 +9,15 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string; vid: string }> }
 ) {
   try {
-    const { vid } = await params;
+    const { userId: clerkId } = await auth();
+    if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    const user = await getOrCreateUser();
+    if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    const { id, vid } = await params;
+
+    const campaign = await prisma.campaign.findFirst({ where: { id, userId: user.id } });
+    if (!campaign) return NextResponse.json({ ok: false, error: "Campaign not found" }, { status: 404 });
     const body = await req.json() as {
       status?: string;
       name?: string;
@@ -42,7 +52,15 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string; vid: string }> }
 ) {
   try {
-    const { vid } = await params;
+    const { userId: clerkId } = await auth();
+    if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    const user = await getOrCreateUser();
+    if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    const { id, vid } = await params;
+
+    const campaign = await prisma.campaign.findFirst({ where: { id, userId: user.id } });
+    if (!campaign) return NextResponse.json({ ok: false, error: "Campaign not found" }, { status: 404 });
     await prisma.adVariation.delete({ where: { id: vid } });
     return NextResponse.json({ ok: true });
   } catch (err) {

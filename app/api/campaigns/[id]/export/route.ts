@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { auth } from "@clerk/nextjs/server";
+import { getOrCreateUser } from "@/lib/auth";
 
 /**
  * GET /api/campaigns/[id]/export?format=txt|json|md
@@ -10,11 +12,16 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const { userId: clerkId } = await auth();
+    if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    const user = await getOrCreateUser();
+    if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
     const { id } = await params;
     const format = req.nextUrl.searchParams.get("format") ?? "md";
 
     const campaign = await prisma.campaign.findUnique({
-      where: { id },
+      where: { id, userId: user.id },
       include: {
         adVariations: { orderBy: [{ type: "asc" }, { sortOrder: "asc" }] },
         landingDraft: true,
