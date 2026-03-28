@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import AppNav from "@/components/AppNav";
+import ScanSubNav from "@/components/ScanSubNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import Link from "next/link";
 import {
@@ -315,6 +316,7 @@ export default function ScanPage() {
   return (
     <div className="min-h-screen bg-[#050a14] text-white">
       <AppNav />
+      <ScanSubNav />
 
       <div className="max-w-3xl mx-auto px-4 pt-10 pb-20">
         {businessProfile && (

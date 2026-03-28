@@ -3,6 +3,7 @@
 import { Suspense, useState, useRef, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import AppNav from "@/components/AppNav";
+import AISubNav from "@/components/AISubNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import { Send, Loader2, Zap, RefreshCw, User, Sparkles } from "lucide-react";
 import { COPILOT_SUGGESTIONS } from "@/lib/copilot-prompt";
@@ -237,6 +238,7 @@ function CopilotPageContent() {
   return (
     <div className="min-h-screen bg-[#050a14] text-white flex flex-col">
       <AppNav />
+      <AISubNav />
 
       <div className="flex-1 flex flex-col max-w-3xl mx-auto w-full px-4 pt-8 pb-4">
         {/* Header */}

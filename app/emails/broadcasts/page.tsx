@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import AppNav from "@/components/AppNav";
-import EmailSubNav from "@/components/EmailSubNav";
+import CampaignSubNav from "@/components/BuildSubNav";
 import {
   Send,
   Plus,
@@ -582,7 +582,7 @@ export default function BroadcastsPage() {
   return (
     <div className="min-h-screen bg-[#050a14] text-white">
       <AppNav />
-      <EmailSubNav />
+      <CampaignSubNav />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
         {/* Header */}

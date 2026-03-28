@@ -10,11 +10,13 @@ import {
   BarChart2,
   Plus,
   Settings,
+  Building2,
 } from "lucide-react";
 
 const CRM_TABS = [
   { href: "/clients", label: "Clients", icon: Users, exact: true },
   { href: "/clients/pipeline", label: "Pipeline", icon: Kanban, exact: false },
+  { href: "/leads", label: "Leads", icon: Building2, exact: false },
   { href: "/clients/dashboard", label: "Dashboard", icon: BarChart2, exact: false },
 ];
 
