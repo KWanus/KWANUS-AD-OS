@@ -24,6 +24,7 @@ import {
   Loader2,
   BarChart2,
   Activity,
+  Copy,
 } from "lucide-react";
 import { EMAIL_FLOW_TEMPLATES, type EmailFlowTemplate } from "@/src/data/emailFlowTemplates";
 
@@ -300,13 +301,31 @@ function FlowCard({
             </button>
           </div>
         ) : (
-          <button
-            onClick={(e) => { e.stopPropagation(); setConfirmDelete(true); }}
-            className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-lg hover:bg-red-500/10 text-white/20 hover:text-red-400"
-            aria-label="Delete flow"
-          >
-            <Trash2 className="w-3.5 h-3.5" />
-          </button>
+          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+            <button
+              onClick={async (e) => {
+                e.stopPropagation();
+                try {
+                  const res = await fetch(`/api/email-flows/${flow.id}/clone`, { method: "POST" });
+                  const data = await res.json() as { ok: boolean; flow?: { id: string } };
+                  if (data.ok && data.flow) {
+                    window.location.href = `/emails/flows/${data.flow.id}`;
+                  }
+                } catch { /* non-fatal */ }
+              }}
+              className="p-1.5 rounded-lg hover:bg-cyan-500/10 text-white/20 hover:text-cyan-400"
+              aria-label="Duplicate flow"
+            >
+              <Copy className="w-3.5 h-3.5" />
+            </button>
+            <button
+              onClick={(e) => { e.stopPropagation(); setConfirmDelete(true); }}
+              className="p-1.5 rounded-lg hover:bg-red-500/10 text-white/20 hover:text-red-400"
+              aria-label="Delete flow"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+            </button>
+          </div>
         )}
       </div>
 

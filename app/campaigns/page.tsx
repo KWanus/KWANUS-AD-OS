@@ -6,7 +6,7 @@ import AppNav from "@/components/AppNav";
 import CampaignSubNav from "@/components/BuildSubNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import { WorkspaceHero, WorkspaceShell } from "@/components/ui/WorkspaceShell";
-import { Search, Plus, Trash2, ArrowRight, BarChart2, Mail, CheckSquare, Clock, Zap } from "lucide-react";
+import { Search, Plus, Trash2, ArrowRight, BarChart2, Mail, CheckSquare, Clock, Zap, Copy } from "lucide-react";
 
 type Campaign = {
   id: string;
@@ -423,6 +423,23 @@ export default function CampaignsPage() {
                       </>
                     ) : (
                       <>
+                        <button
+                          onClick={async (e) => {
+                            e.preventDefault();
+                            e.stopPropagation();
+                            try {
+                              const res = await fetch(`/api/campaigns/${c.id}/clone`, { method: "POST" });
+                              const data = await res.json() as { ok: boolean; campaign?: { id: string } };
+                              if (data.ok && data.campaign) {
+                                router.push(`/campaigns/${data.campaign.id}`);
+                              }
+                            } catch { /* non-fatal */ }
+                          }}
+                          className="p-2 rounded-lg hover:bg-cyan-500/10 text-white/20 hover:text-cyan-400 transition opacity-0 group-hover:opacity-100"
+                          title="Duplicate campaign"
+                        >
+                          <Copy className="w-3.5 h-3.5" />
+                        </button>
                         <button
                           onClick={() => setDeleteConfirm(c.id)}
                           className="p-2 rounded-lg hover:bg-red-500/10 text-white/20 hover:text-red-400 transition opacity-0 group-hover:opacity-100"
