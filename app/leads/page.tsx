@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback, type ReactNode } from "react";
 import Link from "next/link";
 import AppNav from "@/components/AppNav";
+import CRMSubNav from "@/components/CRMSubNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import { WorkspaceHero, WorkspaceShell } from "@/components/ui/WorkspaceShell";
 import {
@@ -390,6 +391,7 @@ export default function LeadsPage() {
   return (
     <main className="min-h-screen bg-[#050a14] text-white">
       <AppNav />
+      <CRMSubNav />
 
       <WorkspaceShell maxWidth="max-w-6xl">
         <WorkspaceHero

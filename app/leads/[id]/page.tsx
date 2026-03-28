@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import AppNav from "@/components/AppNav";
+import CRMSubNav from "@/components/CRMSubNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import Link from "next/link";
 import {
@@ -858,6 +859,7 @@ export default function LeadDetailPage() {
   return (
     <div className="min-h-screen bg-[#050a14] text-white">
       <AppNav />
+      <CRMSubNav />
       <div className="max-w-4xl mx-auto px-4 pt-8 pb-20">
 
         <Link href="/leads" className="flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition mb-6">
