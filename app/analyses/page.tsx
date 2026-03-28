@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { formatDistanceToNow } from "date-fns";
 import AppNav from "@/components/AppNav";
+import ScanSubNav from "@/components/ScanSubNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import {
   Search,
@@ -306,6 +307,7 @@ export default function AnalysesPage() {
   return (
     <div className="min-h-screen bg-[#050a14] text-white">
       <AppNav />
+      <ScanSubNav />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <DatabaseFallbackNotice visible={databaseUnavailable} className="mb-6" />
 

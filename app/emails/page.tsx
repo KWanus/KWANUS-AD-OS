@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import AppNav from "@/components/AppNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
-import EmailSubNav from "@/components/EmailSubNav";
+import CampaignSubNav from "@/components/BuildSubNav";
 import {
   Mail,
   Plus,
@@ -746,7 +746,7 @@ export default function EmailsPage() {
   return (
     <div className="min-h-screen bg-[#050a14] text-white">
       <AppNav />
-      <EmailSubNav />
+      <CampaignSubNav />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
         {businessProfile && (

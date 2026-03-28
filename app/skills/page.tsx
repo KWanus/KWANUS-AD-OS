@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import AppNav from "@/components/AppNav";
+import AISubNav from "@/components/AISubNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import { WorkspaceHero, WorkspaceShell } from "@/components/ui/WorkspaceShell";
 import { SKILLS, SKILL_CATEGORIES } from "@/lib/skills/registry";
@@ -462,6 +463,7 @@ function SkillsPageInner() {
   return (
     <div className="min-h-screen bg-[#050a14] text-white">
       <AppNav />
+      <AISubNav />
       <WorkspaceShell>
         <WorkspaceHero
           eyebrow="Skills"

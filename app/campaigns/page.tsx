@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import AppNav from "@/components/AppNav";
+import CampaignSubNav from "@/components/BuildSubNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import { WorkspaceHero, WorkspaceShell } from "@/components/ui/WorkspaceShell";
 import { Search, Plus, Trash2, ArrowRight, BarChart2, Mail, CheckSquare, Clock, Zap } from "lucide-react";
@@ -175,6 +176,7 @@ export default function CampaignsPage() {
   return (
     <div className="min-h-screen bg-[#020509] text-white flex flex-col">
       <AppNav />
+      <CampaignSubNav />
       <WorkspaceShell>
         <WorkspaceHero
           eyebrow="Campaigns"

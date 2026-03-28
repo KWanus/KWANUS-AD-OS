@@ -3,31 +3,37 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { UserButton, SignInButton, useUser } from "@clerk/nextjs";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import dynamic from "next/dynamic";
-import { LayoutDashboard, Globe, Mail, Users, Settings, Zap, BotMessageSquare, FolderOpen, Sparkles, ScanSearch, Building2, Package, Briefcase, MapPin, TrendingUp, ShoppingCart, Building, Layers3, BarChart2 } from "lucide-react";
+import {
+  LayoutDashboard, Globe, Mail, Users, Settings, Zap,
+  ScanSearch, Sparkles, FolderOpen, ChevronDown,
+  Briefcase, MapPin, TrendingUp, ShoppingCart, Building,
+  Package, BotMessageSquare, Building2,
+} from "lucide-react";
 
 const CreditsDisplay = dynamic(() => import("@/components/CreditsDisplay"), { ssr: false });
 
-const NAV_ITEMS = [
-  { href: "/",          label: "Home",      icon: LayoutDashboard },
-  { href: "/my-system", label: "My System", icon: LayoutDashboard },
-  { href: "/copilot",   label: "AI Copilot",icon: BotMessageSquare },
-  { href: "/leads",     label: "Leads",     icon: Building2 },
-  { href: "/scan",      label: "Scan",      icon: ScanSearch },
-  { href: "/analyses",  label: "History",   icon: BarChart2 },
-  { href: "/skills",    label: "Skills",    icon: Sparkles },
-  { href: "/websites",  label: "Sites",     icon: Globe },
-  { href: "/campaigns", label: "Campaigns", icon: FolderOpen },
-  { href: "/projects",  label: "Projects",  icon: Layers3 },
-  { href: "/emails",    label: "Emails",    icon: Mail },
-  { href: "/clients",   label: "Clients",   icon: Users },
-  { href: "/products",  label: "Products",  icon: Package },
-  { href: "/consult",   label: "Consult",   icon: Briefcase },
-  { href: "/local",     label: "Local",     icon: MapPin },
-  { href: "/affiliate", label: "Affiliate", icon: TrendingUp },
-  { href: "/dropship",  label: "Dropship",  icon: ShoppingCart },
-  { href: "/agency",    label: "Agency",    icon: Building },
+// ── Primary nav (always visible) ─────────────────────────────────────────────
+
+const MAIN_NAV = [
+  { href: "/",           label: "Home",      icon: LayoutDashboard, match: (p: string) => p === "/" },
+  { href: "/scan",       label: "Scan",      icon: ScanSearch,      match: (p: string) => p.startsWith("/scan") || p.startsWith("/analyses") },
+  { href: "/campaigns",  label: "Campaigns", icon: FolderOpen,      match: (p: string) => p.startsWith("/campaigns") || p.startsWith("/projects") || p.startsWith("/emails") },
+  { href: "/websites",   label: "Sites",     icon: Globe,           match: (p: string) => p.startsWith("/websites") },
+  { href: "/clients",    label: "Clients",   icon: Users,           match: (p: string) => p.startsWith("/clients") || p.startsWith("/leads") },
+  { href: "/copilot",    label: "AI",        icon: Sparkles,        match: (p: string) => p.startsWith("/copilot") || p.startsWith("/skills") },
+];
+
+// ── Business verticals (dropdown) ────────────────────────────────────────────
+
+const BUSINESS_NAV = [
+  { href: "/consult",   label: "Consult",   icon: Briefcase,   sub: "Packages, proposals, audits" },
+  { href: "/local",     label: "Local",     icon: MapPin,       sub: "SEO, GMB, review requests" },
+  { href: "/affiliate", label: "Affiliate", icon: TrendingUp,   sub: "Offer research, funnels" },
+  { href: "/dropship",  label: "Dropship",  icon: ShoppingCart,  sub: "Products, profit math, ads" },
+  { href: "/agency",    label: "Agency",    icon: Building,      sub: "Client audits, strategy" },
+  { href: "/products",  label: "Products",  icon: Package,       sub: "Offer library, sources" },
 ];
 
 type StatsPayload = {
@@ -38,6 +44,8 @@ export default function AppNav() {
   const pathname = usePathname();
   const { isSignedIn } = useUser();
   const [databaseUnavailable, setDatabaseUnavailable] = useState(false);
+  const [showBizDropdown, setShowBizDropdown] = useState(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isSignedIn) {
@@ -68,11 +76,27 @@ export default function AppNav() {
     };
   }, [isSignedIn]);
 
+  // Close dropdown on outside click
+  useEffect(() => {
+    function handleClick(e: MouseEvent) {
+      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+        setShowBizDropdown(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  // Close dropdown on route change
+  useEffect(() => { setShowBizDropdown(false); }, [pathname]);
+
+  const isBizActive = BUSINESS_NAV.some(n => pathname.startsWith(n.href));
+
   return (
     <header className="sticky top-0 z-50">
       {databaseUnavailable && (
         <div className="border-b border-amber-500/20 bg-amber-500/12 px-6 py-2 text-center text-[11px] font-medium text-amber-100 backdrop-blur-xl">
-          Production workspace data is temporarily unavailable. The app is running in fallback mode until the database connection is fixed.
+          Production workspace data is temporarily unavailable. The app is running in fallback mode.
         </div>
       )}
 
@@ -90,8 +114,8 @@ export default function AppNav() {
 
         {/* Nav */}
         <nav className="flex items-center gap-0.5 overflow-x-auto">
-          {NAV_ITEMS.map(({ href, label, icon: Icon }) => {
-            const active = href === "/" ? pathname === "/" : pathname.startsWith(href);
+          {MAIN_NAV.map(({ href, label, icon: Icon, match }) => {
+            const active = match(pathname);
             return (
               <Link key={href} href={href}
                 className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap
@@ -105,6 +129,61 @@ export default function AppNav() {
               </Link>
             );
           })}
+
+          {/* Business verticals dropdown */}
+          <div className="relative" ref={dropdownRef}>
+            <button
+              onClick={() => setShowBizDropdown(v => !v)}
+              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap
+                ${isBizActive
+                  ? "bg-white/[0.07] text-white border border-white/[0.08]"
+                  : "text-white/30 hover:text-white/70 hover:bg-white/[0.04]"
+                }`}
+            >
+              <Building2 className={`w-3.5 h-3.5 ${isBizActive ? "text-cyan-400" : ""}`} />
+              <span className="hidden md:block">Business</span>
+              <ChevronDown className={`w-3 h-3 transition-transform ${showBizDropdown ? "rotate-180" : ""}`} />
+            </button>
+
+            {showBizDropdown && (
+              <div className="absolute top-full right-0 mt-2 w-64 rounded-2xl border border-white/[0.1] bg-[#0a1020] shadow-2xl overflow-hidden z-50">
+                <div className="p-2">
+                  {BUSINESS_NAV.map(({ href, label, icon: Icon, sub }) => {
+                    const active = pathname.startsWith(href);
+                    return (
+                      <Link
+                        key={href}
+                        href={href}
+                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition ${
+                          active ? "bg-cyan-500/10 text-white" : "text-white/60 hover:bg-white/[0.05] hover:text-white"
+                        }`}
+                      >
+                        <Icon className={`w-4 h-4 shrink-0 ${active ? "text-cyan-400" : "text-white/30"}`} />
+                        <div className="min-w-0">
+                          <p className="text-xs font-bold">{label}</p>
+                          <p className="text-[10px] text-white/30 truncate">{sub}</p>
+                        </div>
+                      </Link>
+                    );
+                  })}
+                </div>
+                <div className="border-t border-white/[0.06] p-2">
+                  <Link
+                    href="/my-system"
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition ${
+                      pathname.startsWith("/my-system") ? "bg-cyan-500/10 text-white" : "text-white/60 hover:bg-white/[0.05] hover:text-white"
+                    }`}
+                  >
+                    <LayoutDashboard className={`w-4 h-4 shrink-0 ${pathname.startsWith("/my-system") ? "text-cyan-400" : "text-white/30"}`} />
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold">My System</p>
+                      <p className="text-[10px] text-white/30">Business profile & OS config</p>
+                    </div>
+                  </Link>
+                </div>
+              </div>
+            )}
+          </div>
         </nav>
 
         {/* Right side */}
