@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { callClaude, LOCAL_SYSTEM_PROMPT } from "@/lib/ai/claude";
+import { rateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 import { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 interface GeneratedPackage {

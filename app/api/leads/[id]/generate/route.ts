@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
 import { callClaude, LOCAL_SYSTEM_PROMPT } from "@/lib/ai/claude";
+import { rateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 async function callSkill(prompt: string): Promise<unknown> {
@@ -21,6 +22,9 @@ export async function POST(
 
     const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } });
     if (!user) return NextResponse.json({ ok: false, error: "User not found" }, { status: 404 });
+
+    const limited = rateLimit(`ai:${user.id}`, RATE_LIMITS.aiGeneration);
+    if (limited) return limited;
 
     const lead = await prisma.lead.findFirst({ where: { id, userId: user.id } });
     if (!lead) return NextResponse.json({ ok: false, error: "Lead not found" }, { status: 404 });

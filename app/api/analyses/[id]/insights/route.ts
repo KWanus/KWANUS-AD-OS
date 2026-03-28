@@ -2,6 +2,8 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
+import { rateLimit, RATE_LIMITS } from "@/lib/rateLimit";
+import { callClaude } from "@/lib/ai/claude";
 
 export async function POST(
   _req: NextRequest,
@@ -13,6 +15,9 @@ export async function POST(
     if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
     const user = await getOrCreateUser();
     if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    const limited = rateLimit(`insights:${user.id}`, RATE_LIMITS.aiGeneration);
+    if (limited) return limited;
 
     const analysis = await prisma.analysisRun.findFirst({
       where: { id, userId: user.id },
@@ -91,61 +96,17 @@ Provide a JSON response with this exact structure:
 
 Be specific to THIS offer — no generic advice. Reference actual signals from the data.`;
 
-    const anthropicKey = process.env.ANTHROPIC_API_KEY;
-    const openaiKey = process.env.OPENAI_API_KEY;
-
-    if (anthropicKey) {
-      const response = await fetch("https://api.anthropic.com/v1/messages", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-api-key": anthropicKey,
-          "anthropic-version": "2023-06-01",
-        },
-        body: JSON.stringify({
-          model: "claude-sonnet-4-6",
-          max_tokens: 1200,
-          messages: [{ role: "user", content: prompt }],
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json() as { content: { text: string }[] };
-        const text = data.content?.[0]?.text ?? "";
-        try {
-          const jsonMatch = text.match(/\{[\s\S]*\}/);
-          if (jsonMatch) {
-            const insights = JSON.parse(jsonMatch[0]);
-            return NextResponse.json({ ok: true, insights, provider: "claude" });
-          }
-        } catch {
-          return NextResponse.json({ ok: true, insights: { raw: text }, provider: "claude" });
-        }
-      }
-    }
-
-    if (openaiKey) {
-      const response = await fetch("https://api.openai.com/v1/chat/completions", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", Authorization: `Bearer ${openaiKey}` },
-        body: JSON.stringify({
-          model: "gpt-4o-mini",
-          messages: [{ role: "user", content: prompt }],
-          max_tokens: 1200,
-          temperature: 0.7,
-          response_format: { type: "json_object" },
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json() as { choices: { message: { content: string } }[] };
-        const text = data.choices?.[0]?.message?.content ?? "";
-        try {
-          const insights = JSON.parse(text);
-          return NextResponse.json({ ok: true, insights, provider: "openai" });
-        } catch {
-          return NextResponse.json({ ok: true, insights: { raw: text }, provider: "openai" });
-        }
+    // Try AI-powered insights via shared Claude module
+    if (process.env.ANTHROPIC_API_KEY) {
+      try {
+        const insights = await callClaude<Record<string, unknown>>(
+          "You are an expert digital marketing strategist and business analyst.",
+          prompt,
+          { maxTokens: 1200 }
+        );
+        return NextResponse.json({ ok: true, insights, provider: "claude" });
+      } catch {
+        // Fall through to fallback
       }
     }
 

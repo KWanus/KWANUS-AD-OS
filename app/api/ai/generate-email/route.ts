@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
+import { rateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const TRIGGER_PROMPTS: Record<string, string> = {
@@ -21,6 +22,9 @@ export async function POST(req: NextRequest) {
     if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
     const user = await getOrCreateUser();
     if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    const limited = rateLimit(`ai-email:${user.id}`, RATE_LIMITS.aiGeneration);
+    if (limited) return limited;
 
     const body = await req.json() as {
       trigger?: string;

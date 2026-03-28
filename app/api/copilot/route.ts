@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
 import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
 import { ARCHETYPES, type BusinessType, type SystemSlug } from "@/lib/archetypes";
+import { rateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -348,6 +349,10 @@ export async function POST(req: NextRequest) {
 
     const { userId: clerkId } = await auth();
     if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    // Rate limit AI calls
+    const limited = rateLimit(`copilot:${clerkId}`, RATE_LIMITS.aiGeneration);
+    if (limited) return limited;
 
     const body = await req.json() as {
       messages: { role: "user" | "assistant"; content: string }[];

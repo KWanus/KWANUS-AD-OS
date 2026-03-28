@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { fetchPage } from "@/src/logic/ad-os/fetchPage";
 import Anthropic from "@anthropic-ai/sdk";
+import { rateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
@@ -68,6 +69,9 @@ export async function POST(req: NextRequest) {
       },
     });
     if (!user) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
+
+    const limited = rateLimit(`ai:${user.id}`, RATE_LIMITS.aiGeneration);
+    if (limited) return limited;
 
     const body = await req.json() as { url: string; executionTier?: ExecutionTier };
     const url = body.url?.trim();

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { callClaude, AGENCY_SYSTEM_PROMPT } from "@/lib/ai/claude";
+import { rateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
 import { ExecutionTier } from "@/lib/sites/conversionEngine";
 
@@ -12,6 +13,9 @@ export async function POST(req: NextRequest) {
 
     const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } });
     if (!user) return NextResponse.json({ ok: false, error: "User not found" }, { status: 404 });
+
+    const limited = rateLimit(`ai:${user.id}`, RATE_LIMITS.aiGeneration);
+    if (limited) return limited;
 
     const body = await req.json();
     const { auditId } = body;
