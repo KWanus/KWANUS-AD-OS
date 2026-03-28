@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { UserButton, SignInButton, useUser } from "@clerk/nextjs";
 import { useEffect, useState, useRef } from "react";
 import dynamic from "next/dynamic";
+import NotificationBell from "@/components/NotificationBell";
 import {
   LayoutDashboard, Globe, Mail, Users, Settings, Zap,
   ScanSearch, Sparkles, FolderOpen, ChevronDown,
@@ -189,6 +190,7 @@ export default function AppNav() {
         {/* Right side */}
         <div className="flex items-center gap-2 shrink-0">
           <CreditsDisplay />
+          {isSignedIn && <NotificationBell />}
           {isSignedIn && (
             <Link href="/settings"
               className={`p-2 rounded-xl transition-all ${pathname.startsWith("/settings") ? "bg-white/[0.07] text-white" : "text-white/25 hover:text-white/60 hover:bg-white/[0.04]"}`}>
