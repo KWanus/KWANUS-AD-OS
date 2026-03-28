@@ -16,8 +16,8 @@ export async function GET(req: NextRequest) {
     const verdict = searchParams.get("verdict") ?? "";
     const mode = searchParams.get("mode") ?? "";
     const sortBy = searchParams.get("sortBy") ?? "createdAt";
-    const page  = parseInt(searchParams.get("page")  ?? "1",  10) || 1;
-    const limit = Math.min(parseInt(searchParams.get("limit") ?? "30", 10) || 30, 100);
+    const page  = Math.max(1, parseInt(searchParams.get("page")  ?? "1",  10) || 1);
+    const limit = Math.min(Math.max(1, parseInt(searchParams.get("limit") ?? "30", 10) || 30), 100);
 
     const where = {
       userId: user.id,

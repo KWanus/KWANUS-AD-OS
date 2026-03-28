@@ -9,6 +9,11 @@ import { config } from "@/lib/config";
 
 const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 
+function sanitize(value: unknown, max = 500): string {
+  if (value === undefined || value === null) return "";
+  return String(value).replace(/\x00/g, "").replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "").trim().slice(0, max);
+}
+
 const GLOBAL_RULE = `You are the world's best affiliate marketing strategist inside Himalaya Agency OS.
 Return valid JSON only. No markdown. No commentary outside JSON.
 Before generating any output, analyze what the TOP 1% 7-figure affiliate marketers do in this niche.
@@ -110,12 +115,12 @@ export async function POST(req: NextRequest) {
     const prompt = `Analyze this affiliate offer and return a JSON object with the exact structure specified.
 
 Offer Details:
-- Name: ${offerData.name}
-- Platform: ${offerData.platform}
-- Niche: ${offerData.niche}
-- URL: ${offerData.url}
-${offerData.commission != null ? `- Commission: ${offerData.commission}%` : ""}
-${offerData.gravity != null ? `- Gravity: ${offerData.gravity}` : ""}
+- Name: ${sanitize(offerData.name)}
+- Platform: ${sanitize(offerData.platform)}
+- Niche: ${sanitize(offerData.niche)}
+- URL: ${sanitize(offerData.url, 2000)}
+${offerData.commission != null ? `- Commission: ${sanitize(offerData.commission)}%` : ""}
+${offerData.gravity != null ? `- Gravity: ${sanitize(offerData.gravity)}` : ""}
 Execution Tier: ${executionTier}
 
 ${executionTier === "elite"
@@ -151,8 +156,8 @@ Return this exact JSON structure:
     // If we have an offerId, update the record
     if (offerId) {
       const shouldApprove = analysis.verdict === "promote";
-      await prisma.affiliateOffer.update({
-        where: { id: offerId },
+      await prisma.affiliateOffer.updateMany({
+        where: { id: offerId, userId: user.id },
         data: {
           offerAnalysis: analysis as object,
           ...(shouldApprove ? { status: "approved" } : {}),

@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { Resend } from "resend";
 import { config } from "@/lib/config";
+import { checkRateLimit } from "@/lib/rateLimit";
 
 export async function POST(
   req: NextRequest,
@@ -22,6 +23,12 @@ export async function POST(
 
     const lead = await prisma.lead.findFirst({ where: { id, userId: user.id } });
     if (!lead) return NextResponse.json({ ok: false, error: "Lead not found" }, { status: 404 });
+
+    // Rate limit: 10 outreach emails per minute per user
+    const rl = checkRateLimit(`outreach-send:${user.id}`, { limit: 10, windowSeconds: 60 });
+    if (!rl.allowed) {
+      return NextResponse.json({ ok: false, error: "Too many outreach sends — please wait a moment" }, { status: 429 });
+    }
 
     const outreachEmail = lead.outreachEmail as { subject: string; body: string } | null;
     if (!outreachEmail) {
@@ -57,8 +64,8 @@ export async function POST(
       text: emailBody,
     });
 
-    await prisma.lead.update({
-      where: { id },
+    await prisma.lead.updateMany({
+      where: { id, userId: user.id },
       data: {
         status: "outreach_sent",
         outreachSentAt: new Date(),

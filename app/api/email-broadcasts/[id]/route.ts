@@ -5,6 +5,17 @@ import { getOrCreateUser } from "@/lib/auth";
 
 const EXECUTION_TIER_PREFIX = "__execution_tier:";
 
+function safeDate(value: unknown): Date | null {
+  if (!value) return null;
+  const d = new Date(String(value));
+  return isNaN(d.getTime()) ? null : d;
+}
+
+function sanitizeHeader(value: unknown, max = 100): string {
+  if (!value) return "";
+  return String(value).replace(/[\n\r\t<>"\\]/g, "").trim().slice(0, max);
+}
+
 function normalizeExecutionTier(value?: string) {
   return value === "core" ? "core" : "elite";
 }
@@ -87,8 +98,8 @@ export async function PATCH(
         ...(body.subject !== undefined && { subject: body.subject }),
         ...(body.previewText !== undefined && { previewText: body.previewText }),
         ...(body.body !== undefined && { body: body.body }),
-        ...(body.fromName !== undefined && { fromName: body.fromName }),
-        ...(body.fromEmail !== undefined && { fromEmail: body.fromEmail }),
+        ...(body.fromName !== undefined && { fromName: sanitizeHeader(body.fromName) || null }),
+        ...(body.fromEmail !== undefined && { fromEmail: sanitizeHeader(body.fromEmail, 254) || null }),
         ...(body.status !== undefined && { status: body.status }),
         ...((body.segmentTags !== undefined || body.executionTier !== undefined) && {
           segmentTags: withExecutionTier(
@@ -97,7 +108,7 @@ export async function PATCH(
           ),
         }),
         ...(body.scheduledAt !== undefined && {
-          scheduledAt: body.scheduledAt ? new Date(body.scheduledAt) : null,
+          scheduledAt: safeDate(body.scheduledAt),
         }),
       },
     });

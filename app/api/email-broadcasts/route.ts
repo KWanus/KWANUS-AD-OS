@@ -5,6 +5,17 @@ import { getOrCreateUser } from "@/lib/auth";
 
 const EXECUTION_TIER_PREFIX = "__execution_tier:";
 
+function safeDate(value: unknown): Date | null {
+  if (!value) return null;
+  const d = new Date(String(value));
+  return isNaN(d.getTime()) ? null : d;
+}
+
+function sanitizeHeader(value: unknown, max = 100): string {
+  if (!value) return "";
+  return String(value).replace(/[\n\r\t<>"\\]/g, "").trim().slice(0, max);
+}
+
 function normalizeExecutionTier(value?: string) {
   return value === "core" ? "core" : "elite";
 }
@@ -80,10 +91,10 @@ export async function POST(req: NextRequest) {
         subject: body.subject.trim(),
         previewText: body.previewText,
         body: body.body ?? "",
-        fromName: body.fromName,
-        fromEmail: body.fromEmail,
+        fromName: body.fromName ? sanitizeHeader(body.fromName) : null,
+        fromEmail: body.fromEmail ? sanitizeHeader(body.fromEmail, 254) : null,
         segmentTags: withExecutionTier(body.segmentTags, body.executionTier),
-        scheduledAt: body.scheduledAt ? new Date(body.scheduledAt) : null,
+        scheduledAt: safeDate(body.scheduledAt),
         status: "draft",
       },
     });

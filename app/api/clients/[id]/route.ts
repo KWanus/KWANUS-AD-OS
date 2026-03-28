@@ -11,6 +11,12 @@ function normalizeExecutionTier(value: unknown): ExecutionTier {
   return value === "core" ? "core" : "elite";
 }
 
+function safeDate(value: unknown): Date | null {
+  if (value === undefined || value === null || value === "") return null;
+  const d = new Date(String(value));
+  return isNaN(d.getTime()) ? null : d;
+}
+
 function mergeExecutionTier(customFields: unknown, executionTier: ExecutionTier) {
   return {
     ...(customFields && typeof customFields === "object" && !Array.isArray(customFields)
@@ -97,7 +103,7 @@ export async function PATCH(
 
     const newStage = body.pipelineStage ?? existing.pipelineStage;
     const newLastContact = body.lastContactAt !== undefined
-      ? (body.lastContactAt ? new Date(body.lastContactAt) : null)
+      ? safeDate(body.lastContactAt)
       : existing.lastContactAt;
 
     const { score, status } = computeHealthScore({
@@ -107,8 +113,8 @@ export async function PATCH(
       createdAt: existing.createdAt,
     });
 
-    const client = await prisma.client.update({
-      where: { id },
+    const result = await prisma.client.updateMany({
+      where: { id, userId: user.id },
       data: {
         ...(body.name !== undefined && { name: body.name }),
         ...(body.email !== undefined && { email: body.email || null }),
@@ -128,6 +134,8 @@ export async function PATCH(
       },
     });
 
+    if (result.count === 0) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
+
     // Log stage change activity
     if (body.pipelineStage && body.pipelineStage !== existing.pipelineStage) {
       await prisma.clientActivity.create({
@@ -141,13 +149,7 @@ export async function PATCH(
       });
     }
 
-    return NextResponse.json({
-      ok: true,
-      client: {
-        ...client,
-        executionTier: executionTier ?? readExecutionTier(client.customFields),
-      },
-    });
+    return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Client PATCH:", err);
     return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });

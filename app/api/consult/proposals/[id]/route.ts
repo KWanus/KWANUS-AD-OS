@@ -5,6 +5,12 @@ import { isDatabaseUnavailable } from "@/lib/db/runtime";
 
 type RouteContext = { params: Promise<{ id: string }> };
 
+function validateDate(value: unknown): Date | undefined {
+  if (value === undefined || value === null || value === "") return undefined;
+  const d = new Date(String(value));
+  return isNaN(d.getTime()) ? undefined : d;
+}
+
 export async function GET(_req: NextRequest, { params }: RouteContext) {
   try {
     const { userId: clerkId } = await auth();
@@ -91,9 +97,9 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
         ...(totalValue !== undefined && { totalValue: Number(totalValue) }),
         ...(status !== undefined && { status }),
         ...(notes !== undefined && { notes }),
-        ...(sentAt !== undefined && { sentAt: new Date(sentAt) }),
-        ...(expiresAt !== undefined && { expiresAt: new Date(expiresAt) }),
-        ...(respondedAt !== undefined && { respondedAt: new Date(respondedAt) }),
+        ...(sentAt !== undefined && validateDate(sentAt) !== undefined && { sentAt: validateDate(sentAt) }),
+        ...(expiresAt !== undefined && validateDate(expiresAt) !== undefined && { expiresAt: validateDate(expiresAt) }),
+        ...(respondedAt !== undefined && validateDate(respondedAt) !== undefined && { respondedAt: validateDate(respondedAt) }),
       },
     });
     if (patch.count === 0) return NextResponse.json({ ok: false, error: "Proposal not found" }, { status: 404 });

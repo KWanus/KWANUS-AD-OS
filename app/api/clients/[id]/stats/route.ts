@@ -31,6 +31,7 @@ export async function GET(
       where: { clientId: id },
       select: { type: true, createdAt: true },
       orderBy: { createdAt: "desc" },
+      take: 1000,
     });
 
     // Activity by type
