@@ -17,7 +17,11 @@ export async function POST(req: NextRequest) {
   const provided = req.headers.get("x-cron-secret") ?? req.headers.get("authorization")?.replace("Bearer ", "");
 
   if (!secret || secret === "REPLACE_ME") {
-    console.warn("CRON_SECRET not configured — cron endpoint is unprotected");
+    // In production, reject if CRON_SECRET not configured
+    if (process.env.NODE_ENV === "production" || process.env.VERCEL) {
+      return NextResponse.json({ ok: false, error: "CRON_SECRET not configured" }, { status: 403 });
+    }
+    console.warn("CRON_SECRET not configured — allowing in development");
   } else if (provided !== secret) {
     return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }

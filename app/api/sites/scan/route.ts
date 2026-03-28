@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { createSiteFromScan, type SiteScanMode } from "@/lib/sites/scanMode";
+import { rateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 
 export async function POST(req: NextRequest) {
   try {
@@ -14,6 +15,9 @@ export async function POST(req: NextRequest) {
     if (!user) {
       return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
     }
+
+    const limited = rateLimit(`ai:${user.id}`, RATE_LIMITS.aiGeneration);
+    if (limited) return limited;
 
     const body = await req.json() as {
       url?: string;

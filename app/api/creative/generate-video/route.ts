@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { deductCredits, getOrCreateUser } from "@/lib/auth";
 import { auth } from "@clerk/nextjs/server";
+import { rateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 
 // Runway Gen-3 Alpha Turbo via REST API
 // Docs: https://docs.dev.runwayml.com/
@@ -17,6 +18,9 @@ export async function POST(req: NextRequest) {
   if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   const user = await getOrCreateUser();
   if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+  const limited = rateLimit(`ai:${user.id}`, RATE_LIMITS.aiGeneration);
+  if (limited) return limited;
 
   const apiKey = process.env.RUNWAY_API_KEY;
 

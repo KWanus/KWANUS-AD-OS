@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { rateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 import {
   buildSiteInputFromScratch,
   createSiteFromBlueprint,
@@ -20,6 +21,9 @@ export async function POST(req: NextRequest) {
     if (!user) {
       return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
     }
+
+    const limited = rateLimit(`ai:${user.id}`, RATE_LIMITS.aiGeneration);
+    if (limited) return limited;
 
     const body = await req.json() as {
       businessName?: string;

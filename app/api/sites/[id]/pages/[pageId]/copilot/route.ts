@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { getOrCreateUser } from "@/lib/auth";
 import { runWebsiteCopilot } from "@/lib/site-builder/copilotEngine";
+import { rateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 import type { Block } from "@/components/site-builder/BlockRenderer";
 
 export async function POST(
@@ -16,6 +17,9 @@ export async function POST(
 
     const user = await getOrCreateUser();
     if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    const limited = rateLimit(`ai:${user.id}`, RATE_LIMITS.aiGeneration);
+    if (limited) return limited;
 
     const site = await prisma.site.findFirst({
       where: { id: siteId, userId: user.id },
