@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
 import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
+import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -19,8 +20,14 @@ export async function POST(req: NextRequest) {
     const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } });
     if (!user) return NextResponse.json({ ok: false, error: "User not found" }, { status: 404 });
 
-    const body = await req.json();
+    const body = await req.json() as {
+      niche?: string;
+      businessType?: string;
+      targetClient?: string;
+      executionTier?: ExecutionTier;
+    };
     const { niche, businessType, targetClient } = body;
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
 
     if (!niche || !businessType || !targetClient) {
       return NextResponse.json(
@@ -35,6 +42,10 @@ export async function POST(req: NextRequest) {
 Niche: ${niche}
 Business Type: ${businessType}
 Target Client: ${targetClient}
+Execution tier: ${executionTier}
+${executionTier === "elite"
+  ? "Build packages like a top 1% consultant: stronger offer framing, cleaner value ladders, better scope separation, and more premium price logic."
+  : "Build strong, practical, conversion-ready packages a consultant could sell quickly."}
 ${businessContext}
 
 Research what the top 1% of consultants in this exact niche charge. Then create packages that are priced and positioned BETTER.
@@ -124,7 +135,7 @@ Return ONLY this JSON structure:
       )
     );
 
-    return NextResponse.json({ ok: true, packages: created }, { status: 201 });
+    return NextResponse.json({ ok: true, packages: created, executionTier }, { status: 201 });
   } catch (err) {
     console.error("Package generate error:", err);
     return NextResponse.json({ ok: false, error: "Failed to generate packages" }, { status: 500 });

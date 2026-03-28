@@ -17,6 +17,15 @@ type PublicProduct = {
 
 export const revalidate = 10; // ISR for blazing fast loads
 
+function getPublicSiteUrl(site: { slug: string; customDomain?: string | null }) {
+  if (site.customDomain?.trim()) {
+    const normalized = site.customDomain.trim().replace(/^https?:\/\//, "");
+    return `https://${normalized}`;
+  }
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://himalaya.app";
+  return `${appUrl}/s/${site.slug}`;
+}
+
 export async function generateMetadata(
   { params }: { params: Promise<{ slug: string }> }
 ): Promise<Metadata> {
@@ -37,7 +46,7 @@ export async function generateMetadata(
   if (!home) return { title: "Not Found" };
   const title = home.seoTitle || site.name;
   const description = home.seoDesc || site.description || "";
-  const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://himalaya.app";
+  const publicUrl = getPublicSiteUrl(site);
 
   return {
     title,
@@ -48,7 +57,7 @@ export async function generateMetadata(
     openGraph: {
       title,
       description,
-      url: `${appUrl}/s/${slug}`,
+      url: publicUrl,
       siteName: site.name,
       type: "website",
     },
@@ -58,7 +67,7 @@ export async function generateMetadata(
       description,
     },
     alternates: {
-      canonical: `${appUrl}/s/${slug}`,
+      canonical: publicUrl,
     },
   };
 }
@@ -154,6 +163,7 @@ export default async function PublicSitePage({
       <PublicSiteShell
         siteName={site.name}
         siteSlug={site.slug}
+        customDomain={site.customDomain}
         currentPageSlug="home"
         faviconEmoji={site.faviconEmoji}
         theme={theme}

@@ -14,10 +14,13 @@ type Contact = {
   firstName: string | null;
   lastName: string | null;
   tags: string[];
+  executionTier?: "core" | "elite";
   status: string;
   source: string | null;
   createdAt: string;
 };
+
+type ExecutionTier = "core" | "elite";
 
 const STATUS_STYLE: Record<string, string> = {
   subscribed:   "border-green-500/30 bg-green-500/10 text-green-400",
@@ -42,10 +45,12 @@ export default function ContactsPage() {
   const [newFirst, setNewFirst] = useState("");
   const [newLast, setNewLast] = useState("");
   const [newTags, setNewTags] = useState("");
+  const [newExecutionTier, setNewExecutionTier] = useState<ExecutionTier>("elite");
   const [adding, setAdding] = useState(false);
 
   // Import
   const [importText, setImportText] = useState("");
+  const [importExecutionTier, setImportExecutionTier] = useState<ExecutionTier>("elite");
   const [importing, setImporting] = useState(false);
   const [importResult, setImportResult] = useState<{ imported: number; skipped: number } | null>(null);
 
@@ -80,12 +85,13 @@ export default function ContactsPage() {
         firstName: newFirst.trim() || undefined,
         lastName: newLast.trim() || undefined,
         tags: newTags.split(",").map(t => t.trim()).filter(Boolean),
+        executionTier: newExecutionTier,
         source: "manual",
       }),
     });
     const data = await res.json() as { ok: boolean };
     if (data.ok) {
-      setNewEmail(""); setNewFirst(""); setNewLast(""); setNewTags("");
+      setNewEmail(""); setNewFirst(""); setNewLast(""); setNewTags(""); setNewExecutionTier("elite");
       setShowAdd(false);
       void loadContacts();
     }
@@ -120,6 +126,7 @@ export default function ContactsPage() {
         firstName: parts[1] ?? undefined,
         lastName: parts[2] ?? undefined,
         tags: parts[3] ? parts[3].split("|").map(t => t.trim()) : [],
+        executionTier: importExecutionTier,
       };
     }).filter(c => c.email.includes("@"));
 
@@ -163,6 +170,7 @@ export default function ContactsPage() {
   };
 
   const subscribed = contacts.filter(c => c.status === "subscribed").length;
+  const eliteContacts = contacts.filter(c => (c.executionTier ?? "elite") === "elite").length;
 
   return (
     <main className="min-h-screen bg-[#050a14] text-white flex flex-col">
@@ -207,7 +215,7 @@ export default function ContactsPage() {
             { label: "Total", value: total.toLocaleString(), icon: Users, color: "text-white" },
             { label: "Subscribed", value: contacts.filter(c=>c.status==="subscribed").length.toLocaleString(), icon: CheckCircle, color: "text-green-400" },
             { label: "Unsubscribed", value: contacts.filter(c=>c.status==="unsubscribed").length.toLocaleString(), icon: XCircle, color: "text-red-400" },
-            { label: "Tags Used", value: allTags.length.toString(), icon: Tag, color: "text-cyan-400" },
+            { label: "Elite Lane", value: eliteContacts.toLocaleString(), icon: Tag, color: "text-cyan-400" },
           ].map(({ label, value, icon: Icon, color }) => (
             <div key={label} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4 flex items-center gap-3">
               <Icon className={`w-5 h-5 shrink-0 ${color}`} />
@@ -298,6 +306,13 @@ export default function ContactsPage() {
                     : <span className="text-white/20 italic">—</span>}
                 </div>
                 <div className="flex flex-wrap gap-1">
+                  <span className={`text-[9px] px-1.5 py-0.5 rounded border font-medium ${
+                    (contact.executionTier ?? "elite") === "elite"
+                      ? "border-cyan-500/20 bg-cyan-500/5 text-cyan-400"
+                      : "border-white/10 bg-white/5 text-white/45"
+                  }`}>
+                    {contact.executionTier ?? "elite"}
+                  </span>
                   {contact.tags.length > 0 ? contact.tags.slice(0, 3).map(tag => (
                     <span key={tag}
                       className="text-[9px] px-1.5 py-0.5 rounded border border-cyan-500/20 bg-cyan-500/5 text-cyan-400 font-medium cursor-pointer hover:bg-cyan-500/10 transition"
@@ -357,6 +372,32 @@ export default function ContactsPage() {
                 <input value={newTags} onChange={e => setNewTags(e.target.value)} placeholder="customer, vip, welcome"
                   className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-cyan-400/50 transition" />
               </div>
+              <div>
+                <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2">Execution Lane</label>
+                <div className="grid grid-cols-2 gap-2">
+                  {[
+                    { value: "core" as const, label: "Core", note: "Clean standard contact lane." },
+                    { value: "elite" as const, label: "Elite", note: "Premium downstream email lane." },
+                  ].map((option) => {
+                    const active = newExecutionTier === option.value;
+                    return (
+                      <button
+                        key={option.value}
+                        type="button"
+                        onClick={() => setNewExecutionTier(option.value)}
+                        className={`rounded-xl border px-3 py-3 text-left transition-all ${
+                          active
+                            ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-100 shadow-[0_0_24px_rgba(6,182,212,0.12)]"
+                            : "border-white/[0.08] bg-white/[0.03] text-white/55 hover:bg-white/[0.05]"
+                        }`}
+                      >
+                        <p className="text-xs font-black">{option.label}</p>
+                        <p className="mt-1 text-[10px] leading-relaxed text-white/35">{option.note}</p>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
             </div>
             <div className="flex gap-3 mt-5">
               <button onClick={() => setShowAdd(false)}
@@ -376,6 +417,29 @@ export default function ContactsPage() {
           <div className="w-full max-w-lg rounded-2xl border border-white/[0.1] bg-[#080d1a] p-6">
             <h3 className="text-lg font-black text-white mb-2">Bulk Import</h3>
             <p className="text-xs text-white/30 mb-4">Paste one contact per line: <span className="text-white/50 font-mono">email, firstname, lastname, tag1|tag2</span></p>
+            <div className="mb-4 grid grid-cols-2 gap-2">
+              {[
+                { value: "core" as const, label: "Core", note: "Standard import lane." },
+                { value: "elite" as const, label: "Elite", note: "Sharper downstream execution lane." },
+              ].map((option) => {
+                const active = importExecutionTier === option.value;
+                return (
+                  <button
+                    key={option.value}
+                    type="button"
+                    onClick={() => setImportExecutionTier(option.value)}
+                    className={`rounded-xl border px-3 py-3 text-left transition-all ${
+                      active
+                        ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-100 shadow-[0_0_24px_rgba(6,182,212,0.12)]"
+                        : "border-white/[0.08] bg-white/[0.03] text-white/55 hover:bg-white/[0.05]"
+                    }`}
+                  >
+                    <p className="text-xs font-black">{option.label}</p>
+                    <p className="mt-1 text-[10px] leading-relaxed text-white/35">{option.note}</p>
+                  </button>
+                );
+              })}
+            </div>
             <textarea value={importText} onChange={e => setImportText(e.target.value)}
               placeholder={"john@example.com, John, Doe, customer|vip\njane@example.com, Jane, Smith"}
               rows={8}

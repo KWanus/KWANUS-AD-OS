@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
+import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -34,6 +35,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     const { productId } = body;
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
 
     if (!productId) {
       return NextResponse.json({ ok: false, error: "productId is required" }, { status: 400 });
@@ -53,6 +55,10 @@ export async function POST(req: NextRequest) {
 Product: ${product.name}
 Niche: ${product.niche}
 ${product.suggestedPrice ? `Price: $${product.suggestedPrice}` : ""}
+Execution Tier: ${executionTier}
+${executionTier === "elite"
+  ? "Elite mode: write this like a high-performing e-commerce retention operator. Push harder on revenue recovery, post-purchase delight, objection handling, and repeat-purchase psychology."
+  : "Core mode: produce strong practical e-commerce flows with clear conversion and retention logic."}
 ${productContext}
 
 Write email copy that recovers abandoned carts and maximizes LTV post-purchase. Use proven e-commerce email tactics: urgency, scarcity, social proof, objection handling, and delight sequences.
@@ -81,7 +87,7 @@ Return this exact JSON structure:
       data: { emailsJson: result as object },
     });
 
-    return NextResponse.json({ ok: true, emails: result, product: updated });
+    return NextResponse.json({ ok: true, emails: result, product: updated, executionTier });
   } catch (err) {
     console.error("Emails generate error:", err);
     return NextResponse.json({ ok: false, error: "Failed to generate emails" }, { status: 500 });

@@ -21,6 +21,8 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
+type ExecutionTier = "core" | "elite";
+
 type CopilotReport = {
   action: string;
   summary: string;
@@ -186,6 +188,7 @@ async function aiRewriteTarget(input: {
   pageTitle: string;
   blocks: Block[];
   selectedBlock?: Block | null;
+  executionTier: ExecutionTier;
 }) {
   if (!process.env.ANTHROPIC_API_KEY) return null;
 
@@ -250,11 +253,15 @@ Current issues: ${Object.values(analysis.issues).flat().join(" | ") || "none"}
 Current section props:
 ${currentProps}
 Selected block id: ${input.selectedBlock?.id ?? "none"}
+Execution tier: ${input.executionTier}
 
 Rules:
 - Write this section to convert better, not just sound prettier.
 - Be specific, clear, and direct.
 - Avoid generic fluff.
+- ${input.executionTier === "elite"
+    ? "Push for top-1% conversion execution: sharper specificity, stronger trust framing, clearer commercial intent, and more persuasive objection handling."
+    : "Keep the rewrite clean, strong, practical, and ready to ship fast."}
 - Return JSON only in the exact target shape.
 
 Return:
@@ -390,6 +397,7 @@ export async function runWebsiteCopilot(input: {
   pageTitle: string;
   blocks: Block[];
   selectedBlockId?: string | null;
+  executionTier?: ExecutionTier;
   generationContext?: {
     businessName?: string;
     niche?: string;
@@ -401,6 +409,7 @@ export async function runWebsiteCopilot(input: {
     conversionNotes?: { primary_goal?: string; trust_elements_used?: string[]; objections_addressed?: string[] };
   } | null;
 }): Promise<{ updatedBlocks: Block[]; report: CopilotReport }> {
+  const executionTier: ExecutionTier = input.executionTier === "core" ? "core" : "elite";
   const action = interpretCopilotInstruction(input.instruction);
   const before = summarizeBefore(input.blocks);
   const selectedBlock = input.selectedBlockId
@@ -426,6 +435,7 @@ export async function runWebsiteCopilot(input: {
       selectedBlock ? `Selected Block Type: ${selectedBlock.type}` : "",
     ].filter(Boolean).join("\n"),
     selectedBlock,
+    executionTier,
   }).catch(() => null);
   if (aiRewrite && ["hero", "cta", "faq", "trust_badges", "testimonials", "features"].includes(aiRewrite.target)) {
     updatedBlocks = applyTargetRewrite(updatedBlocks, aiRewrite.target, aiRewrite.props, input.siteName, selectedBlock?.id);

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
+import { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -40,6 +41,7 @@ export async function POST(req: NextRequest) {
       reviewPlatform?: "google" | "yelp" | "facebook";
       auditId?: string;
     };
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
 
     if (!businessName || !niche) {
       return NextResponse.json(
@@ -64,6 +66,11 @@ export async function POST(req: NextRequest) {
 Business Name: ${businessName}
 Niche: ${niche}
 Review Platform: ${platform}
+Execution Tier: ${executionTier}
+
+${executionTier === "elite"
+  ? "Elite mode: write these like a top local retention operator. Push for better personalization, stronger compliance psychology, and smarter tone without sounding robotic."
+  : "Core mode: produce strong human review-request templates with clear tone and practical conversion logic."}
 
 Create templates that:
 - Sound human and personal, not automated or corporate
@@ -98,7 +105,7 @@ Return this exact JSON structure:
       });
     }
 
-    return NextResponse.json({ ok: true, templates: result });
+    return NextResponse.json({ ok: true, templates: result, executionTier });
   } catch (err) {
     console.error("Review request generate POST error:", err);
     return NextResponse.json(

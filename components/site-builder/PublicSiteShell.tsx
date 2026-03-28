@@ -9,6 +9,7 @@ type PublicShellPage = {
 type PublicSiteShellProps = {
   siteName: string;
   siteSlug: string;
+  customDomain?: string | null;
   currentPageSlug: string;
   faviconEmoji?: string | null;
   theme?: {
@@ -29,6 +30,7 @@ type PublicSiteShellProps = {
 export default function PublicSiteShell({
   siteName,
   siteSlug,
+  customDomain,
   currentPageSlug,
   faviconEmoji,
   theme,
@@ -42,10 +44,12 @@ export default function PublicSiteShell({
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.58)" : "rgba(15,23,42,0.58)";
   const shell = theme?.shell;
+  const normalizedDomain = customDomain?.trim().replace(/^https?:\/\//, "") || null;
+  const siteRoot = normalizedDomain ? `https://${normalizedDomain}` : `/s/${siteSlug}`;
   const links = pages.map((page) => ({
     ...page,
     label: shell?.navLabels?.[page.slug] || page.title,
-    href: page.slug === "home" ? `/s/${siteSlug}` : `/s/${siteSlug}/${page.slug}`,
+    href: page.slug === "home" ? siteRoot : normalizedDomain ? `${siteRoot}/${page.slug}` : `${siteRoot}/${page.slug}`,
   }));
   const footerLinks = (shell?.footerLinks?.filter((link) => link?.label && link?.url) ?? []) as Array<{ label: string; url: string }>;
 
@@ -74,7 +78,7 @@ export default function PublicSiteShell({
           }}
         >
           <a
-            href={`/s/${siteSlug}`}
+            href={siteRoot}
             style={{
               display: "inline-flex",
               alignItems: "center",

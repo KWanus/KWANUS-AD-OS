@@ -25,6 +25,7 @@ type Props = {
     location?: string;
     templateId?: string;
     pageType?: string;
+    executionTier?: "core" | "elite";
     blueprintScore?: { overall?: number };
     conversionNotes?: {
       primary_goal?: string;
@@ -44,6 +45,8 @@ type CopilotMessage = {
   role: "assistant" | "user";
   content: string;
 };
+
+type ExecutionTier = "core" | "elite";
 
 type PendingChange = {
   blocks: Block[];
@@ -169,7 +172,9 @@ export default function WebsiteCopilotPanel({
   onCreatePageFromTemplate,
 }: Props) {
   const diagnostics = useMemo(() => getCopilotDiagnostics(blocks), [blocks]);
+  const initialTier: ExecutionTier = generationContext?.executionTier === "core" ? "core" : "elite";
   const [input, setInput] = useState("");
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>(initialTier);
   const [messages, setMessages] = useState<CopilotMessage[]>([
     {
       role: "assistant",
@@ -185,6 +190,10 @@ export default function WebsiteCopilotPanel({
     void runAction(queuedInstruction.text);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [queuedInstruction?.id]);
+
+  useEffect(() => {
+    setExecutionTier(generationContext?.executionTier === "core" ? "core" : "elite");
+  }, [generationContext?.executionTier]);
 
   async function runAction(raw: string) {
     setMessages((current) => [...current, { role: "user", content: raw }]);
@@ -227,6 +236,7 @@ export default function WebsiteCopilotPanel({
           pageTitle,
           siteName,
           selectedBlockId: selectedBlock?.id ?? null,
+          executionTier,
         }),
       });
 
@@ -288,10 +298,55 @@ export default function WebsiteCopilotPanel({
             <p className="text-[11px] leading-5 text-white/35">
               {pageTitle} · {published ? "published" : "draft"} · {diagnostics.blockCount} blocks
             </p>
+            <p className="mt-1 text-[11px] font-bold text-cyan-300/90">
+              {executionTier === "elite" ? "Elite website copilot lane" : "Core website copilot lane"}
+            </p>
             {selectedBlock && (
               <p className="mt-1 text-[11px] font-bold text-cyan-300/90">Selected section: {selectedBlock.type}</p>
             )}
           </div>
+        </div>
+      </div>
+
+      <div className="border-b border-white/[0.06] px-4 py-4">
+        <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/25">Execution Lane</p>
+        <div className="mt-3 grid grid-cols-1 gap-3 sm:grid-cols-2">
+          {[
+            {
+              id: "core" as const,
+              label: "Core",
+              description: "Strong practical page edits that keep momentum high.",
+            },
+            {
+              id: "elite" as const,
+              label: "Elite",
+              description: "Sharper conversion rewrites with tighter proof, specificity, and objection handling.",
+            },
+          ].map((tier) => {
+            const active = executionTier === tier.id;
+            return (
+              <button
+                key={tier.id}
+                type="button"
+                onClick={() => setExecutionTier(tier.id)}
+                className={`rounded-2xl border p-4 text-left transition-all ${
+                  active
+                    ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                    : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
+                }`}
+              >
+                <div className="flex items-center justify-between gap-3">
+                  <span className={`text-sm font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
+                  <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+                    {tier.id}
+                  </span>
+                </div>
+                <p className={`mt-2 text-xs leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+                  {tier.description}
+                </p>
+              </button>
+            );
+          })}
         </div>
       </div>
 

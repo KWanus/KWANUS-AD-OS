@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
 import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
+import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -34,7 +35,8 @@ export async function POST(req: NextRequest) {
     const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } });
     if (!user) return NextResponse.json({ ok: false, error: "User not found" }, { status: 404 });
 
-    const body = await req.json() as { offerId: string };
+    const body = await req.json() as { offerId: string; executionTier?: ExecutionTier };
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
     if (!body.offerId) return NextResponse.json({ ok: false, error: "offerId is required" }, { status: 400 });
 
     const offer = await prisma.affiliateOffer.findFirst({
@@ -58,6 +60,11 @@ ${offer.commission != null ? `- Commission: ${offer.commission}%` : ""}
 ${offer.gravity != null ? `- Gravity/Score: ${offer.gravity}` : ""}
 ${offer.notes ? `- Notes: ${offer.notes}` : ""}${analysisContext}
 ${businessContext}
+Execution Tier: ${executionTier}
+
+${executionTier === "elite"
+  ? "Elite mode: map this funnel like a serious affiliate operator. Push for stronger message match, smarter sequencing, tighter monetization, and better traffic-plan specificity."
+  : "Core mode: build a strong practical funnel with clear page, email, and traffic structure."}
 
 Return this exact JSON structure:
 {
@@ -105,7 +112,7 @@ The emailSequence should have at least 5 emails (days 0, 1, 2, 4, 7).`;
       data: { funnelJson: funnel as object },
     });
 
-    return NextResponse.json({ ok: true, funnel, offerId: offer.id });
+    return NextResponse.json({ ok: true, funnel, offerId: offer.id, executionTier });
   } catch (err) {
     console.error("Funnel generate error:", err);
     return NextResponse.json({ ok: false, error: "Funnel generation failed" }, { status: 500 });

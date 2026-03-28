@@ -16,6 +16,9 @@ type Campaign = {
   productName: string | null;
   productUrl: string | null;
   createdAt: string;
+  workflowState?: {
+    executionTier?: "core" | "elite";
+  } | null;
   _count: { adVariations: number; emailDrafts: number; checklistItems: number };
 };
 
@@ -333,6 +336,7 @@ export default function CampaignsPage() {
           <div className="space-y-3 pb-16">
             {filtered.map((c) => {
               const s = STATUS_STYLES[c.status] ?? STATUS_STYLES.draft;
+              const executionTier = c.workflowState?.executionTier === "core" ? "core" : "elite";
               return (
                 <div key={c.id}
                   onClick={() => router.push(`/campaigns/${c.id}`)}
@@ -359,9 +363,23 @@ export default function CampaignsPage() {
                       <span className="text-[10px] text-white/20 font-medium">
                         {c.mode === "operator" ? "E-Commerce" : c.mode === "consultant" ? "Consultant" : "SaaS"}
                       </span>
+                      <span
+                        className={`rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.18em] ${
+                          executionTier === "elite"
+                            ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-300"
+                            : "border-white/10 bg-white/5 text-white/45"
+                        }`}
+                      >
+                        {executionTier}
+                      </span>
                     </div>
                     <h3 className="text-sm font-bold text-white group-hover:text-cyan-300 transition truncate leading-snug">{c.name}</h3>
                     {c.productName && <p className="text-xs text-white/25 mt-0.5 truncate">{c.productName}</p>}
+                    <p className="mt-1 text-[11px] text-white/30">
+                      {executionTier === "elite"
+                        ? "Premium execution lane: sharper hooks, deeper proof, stronger objection handling."
+                        : "Core execution lane: strong operator-ready assets with lighter structure."}
+                    </p>
                   </div>
 
                   {/* Asset counts */}

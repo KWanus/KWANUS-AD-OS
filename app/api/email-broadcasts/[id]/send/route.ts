@@ -5,6 +5,12 @@ import { getOrCreateUser } from "@/lib/auth";
 import { sendEmail, markdownToHtml } from "@/lib/email/send";
 import { fireWebhook } from "@/lib/webhooks";
 
+const EXECUTION_TIER_PREFIX = "__execution_tier:";
+
+function visibleSegmentTags(tags: string[] | undefined) {
+  return (tags ?? []).filter((tag) => !tag.startsWith(EXECUTION_TIER_PREFIX));
+}
+
 export async function POST(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -25,11 +31,12 @@ export async function POST(
     }
 
     // Load contacts — filter by segmentTags if set
+    const segmentTags = visibleSegmentTags(broadcast.segmentTags);
     const contactWhere = {
       userId: user.id,
       status: "subscribed",
-      ...(broadcast.segmentTags.length > 0 && {
-        tags: { hasSome: broadcast.segmentTags },
+      ...(segmentTags.length > 0 && {
+        tags: { hasSome: segmentTags },
       }),
     };
 

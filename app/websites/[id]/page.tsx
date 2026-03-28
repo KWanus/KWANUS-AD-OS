@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import AppNav from "@/components/AppNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
+import type { Block } from "@/components/site-builder/BlockRenderer";
 import {
   ArrowLeft,
   Loader2,
@@ -19,6 +20,9 @@ import {
   Check,
   X,
   Copy,
+  Wand2,
+  Megaphone,
+  Link2,
   ChevronUp,
   ChevronDown,
 } from "lucide-react";
@@ -28,6 +32,8 @@ import {
   getMissingSiteStructurePages,
   type AiPageTemplate,
 } from "@/lib/site-builder/copilotActions";
+import { auditPublishedSite } from "@/lib/site-builder/publishAudit";
+import { getStarterTemplateNextMoves } from "@/lib/site-builder/starterTemplates";
 
 interface SitePage {
   id: string;
@@ -37,6 +43,9 @@ interface SitePage {
   views: number;
   order: number;
   updatedAt: string;
+  blocks?: unknown[];
+  seoTitle?: string | null;
+  seoDesc?: string | null;
 }
 
 interface Site {
@@ -45,6 +54,7 @@ interface Site {
   slug: string;
   description?: string;
   faviconEmoji?: string;
+  customDomain?: string | null;
   published: boolean;
   totalViews: number;
   theme: Record<string, unknown>;
@@ -58,6 +68,8 @@ type GenerationContext = {
   sourceTitle?: string;
   niche?: string;
   location?: string;
+  businessType?: string;
+  executionTier?: "core" | "elite";
   templateId?: string;
   pageType?: string;
   createdPages?: { title?: string; slug?: string }[];
@@ -87,6 +99,8 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
   const [aiPageTemplate, setAiPageTemplate] = useState<AiPageTemplate>("about");
   const [creatingPage, setCreatingPage] = useState(false);
   const [upgradingStructure, setUpgradingStructure] = useState(false);
+  const [savingBranding, setSavingBranding] = useState(false);
+  const [autoFixingBasics, setAutoFixingBasics] = useState(false);
 
   useEffect(() => {
     fetch(`/api/sites/${siteId}`)
@@ -101,6 +115,23 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
 
   async function togglePublish() {
     if (!site) return;
+    if (!site.published) {
+      const blockers = [
+        !site.description?.trim() ? "site description is missing" : null,
+        siteAudit.summary.pagesMissingSeo > 0 ? `${siteAudit.summary.pagesMissingSeo} page${siteAudit.summary.pagesMissingSeo > 1 ? "s are" : " is"} missing SEO` : null,
+        siteAudit.summary.pagesMissingTrust > 0 ? `${siteAudit.summary.pagesMissingTrust} page${siteAudit.summary.pagesMissingTrust > 1 ? "s are" : " is"} missing trust proof` : null,
+        siteAudit.summary.pagesMissingCta > 0 ? `${siteAudit.summary.pagesMissingCta} page${siteAudit.summary.pagesMissingCta > 1 ? "s are" : " is"} missing a clear CTA` : null,
+        missingStructurePages.length > 0 ? "core pages are still missing" : null,
+      ].filter(Boolean);
+
+      if (blockers.length > 0) {
+        const shouldContinue = confirm(
+          `This site still has launch gaps:\n\n- ${blockers.join("\n- ")}\n\nPublish anyway?`
+        );
+        if (!shouldContinue) return;
+      }
+    }
+
     setPublishing(true);
     try {
       await fetch(`/api/sites/${siteId}`, {
@@ -162,10 +193,64 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
     }
   }
 
+  function getPublicUrl(currentSite: Site) {
+    if (currentSite.customDomain?.trim()) {
+      const normalized = currentSite.customDomain.trim().replace(/^https?:\/\//, "");
+      return `https://${normalized}`;
+    }
+    return `${window.location.origin}/s/${currentSite.slug}`;
+  }
+
   function copyLink() {
     if (!site) return;
-    void navigator.clipboard.writeText(`${window.location.origin}/s/${site.slug}`);
+    void navigator.clipboard.writeText(getPublicUrl(site));
     toast.success("Link copied!");
+  }
+
+  async function saveBrandingSettings() {
+    if (!site) return;
+    setSavingBranding(true);
+    try {
+      const res = await fetch(`/api/sites/${siteId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: site.name,
+          description: site.description ?? "",
+          faviconEmoji: site.faviconEmoji ?? "🚀",
+          customDomain: site.customDomain ?? "",
+        }),
+      });
+      const data = await res.json() as { ok?: boolean };
+      if (!res.ok || !data.ok) throw new Error("Failed");
+      toast.success("Site settings saved");
+    } catch {
+      toast.error("Could not save site settings");
+    } finally {
+      setSavingBranding(false);
+    }
+  }
+
+  async function applyLaunchBasics() {
+    setAutoFixingBasics(true);
+    try {
+      const res = await fetch(`/api/sites/${siteId}/launch-basics`, {
+        method: "POST",
+      });
+      const data = await res.json() as { ok?: boolean; summary?: string; error?: string };
+      if (!res.ok || !data.ok) throw new Error(data.error ?? "Failed");
+
+      const refreshed = await fetch(`/api/sites/${siteId}`);
+      const refreshedData = await refreshed.json() as { ok: boolean; site?: Site | null };
+      if (refreshedData.ok && refreshedData.site) {
+        setSite(refreshedData.site);
+      }
+      toast.success(data.summary ?? "Launch basics updated");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Could not auto-fix launch basics");
+    } finally {
+      setAutoFixingBasics(false);
+    }
   }
 
   async function movePage(pageId: string, direction: "up" | "down") {
@@ -307,34 +392,103 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
   }
 
   const generation = (site.theme?.generation as GenerationContext | undefined) ?? null;
+  const starterGuidance = getStarterTemplateNextMoves(generation?.templateId);
   const missingStructurePages = getMissingSiteStructurePages(site.pages.map((page) => page.slug));
   const visiblePages = site.pages.filter((page) => page.published);
   const hiddenPages = site.pages.filter((page) => !page.published);
   const hasLandingPage = site.pages.some((page) => page.slug === "landing" || /landing/i.test(page.title));
-  const siteHealthScore = Math.max(
-    40,
-    100
-      - (site.published ? 0 : 18)
-      - missingStructurePages.length * 8
-      - (!hasLandingPage ? 8 : 0)
-      - (visiblePages.length < 2 ? 10 : 0)
-      - (hiddenPages.length > 2 ? 6 : 0)
-  );
-  const siteHealthFindings = [
-    ...(!site.published ? ["The site is still in draft, so visitors cannot see the live version yet."] : []),
-    ...(missingStructurePages.length
-      ? [`Core structure pages are still missing: ${missingStructurePages.map((template) => getAiPageTemplateLabel(template)).join(", ")}.`]
-      : []),
-    ...(!hasLandingPage ? ["There is no dedicated landing-style page for focused traffic or campaign use yet."] : []),
-    ...(visiblePages.length < 2 ? ["The public site still feels thin because too few pages are visible."] : []),
-    ...(hiddenPages.length > 0 ? [`${hiddenPages.length} page${hiddenPages.length > 1 ? "s are" : " is"} hidden from the live nav and sitemap.`] : []),
+  const siteAudit = auditPublishedSite({
+    published: site.published,
+    productCount: site._count?.products ?? 0,
+    pages: site.pages.map((page) => ({
+      id: page.id,
+      title: page.title,
+      slug: page.slug,
+      published: page.published,
+      blocks: (page.blocks as Block[] | undefined) ?? [],
+      seoTitle: page.seoTitle ?? null,
+      seoDesc: page.seoDesc ?? null,
+    })),
+  });
+  const firstVisiblePageNeedingSeo = siteAudit.pageAudits.find((pageAudit) => !pageAudit.seoReady)?.id;
+  const firstPageNeedingTrust = siteAudit.pageAudits.find((pageAudit) => !pageAudit.hasTrust)?.id;
+  const firstPageNeedingCta = siteAudit.pageAudits.find((pageAudit) => !pageAudit.hasPrimaryCta)?.id;
+  const launchChecklist = [
+    {
+      id: "publish",
+      label: "Publish the site",
+      done: site.published,
+      actionLabel: "Publish",
+      onAction: () => void togglePublish(),
+    },
+    {
+      id: "structure",
+      label: "Complete the core site structure",
+      done: missingStructurePages.length === 0,
+      actionLabel: "Build Pages",
+      onAction: () => void upgradeSiteStructure(),
+    },
+    {
+      id: "seo",
+      label: "Set SEO titles and descriptions on visible pages",
+      done: siteAudit.summary.pagesMissingSeo === 0,
+      actionLabel: "Fix SEO",
+      onAction: () => {
+        if (firstVisiblePageNeedingSeo) router.push(`/websites/${siteId}/editor/${firstVisiblePageNeedingSeo}`);
+      },
+    },
+    {
+      id: "trust",
+      label: "Add trust proof to every major page",
+      done: siteAudit.summary.pagesMissingTrust === 0,
+      actionLabel: "Add Trust",
+      onAction: () => {
+        if (firstPageNeedingTrust) router.push(`/websites/${siteId}/editor/${firstPageNeedingTrust}`);
+      },
+    },
+    {
+      id: "cta",
+      label: "Make sure each page has a clear CTA",
+      done: siteAudit.summary.pagesMissingCta === 0,
+      actionLabel: "Fix CTA",
+      onAction: () => {
+        if (firstPageNeedingCta) router.push(`/websites/${siteId}/editor/${firstPageNeedingCta}`);
+      },
+    },
   ];
-  const siteHealthWins = [
-    ...(site.published ? ["The site is publish-ready and already live."] : []),
-    ...(missingStructurePages.length === 0 ? ["The core site structure is in place."] : []),
-    ...(hasLandingPage ? ["There is already a landing-page style asset available."] : []),
-    ...(visiblePages.length >= 3 ? ["The live site has enough visible pages to feel more complete."] : []),
-  ];
+  const checklistCompleteCount = launchChecklist.filter((item) => item.done).length;
+  const checklistPercent = Math.round((checklistCompleteCount / launchChecklist.length) * 100);
+
+  function runStarterAction(actionType: string) {
+    switch (actionType) {
+      case "build_pages":
+        void upgradeSiteStructure();
+        break;
+      case "fix_trust":
+        if (firstPageNeedingTrust) router.push(`/websites/${siteId}/editor/${firstPageNeedingTrust}`);
+        break;
+      case "launch_google":
+        router.push("/campaigns/new?type=google");
+        break;
+      case "launch_campaign":
+        router.push("/campaigns/new");
+        break;
+      case "open_store":
+        router.push(`/websites/${siteId}/store`);
+        break;
+      case "add_landing":
+        startAiPageFlow("landing");
+        break;
+      case "open_editor":
+        if (site?.pages[0]) router.push(`/websites/${siteId}/editor/${site.pages[0].id}`);
+        break;
+      case "fix_basics":
+        void applyLaunchBasics();
+        break;
+      default:
+        break;
+    }
+  }
 
   return (
     <div className="min-h-screen bg-[#050a14] text-white">
@@ -371,7 +525,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
           <div className="flex items-center gap-2">
             {site.published && (
               <a
-                href={`/s/${site.slug}`}
+                href={getPublicUrl(site)}
                 target="_blank"
                 rel="noreferrer"
                 className="flex items-center gap-1.5 px-3 py-2 rounded-xl border border-white/[0.1] text-white/40 hover:text-white/60 text-sm transition"
@@ -407,6 +561,266 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
               <p className={`text-2xl font-black ${color}`}>{value}</p>
             </div>
           ))}
+        </div>
+
+        <div className="mb-8 rounded-[28px] border border-white/[0.07] bg-white/[0.03] p-5">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Branding & Share Settings</p>
+              <p className="mt-2 text-lg font-black text-white">Set how this site looks and where people should visit it.</p>
+              <p className="mt-2 text-sm leading-6 text-white/55">
+                Keep the public URL, favicon, and description clean so the site looks launch-ready when you share it or index it.
+              </p>
+            </div>
+            <button
+              onClick={() => void saveBrandingSettings()}
+              disabled={savingBranding}
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-black text-cyan-900 disabled:opacity-50"
+            >
+              {savingBranding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
+              Save Settings
+            </button>
+          </div>
+
+          <div className="mt-4 flex flex-wrap gap-3">
+            <button
+              onClick={() => void applyLaunchBasics()}
+              disabled={autoFixingBasics}
+              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-3 text-sm font-black text-cyan-100 disabled:opacity-50"
+            >
+              {autoFixingBasics ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
+              Auto-Fix Launch Basics
+            </button>
+            <p className="self-center text-xs leading-5 text-white/40">
+              Fills in missing site description, favicon defaults, domain formatting, and page SEO titles/descriptions.
+            </p>
+          </div>
+
+          <div className="mt-5 grid gap-4 md:grid-cols-2">
+            <div className="space-y-4 rounded-2xl border border-white/[0.06] bg-black/20 p-4">
+              <div className="space-y-1.5">
+                <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-white/25">Site Name</label>
+                <input
+                  type="text"
+                  value={site.name}
+                  onChange={(e) => setSite((prev) => prev ? { ...prev, name: e.target.value } : prev)}
+                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white placeholder:text-white/20 focus:border-cyan-500/40 focus:outline-none"
+                  placeholder="Your site name"
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-white/25">Description</label>
+                <textarea
+                  rows={3}
+                  value={site.description ?? ""}
+                  onChange={(e) => setSite((prev) => prev ? { ...prev, description: e.target.value } : prev)}
+                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white placeholder:text-white/20 focus:border-cyan-500/40 focus:outline-none resize-none"
+                  placeholder="Short description used across the site and metadata."
+                />
+              </div>
+
+              <div className="space-y-1.5">
+                <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-white/25">Favicon Emoji</label>
+                <input
+                  type="text"
+                  maxLength={4}
+                  value={site.faviconEmoji ?? "🚀"}
+                  onChange={(e) => setSite((prev) => prev ? { ...prev, faviconEmoji: e.target.value } : prev)}
+                  className="w-24 rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-center text-xl text-white focus:border-cyan-500/40 focus:outline-none"
+                />
+              </div>
+            </div>
+
+            <div className="space-y-4 rounded-2xl border border-white/[0.06] bg-black/20 p-4">
+              <div className="space-y-1.5">
+                <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-white/25">Custom Domain</label>
+                <input
+                  type="text"
+                  value={site.customDomain ?? ""}
+                  onChange={(e) => setSite((prev) => prev ? { ...prev, customDomain: e.target.value } : prev)}
+                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white placeholder:text-white/20 focus:border-cyan-500/40 focus:outline-none"
+                  placeholder="www.yoursite.com"
+                />
+                <p className="text-xs leading-5 text-white/35">Leave blank to use the built-in `/s/{site.slug}` public URL.</p>
+              </div>
+
+              <div className="rounded-2xl border border-cyan-500/15 bg-cyan-500/10 p-4">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-200/80">Share URL</p>
+                <p className="mt-2 break-all text-sm font-bold text-cyan-50">{getPublicUrl(site)}</p>
+                <div className="mt-3 flex flex-wrap gap-2">
+                  <button
+                    onClick={copyLink}
+                    className="rounded-xl border border-cyan-500/20 bg-white px-3 py-2 text-xs font-black text-cyan-900"
+                  >
+                    Copy Link
+                  </button>
+                  <a
+                    href={getPublicUrl(site)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-xs font-black text-cyan-100"
+                  >
+                    Open Public Site
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {generation?.templateId && (
+          <div className="mb-8 rounded-[28px] border border-cyan-500/20 bg-cyan-500/[0.08] p-5">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+              <div className="max-w-2xl">
+                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-200/80">Template Guidance</p>
+                <p className="mt-2 text-lg font-black text-white">{starterGuidance.headline}</p>
+                <p className="mt-2 text-sm leading-6 text-cyan-50/80">
+                  {starterGuidance.summary}
+                </p>
+                <p className="mt-3 text-xs leading-5 text-cyan-50/55">
+                  Template: {generation.templateId} · Tier: {generation.executionTier ?? "core"} · Source: {generation.sourceMode?.replaceAll("_", " ") ?? "manual"}
+                </p>
+              </div>
+
+              <div className="flex flex-wrap gap-2">
+                {starterGuidance.actions.map((action) => (
+                  <button
+                    key={action.label}
+                    onClick={() => runStarterAction(action.type)}
+                    className="rounded-2xl border border-cyan-500/20 bg-white px-4 py-3 text-sm font-black text-cyan-900"
+                  >
+                    {action.label}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        )}
+
+        <div className="mb-8 rounded-[28px] border border-white/[0.07] bg-white/[0.03] p-5">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Launch Path</p>
+              <p className="mt-2 text-lg font-black text-white">
+                {site.published ? "This site is live." : "This site is still in preflight."}
+              </p>
+              <p className="mt-2 text-sm leading-6 text-white/55">
+                Use this strip to see whether you are still polishing the internal draft, sharing the built-in public URL, or ready to move to a real domain.
+              </p>
+            </div>
+            <div className="flex flex-wrap gap-2">
+              <a
+                href={getPublicUrl(site)}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm font-bold text-white/75"
+              >
+                <ExternalLink className="h-4 w-4" />
+                Preview Public URL
+              </a>
+              <button
+                onClick={() => void applyLaunchBasics()}
+                disabled={autoFixingBasics}
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-3 text-sm font-black text-cyan-100 disabled:opacity-50"
+              >
+                {autoFixingBasics ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
+                Fix Launch Basics
+              </button>
+            </div>
+          </div>
+
+          <div className="mt-5 grid gap-4 md:grid-cols-3">
+            <div className="rounded-2xl border border-white/[0.06] bg-black/20 p-4">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/25">Launch Stage</p>
+              <p className="mt-2 text-sm font-black text-white">
+                {site.published ? (site.customDomain?.trim() ? "Live on custom domain" : "Live on built-in public URL") : "Internal draft / preflight"}
+              </p>
+              <p className="mt-2 text-xs leading-5 text-white/40">
+                {site.customDomain?.trim()
+                  ? `Primary domain: ${site.customDomain.trim().replace(/^https?:\/\//, "")}`
+                  : "No custom domain yet. Share the built-in public route first, then switch to your branded domain when ready."}
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-white/[0.06] bg-black/20 p-4">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/25">Readiness Progress</p>
+              <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/[0.06]">
+                <div
+                  className="h-full rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-emerald-400 transition-all"
+                  style={{ width: `${checklistPercent}%` }}
+                />
+              </div>
+              <p className="mt-3 text-sm font-black text-white">{checklistPercent}% ready</p>
+              <p className="mt-1 text-xs leading-5 text-white/40">
+                {checklistCompleteCount}/{launchChecklist.length} launch checks complete.
+              </p>
+            </div>
+
+            <div className="rounded-2xl border border-white/[0.06] bg-black/20 p-4">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/25">Domain Guidance</p>
+              <p className="mt-2 text-sm font-black text-white">
+                {site.customDomain?.trim() ? "Custom domain is set" : "Built-in route only"}
+              </p>
+              <p className="mt-2 text-xs leading-5 text-white/40">
+                {site.customDomain?.trim()
+                  ? "Make sure DNS points here before you push real traffic."
+                  : "When you are ready to ship for real, add your custom domain in Branding & Share Settings so metadata and share links stay branded."}
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div className="mb-8 rounded-[28px] border border-white/[0.07] bg-white/[0.03] p-5">
+          <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+            <div className="max-w-2xl">
+              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Launch Actions</p>
+              <p className="mt-2 text-lg font-black text-white">Once this page is clean, start sending traffic with intent.</p>
+              <p className="mt-2 text-sm leading-6 text-white/55">
+                These are the fastest next moves after the site is polished: preview, share, connect it to a campaign, or go find traffic sources.
+              </p>
+            </div>
+          </div>
+
+          <div className="mt-5 grid gap-3 md:grid-cols-2 xl:grid-cols-4">
+            <a
+              href={getPublicUrl(site)}
+              target="_blank"
+              rel="noreferrer"
+              className="rounded-2xl border border-white/[0.08] bg-black/20 p-4 transition hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+            >
+              <ExternalLink className="h-5 w-5 text-cyan-300" />
+              <p className="mt-3 text-sm font-black text-white">Preview Public Site</p>
+              <p className="mt-2 text-xs leading-5 text-white/40">Open the actual public version and sanity-check the share path before you push traffic.</p>
+            </a>
+
+            <button
+              onClick={copyLink}
+              className="rounded-2xl border border-white/[0.08] bg-black/20 p-4 text-left transition hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+            >
+              <Link2 className="h-5 w-5 text-cyan-300" />
+              <p className="mt-3 text-sm font-black text-white">Copy Share Link</p>
+              <p className="mt-2 text-xs leading-5 text-white/40">Use the current public URL in sales messages, DMs, or internal review before a domain switch.</p>
+            </button>
+
+            <Link
+              href="/campaigns/new"
+              className="rounded-2xl border border-white/[0.08] bg-black/20 p-4 transition hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+            >
+              <Megaphone className="h-5 w-5 text-cyan-300" />
+              <p className="mt-3 text-sm font-black text-white">Create Launch Campaign</p>
+              <p className="mt-2 text-xs leading-5 text-white/40">Spin this site into your next Google, Facebook, or offer campaign instead of leaving it idle.</p>
+            </Link>
+
+            <Link
+              href="/leads"
+              className="rounded-2xl border border-white/[0.08] bg-black/20 p-4 transition hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+            >
+              <Globe className="h-5 w-5 text-cyan-300" />
+              <p className="mt-3 text-sm font-black text-white">Find Traffic Sources</p>
+              <p className="mt-2 text-xs leading-5 text-white/40">Go straight from site readiness into lead finding so the website becomes part of a real growth loop.</p>
+            </Link>
+          </div>
         </div>
 
         {generation && (
@@ -489,11 +903,11 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
             <div>
               <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Site Health</p>
               <div className="mt-3 flex items-center gap-3">
-                <p className="text-3xl font-black text-white">{siteHealthScore}</p>
+                <p className="text-3xl font-black text-white">{siteAudit.score}</p>
                 <p className="text-sm font-bold text-white/45">/ 100</p>
               </div>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-white/55">
-                This score reflects live readiness, structure completeness, and whether the site has enough visible pages and focused page types to convert well.
+                This score reflects live readiness, structure completeness, SEO coverage, and whether visible pages actually contain the conversion ingredients they need.
               </p>
             </div>
             <div className="flex flex-wrap gap-2">
@@ -521,6 +935,23 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                   Build Missing Pages
                 </button>
               )}
+              {siteAudit.summary.pagesMissingSeo > 0 && site.pages[0] && (
+                <button
+                  onClick={() => router.push(`/websites/${siteId}/editor/${site.pages[0].id}`)}
+                  className="rounded-2xl border border-white/[0.1] bg-white/[0.05] px-4 py-3 text-sm font-black text-white/75"
+                >
+                  Fix SEO
+                </button>
+              )}
+              {(!site.description?.trim() || siteAudit.summary.pagesMissingSeo > 0) && (
+                <button
+                  onClick={() => void applyLaunchBasics()}
+                  disabled={autoFixingBasics}
+                  className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-3 text-sm font-black text-cyan-200 disabled:opacity-50"
+                >
+                  {autoFixingBasics ? "Fixing..." : "Auto-Fix Basics"}
+                </button>
+              )}
             </div>
           </div>
 
@@ -528,7 +959,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
             <div className="rounded-2xl border border-amber-500/15 bg-amber-500/10 p-4">
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-200/80">What Needs Work</p>
               <div className="mt-3 space-y-2">
-                {siteHealthFindings.length ? siteHealthFindings.map((finding) => (
+                {siteAudit.blockers.length ? siteAudit.blockers.map((finding) => (
                   <p key={finding} className="text-sm leading-6 text-amber-50/90">{finding}</p>
                 )) : (
                   <p className="text-sm leading-6 text-amber-50/90">No major structure issues detected right now.</p>
@@ -539,13 +970,105 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
             <div className="rounded-2xl border border-emerald-500/15 bg-emerald-500/10 p-4">
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-emerald-200/80">What Is Strong</p>
               <div className="mt-3 space-y-2">
-                {siteHealthWins.length ? siteHealthWins.map((win) => (
+                {siteAudit.wins.length ? siteAudit.wins.map((win) => (
                   <p key={win} className="text-sm leading-6 text-emerald-50/90">{win}</p>
                 )) : (
                   <p className="text-sm leading-6 text-emerald-50/90">As you add and publish more structure, the strengths will show up here.</p>
                 )}
               </div>
             </div>
+          </div>
+
+          <div className="mt-4 grid gap-4 xl:grid-cols-[1.05fr_1.35fr]">
+            <div className="rounded-2xl border border-cyan-500/15 bg-cyan-500/10 p-4">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-200/80">Next Best Fixes</p>
+              <div className="mt-3 space-y-2">
+                {siteAudit.recommendations.length ? siteAudit.recommendations.map((item) => (
+                  <p key={item} className="text-sm leading-6 text-cyan-50/90">{item}</p>
+                )) : (
+                  <p className="text-sm leading-6 text-cyan-50/90">No urgent fixes detected. This site is in a strong publish-ready state.</p>
+                )}
+              </div>
+            </div>
+
+            <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/35">Page Readiness</p>
+              <div className="mt-3 space-y-3">
+                {siteAudit.pageAudits.map((pageAudit) => (
+                  <button
+                    key={pageAudit.id}
+                    onClick={() => router.push(`/websites/${siteId}/editor/${pageAudit.id}`)}
+                    className="flex w-full items-start justify-between gap-4 rounded-2xl border border-white/[0.06] bg-white/[0.03] px-4 py-3 text-left transition hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+                  >
+                    <div>
+                      <p className="text-sm font-black text-white">{pageAudit.title}</p>
+                      <p className="mt-1 text-xs leading-5 text-white/40">
+                        {pageAudit.blockCount} blocks ·
+                        {pageAudit.seoReady ? " SEO ready" : " SEO missing"} ·
+                        {pageAudit.hasPrimaryCta ? " CTA ready" : " CTA missing"} ·
+                        {pageAudit.hasTrust ? " trust ready" : " trust missing"}
+                      </p>
+                    </div>
+                    <div className="shrink-0 text-right">
+                      <p className="text-lg font-black text-white">{pageAudit.score}</p>
+                      <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/25">Score</p>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="mb-8 rounded-[28px] border border-white/[0.07] bg-white/[0.03] p-5">
+          <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Launch Checklist</p>
+              <p className="mt-2 text-lg font-black text-white">Finish the site before you send traffic.</p>
+              <p className="mt-2 max-w-2xl text-sm leading-6 text-white/55">
+                This checklist tracks the minimum launch-ready pieces: visibility, structure, SEO, trust, and CTA coverage.
+              </p>
+            </div>
+            <p className="text-sm font-black text-white/50">
+              {checklistCompleteCount}/{launchChecklist.length} complete
+            </p>
+          </div>
+
+          <div className="mt-5 space-y-3">
+            {launchChecklist.map((item) => (
+              <div
+                key={item.id}
+                className={`flex flex-col gap-3 rounded-2xl border px-4 py-4 md:flex-row md:items-center md:justify-between ${
+                  item.done
+                    ? "border-emerald-500/20 bg-emerald-500/10"
+                    : "border-white/[0.08] bg-black/20"
+                }`}
+              >
+                <div className="flex items-start gap-3">
+                  <div className={`mt-0.5 flex h-6 w-6 items-center justify-center rounded-full border ${
+                    item.done
+                      ? "border-emerald-400/30 bg-emerald-400/15 text-emerald-200"
+                      : "border-white/[0.1] bg-white/[0.04] text-white/35"
+                  }`}>
+                    {item.done ? <Check className="h-3.5 w-3.5" /> : <X className="h-3.5 w-3.5" />}
+                  </div>
+                  <div>
+                    <p className="text-sm font-bold text-white">{item.label}</p>
+                    <p className="mt-1 text-xs leading-5 text-white/40">
+                      {item.done ? "Completed." : "Still needs attention before this site is truly launch-ready."}
+                    </p>
+                  </div>
+                </div>
+                {!item.done && (
+                  <button
+                    onClick={item.onAction}
+                    className="inline-flex items-center justify-center rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-2 text-xs font-black text-cyan-200"
+                  >
+                    {item.actionLabel}
+                  </button>
+                )}
+              </div>
+            ))}
           </div>
         </div>
 

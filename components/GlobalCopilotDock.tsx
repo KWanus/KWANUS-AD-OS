@@ -149,15 +149,15 @@ function verdictTone(status?: string) {
 
 function dockBounds(compact: boolean) {
   return {
-    maxX: Math.max(window.innerWidth - (compact ? 140 : 390), 0),
-    maxY: Math.max(window.innerHeight - (compact ? 96 : 760), 0),
+    maxX: Math.max(window.innerWidth - (compact ? 96 : 390), 0),
+    maxY: Math.max(window.innerHeight - (compact ? 76 : 760), 0),
   };
 }
 
 function clampDockPosition(next: { x: number; y: number }, compact: boolean) {
   const bounds = dockBounds(compact);
   return {
-    x: Math.min(Math.max(next.x, -16), bounds.maxX),
+    x: Math.min(Math.max(next.x, 0), bounds.maxX),
     y: Math.min(Math.max(next.y, 0), bounds.maxY),
   };
 }
@@ -167,6 +167,7 @@ export default function GlobalCopilotDock() {
   const { isLoaded, isSignedIn } = useUser();
   const [expanded, setExpanded] = useState(true);
   const [compact, setCompact] = useState(false);
+  const [collapsed, setCollapsed] = useState(false);
   const [state, setState] = useState<DockState>(INITIAL_STATE);
   const [refreshKey, setRefreshKey] = useState(0);
   const [syncing, setSyncing] = useState(false);
@@ -251,10 +252,12 @@ export default function GlobalCopilotDock() {
       const parsed = JSON.parse(saved) as {
         expanded?: boolean;
         compact?: boolean;
+        collapsed?: boolean;
         position?: { x?: number; y?: number };
       };
       if (typeof parsed.expanded === "boolean") setExpanded(parsed.expanded);
       if (typeof parsed.compact === "boolean") setCompact(parsed.compact);
+      if (typeof parsed.collapsed === "boolean") setCollapsed(parsed.collapsed);
       if (parsed.position && typeof parsed.position.x === "number" && typeof parsed.position.y === "number") {
         setPosition({ x: parsed.position.x, y: parsed.position.y });
       }
@@ -267,9 +270,9 @@ export default function GlobalCopilotDock() {
     if (typeof window === "undefined") return;
     window.localStorage.setItem(
       "global-copilot-dock-ui",
-      JSON.stringify({ expanded, compact, position })
+      JSON.stringify({ expanded, compact, collapsed, position })
     );
-  }, [compact, expanded, position]);
+  }, [collapsed, compact, expanded, position]);
 
   useEffect(() => {
     function onPointerMove(event: PointerEvent) {
@@ -306,6 +309,7 @@ export default function GlobalCopilotDock() {
     if (window.innerWidth < 768) {
       setCompact(true);
       setExpanded(false);
+      setCollapsed(true);
     }
   }, []);
 
@@ -594,18 +598,56 @@ export default function GlobalCopilotDock() {
         transform: `translate(${-position.x}px, ${-position.y}px)`,
       }}
     >
-      <div
-        className={`max-w-[calc(100vw-1.5rem)] overflow-hidden border border-white/[0.1] bg-[#06101de8] shadow-[0_30px_120px_rgba(0,0,0,0.55)] backdrop-blur-2xl transition-[width,border-radius] ${
-          compact ? "w-[120px] rounded-[24px]" : "w-[350px] rounded-[28px]"
-        }`}
-      >
+      {collapsed ? (
+        <button
+          onClick={() => {
+            setCollapsed(false);
+            setCompact(false);
+            setExpanded(true);
+          }}
+          className="group flex h-[132px] w-[46px] items-center justify-center overflow-hidden rounded-[20px] border border-white/[0.1] bg-[#06101de8] shadow-[0_30px_120px_rgba(0,0,0,0.55)] backdrop-blur-2xl transition hover:border-cyan-500/25 hover:bg-[#081423ee]"
+          aria-label="Open Copilot dock"
+        >
+          <div className="flex -rotate-90 items-center gap-2 whitespace-nowrap">
+            <Sparkles className="h-4 w-4 text-cyan-300" />
+            <span className="text-[11px] font-black uppercase tracking-[0.22em] text-white/70">
+              {compactLabel}
+            </span>
+          </div>
+        </button>
+      ) : (
+      <div className="relative">
+        {!compact && (
+          <div className="absolute left-[-58px] top-24 z-10 flex flex-col gap-2">
+            <button
+              onClick={() => setCompact(true)}
+              className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/[0.08] bg-[#06101de8] text-white/65 shadow-[0_18px_50px_rgba(0,0,0,0.35)] backdrop-blur-2xl transition hover:border-cyan-500/25 hover:text-white"
+              aria-label="Compact dock"
+            >
+              <Minimize2 className="h-4 w-4" />
+            </button>
+            <button
+              onClick={() => setCollapsed(true)}
+              className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/[0.08] bg-[#06101de8] text-white/65 shadow-[0_18px_50px_rgba(0,0,0,0.35)] backdrop-blur-2xl transition hover:border-cyan-500/25 hover:text-white"
+              aria-label="Hide dock"
+            >
+              <ChevronUp className="h-4 w-4 rotate-90" />
+            </button>
+          </div>
+        )}
+
+        <div
+          className={`flex max-h-[calc(100vh-1.5rem)] max-w-[calc(100vw-1.5rem)] flex-col overflow-hidden border border-white/[0.1] bg-[#06101de8] shadow-[0_30px_120px_rgba(0,0,0,0.55)] backdrop-blur-2xl transition-[width,border-radius] ${
+            compact ? "w-[86px] rounded-[22px]" : "w-[350px] rounded-[28px]"
+          }`}
+        >
         {state.loadError && (
           <div className="border-b border-red-500/20 bg-red-500/10 px-4 py-2.5 text-[11px] leading-5 text-red-200 flex items-center gap-2">
             <CircleAlert className="w-3.5 h-3.5 shrink-0" />
             Could not load workspace data. Check your connection.
           </div>
         )}
-        {state.databaseUnavailable && !state.loadError && (
+        {state.databaseUnavailable && (
           <div className="border-b border-amber-500/20 bg-amber-500/10 px-4 py-3 text-[11px] leading-5 text-amber-100">
             Workspace data is running in fallback mode because the production database is unreachable.
           </div>
@@ -623,14 +665,14 @@ export default function GlobalCopilotDock() {
           }}
           onDoubleClick={() => resetDockPosition()}
           className={`relative flex w-full items-center text-left ${
-            compact ? "justify-center px-3 py-3" : "justify-between px-4 py-4"
+            compact ? "justify-center px-2 py-2.5" : "justify-between px-4 py-4"
           } select-none touch-none ${dragging ? "cursor-grabbing" : "cursor-grab"}`}
         >
           <div className="flex items-center gap-3">
             <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 shadow-[0_0_25px_rgba(6,182,212,0.3)]">
               <Sparkles className="h-4 w-4 text-white" />
             </div>
-            {!compact && (
+            {!compact ? (
               <div>
                 <div className="flex items-center gap-2">
                   <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Copilot Live</p>
@@ -639,25 +681,49 @@ export default function GlobalCopilotDock() {
                 <p className="text-sm font-black text-white">Tasks, reminders, and next moves</p>
                 <p className="text-[11px] text-white/35">{statusLine}</p>
               </div>
+            ) : (
+              <div className="flex flex-col gap-1">
+                {reminders.length > 0 && (
+                  <div className="flex items-center justify-center rounded-full border border-orange-500/25 bg-orange-500/10 px-1.5 py-0.5 text-[9px] font-black text-orange-300">
+                    {reminders.length}
+                  </div>
+                )}
+                <div className="text-center text-[10px] font-black text-white/70">
+                  {state.credits ?? "—"}
+                </div>
+              </div>
             )}
           </div>
           <div className={`flex items-center gap-2 ${compact ? "absolute right-2 top-2" : ""}`}>
-            {reminders.length > 0 && (
+            {!compact && reminders.length > 0 && (
               <div className="flex items-center gap-1 rounded-full border border-orange-500/25 bg-orange-500/10 px-2 py-1 text-[10px] font-bold text-orange-300">
                 <BellRing className="h-3 w-3" />
                 {reminders.length}
               </div>
             )}
-            <button
-              onClick={(event) => {
-                event.stopPropagation();
-                setCompact((value) => !value);
-              }}
-              className="rounded-lg border border-white/[0.08] bg-white/[0.05] p-1.5 text-white/55 transition hover:bg-white/[0.09] hover:text-white/80"
-              aria-label={compact ? "Expand dock" : "Compact dock"}
-            >
-              {compact ? <Maximize2 className="h-3.5 w-3.5" /> : <Minimize2 className="h-3.5 w-3.5" />}
-            </button>
+            {compact ? (
+              <button
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setCompact(false);
+                }}
+                className="rounded-lg border border-white/[0.08] bg-white/[0.05] p-1.5 text-white/55 transition hover:bg-white/[0.09] hover:text-white/80"
+                aria-label="Expand dock"
+              >
+                <Maximize2 className="h-3.5 w-3.5" />
+              </button>
+            ) : (
+              <button
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setCompact(true);
+                }}
+                className="rounded-xl border border-white/[0.08] bg-white/[0.05] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-white/65 transition hover:bg-white/[0.09] hover:text-white"
+                aria-label="Make dock smaller"
+              >
+                Make Smaller
+              </button>
+            )}
             {!compact && (
               <button
                 onClick={(event) => {
@@ -668,6 +734,18 @@ export default function GlobalCopilotDock() {
                 aria-label="Reset dock position"
               >
                 <RotateCcw className="h-3.5 w-3.5" />
+              </button>
+            )}
+            {!compact && (
+              <button
+                onClick={(event) => {
+                  event.stopPropagation();
+                  setCollapsed(true);
+                }}
+                className="rounded-lg border border-white/[0.08] bg-white/[0.05] px-2 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-white/55 transition hover:bg-white/[0.09] hover:text-white/80"
+                aria-label="Hide dock"
+              >
+                Hide
               </button>
             )}
             {!compact && (
@@ -685,30 +763,8 @@ export default function GlobalCopilotDock() {
           </div>
         </div>
 
-        {compact ? (
-          <div className="px-3 pb-3">
-            <div className="space-y-2">
-              <button
-                onClick={() => {
-                  setCompact(false);
-                  setExpanded(true);
-                }}
-                className="flex w-full flex-col items-center rounded-2xl border border-white/[0.08] bg-white/[0.04] px-3 py-3 text-center transition hover:bg-white/[0.07]"
-              >
-                <span className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-300/80">Open</span>
-                <span className="mt-1 text-xs font-bold text-white">{compactLabel}</span>
-              </button>
-              <button
-                onClick={resetDockPosition}
-                className="flex w-full items-center justify-center gap-2 rounded-2xl border border-white/[0.08] bg-black/20 px-3 py-2 text-[11px] font-bold text-white/65 transition hover:bg-white/[0.06] hover:text-white/85"
-              >
-                <RotateCcw className="h-3.5 w-3.5" />
-                Reset
-              </button>
-            </div>
-          </div>
-        ) : expanded && (
-          <div className="space-y-4 border-t border-white/[0.07] px-4 pb-4 pt-4">
+        {!compact && expanded && (
+          <div className="space-y-4 overflow-y-auto border-t border-white/[0.07] px-4 pb-4 pt-4">
             <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-3">
               <div className="mb-2 flex items-center justify-between">
                 <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/35">Next Best Action</p>
@@ -856,7 +912,9 @@ export default function GlobalCopilotDock() {
             </div>
           </div>
         )}
+        </div>
       </div>
+      )}
     </div>
   );
 }

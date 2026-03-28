@@ -19,6 +19,7 @@ const CreativeStudio = dynamic(() => import("@/components/studio/CreativeStudio"
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type WorkflowState = {
+  executionTier?: "core" | "elite";
   source?: { url: string; type: string };
   audit?: {
     verdict: string;
@@ -55,7 +56,12 @@ type SavedCreative = {
   type: "image" | "video";
   outputUrl: string | null;
   createdAt: string;
+  state?: {
+    executionTier?: ExecutionTier;
+  } | null;
 };
+
+type ExecutionTier = "core" | "elite";
 
 const ANALYZE_PROGRESS_MESSAGES = [
   "Fetching page content...",
@@ -167,11 +173,13 @@ export default function ProjectWorkspace() {
       case 1: return <SourcePhase project={project} onAdvance={advancePhase} />;
       case 2: return <AuditPhase project={project} onAdvance={advancePhase} />;
       case 3: return <StrategyPhase project={project} onAdvance={advancePhase} />;
-      case 4: return <ProducePhase project={project} onAdvance={advancePhase} />;
+      case 4: return <ProducePhase project={project} onAdvance={advancePhase} executionTier={executionTier} />;
       case 5: return <DeployPhase project={project} onAdvance={advancePhase} />;
       default: return null;
     }
   };
+
+  const executionTier: ExecutionTier = project.workflowState?.executionTier === "core" ? "core" : "elite";
 
   return (
     <main className="min-h-screen bg-[#050a14] text-white flex flex-col font-inter">
@@ -210,6 +218,31 @@ export default function ProjectWorkspace() {
         </div>
 
         <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.03] px-2 py-1.5">
+            {(["core", "elite"] as const).map((tier) => {
+              const active = executionTier === tier;
+              return (
+                <button
+                  key={tier}
+                  type="button"
+                  onClick={() => {
+                    if (tier === executionTier) return;
+                    void advancePhase(project.currentPhase, {
+                      ...(project.workflowState ?? {}),
+                      executionTier: tier,
+                    });
+                  }}
+                  className={`rounded-lg px-3 py-1 text-[9px] font-black uppercase tracking-[0.2em] transition ${
+                    active
+                      ? "bg-cyan-500/15 text-cyan-300"
+                      : "text-white/30 hover:bg-white/[0.05] hover:text-white/70"
+                  }`}
+                >
+                  {tier}
+                </button>
+              );
+            })}
+          </div>
           <StatusBadge status={project.status} />
         </div>
       </header>
@@ -286,7 +319,11 @@ function SourcePhase({
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: project.sourceUrl, mode: project.mode }),
+        body: JSON.stringify({
+          url: project.sourceUrl,
+          mode: project.mode,
+          executionTier: project.workflowState?.executionTier === "core" ? "core" : "elite",
+        }),
       });
       const data = await res.json();
 
@@ -317,6 +354,7 @@ function SourcePhase({
         : null;
 
       await onAdvance(2, {
+        executionTier: project.workflowState?.executionTier === "core" ? "core" : "elite",
         audit: auditState,
         ...(strategyState ? { strategy: strategyState } : {}),
       });
@@ -744,9 +782,11 @@ function StrategyPhase({
 function ProducePhase({
   project,
   onAdvance,
+  executionTier,
 }: {
   project: Project;
   onAdvance: (phase: number, state: Partial<WorkflowState>) => Promise<void>;
+  executionTier: ExecutionTier;
 }) {
   const [studioOpen, setStudioOpen] = useState(false);
   const [creatives, setCreatives] = useState<SavedCreative[]>([]);
@@ -867,7 +907,18 @@ function ProducePhase({
                   </div>
                 )}
                 <div className="p-3">
-                  <p className="text-[10px] font-black text-white/50 truncate uppercase tracking-wide">{creative.name}</p>
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-[10px] font-black text-white/50 truncate uppercase tracking-wide">{creative.name}</p>
+                    {creative.state?.executionTier && (
+                      <span className={`shrink-0 rounded-full px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.18em] ${
+                        creative.state.executionTier === "elite"
+                          ? "border border-cyan-400/30 bg-cyan-500/10 text-cyan-300"
+                          : "border border-white/10 bg-white/5 text-white/45"
+                      }`}>
+                        {creative.state.executionTier}
+                      </span>
+                    )}
+                  </div>
                   <p className="text-[9px] text-white/20 mt-0.5 uppercase tracking-widest">{creative.type}</p>
                 </div>
               </div>
@@ -899,6 +950,7 @@ function ProducePhase({
           isOpen={studioOpen}
           onClose={() => setStudioOpen(false)}
           brief={studioBrief}
+          executionTier={executionTier}
         />
       )}
     </div>

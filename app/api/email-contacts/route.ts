@@ -3,6 +3,25 @@ import { prisma } from "@/lib/prisma";
 import { getOrCreateUser } from "@/lib/auth";
 import { auth } from "@clerk/nextjs/server";
 
+const EXECUTION_TIER_PREFIX = "__execution_tier:";
+
+function normalizeExecutionTier(value?: string) {
+  return value === "core" ? "core" : "elite";
+}
+
+function visibleTags(tags: string[] | undefined) {
+  return (tags ?? []).filter((tag) => !tag.startsWith(EXECUTION_TIER_PREFIX));
+}
+
+function parseExecutionTier(tags: string[] | undefined) {
+  const raw = (tags ?? []).find((tag) => tag.startsWith(EXECUTION_TIER_PREFIX));
+  return raw === `${EXECUTION_TIER_PREFIX}core` ? "core" : "elite";
+}
+
+function withExecutionTier(tags: string[] | undefined, tier?: string) {
+  return [...visibleTags(tags), `${EXECUTION_TIER_PREFIX}${normalizeExecutionTier(tier)}`];
+}
+
 export async function GET(req: NextRequest) {
   try {
     const { userId: clerkId } = await auth();
@@ -46,10 +65,21 @@ export async function GET(req: NextRequest) {
       select: { tags: true },
     });
     const allTags = [
-      ...new Set(allContacts.flatMap((c: { tags: string[] }) => c.tags)),
+      ...new Set(allContacts.flatMap((c: { tags: string[] }) => visibleTags(c.tags))),
     ].sort();
 
-    return NextResponse.json({ ok: true, contacts, total, page, limit, allTags });
+    return NextResponse.json({
+      ok: true,
+      contacts: contacts.map((contact) => ({
+        ...contact,
+        tags: visibleTags(contact.tags),
+        executionTier: parseExecutionTier(contact.tags),
+      })),
+      total,
+      page,
+      limit,
+      allTags,
+    });
   } catch (err) {
     console.error("Contacts GET:", err);
     return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });
@@ -70,6 +100,7 @@ export async function POST(req: NextRequest) {
       tags?: string[];
       properties?: object;
       source?: string;
+      executionTier?: "core" | "elite";
     };
 
     if (!body.email?.includes("@")) {
@@ -81,7 +112,7 @@ export async function POST(req: NextRequest) {
       update: {
         firstName: body.firstName,
         lastName: body.lastName,
-        tags: body.tags ?? [],
+        tags: withExecutionTier(body.tags, body.executionTier),
         properties: body.properties,
       },
       create: {
@@ -89,14 +120,21 @@ export async function POST(req: NextRequest) {
         email: body.email.toLowerCase().trim(),
         firstName: body.firstName,
         lastName: body.lastName,
-        tags: body.tags ?? [],
+        tags: withExecutionTier(body.tags, body.executionTier),
         properties: body.properties,
         source: body.source ?? "manual",
         status: "subscribed",
       },
     });
 
-    return NextResponse.json({ ok: true, contact });
+    return NextResponse.json({
+      ok: true,
+      contact: {
+        ...contact,
+        tags: visibleTags(contact.tags),
+        executionTier: parseExecutionTier(contact.tags),
+      },
+    });
   } catch (err) {
     console.error("Contacts POST:", err);
     return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });
@@ -112,7 +150,7 @@ export async function PUT(req: NextRequest) {
     if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 
     const body = await req.json() as {
-      contacts: { email: string; firstName?: string; lastName?: string; tags?: string[] }[];
+      contacts: { email: string; firstName?: string; lastName?: string; tags?: string[]; executionTier?: "core" | "elite" }[];
     };
 
     if (!Array.isArray(body.contacts) || body.contacts.length === 0) {
@@ -128,13 +166,13 @@ export async function PUT(req: NextRequest) {
     for (const c of valid) {
       await prisma.emailContact.upsert({
         where: { userId_email: { userId: user.id, email: c.email.toLowerCase().trim() } },
-        update: { firstName: c.firstName, lastName: c.lastName, tags: c.tags ?? [] },
+        update: { firstName: c.firstName, lastName: c.lastName, tags: withExecutionTier(c.tags, c.executionTier) },
         create: {
           userId: user.id,
           email: c.email.toLowerCase().trim(),
           firstName: c.firstName,
           lastName: c.lastName,
-          tags: c.tags ?? [],
+          tags: withExecutionTier(c.tags, c.executionTier),
           source: "import",
           status: "subscribed",
         },

@@ -10,6 +10,7 @@ import { generateExecutionChecklist } from "@/src/logic/ad-os/generateExecutionC
 import type { DecisionPacket } from "@/src/logic/ad-os/buildDecisionPacket";
 import type { AnalysisMode } from "@/src/logic/ad-os/normalizeInput";
 import type { OpportunityPacket } from "@/src/logic/ad-os/buildOpportunityPacket";
+import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 type GenerateType = "hooks" | "scripts" | "briefs" | "emails" | "checklist" | "all";
 
@@ -65,12 +66,23 @@ export async function POST(
     const packet = run.decisionPacket as unknown as DecisionPacket;
     const mode = (run.mode ?? "operator") as AnalysisMode;
     const opportunityPacket = (run.opportunityAssessments[0]?.opportunityPacket ?? null) as unknown as OpportunityPacket | null;
+    const executionTier =
+      ((campaign.workflowState as { executionTier?: ExecutionTier } | null | undefined)?.executionTier === "core" ? "core" : "elite") as ExecutionTier;
 
     const generated: Record<string, unknown> = {};
 
     // Hooks
     if (type === "hooks" || type === "all") {
       const hooks = generateAdHooks(packet, mode);
+      if (executionTier === "elite") {
+        hooks.push({
+          format: "Elite Angle (Specific Operator Insight)",
+          hook:
+            mode === "consultant"
+              ? `The best-performing operators in this niche fix the revenue leak before they buy more traffic. Most campaigns never address that.`
+              : `The ad that wins is usually the one that removes the buying friction, not the one that screams the loudest.`,
+        });
+      }
       await prisma.adVariation.deleteMany({ where: { campaignId: id, type: "hook" } });
       if (hooks.length) {
         await prisma.adVariation.createMany({
@@ -90,6 +102,38 @@ export async function POST(
     // Scripts
     if (type === "scripts" || type === "all") {
       const scripts = generateAdScripts(packet, mode);
+      if (executionTier === "elite") {
+        scripts.push({
+          title: "Script 4 — Elite Objection Crusher (20–30 sec)",
+          duration: "20–30 seconds",
+          sections: [
+            {
+              timestamp: "0–4s",
+              direction: "Open on the objection that smart buyers already have.",
+              copy:
+                mode === "consultant"
+                  ? `"You don't need more random leads. You need to stop losing the ones you should already be closing."`
+                  : `"You've seen products like this before. The difference is this one actually removes the friction that keeps people from buying."`,
+            },
+            {
+              timestamp: "4–14s",
+              direction: "Show the better mechanism and what changes.",
+              copy:
+                mode === "consultant"
+                  ? `"Fix the positioning and trust gap first, then every click gets more valuable."`
+                  : `"When the buying path feels safer and clearer, conversion goes up without begging the customer."`,
+            },
+            {
+              timestamp: "14–24s",
+              direction: "Close with direct next step.",
+              copy:
+                mode === "consultant"
+                  ? `"If you want the exact gap map for your business, book the audit below."`
+                  : `"If you want the stronger version, hit the link below."`,
+            },
+          ],
+        });
+      }
       await prisma.adVariation.deleteMany({ where: { campaignId: id, type: "script" } });
       if (scripts.length) {
         await prisma.adVariation.createMany({
@@ -128,6 +172,14 @@ export async function POST(
     // Emails
     if (type === "emails" || type === "all") {
       const sequences = generateEmailSequences(packet, mode);
+      if (executionTier === "elite") {
+        sequences.welcome.push({
+          subject: "The real objection that keeps this decision stuck",
+          preview: "A quick note on the hesitation point most buyers never say out loud.",
+          body: "Most buying decisions stall because of trust, timing, or uncertainty about what happens next. Stronger campaigns remove those frictions directly instead of hoping urgency alone gets the job done.",
+          timing: "Day 5",
+        });
+      }
       await prisma.emailDraft.deleteMany({ where: { campaignId: id } });
 
       const rows: {
@@ -171,6 +223,12 @@ export async function POST(
     // Checklist
     if ((type === "checklist" || type === "all") && opportunityPacket) {
       const checklist = generateExecutionChecklist(opportunityPacket, mode);
+      if (executionTier === "elite") {
+        checklist.week2 = [
+          ...checklist.week2,
+          "Elite optimization: spin two sharper variants from the winning hook and one objection-driven version for warmer traffic.",
+        ];
+      }
       await prisma.checklistItem.deleteMany({ where: { campaignId: id } });
 
       const items: {
@@ -202,7 +260,7 @@ export async function POST(
       generated.checklist = items.length;
     }
 
-    return NextResponse.json({ ok: true, generated, type });
+    return NextResponse.json({ ok: true, generated: { ...generated, executionTier }, type });
   } catch (err) {
     console.error("Campaign generate error:", err);
     return NextResponse.json({ ok: false, error: "Generation failed" }, { status: 500 });

@@ -3,6 +3,25 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 
+const EXECUTION_TIER_PREFIX = "__execution_tier:";
+
+function normalizeExecutionTier(value?: string) {
+  return value === "core" ? "core" : "elite";
+}
+
+function visibleSegmentTags(tags: string[] | undefined) {
+  return (tags ?? []).filter((tag) => !tag.startsWith(EXECUTION_TIER_PREFIX));
+}
+
+function parseExecutionTier(tags: string[] | undefined) {
+  const raw = (tags ?? []).find((tag) => tag.startsWith(EXECUTION_TIER_PREFIX));
+  return raw === `${EXECUTION_TIER_PREFIX}core` ? "core" : "elite";
+}
+
+function withExecutionTier(tags: string[] | undefined, tier?: string) {
+  return [...visibleSegmentTags(tags), `${EXECUTION_TIER_PREFIX}${normalizeExecutionTier(tier)}`];
+}
+
 export async function GET(_req: NextRequest) {
   try {
     const { userId: clerkId } = await auth();
@@ -14,7 +33,14 @@ export async function GET(_req: NextRequest) {
       where: { userId: user.id },
       orderBy: { updatedAt: "desc" },
     });
-    return NextResponse.json({ ok: true, broadcasts });
+    return NextResponse.json({
+      ok: true,
+      broadcasts: broadcasts.map((broadcast) => ({
+        ...broadcast,
+        segmentTags: visibleSegmentTags(broadcast.segmentTags),
+        executionTier: parseExecutionTier(broadcast.segmentTags),
+      })),
+    });
   } catch (err) {
     console.error("EmailBroadcasts GET:", err);
     return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });
@@ -37,6 +63,7 @@ export async function POST(req: NextRequest) {
       fromEmail?: string;
       segmentTags?: string[];
       scheduledAt?: string;
+      executionTier?: "core" | "elite";
     };
 
     if (!body.name?.trim() || !body.subject?.trim()) {
@@ -55,7 +82,7 @@ export async function POST(req: NextRequest) {
         body: body.body ?? "",
         fromName: body.fromName,
         fromEmail: body.fromEmail,
-        segmentTags: body.segmentTags ?? [],
+        segmentTags: withExecutionTier(body.segmentTags, body.executionTier),
         scheduledAt: body.scheduledAt ? new Date(body.scheduledAt) : null,
         status: "draft",
       },

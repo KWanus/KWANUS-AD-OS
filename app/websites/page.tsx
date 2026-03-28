@@ -1,19 +1,45 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Globe, Loader2, Settings, ExternalLink, Sparkles, Copy, Check, BotMessageSquare, Radar, Wand2 } from "lucide-react";
+import { Plus, Globe, Loader2, Settings, ExternalLink, Sparkles, Copy, Check, BotMessageSquare, Radar, Wand2, Megaphone } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import AppNav from "@/components/AppNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import { WorkspaceHero, WorkspaceShell } from "@/components/ui/WorkspaceShell";
+import { auditPublishedSite } from "@/lib/site-builder/publishAudit";
+import { getStarterTemplateNextMoves } from "@/lib/site-builder/starterTemplates";
 
 interface Site {
     id: string;
     name: string;
     slug: string;
+    description?: string | null;
+    faviconEmoji?: string | null;
+    theme?: {
+        generation?: {
+            templateId?: string;
+            sourceMode?: string;
+            niche?: string | null;
+            location?: string | null;
+            executionTier?: "core" | "elite";
+        };
+    };
+    customDomain?: string | null;
     published: boolean;
     totalViews: number;
+    pages: Array<{
+        id: string;
+        title: string;
+        slug: string;
+        published: boolean;
+        blocks?: unknown[];
+        seoTitle?: string | null;
+        seoDesc?: string | null;
+    }>;
+    _count?: {
+        products?: number;
+    };
 }
 
 interface BusinessProfileSummary {
@@ -48,6 +74,7 @@ type ScanResult = {
         slug: string;
         published: boolean;
     };
+    executionTier?: "core" | "elite";
     summary: string;
     source: {
         url: string;
@@ -65,6 +92,102 @@ function verdictTone(status?: string) {
     return "border-amber-500/20 bg-amber-500/10 text-amber-100";
 }
 
+function readinessTone(readiness: "strong" | "needs-work" | "critical") {
+    if (readiness === "strong") return "border-emerald-500/20 bg-emerald-500/10 text-emerald-200";
+    if (readiness === "needs-work") return "border-amber-500/20 bg-amber-500/10 text-amber-100";
+    return "border-red-500/20 bg-red-500/10 text-red-200";
+}
+
+function getPublicUrl(site: Pick<Site, "slug" | "customDomain">) {
+    if (site.customDomain?.trim()) {
+        const normalized = site.customDomain.trim().replace(/^https?:\/\//, "");
+        return `https://${normalized}`;
+    }
+    if (typeof window !== "undefined") {
+        return `${window.location.origin}/s/${site.slug}`;
+    }
+    return `/s/${site.slug}`;
+}
+
+function getDomainStatus(site: Pick<Site, "published" | "customDomain">) {
+    if (site.customDomain?.trim()) return "Custom Domain";
+    if (site.published) return "Built-in URL";
+    return "Not Live";
+}
+
+function getStarterActionHref(site: Site, actionType: string, fallbackEditorId?: string) {
+    switch (actionType) {
+        case "build_pages":
+            return `/websites/${site.id}`;
+        case "fix_trust":
+            return fallbackEditorId ? `/websites/${site.id}/editor/${fallbackEditorId}` : `/websites/${site.id}`;
+        case "launch_google":
+            return "/campaigns/new?type=google";
+        case "launch_campaign":
+            return "/campaigns/new";
+        case "open_store":
+            return `/websites/${site.id}/store`;
+        case "add_landing":
+            return `/websites/${site.id}`;
+        case "open_editor":
+            return fallbackEditorId ? `/websites/${site.id}/editor/${fallbackEditorId}` : `/websites/${site.id}`;
+        case "fix_basics":
+            return `/websites/${site.id}`;
+        default:
+            return `/websites/${site.id}`;
+    }
+}
+
+function getRecommendedCampaignHref(site: Site, businessProfile?: BusinessProfileSummary | null) {
+    const templateId = site.theme?.generation?.templateId ?? "";
+    const businessType = businessProfile?.businessType ?? "";
+    const niche = site.theme?.generation?.niche ?? businessProfile?.niche ?? "";
+
+    if (
+        templateId === "starter-local-service" ||
+        /local_service|real_estate|financial/i.test(businessType) ||
+        /hvac|plumb|roof|electric|clean|pest|law|dental|med spa|clinic/i.test(niche)
+    ) {
+        return "/campaigns/new?type=google";
+    }
+    if (templateId === "starter-store" || /ecommerce|dropship/i.test(businessType)) {
+        return "/campaigns/new?type=facebook";
+    }
+    if (templateId === "starter-consultant" || /consultant_coach|agency|content_creator/i.test(businessType)) {
+        return "/campaigns/new?type=facebook";
+    }
+    return "/campaigns/new";
+}
+
+function getTrafficReadiness(siteAudit: ReturnType<typeof auditPublishedSite>, site: Site) {
+    if (!site.published) {
+        return {
+            label: "Not Ready",
+            tone: "border-white/[0.08] bg-white/[0.04] text-white/45",
+            reason: "Site is still draft.",
+        };
+    }
+
+    if (
+        siteAudit.readiness === "strong" &&
+        siteAudit.summary.pagesMissingSeo === 0 &&
+        siteAudit.summary.pagesMissingTrust === 0 &&
+        siteAudit.summary.pagesMissingCta === 0
+    ) {
+        return {
+            label: "Traffic Ready",
+            tone: "border-emerald-500/20 bg-emerald-500/10 text-emerald-200",
+            reason: "Publish quality is strong enough to start sending traffic.",
+        };
+    }
+
+    return {
+        label: "Polish First",
+        tone: "border-amber-500/20 bg-amber-500/10 text-amber-100",
+        reason: "Needs more conversion polish before paid traffic.",
+    };
+}
+
 export default function WebsitesDashboard() {
     const router = useRouter();
     const [sites, setSites] = useState<Site[]>([]);
@@ -77,16 +200,18 @@ export default function WebsitesDashboard() {
     const [scanNiche, setScanNiche] = useState("");
     const [scanNotes, setScanNotes] = useState("");
     const [scanMode, setScanMode] = useState<"clone" | "improve">("improve");
+    const [scanExecutionTier, setScanExecutionTier] = useState<"core" | "elite">("elite");
     const [scanLoading, setScanLoading] = useState(false);
     const [scanError, setScanError] = useState<string | null>(null);
     const [scanResult, setScanResult] = useState<ScanResult | null>(null);
     const [syncingSystem, setSyncingSystem] = useState(false);
     const [refreshingRecommendations, setRefreshingRecommendations] = useState(false);
+    const [fixingSiteId, setFixingSiteId] = useState<string | null>(null);
 
-    function copyUrl(e: React.MouseEvent, siteId: string, slug: string) {
+    function copyUrl(e: React.MouseEvent, site: Pick<Site, "id" | "slug" | "customDomain">) {
         e.preventDefault();
-        void navigator.clipboard.writeText(`https://${slug}.kwanus.co`);
-        setCopiedId(siteId);
+        void navigator.clipboard.writeText(getPublicUrl(site));
+        setCopiedId(site.id);
         setTimeout(() => setCopiedId(null), 2000);
     }
 
@@ -155,6 +280,7 @@ export default function WebsitesDashboard() {
                     niche: scanNiche.trim() || undefined,
                     notes: scanNotes.trim() || undefined,
                     mode: scanMode,
+                    executionTier: scanExecutionTier,
                     triggerN8n: true,
                 }),
             });
@@ -205,6 +331,20 @@ export default function WebsitesDashboard() {
             await refreshSites();
         } finally {
             setRefreshingRecommendations(false);
+        }
+    }
+
+    async function applyLaunchBasics(siteId: string) {
+        try {
+            setFixingSiteId(siteId);
+            const res = await fetch(`/api/sites/${siteId}/launch-basics`, { method: "POST" });
+            const data = await res.json() as { ok?: boolean };
+            if (!res.ok || !data.ok) throw new Error("Failed");
+            await refreshSites();
+        } catch (err) {
+            console.error(err);
+        } finally {
+            setFixingSiteId(null);
         }
     }
 
@@ -417,6 +557,30 @@ export default function WebsitesDashboard() {
                             ))}
                         </div>
 
+                        <div className="mt-4 flex flex-wrap gap-2">
+                            {(["core", "elite"] as const).map((tier) => {
+                                const active = scanExecutionTier === tier;
+                                return (
+                                    <button
+                                        key={tier}
+                                        onClick={() => setScanExecutionTier(tier)}
+                                        className={`rounded-2xl border px-4 py-3 text-left transition ${
+                                            active
+                                                ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-100"
+                                                : "border-white/[0.08] bg-white/[0.03] text-white/55 hover:text-white/75"
+                                        }`}
+                                    >
+                                        <p className="text-sm font-black uppercase tracking-[0.16em]">{tier}</p>
+                                        <p className="mt-1 max-w-sm text-xs leading-5 text-inherit/80">
+                                            {tier === "elite"
+                                                ? "Top-operator rebuild with stronger proof, hierarchy, and conversion pressure."
+                                                : "Clean, practical rebuild with a strong launch-ready baseline."}
+                                        </p>
+                                    </button>
+                                );
+                            })}
+                        </div>
+
                         <div className="mt-5 flex flex-wrap items-center gap-3">
                             <button
                                 onClick={() => void runScanMode()}
@@ -449,6 +613,7 @@ export default function WebsitesDashboard() {
                                 <p className="mt-2 text-sm leading-6 text-emerald-100/90">{scanResult.summary}</p>
                                 <div className="mt-3 flex flex-wrap gap-2 text-xs text-emerald-100/80">
                                     <span className="rounded-full border border-emerald-300/20 px-3 py-1">{scanResult.source.mode === "clone" ? "Clone Structure" : "Improve It"}</span>
+                                    <span className="rounded-full border border-emerald-300/20 px-3 py-1 uppercase">{scanResult.executionTier ?? scanExecutionTier} lane</span>
                                     <span className="rounded-full border border-emerald-300/20 px-3 py-1">{scanResult.source.niche}</span>
                                     <span className="rounded-full border border-emerald-300/20 px-3 py-1">{scanResult.source.headings.length} headings captured</span>
                                 </div>
@@ -550,6 +715,56 @@ export default function WebsitesDashboard() {
                         {sites.map(site => (
                             <div key={site.id}
                                 className="group relative border border-white/[0.07] bg-[#050a14] hover:border-purple-500/30 transition-all duration-300 rounded-3xl flex flex-col overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.4)] hover:shadow-[0_0_40px_rgba(139,92,246,0.08)]">
+                                {(() => {
+                                    const siteAudit = auditPublishedSite({
+                                        published: site.published,
+                                        productCount: site._count?.products ?? 0,
+                                        pages: site.pages.map((page) => ({
+                                            id: page.id,
+                                            title: page.title,
+                                            slug: page.slug,
+                                            published: page.published,
+                                            blocks: (page.blocks as unknown[]) as never,
+                                            seoTitle: page.seoTitle ?? null,
+                                            seoDesc: page.seoDesc ?? null,
+                                        })),
+                                    });
+                                    const firstPageId = site.pages[0]?.id;
+                                    const firstPageNeedingSeo = siteAudit.pageAudits.find((pageAudit) => !pageAudit.seoReady)?.id;
+                                    const firstPageNeedingTrust = siteAudit.pageAudits.find((pageAudit) => !pageAudit.hasTrust)?.id;
+                                    const firstPageNeedingCta = siteAudit.pageAudits.find((pageAudit) => !pageAudit.hasPrimaryCta)?.id;
+                                    const hasLaunchBasicsGap = !site.description?.trim() || siteAudit.summary.pagesMissingSeo > 0;
+                                    const generation = site.theme?.generation;
+                                    const starterGuidance = getStarterTemplateNextMoves(generation?.templateId);
+                                    const trafficReadiness = getTrafficReadiness(siteAudit, site);
+                                    const recommendedCampaignHref = getRecommendedCampaignHref(site, businessProfile);
+                                    const quickAction = !site.published
+                                        ? {
+                                            label: "Publish",
+                                            href: `/websites/${site.id}`,
+                                        }
+                                        : firstPageNeedingSeo
+                                            ? {
+                                                label: "Fix SEO",
+                                                href: `/websites/${site.id}/editor/${firstPageNeedingSeo}`,
+                                            }
+                                            : firstPageNeedingTrust
+                                                ? {
+                                                    label: "Add Trust",
+                                                    href: `/websites/${site.id}/editor/${firstPageNeedingTrust}`,
+                                                }
+                                                : firstPageNeedingCta
+                                                    ? {
+                                                        label: "Fix CTA",
+                                                        href: `/websites/${site.id}/editor/${firstPageNeedingCta}`,
+                                                    }
+                                                    : {
+                                                        label: "Open Site",
+                                                        href: `/websites/${site.id}`,
+                                                    };
+
+                                    return (
+                                        <>
 
                                 {/* Preview area */}
                                 <div className="relative h-36 bg-gradient-to-br from-white/[0.025] to-transparent border-b border-white/[0.05] flex items-center justify-center overflow-hidden">
@@ -573,18 +788,118 @@ export default function WebsitesDashboard() {
                                 {/* Content */}
                                 <div className="p-6 flex-1 flex flex-col">
                                     <h3 className="text-base font-black text-white tracking-tight truncate mb-1 group-hover:text-purple-300 transition">{site.name}</h3>
+                                    <div className="mb-3 flex items-center gap-2">
+                                        <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-cyan-200">
+                                            {siteAudit.score}/100
+                                        </span>
+                                        <span className={`rounded-full border px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.18em] ${readinessTone(siteAudit.readiness)}`}>
+                                            {siteAudit.readiness === "strong" ? "Ready" : siteAudit.readiness === "needs-work" ? "Needs Work" : "Critical"}
+                                        </span>
+                                        <span className={`rounded-full border px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.18em] ${trafficReadiness.tone}`}>
+                                            {trafficReadiness.label}
+                                        </span>
+                                        <span className="rounded-full border border-white/[0.08] bg-white/[0.04] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-white/45">
+                                            {getDomainStatus(site)}
+                                        </span>
+                                        {generation?.templateId && (
+                                            <span className="rounded-full border border-white/[0.08] bg-white/[0.04] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-white/45">
+                                                {generation.templateId.replace(/^starter-/, "").replace(/-/g, " ")}
+                                            </span>
+                                        )}
+                                        {generation?.executionTier && (
+                                            <span className={`rounded-full border px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.18em] ${
+                                                generation.executionTier === "elite"
+                                                    ? "border-amber-500/20 bg-amber-500/10 text-amber-200"
+                                                    : "border-white/[0.08] bg-white/[0.04] text-white/45"
+                                            }`}>
+                                                {generation.executionTier}
+                                            </span>
+                                        )}
+                                    </div>
+                                    <div className="mb-3 flex items-center gap-2">
+                                        <span className="text-[11px] font-bold text-white/35">
+                                            {siteAudit.summary.pagesMissingSeo > 0 ? `${siteAudit.summary.pagesMissingSeo} SEO gap${siteAudit.summary.pagesMissingSeo > 1 ? "s" : ""}` : "SEO covered"}
+                                        </span>
+                                        <span className="text-[11px] font-bold text-white/25">
+                                            {siteAudit.summary.pagesMissingTrust > 0 ? `${siteAudit.summary.pagesMissingTrust} trust gap${siteAudit.summary.pagesMissingTrust > 1 ? "s" : ""}` : "Trust covered"}
+                                        </span>
+                                    </div>
                                     <div className="flex items-center gap-1.5">
-                                        <a href={`/s/${site.slug}`} target="_blank" rel="noreferrer"
+                                        <a href={getPublicUrl(site)} target="_blank" rel="noreferrer"
                                             className="text-xs text-cyan-400/60 hover:text-cyan-300 flex items-center gap-1 transition">
-                                            {site.slug}.kwanus.co <ExternalLink className="w-3 h-3" />
+                                            {site.customDomain?.trim() ? site.customDomain.trim().replace(/^https?:\/\//, "") : `/s/${site.slug}`} <ExternalLink className="w-3 h-3" />
                                         </a>
                                         <button
-                                            onClick={(e) => copyUrl(e, site.id, site.slug)}
+                                            onClick={(e) => copyUrl(e, site)}
                                             className="p-1 rounded hover:bg-white/[0.06] text-white/20 hover:text-white/50 transition"
                                             title="Copy URL"
                                         >
                                             {copiedId === site.id ? <Check className="w-3 h-3 text-green-400" /> : <Copy className="w-3 h-3" />}
                                         </button>
+                                    </div>
+
+                                    <p className="mt-3 text-xs leading-5 text-white/40">
+                                        {siteAudit.blockers[0] ?? siteAudit.wins[0] ?? "This site is ready for the next build step."}
+                                    </p>
+                                    <p className="mt-2 text-[11px] leading-5 text-white/35">
+                                        {trafficReadiness.reason}
+                                    </p>
+                                    {generation?.templateId && (
+                                        <div className="mt-3 rounded-2xl border border-cyan-500/15 bg-cyan-500/[0.07] px-3 py-3">
+                                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-200/75">Template Next Move</p>
+                                            <p className="mt-2 text-xs font-black text-white">{starterGuidance.headline}</p>
+                                            <p className="mt-1 text-[11px] leading-5 text-cyan-50/70">{starterGuidance.summary}</p>
+                                        </div>
+                                    )}
+                                    {!site.customDomain?.trim() && site.published && (
+                                        <p className="mt-2 text-[11px] leading-5 text-cyan-100/65">
+                                            Live on the built-in share route. Add a custom domain when you want branded launch links.
+                                        </p>
+                                    )}
+
+                                    <div className="mt-4 flex flex-wrap gap-2">
+                                        <Link
+                                            href={quickAction.href}
+                                            className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-[11px] font-black text-cyan-200 transition hover:bg-cyan-500/15"
+                                        >
+                                            {quickAction.label}
+                                        </Link>
+                                        {siteAudit.pageAudits[0] && (
+                                            <Link
+                                                href={`/websites/${site.id}/editor/${siteAudit.pageAudits[0].id}`}
+                                                className="rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-[11px] font-black text-white/65 transition hover:text-white"
+                                            >
+                                                Open Editor
+                                            </Link>
+                                        )}
+                                        {hasLaunchBasicsGap && (
+                                            <button
+                                                onClick={() => void applyLaunchBasics(site.id)}
+                                                disabled={fixingSiteId === site.id}
+                                                className="rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2 text-[11px] font-black text-white/65 transition hover:text-white disabled:opacity-50"
+                                            >
+                                                {fixingSiteId === site.id ? "Fixing..." : "Auto-Fix Basics"}
+                                            </button>
+                                        )}
+                                        {generation?.templateId && starterGuidance.actions[0] && (
+                                            <Link
+                                                href={getStarterActionHref(site, starterGuidance.actions[0].type, firstPageNeedingTrust ?? firstPageNeedingSeo ?? firstPageNeedingCta ?? firstPageId)}
+                                                className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-[11px] font-black text-cyan-200 transition hover:bg-cyan-500/15"
+                                            >
+                                                {starterGuidance.actions[0].label}
+                                            </Link>
+                                        )}
+                                        {site.published && (
+                                            <Link
+                                                href={recommendedCampaignHref}
+                                                className="rounded-xl border border-emerald-500/20 bg-emerald-500/10 px-3 py-2 text-[11px] font-black text-emerald-200 transition hover:bg-emerald-500/15"
+                                            >
+                                                <span className="inline-flex items-center gap-1.5">
+                                                    <Megaphone className="h-3.5 w-3.5" />
+                                                    Launch Traffic
+                                                </span>
+                                            </Link>
+                                        )}
                                     </div>
 
                                     <div className="mt-auto pt-5 flex items-center justify-between border-t border-white/[0.05]">
@@ -598,13 +913,16 @@ export default function WebsitesDashboard() {
                                                 className="p-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.06] text-white/40 hover:text-white transition">
                                                 <Settings className="w-4 h-4" />
                                             </Link>
-                                            <Link href={`/websites/${site.id}/editor`}
+                                            <Link href={firstPageId ? `/websites/${site.id}/editor/${firstPageId}` : `/websites/${site.id}`}
                                                 className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500/20 to-cyan-500/10 border border-purple-500/20 hover:border-purple-500/40 text-purple-300 text-xs font-black transition">
                                                 Edit Site
                                             </Link>
                                         </div>
                                     </div>
                                 </div>
+                                        </>
+                                    );
+                                })()}
                             </div>
                         ))}
 

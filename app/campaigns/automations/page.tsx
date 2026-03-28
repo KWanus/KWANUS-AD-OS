@@ -93,6 +93,18 @@ const nodeTypes = {
     condition: ConditionNode,
 };
 
+type ExecutionTier = "core" | "elite";
+
+type CampaignSummary = {
+    id: string;
+    name: string;
+    mode?: string;
+    productName?: string | null;
+    workflowState?: {
+        executionTier?: ExecutionTier;
+    } | null;
+};
+
 // ---------------------------------------------------------------------------
 // Page Component
 // ---------------------------------------------------------------------------
@@ -106,9 +118,10 @@ export default function AutomationsBuilder() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [saved, setSaved] = useState(false);
-    const [campaigns, setCampaigns] = useState<{ id: string, name: string }[]>([]);
-    const [selectedCampaignId, setSelectedCampaignId] = useState("");
     const [automationList, setAutomationList] = useState<{ id: string; name: string; status: string; updatedAt: string }[]>([]);
+    const [campaigns, setCampaigns] = useState<CampaignSummary[]>([]);
+    const [selectedCampaignId, setSelectedCampaignId] = useState("");
+    const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
 
     // Load campaigns and existing automations
     useEffect(() => {
@@ -121,18 +134,93 @@ export default function AutomationsBuilder() {
         }).catch(() => {});
     }, []);
 
-    // Load a specific automation
+    const selectedCampaign = campaigns.find((campaign) => campaign.id === selectedCampaignId) ?? null;
+
+    useEffect(() => {
+        const inheritedTier = selectedCampaign?.workflowState?.executionTier;
+        if (inheritedTier === "core" || inheritedTier === "elite") {
+            setExecutionTier(inheritedTier);
+        }
+    }, [selectedCampaign]);
+
+    const flowSummary =
+        executionTier === "elite"
+            ? "Elite flows layer in stronger objection handling, more trust reinforcement, and one more conversion-save touch."
+            : "Core flows stay lean and operator-friendly with a clean save-the-sale sequence.";
+
+    function generateAutomationGraph(tier: ExecutionTier, campaignName?: string, productName?: string | null) {
+        const title = productName?.trim() || campaignName?.trim() || "your offer";
+
+        if (tier === "elite") {
+            return {
+                nodes: [
+                    { id: "1", type: "trigger", data: { label: "Abandoned Checkout", subtitle: `A prospect left ${title} before buying` }, position: { x: 250, y: 50 } },
+                    { id: "2", type: "delay", data: { label: "Wait 45 minutes" }, position: { x: 250, y: 200 } },
+                    { id: "3", type: "email", data: { label: "1. Your cart is still live", stats: "Hook: urgency + low-friction return CTA" }, position: { x: 250, y: 350 } },
+                    { id: "4", type: "delay", data: { label: "Wait 18 hours" }, position: { x: 250, y: 500 } },
+                    { id: "5", type: "condition", data: { label: "Clicked but did not purchase?" }, position: { x: 250, y: 650 } },
+                    { id: "6", type: "email", data: { label: "2. Proof + hesitation crusher", stats: "Angle: trust, proof, risk reduction" }, position: { x: 110, y: 820 } },
+                    { id: "7", type: "delay", data: { label: "Wait 24 hours" }, position: { x: 110, y: 970 } },
+                    { id: "8", type: "email", data: { label: "3. Final save sequence", stats: "Angle: offer clarity + urgency + CTA" }, position: { x: 110, y: 1120 } },
+                    { id: "9", type: "email", data: { label: "2B. Re-entry reminder", stats: "Angle: bring cold abandoners back cleanly" }, position: { x: 390, y: 820 } },
+                ] satisfies Node[],
+                edges: [
+                    { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#06b6d4" } },
+                    { id: "e2-3", source: "2", target: "3", animated: true, style: { stroke: "#8b5cf6" } },
+                    { id: "e3-4", source: "3", target: "4", animated: true, style: { stroke: "#06b6d4" } },
+                    { id: "e4-5", source: "4", target: "5", animated: true, style: { stroke: "#22c55e" } },
+                    { id: "e5-6", source: "5", sourceHandle: "yes", target: "6", animated: true, style: { stroke: "#22c55e" } },
+                    { id: "e6-7", source: "6", target: "7", animated: true, style: { stroke: "#8b5cf6" } },
+                    { id: "e7-8", source: "7", target: "8", animated: true, style: { stroke: "#06b6d4" } },
+                    { id: "e5-9", source: "5", sourceHandle: "no", target: "9", animated: true, style: { stroke: "#ef4444" } },
+                ] satisfies Edge[],
+            };
+        }
+
+        return {
+            nodes: [
+                { id: "1", type: "trigger", data: { label: "Abandoned Checkout", subtitle: `A prospect left ${title} in the cart` }, position: { x: 250, y: 50 } },
+                { id: "2", type: "delay", data: { label: "Wait 1 hour" }, position: { x: 250, y: 200 } },
+                { id: "3", type: "email", data: { label: "1. Forgot something?", stats: "Hook: simple reminder + return CTA" }, position: { x: 250, y: 350 } },
+                { id: "4", type: "delay", data: { label: "Wait 24 hours" }, position: { x: 250, y: 500 } },
+                { id: "5", type: "email", data: { label: "2. Final cart reminder", stats: "Hook: urgency + decision nudge" }, position: { x: 250, y: 650 } },
+            ] satisfies Node[],
+            edges: [
+                { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#06b6d4" } },
+                { id: "e2-3", source: "2", target: "3", animated: true, style: { stroke: "#8b5cf6" } },
+                { id: "e3-4", source: "3", target: "4", animated: true, style: { stroke: "#06b6d4" } },
+                { id: "e4-5", source: "4", target: "5", animated: true, style: { stroke: "#8b5cf6" } },
+            ] satisfies Edge[],
+        };
+    }
+
     async function loadAutomation(id: string) {
         setLoading(true);
         try {
             const res = await fetch(`/api/automations/${id}`);
-            const data = await res.json() as { ok: boolean; automation?: { id: string; name: string; status: string; nodes: Node[]; edges: Edge[] } };
+            const data = await res.json() as {
+                ok: boolean;
+                automation?: {
+                    id: string;
+                    name: string;
+                    status: string;
+                    nodes: Node[];
+                    edges: Edge[];
+                    campaignId?: string | null;
+                    triggerConfig?: { executionTier?: ExecutionTier } | null;
+                };
+            };
             if (data.ok && data.automation) {
                 setAutomationId(data.automation.id);
                 setAutomationName(data.automation.name);
                 setAutomationStatus(data.automation.status);
                 setNodes(data.automation.nodes ?? []);
                 setEdges(data.automation.edges ?? []);
+                setSelectedCampaignId(data.automation.campaignId ?? "");
+                const tier = data.automation.triggerConfig?.executionTier;
+                if (tier === "core" || tier === "elite") {
+                    setExecutionTier(tier);
+                }
             }
         } catch {
             // non-fatal
@@ -141,33 +229,40 @@ export default function AutomationsBuilder() {
         }
     }
 
-    // Save automation
-    async function handleSave() {
+    async function handleSave(nextStatus?: string) {
         setSaving(true);
         setSaved(false);
         try {
+            const payload = {
+                name: automationName,
+                campaignId: selectedCampaignId || undefined,
+                trigger: "manual",
+                triggerConfig: { executionTier },
+                nodes,
+                edges,
+                ...(nextStatus ? { status: nextStatus } : {}),
+            };
+
             if (automationId) {
                 await fetch(`/api/automations/${automationId}`, {
                     method: "PATCH",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ name: automationName, nodes, edges }),
+                    body: JSON.stringify(payload),
                 });
             } else {
                 const res = await fetch("/api/automations", {
                     method: "POST",
                     headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({
-                        name: automationName,
-                        campaignId: selectedCampaignId || undefined,
-                        trigger: "manual",
-                        nodes,
-                        edges,
-                    }),
+                    body: JSON.stringify(payload),
                 });
                 const data = await res.json() as { ok: boolean; automation?: { id: string } };
                 if (data.ok && data.automation) {
                     setAutomationId(data.automation.id);
                 }
+            }
+
+            if (nextStatus) {
+                setAutomationStatus(nextStatus);
             }
             setSaved(true);
             setTimeout(() => setSaved(false), 2000);
@@ -178,74 +273,27 @@ export default function AutomationsBuilder() {
         }
     }
 
-    // Publish (activate) automation
     async function handlePublish() {
-        if (!automationId) {
-            await handleSave();
-        }
-        if (automationId) {
-            await fetch(`/api/automations/${automationId}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ status: "active", nodes, edges }),
-            });
-            setAutomationStatus("active");
-        }
+        await handleSave("active");
     }
 
     async function handleAutoGenerate() {
         if (!selectedCampaignId) return;
         setLoading(true);
-        try {
-            // Fetch campaign data to build a contextual flow
-            const res = await fetch(`/api/campaigns/${selectedCampaignId}`);
-            const data = await res.json() as { ok: boolean; campaign?: { name: string; productName?: string; mode: string } };
-            const campaign = data.campaign;
-            const productLabel = campaign?.productName || campaign?.name || "your product";
-
-            const generatedNodes: Node[] = [
-                { id: "t1", type: "trigger", data: { label: "New Subscriber", subtitle: `Joins ${productLabel} list` }, position: { x: 250, y: 50 } },
-                { id: "d1", type: "delay", data: { label: "Wait 5 minutes" }, position: { x: 250, y: 200 } },
-                { id: "e1", type: "email", data: { label: `Welcome to ${productLabel}`, stats: "Welcome email with key benefits" }, position: { x: 250, y: 350 } },
-                { id: "d2", type: "delay", data: { label: "Wait 1 day" }, position: { x: 250, y: 500 } },
-                { id: "e2", type: "email", data: { label: "The #1 mistake to avoid", stats: "Education + authority building" }, position: { x: 250, y: 650 } },
-                { id: "d3", type: "delay", data: { label: "Wait 2 days" }, position: { x: 250, y: 800 } },
-                { id: "c1", type: "condition", data: { label: "Opened previous email?" }, position: { x: 250, y: 950 } },
-                { id: "e3", type: "email", data: { label: "Special offer inside", stats: "Conversion email with urgency" }, position: { x: 100, y: 1100 } },
-                { id: "e4", type: "email", data: { label: "Re-engagement nudge", stats: "Softer approach for cold leads" }, position: { x: 400, y: 1100 } },
-            ];
-            const generatedEdges: Edge[] = [
-                { id: "e-t1-d1", source: "t1", target: "d1", animated: true, style: { stroke: "#06b6d4" } },
-                { id: "e-d1-e1", source: "d1", target: "e1", animated: true, style: { stroke: "#8b5cf6" } },
-                { id: "e-e1-d2", source: "e1", target: "d2", animated: true, style: { stroke: "#06b6d4" } },
-                { id: "e-d2-e2", source: "d2", target: "e2", animated: true, style: { stroke: "#8b5cf6" } },
-                { id: "e-e2-d3", source: "e2", target: "d3", animated: true, style: { stroke: "#06b6d4" } },
-                { id: "e-d3-c1", source: "d3", target: "c1", animated: true, style: { stroke: "#10b981" } },
-                { id: "e-c1-e3", source: "c1", target: "e3", animated: true, style: { stroke: "#8b5cf6" }, label: "Yes" },
-                { id: "e-c1-e4", source: "c1", target: "e4", animated: true, style: { stroke: "#f59e0b" }, label: "No" },
-            ];
-
-            setNodes(generatedNodes);
-            setEdges(generatedEdges);
-            setAutomationName(`${productLabel} — Automated Flow`);
-        } catch {
-            // non-fatal
-        } finally {
+        setTimeout(() => {
+            const graph = generateAutomationGraph(executionTier, selectedCampaign?.name, selectedCampaign?.productName);
+            setNodes(graph.nodes);
+            setEdges(graph.edges);
+            setAutomationName(`${selectedCampaign?.productName || selectedCampaign?.name || "Campaign"} — Automated Flow`);
             setLoading(false);
-        }
+        }, 400);
     }
 
     // Default starter nodes
     useEffect(() => {
-        setNodes([
-            { id: "1", type: "trigger", data: { label: "New Subscriber", subtitle: "When someone joins your list" }, position: { x: 250, y: 50 } },
-            { id: "2", type: "delay", data: { label: "Wait 5 minutes" }, position: { x: 250, y: 200 } },
-            { id: "3", type: "email", data: { label: "Welcome Email", stats: "Draft — click to edit" }, position: { x: 250, y: 350 } },
-        ]);
-        setEdges([
-            { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#06b6d4" } },
-            { id: "e2-3", source: "2", target: "3", animated: true, style: { stroke: "#8b5cf6" } },
-        ]);
+        const graph = generateAutomationGraph("elite");
+        setNodes(graph.nodes);
+        setEdges(graph.edges);
         setLoading(false);
     }, []);
 
@@ -298,6 +346,13 @@ export default function AutomationsBuilder() {
                         {automationStatus}
                     </span>
                     {saved && <span className="text-[10px] text-emerald-400 font-bold">Saved!</span>}
+                    <span className={`px-2.5 py-1 rounded-md border text-[10px] font-black uppercase tracking-wider ${
+                        executionTier === "elite"
+                            ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-200"
+                            : "border-white/10 bg-white/5 text-white/50"
+                    }`}>
+                        {executionTier} lane
+                    </span>
                 </div>
 
                 <div className="flex flex-1 items-center justify-center">
@@ -337,6 +392,50 @@ export default function AutomationsBuilder() {
             <div className="flex-1 flex overflow-hidden">
                 {/* Left Toolbar */}
                 <aside className="w-64 shrink-0 bg-[#050a14] border-r border-white/[0.08] flex flex-col pt-4">
+                    <div className="px-4 pb-4 border-b border-white/[0.08]">
+                        <div className="flex items-center gap-1.5 mb-3 text-cyan-400">
+                            <Sparkles className="w-4 h-4" />
+                            <h2 className="text-[10px] font-black tracking-widest uppercase">Execution Lane</h2>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2">
+                            {([
+                                {
+                                    id: "core" as const,
+                                    label: "Core",
+                                    copy: "Lean and fast",
+                                },
+                                {
+                                    id: "elite" as const,
+                                    label: "Elite",
+                                    copy: "Deeper save logic",
+                                },
+                            ] satisfies { id: ExecutionTier; label: string; copy: string }[]).map((tier) => {
+                                const active = executionTier === tier.id;
+                                return (
+                                    <button
+                                        key={tier.id}
+                                        onClick={() => setExecutionTier(tier.id)}
+                                        className={`rounded-xl border px-3 py-3 text-left transition ${
+                                            active
+                                                ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                                                : "border-white/[0.08] bg-white/[0.03] hover:border-white/[0.16]"
+                                        }`}
+                                    >
+                                        <div className={`text-xs font-black uppercase tracking-[0.22em] ${active ? "text-cyan-200" : "text-white/50"}`}>
+                                            {tier.label}
+                                        </div>
+                                        <div className={`mt-1 text-[11px] leading-relaxed ${active ? "text-cyan-100/85" : "text-white/35"}`}>
+                                            {tier.copy}
+                                        </div>
+                                    </button>
+                                );
+                            })}
+                        </div>
+                        <p className="mt-3 text-[10px] leading-relaxed text-white/35">
+                            {flowSummary}
+                        </p>
+                    </div>
+
                     <div className="px-4 pb-2">
                         <h2 className="text-[10px] font-black tracking-widest uppercase text-white/30">Add Node</h2>
                     </div>
@@ -398,6 +497,30 @@ export default function AutomationsBuilder() {
                                     <option key={c.id} value={c.id}>{c.name}</option>
                                 ))}
                             </select>
+                            {selectedCampaign && (
+                                <div className="mb-3 rounded-xl border border-white/[0.08] bg-white/[0.03] px-3 py-3">
+                                    <div className="flex items-center justify-between gap-3">
+                                        <div className="text-[11px] font-black uppercase tracking-[0.22em] text-white/35">
+                                            Campaign lane
+                                        </div>
+                                        <span className={`rounded-md px-2 py-1 text-[10px] font-black uppercase tracking-[0.18em] ${
+                                            executionTier === "elite"
+                                                ? "bg-cyan-500/10 text-cyan-200 border border-cyan-500/30"
+                                                : "bg-white/5 text-white/55 border border-white/10"
+                                        }`}>
+                                            {executionTier}
+                                        </span>
+                                    </div>
+                                    <div className="mt-2 text-sm font-bold text-white">
+                                        {selectedCampaign.productName || selectedCampaign.name}
+                                    </div>
+                                    <div className="mt-1 text-[11px] leading-relaxed text-white/40">
+                                        {executionTier === "elite"
+                                            ? "This will generate a deeper save sequence with proof, hesitation handling, and one more recovery branch."
+                                            : "This will generate a lean cart recovery flow built for fast setup and clean operator handoff."}
+                                    </div>
+                                </div>
+                            )}
                             <button
                                 onClick={handleAutoGenerate}
                                 disabled={!selectedCampaignId || loading}

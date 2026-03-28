@@ -60,7 +60,10 @@ interface Client {
   createdAt: string;
   updatedAt: string;
   activities: Activity[];
+  executionTier?: ExecutionTier;
 }
+
+type ExecutionTier = "core" | "elite";
 
 // ---------------------------------------------------------------------------
 // Config
@@ -157,9 +160,14 @@ function ActivityItem({ activity }: { activity: Activity }) {
 
 function AIAssistPanel({ client }: { client: Client }) {
   const [action, setAction] = useState<"draft_followup" | "summarize" | "next_action" | "score_explain">("next_action");
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>(client.executionTier === "core" ? "core" : "elite");
   const [result, setResult] = useState<string>("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    setExecutionTier(client.executionTier === "core" ? "core" : "elite");
+  }, [client.executionTier]);
 
   async function run() {
     setLoading(true);
@@ -169,7 +177,7 @@ function AIAssistPanel({ client }: { client: Client }) {
       const res = await fetch("/api/ai/client-assist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ clientId: client.id, action }),
+        body: JSON.stringify({ clientId: client.id, action, executionTier }),
       });
       const data = await res.json() as { ok: boolean; result?: string; error?: string };
       if (data.ok && data.result) setResult(data.result);
@@ -193,6 +201,33 @@ function AIAssistPanel({ client }: { client: Client }) {
       <div className="flex items-center gap-2 mb-3">
         <Sparkles className="w-4 h-4 text-purple-400" />
         <h3 className="text-xs font-black text-white uppercase tracking-wider">AI Copilot</h3>
+      </div>
+
+      <div className="grid grid-cols-2 gap-2 mb-3">
+        {([
+          ["core", "Core", "Strong practical guidance"],
+          ["elite", "Elite", "Sharper premium client strategy"],
+        ] as const).map(([value, label, note]) => {
+          const active = executionTier === value;
+          return (
+            <button
+              key={value}
+              type="button"
+              onClick={() => setExecutionTier(value)}
+              className={`rounded-xl border p-3 text-left transition ${
+                active
+                  ? "border-purple-500/40 bg-purple-500/10"
+                  : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
+              }`}
+            >
+              <div className="flex items-center justify-between gap-2">
+                <span className={`text-[11px] font-black uppercase tracking-[0.18em] ${active ? "text-purple-300" : "text-white/70"}`}>{label}</span>
+                <span className={`text-[9px] uppercase tracking-[0.2em] ${active ? "text-purple-300" : "text-white/20"}`}>{value}</span>
+              </div>
+              <p className={`mt-1 text-[10px] leading-relaxed ${active ? "text-purple-100/80" : "text-white/35"}`}>{note}</p>
+            </button>
+          );
+        })}
       </div>
 
       <div className="flex gap-2 mb-3">
@@ -227,7 +262,7 @@ function AIAssistPanel({ client }: { client: Client }) {
 
       {!result && !loading && (
         <p className="text-[11px] text-white/20 text-center py-2">
-          Select an action and click Run
+          Select an action, choose the lane, and click Run
         </p>
       )}
     </div>
@@ -442,14 +477,23 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
 
             {/* Stage selector */}
             <div className="relative mb-5">
-              <button
-                onClick={() => setShowStageMenu((v) => !v)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.05] text-xs font-bold transition ${stageColor}`}
-              >
-                <div className={`w-1.5 h-1.5 rounded-full ${stageColor.replace("text-", "bg-")}`} />
-                {client.pipelineStage.charAt(0).toUpperCase() + client.pipelineStage.slice(1)}
-                <ChevronDown className="w-3 h-3 ml-1" />
-              </button>
+              <div className="flex flex-wrap items-center gap-2">
+                <button
+                  onClick={() => setShowStageMenu((v) => !v)}
+                  className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/[0.05] text-xs font-bold transition ${stageColor}`}
+                >
+                  <div className={`w-1.5 h-1.5 rounded-full ${stageColor.replace("text-", "bg-")}`} />
+                  {client.pipelineStage.charAt(0).toUpperCase() + client.pipelineStage.slice(1)}
+                  <ChevronDown className="w-3 h-3 ml-1" />
+                </button>
+                <span className={`inline-flex items-center rounded-xl border px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] ${
+                  client.executionTier === "core"
+                    ? "border-white/10 bg-white/[0.03] text-white/45"
+                    : "border-cyan-500/30 bg-cyan-500/10 text-cyan-200"
+                }`}>
+                  {client.executionTier ?? "elite"} lane
+                </span>
+              </div>
               {showStageMenu && (
                 <div className="absolute top-full left-0 mt-1 rounded-xl border border-white/10 bg-[#0d1525] overflow-hidden z-50 shadow-2xl min-w-[140px]">
                   {STAGES.map((s) => (

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
+import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -37,7 +38,9 @@ export async function POST(req: NextRequest) {
       niche: string;
       budget?: string;
       trafficSource?: string;
+      executionTier?: ExecutionTier;
     };
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
 
     if (!body.niche?.trim()) {
       return NextResponse.json({ ok: false, error: "niche is required" }, { status: 400 });
@@ -48,6 +51,10 @@ export async function POST(req: NextRequest) {
 Niche: ${body.niche}
 ${body.budget ? `Budget: ${body.budget}` : ""}
 ${body.trafficSource ? `Primary Traffic Source: ${body.trafficSource}` : ""}
+Execution tier: ${executionTier}
+${executionTier === "elite"
+  ? "Go beyond generic niche research. Think like a top 1% affiliate operator choosing a niche worth serious capital and attention. Be sharper about buyer psychology, EPC realism, traffic-angle fit, and where beginners usually lose money."
+  : "Keep the research strong, practical, and launch-ready for a user validating this niche."}
 
 Draw on your knowledge of ClickBank, JVZoo, ShareASale, CJ Affiliate, Impact, Digistore24, MaxBounty, and other major networks.
 
@@ -95,7 +102,7 @@ Return this exact JSON structure:
 
     const research = await callClaude(GLOBAL_RULE, prompt);
 
-    return NextResponse.json({ ok: true, research, niche: body.niche });
+    return NextResponse.json({ ok: true, research, niche: body.niche, executionTier });
   } catch (err) {
     console.error("Affiliate research error:", err);
     return NextResponse.json({ ok: false, error: "Research failed" }, { status: 500 });

@@ -33,6 +33,7 @@ interface FormData {
   tags: string;
   notes: string;
   priority: string;
+  executionTier: "core" | "elite";
 }
 
 // ---------------------------------------------------------------------------
@@ -166,6 +167,37 @@ function StepPipeline({ form, setForm }: { form: FormData; setForm: (f: FormData
   return (
     <div className="space-y-5">
       <div>
+        <label className="block text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">Execution Lane</label>
+        <div className="grid grid-cols-2 gap-3">
+          {[
+            {
+              id: "core" as const,
+              label: "Core",
+              desc: "Fast CRM setup with clean operator execution.",
+            },
+            {
+              id: "elite" as const,
+              label: "Elite",
+              desc: "Higher-touch lane for premium follow-up and strategic handling.",
+            },
+          ].map((lane) => (
+            <button
+              key={lane.id}
+              onClick={() => setForm({ ...form, executionTier: lane.id })}
+              className={`rounded-xl border px-4 py-3 text-left transition ${
+                form.executionTier === lane.id
+                  ? "border-cyan-500/40 bg-cyan-500/10"
+                  : "border-white/[0.07] bg-white/[0.02] hover:bg-white/[0.04]"
+              }`}
+            >
+              <p className={`text-sm font-bold ${form.executionTier === lane.id ? "text-cyan-300" : "text-white/70"}`}>{lane.label}</p>
+              <p className="mt-1 text-[11px] leading-relaxed text-white/30">{lane.desc}</p>
+            </button>
+          ))}
+        </div>
+      </div>
+
+      <div>
         <label className="block text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">Pipeline Stage</label>
         <div className="space-y-2">
           {STAGES.map((s) => (
@@ -289,6 +321,7 @@ function CSVImport({ onImported }: { onImported: (count: number) => void }) {
   const [importing, setImporting] = useState(false);
   const [preview, setPreview] = useState<Array<Record<string, string>>>([]);
   const [error, setError] = useState("");
+  const [executionTier, setExecutionTier] = useState<"core" | "elite">("elite");
 
   function handleFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
@@ -316,6 +349,7 @@ function CSVImport({ onImported }: { onImported: (count: number) => void }) {
       company: row.company || row.Company || "",
       tags: [],
       pipelineStage: "lead",
+      executionTier,
     }));
 
     try {
@@ -343,6 +377,22 @@ function CSVImport({ onImported }: { onImported: (count: number) => void }) {
       <Upload className="w-6 h-6 text-white/30 mx-auto mb-3" />
       <p className="text-sm font-bold text-white/50 mb-1">Import from CSV</p>
       <p className="text-[11px] text-white/25 mb-4">Columns: name, email, phone, company</p>
+      <div className="mb-4 grid grid-cols-2 gap-2">
+        {(["core", "elite"] as const).map((lane) => (
+          <button
+            key={lane}
+            type="button"
+            onClick={() => setExecutionTier(lane)}
+            className={`rounded-xl border px-3 py-2 text-xs font-bold uppercase tracking-[0.2em] transition ${
+              executionTier === lane
+                ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-300"
+                : "border-white/[0.08] bg-white/[0.03] text-white/35"
+            }`}
+          >
+            {lane}
+          </button>
+        ))}
+      </div>
       <input type="file" accept=".csv" onChange={handleFile} className="hidden" id="csv-upload" />
       <label
         htmlFor="csv-upload"
@@ -378,7 +428,7 @@ function CSVImport({ onImported }: { onImported: (count: number) => void }) {
 const DEFAULT_FORM: FormData = {
   name: "", email: "", phone: "", company: "", website: "",
   niche: "", pipelineStage: "lead", dealValue: "", tags: "",
-  notes: "", priority: "normal",
+  notes: "", priority: "normal", executionTier: "elite",
 };
 
 export default function NewClientPage() {
@@ -412,6 +462,7 @@ export default function NewClientPage() {
           tags: form.tags.split(",").map((t) => t.trim()).filter(Boolean),
           notes: form.notes.trim() || undefined,
           priority: form.priority,
+          executionTier: form.executionTier,
         }),
       });
       const data = await res.json() as { ok: boolean; client?: { id: string }; error?: string };

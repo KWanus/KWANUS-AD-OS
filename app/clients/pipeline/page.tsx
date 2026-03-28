@@ -45,6 +45,7 @@ interface Client {
   lastContactAt?: string;
   priority: string;
   tags: string[];
+  executionTier?: "core" | "elite";
 }
 
 // ---------------------------------------------------------------------------
@@ -128,6 +129,14 @@ function PipelineCard({
           {client.company}
         </p>
       )}
+
+      <div className="mb-2">
+        <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${
+          client.executionTier === "core" ? "text-white/30" : "text-cyan-300/75"
+        }`}>
+          {client.executionTier ?? "elite"} lane
+        </span>
+      </div>
 
       <div className="flex items-center justify-between gap-2 mt-2">
         <div className="flex items-center gap-2">

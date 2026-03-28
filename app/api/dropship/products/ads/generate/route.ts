@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
 import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
+import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -35,6 +36,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     const { productId } = body;
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
 
     if (!productId) {
       return NextResponse.json({ ok: false, error: "productId is required" }, { status: 400 });
@@ -58,6 +60,11 @@ ${product.category ? `Category: ${product.category}` : ""}
 ${product.suggestedPrice ? `Retail Price: $${product.suggestedPrice}` : ""}
 ${productContext}
 ${businessContext}
+Execution Tier: ${executionTier}
+
+${executionTier === "elite"
+  ? "Elite mode: build this like a serious scaling operator. Push for stronger pattern interrupts, better creative angles, sharper UGC direction, and more platform-native hook variety."
+  : "Core mode: generate strong practical ad creative for testing and early scale."}
 
 Create hooks and scripts that would stop the scroll. Study what viral dropshipping ads do: pattern interrupts, bold claims, demonstration hooks, before/after, and social proof.
 
@@ -94,7 +101,7 @@ Return this exact JSON structure:
       data: { adAnglesJson: result as object },
     });
 
-    return NextResponse.json({ ok: true, ads: result, product: updated });
+    return NextResponse.json({ ok: true, ads: result, product: updated, executionTier });
   } catch (err) {
     console.error("Ads generate error:", err);
     return NextResponse.json({ ok: false, error: "Failed to generate ads" }, { status: 500 });

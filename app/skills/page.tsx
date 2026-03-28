@@ -105,9 +105,17 @@ function SkillRunner({
   prefillData?: Record<string, string>;
 }) {
   const [input, setInput] = useState<Record<string, string>>(prefillData ?? {});
+  const [executionTier, setExecutionTier] = useState<"core" | "elite">(
+    prefillData?.execution_tier === "core" ? "core" : "elite"
+  );
   const [running, setRunning] = useState(false);
   const [result, setResult] = useState<SkillResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    setInput(prefillData ?? {});
+    setExecutionTier(prefillData?.execution_tier === "core" ? "core" : "elite");
+  }, [prefillData]);
 
   async function run() {
     setRunning(true);
@@ -116,7 +124,7 @@ function SkillRunner({
       const res = await fetch(`/api/skills/${skill.slug}/run`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(input),
+        body: JSON.stringify({ ...input, executionTier }),
       });
       const data = await res.json() as SkillResult;
       if (data.ok) {
@@ -151,6 +159,30 @@ function SkillRunner({
         <div className="flex-1 overflow-y-auto">
           {!result ? (
             <div className="p-6 space-y-4">
+              <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
+                <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Execution Level</p>
+                <div className="mt-3 grid gap-2 sm:grid-cols-2">
+                  {([
+                    ["core", "Core", "Strong, clean, conversion-ready execution."],
+                    ["elite", "Elite", "Sharper, more specific, more top-operator output."],
+                  ] as const).map(([value, label, description]) => (
+                    <button
+                      key={value}
+                      type="button"
+                      onClick={() => setExecutionTier(value)}
+                      className={`rounded-2xl border px-4 py-3 text-left transition ${
+                        executionTier === value
+                          ? "border-cyan-500/25 bg-cyan-500/10 text-cyan-100"
+                          : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+                      }`}
+                    >
+                      <p className="text-sm font-black">{label}</p>
+                      <p className="mt-1 text-xs leading-5 text-inherit/75">{description}</p>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               {skill.inputs.map((field) => (
                 <div key={field.key} className="space-y-1.5">
                   <label className="block text-[10px] font-black uppercase tracking-widest text-white/30">

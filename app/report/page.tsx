@@ -1,17 +1,70 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import AppNav from "@/components/AppNav";
 
 type ReportOption = null | "upload";
 type SubmitState = "idle" | "submitting" | "success" | "error";
+type ExecutionTier = "core" | "elite";
+
+function ExecutionTierPicker({
+  value,
+  onChange,
+}: {
+  value: ExecutionTier;
+  onChange: (tier: ExecutionTier) => void;
+}) {
+  return (
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {[
+        {
+          id: "core" as const,
+          label: "Core",
+          description: "Strong, practical intake that gets you into action fast.",
+        },
+        {
+          id: "elite" as const,
+          label: "Elite",
+          description: "Sharper strategy lane for higher-conviction execution after intake.",
+        },
+      ].map((tier) => {
+        const active = value === tier.id;
+        return (
+          <button
+            key={tier.id}
+            type="button"
+            onClick={() => onChange(tier.id)}
+            className={`rounded-2xl border p-4 text-left transition-all ${
+              active
+                ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
+            }`}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <span className={`text-sm font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
+              <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+                {tier.id}
+              </span>
+            </div>
+            <p className={`mt-2 text-xs leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+              {tier.description}
+            </p>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 
 export default function ReportPage() {
   const [selected, setSelected] = useState<ReportOption>(null);
   const [files, setFiles] = useState<FileList | null>(null);
   const [reportType, setReportType] = useState("personal_credit");
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
   const [notes, setNotes] = useState("");
   const [submitState, setSubmitState] = useState<SubmitState>("idle");
   const [errorMsg, setErrorMsg] = useState("");
+  const [nextPath, setNextPath] = useState("/analyze?execution_tier=elite");
 
   async function handleSubmit() {
     if (!files || files.length === 0) {
@@ -27,16 +80,22 @@ export default function ReportPage() {
         formData.append("files", files[i]);
       }
       formData.append("reportType", reportType);
+      formData.append("executionTier", executionTier);
       formData.append("notes", notes);
 
       const res = await fetch("/api/report", { method: "POST", body: formData });
-      const payload = await res.json() as { success: boolean; error?: string };
+      const payload = await res.json() as {
+        success: boolean;
+        error?: string;
+        nextPath?: string;
+      };
 
       if (!payload.success) {
         setErrorMsg(payload.error ?? "Submission failed. Please try again.");
         setSubmitState("error");
         return;
       }
+      setNextPath(payload.nextPath ?? `/analyze?execution_tier=${executionTier}`);
       setSubmitState("success");
     } catch {
       setErrorMsg("Network error. Please check your connection.");
@@ -46,25 +105,26 @@ export default function ReportPage() {
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white flex flex-col">
+      <AppNav />
       <header className="px-8 py-6 border-b border-white/10">
         <Link href="/" className="text-cyan-400 text-sm hover:underline">← Back to Dashboard</Link>
         <h1 className="text-2xl font-bold mt-2">Report Intake</h1>
-        <p className="text-sm text-white/40 mt-1">Upload or connect your reports to continue.</p>
+        <p className="text-sm text-white/40 mt-1">Upload your reports, choose the execution lane, and hand off cleanly into strategy.</p>
       </header>
 
       <div className="flex-1 px-8 py-10 max-w-3xl mx-auto w-full">
 
         {submitState === "success" ? (
-          <div className="rounded-2xl border border-green-500/30 bg-green-500/10 p-8 text-center">
-            <p className="text-4xl mb-4">✓</p>
-            <p className="text-lg font-semibold text-green-400">Reports received.</p>
-            <p className="text-sm text-white/50 mt-2">Your reports have been submitted. Now let the AI build your campaign.</p>
+            <div className="rounded-2xl border border-green-500/30 bg-green-500/10 p-8 text-center">
+              <p className="text-4xl mb-4">✓</p>
+              <p className="text-lg font-semibold text-green-400">Reports received.</p>
+            <p className="text-sm text-white/50 mt-2">Your intake is saved. Continue into the {executionTier === "elite" ? "Elite" : "Core"} strategy lane and build the campaign from there.</p>
             <div className="flex flex-col sm:flex-row gap-3 mt-6 justify-center">
               <Link
-                href="/analyze"
+                href={nextPath}
                 className="inline-flex items-center gap-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 px-6 py-3 text-sm font-semibold text-[#0a0f1e] transition"
               >
-                ⚡ Scan a Market & Build Campaign
+                ⚡ Continue to Analyze
               </Link>
               <Link
                 href="/"
@@ -110,6 +170,11 @@ export default function ReportPage() {
                 </button>
 
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-6 space-y-5">
+                  <div>
+                    <label className="block mb-2 text-sm text-white/60">Execution Lane</label>
+                    <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
+                  </div>
+
                   {/* File upload */}
                   <div>
                     <label className="block mb-2 text-sm text-white/60">Files <span className="text-white/30">(PDF, PNG, JPG)</span></label>

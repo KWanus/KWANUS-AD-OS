@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
+import { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -42,6 +43,7 @@ export async function POST(req: NextRequest) {
       phone?: string;
       leadId?: string;
     };
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
 
     if (!businessName || !niche || !location) {
       return NextResponse.json(
@@ -71,6 +73,11 @@ ${businessUrl ? `Website: ${businessUrl}` : "Website: Not provided"}
 Niche: ${niche}
 Location: ${location}
 ${phone ? `Phone: ${phone}` : ""}
+Execution Tier: ${executionTier}
+
+${executionTier === "elite"
+  ? "Elite mode: audit like a premium local growth operator. Be tougher, more commercially specific, and clearer about lead leaks, proof gaps, GMB weaknesses, and ranking opportunities."
+  : "Core mode: deliver a strong practical local marketing audit with clear priorities and realistic fixes."}
 
 Evaluate every major local SEO and digital presence factor. Score each category 0-100 based on typical baseline assumptions for a local business in this niche and location that hasn't actively optimized. Be specific about what's likely missing and what the impact is.
 
@@ -122,7 +129,7 @@ Return this exact JSON structure:
       },
     });
 
-    return NextResponse.json({ ok: true, audit: updated });
+    return NextResponse.json({ ok: true, audit: updated, executionTier });
   } catch (err) {
     console.error("Local audit POST error:", err);
     return NextResponse.json({ ok: false, error: "Failed to run audit" }, { status: 500 });

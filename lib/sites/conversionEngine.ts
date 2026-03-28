@@ -11,6 +11,7 @@ const anthropic = new Anthropic({
 });
 
 export type GenerationEntryMode = "scan_improve" | "from_scratch";
+export type ExecutionTier = "core" | "elite";
 export type PageTemplateId =
   | "local-service-v1"
   | "booking-v1"
@@ -29,6 +30,7 @@ type TemplateSection = {
 
 export type SiteInput = {
   mode: GenerationEntryMode;
+  executionTier: ExecutionTier;
   businessName: string;
   niche: string;
   location: string;
@@ -143,6 +145,7 @@ export type SiteCreationResult = {
 
 export type SiteGenerationMetadata = {
   sourceMode: GenerationEntryMode | "scan_clone";
+  executionTier: ExecutionTier;
   sourceUrl?: string;
   sourceTitle?: string;
   sourceHeadings?: string[];
@@ -293,6 +296,7 @@ export async function buildSiteInputFromScan(input: {
   niche?: string;
   location?: string;
   url: string;
+  executionTier?: ExecutionTier;
   notes?: string;
 }): Promise<SiteInput> {
   const normalized = normalizeInput(input.url, "consultant");
@@ -313,6 +317,7 @@ export async function buildSiteInputFromScan(input: {
 
   return {
     mode: "scan_improve",
+    executionTier: input.executionTier ?? "core",
     businessName,
     niche,
     location,
@@ -336,6 +341,7 @@ export function buildSiteInputFromScratch(input: {
   businessName: string;
   niche: string;
   location: string;
+  executionTier?: ExecutionTier;
   tone?: string;
   notes?: string;
 }): SiteInput {
@@ -345,6 +351,7 @@ export function buildSiteInputFromScratch(input: {
 
   return {
     mode: "from_scratch",
+    executionTier: input.executionTier ?? "core",
     businessName: input.businessName.trim(),
     niche: input.niche.trim(),
     location: input.location.trim(),
@@ -458,6 +465,7 @@ export function inferSiteInputFromPageContext(input: {
 
   return {
     mode: "from_scratch",
+    executionTier: "core",
     businessName: input.siteName,
     niche,
     location,
@@ -734,6 +742,8 @@ Rules:
 - Clear audience
 - No vague fluff
 - Local relevance where helpful
+- Execution tier: ${context.input.executionTier}
+- ${context.input.executionTier === "elite" ? "Write like the top-performing operator in this niche. Be sharper, more specific, more credible, and more expensive-feeling without sounding fake." : "Keep the hero clean, strong, and launch-ready."}
 - ${context.input.mode === "scan_improve" ? "Elevate the source site. The result should feel more premium, clearer, and more conversion-focused than the original." : "Make the result feel premium and high-converting from scratch."}
 - Return JSON only
 
@@ -791,6 +801,7 @@ Reference images: ${context.input.currentSite?.images.join(" | ") || "none"}
 
 Rules for this section:
 ${sectionRules[section.type]}
+${context.input.executionTier === "elite" ? "Push for top-1% execution: stronger specificity, tighter objection handling, more believable proof framing, and a more forceful CTA rhythm." : "Keep the section strong, clean, and conversion-oriented."}
 ${context.input.mode === "scan_improve" ? "You are improving an existing site. Do not merely paraphrase the source. Elevate it with stronger positioning, clearer CTA rhythm, better trust placement, and a more premium, top-1% feel for the niche." : ""}
 Return JSON only.
 
@@ -837,14 +848,21 @@ function scoreBlueprint(blueprint: SiteBlueprint, input: SiteInput) {
   const heroText = `${blueprint.hero.headline} ${blueprint.hero.subheadline}`.toLowerCase();
   const trustSection = blueprint.sections.find((section) => section.type === "trust");
   const ctaSection = blueprint.sections.find((section) => section.type === "cta");
+  const faqSection = blueprint.sections.find((section) => section.type === "faq");
+  const processSection = blueprint.sections.find((section) => section.type === "process");
   const hasLocation = heroText.includes(input.location.toLowerCase()) || blueprint.sections.some((section) => section.headline.toLowerCase().includes(input.location.toLowerCase()));
+  const trustDepth = trustSection && Array.isArray(trustSection.items) ? trustSection.items.length : 0;
+  const faqDepth = faqSection && Array.isArray(faqSection.items) ? faqSection.items.length : 0;
+  const processDepth = processSection?.steps?.length ?? 0;
 
   const clarity = /help|quote|book|call|get|trusted|results|expert|fast|clear/.test(heroText) ? 84 : 68;
-  const trust = trustSection && Array.isArray(trustSection.items) && trustSection.items.length >= 3 ? 84 : 62;
+  const trust = trustDepth >= (input.executionTier === "elite" ? 4 : 3) ? 84 : 62;
   const urgency = /now|today|fast|same-day|quick/.test(`${blueprint.hero.headline} ${ctaSection?.headline ?? ""}`.toLowerCase()) ? 80 : 64;
   const localRelevance = hasLocation ? 85 : 66;
   const ctaStrength = blueprint.hero.primary_cta && ctaSection?.primary_cta ? 86 : 60;
-  const sectionCompleteness = blueprint.sections.length >= TEMPLATE_LIBRARY[blueprint.template_id].sections.length ? 88 : 70;
+  const baseCompleteness = blueprint.sections.length >= TEMPLATE_LIBRARY[blueprint.template_id].sections.length ? 88 : 70;
+  const depthBonus = input.executionTier === "elite" && faqDepth >= 4 && processDepth >= 3 ? 6 : 0;
+  const sectionCompleteness = Math.min(96, baseCompleteness + depthBonus);
 
   return {
     clarity,
@@ -853,7 +871,15 @@ function scoreBlueprint(blueprint: SiteBlueprint, input: SiteInput) {
     localRelevance,
     ctaStrength,
     sectionCompleteness,
-    overall: average([clarity, trust, urgency, localRelevance, ctaStrength, sectionCompleteness]),
+    overall: average([
+      clarity,
+      trust,
+      urgency,
+      localRelevance,
+      ctaStrength,
+      sectionCompleteness,
+      ...(input.executionTier === "elite" ? [faqDepth >= 4 ? 88 : 64] : []),
+    ]),
   };
 }
 
@@ -882,6 +908,62 @@ function improveWeakSections(blueprint: SiteBlueprint, input: SiteInput, busines
     if (ctaSection) ctaSection.primary_cta = businessProfile.primaryCta;
   }
 
+  next.score = scoreBlueprint(next, input);
+  return next;
+}
+
+function ensureEliteDepth(blueprint: SiteBlueprint, input: SiteInput, businessProfile: BusinessProfile): SiteBlueprint {
+  if (input.executionTier !== "elite") return blueprint;
+
+  const next = structuredClone(blueprint);
+  const trustSection = next.sections.find((section) => section.type === "trust");
+  if (trustSection) {
+    const current = Array.isArray(trustSection.items) ? trustSection.items.map((item) => String(item)) : [];
+    trustSection.items = Array.from(new Set([
+      ...current,
+      ...businessProfile.trustTriggers,
+      `${input.location} relevance`,
+      "Clear process and expectations",
+      "Low-friction next step",
+    ])).slice(0, 6);
+  }
+
+  const faqSection = next.sections.find((section) => section.type === "faq");
+  if (faqSection) {
+    const current = Array.isArray(faqSection.items)
+      ? faqSection.items.filter((item): item is { question: string; answer: string } => typeof item !== "string")
+      : [];
+    faqSection.items = [
+      ...current,
+      {
+        question: `Why choose ${input.businessName} instead of another ${input.niche} option?`,
+        answer: `Because the page positions ${input.businessName} around clearer proof, a simpler process, and a more obvious next step for people in ${input.location}.`,
+      },
+      {
+        question: "What happens after I reach out?",
+        answer: "The next step should feel simple, fast, and low-friction, with clear expectations instead of guesswork.",
+      },
+    ].slice(0, 5);
+  }
+
+  const processSection = next.sections.find((section) => section.type === "process");
+  if (processSection) {
+    const steps = processSection.steps ?? [];
+    processSection.steps = Array.from(new Set([
+      ...steps,
+      "Get a clear recommendation and next-step plan",
+    ])).slice(0, 4);
+  }
+
+  next.conversion_notes.trust_elements_used = Array.from(new Set([
+    ...next.conversion_notes.trust_elements_used,
+    "Stronger objection handling",
+    "Higher-trust reassurance",
+  ])).slice(0, 5);
+  next.generation_trace.analysis_summary = Array.from(new Set([
+    ...next.generation_trace.analysis_summary,
+    "Elite execution tier added extra trust, objection handling, and depth.",
+  ])).slice(0, 5);
   next.score = scoreBlueprint(next, input);
   return next;
 }
@@ -953,6 +1035,10 @@ export async function generateConversionSiteBlueprint(input: SiteInput): Promise
 
   if (blueprint.score.overall < 75) {
     blueprint = improveWeakSections(blueprint, input, businessProfile);
+  }
+
+  if (input.executionTier === "elite") {
+    blueprint = ensureEliteDepth(blueprint, input, businessProfile);
   }
 
   return { input, analysis, businessProfile, blueprint };
@@ -1320,8 +1406,96 @@ function buildFaqPageBlocks(blueprint: SiteBlueprint): RenderBlock[] {
   return blocks;
 }
 
+function buildProofPageBlocks(blueprint: SiteBlueprint): RenderBlock[] {
+  const trustSection = blueprint.sections.find((section) => section.type === "trust");
+  const benefitSection = blueprint.sections.find((section) => section.type === "benefits");
+  const trustItems = extractStringItems(trustSection);
+  const benefitItems = extractStringItems(benefitSection);
+
+  const blocks: RenderBlock[] = [
+    {
+      id: crypto.randomUUID(),
+      type: "hero",
+      props: {
+        eyebrow: "Proof",
+        headline: `Why buyers feel safer choosing ${blueprint.brand.business_name}`,
+        subheadline: "This page collects the trust, reassurance, and value signals that help higher-intent visitors move forward with more confidence.",
+        buttonText: blueprint.hero.primary_cta,
+        secondaryButtonText: "See Services",
+        secondaryButtonUrl: "#services",
+        textAlign: "center",
+        bgColor: "#020509",
+      },
+    },
+  ];
+
+  if (trustItems.length) {
+    blocks.push({
+      id: crypto.randomUUID(),
+      type: "trust_badges",
+      props: {
+        title: trustSection?.headline ?? "Trust signals",
+        badges: trustItems.slice(0, 6).map((item) => ({ icon: "✅", label: item })),
+      },
+    });
+  }
+
+  if (benefitItems.length) {
+    blocks.push({
+      id: crypto.randomUUID(),
+      type: "features",
+      props: {
+        eyebrow: "Why it wins",
+        title: `What makes ${blueprint.brand.business_name} the stronger choice`,
+        subtitle: "Use this page to make the proof and advantages more explicit before the final ask.",
+        columns: Math.min(3, Math.max(1, benefitItems.length)),
+        layout: "grid",
+        items: benefitItems.slice(0, 6).map((item) => ({ icon: "✓", title: item, body: "" })),
+        bgColor: "#050a14",
+      },
+    });
+  }
+
+  blocks.push({
+    id: crypto.randomUUID(),
+    type: "guarantee",
+    props: {
+      title: "Reduce hesitation before the decision",
+      body: "A stronger proof page makes the offer feel safer, more credible, and easier to act on.",
+      badges: ["Visible trust", "Clearer credibility", "Lower-friction next step"],
+    },
+  });
+
+  blocks.push({
+    id: crypto.randomUUID(),
+    type: "cta",
+    props: {
+      headline: `Ready to move forward with ${blueprint.brand.business_name}?`,
+      subheadline: "Use the next step below to turn confidence into action.",
+      buttonText: blueprint.hero.primary_cta,
+      bgColor: "#020509",
+    },
+  });
+
+  blocks.push({
+    id: crypto.randomUUID(),
+    type: "footer",
+    props: {
+      copyright: `© ${new Date().getFullYear()} ${blueprint.brand.business_name}. All rights reserved.`,
+      links: [
+        { label: "Home", url: "#" },
+        { label: "Services", url: "#services" },
+      ],
+      showPoweredBy: true,
+    },
+  });
+
+  return blocks;
+}
+
 function buildGeneratedPages(input: {
   blueprint: SiteBlueprint;
+  executionTier?: ExecutionTier;
   referenceImages?: string[];
   elevateVisuals?: boolean;
 }): GeneratedPageDefinition[] {
@@ -1365,6 +1539,17 @@ function buildGeneratedPages(input: {
     });
   }
 
+  if (input.executionTier === "elite") {
+    pages.push({
+      title: "Proof",
+      slug: "proof",
+      order: pages.length,
+      seoTitle: `${input.blueprint.brand.business_name} Proof`,
+      seoDesc: `Trust, proof, and reassurance that help people choose ${input.blueprint.brand.business_name} with more confidence.`,
+      blocks: buildProofPageBlocks(input.blueprint),
+    });
+  }
+
   return pages;
 }
 
@@ -1387,6 +1572,7 @@ export async function createSiteFromBlueprint(input: {
 
   const pages = buildGeneratedPages({
     blueprint: input.blueprint,
+    executionTier: input.generationMetadata?.executionTier ?? "core",
     referenceImages: input.referenceImages,
     elevateVisuals: input.elevateVisuals,
   });

@@ -45,6 +45,7 @@ export async function POST(req: NextRequest) {
       productUrl?: string;
       analysisRunId?: string;
       assets?: {
+        executionTier?: "core" | "elite";
         adHooks?: { format: string; hook: string }[];
         adScripts?: {
           title: string;
@@ -108,6 +109,9 @@ export async function POST(req: NextRequest) {
         analysisRunId: body.analysisRunId,
         userId: user.id,
         status: "draft",
+        workflowState: {
+          executionTier: body.assets?.executionTier === "core" ? "core" : "elite",
+        },
       },
     });
 

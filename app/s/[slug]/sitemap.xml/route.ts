@@ -23,7 +23,10 @@ export async function GET(
     return new NextResponse("Not found", { status: 404 });
   }
 
-  const baseUrl = `${process.env.NEXT_PUBLIC_APP_URL ?? "https://himalaya.app"}/s/${slug}`;
+  const normalizedDomain = site.customDomain?.trim().replace(/^https?:\/\//, "");
+  const baseUrl = normalizedDomain
+    ? `https://${normalizedDomain}`
+    : `${process.env.NEXT_PUBLIC_APP_URL ?? "https://himalaya.app"}/s/${slug}`;
 
   const urls = site.pages.map((page: { slug: string; updatedAt: Date }) => {
     const loc = page.slug === "home" ? baseUrl : `${baseUrl}/${page.slug}`;

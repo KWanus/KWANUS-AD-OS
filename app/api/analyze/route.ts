@@ -16,11 +16,13 @@ import { recommendOpportunityPath } from "@/src/logic/ad-os/recommendOpportunity
 import { buildOpportunityPacket } from "@/src/logic/ad-os/buildOpportunityPacket";
 import { buildAssetPackage } from "@/src/logic/ad-os/buildAssetPackage";
 import { runTruthEngine, getProfileForMode } from "@/rules/truthEngine";
+import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 export async function POST(req: NextRequest) {
   try {
-    const body = await req.json() as { url?: string; mode?: string };
+    const body = await req.json() as { url?: string; mode?: string; executionTier?: ExecutionTier };
     const input = normalizeInput(body.url ?? "", body.mode ?? "operator");
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
 
     if (!input.valid) {
       return NextResponse.json({ ok: false, error: input.error }, { status: 400 });
@@ -87,7 +89,7 @@ export async function POST(req: NextRequest) {
 
     // Phase 4 — Asset Generator (skip for Reject)
     const isReject = truthResult.verdict === "Reject" || opportunityPacket.status === "Reject";
-    const assets = isReject ? null : buildAssetPackage(packet, opportunityPacket, input.mode);
+    const assets = isReject ? null : buildAssetPackage(packet, opportunityPacket, input.mode, executionTier);
 
     // Persist — non-blocking
     let analysisRunId: string | null = null;
@@ -96,6 +98,7 @@ export async function POST(req: NextRequest) {
         data: {
           ...(userId ? { userId } : {}),
           mode: input.mode,
+          rawSignals: { ...(signals as object), executionTier } as object,
           inputUrl: input.url,
           linkType,
           title: page.title || signals.productName || input.url,
@@ -103,7 +106,6 @@ export async function POST(req: NextRequest) {
           verdict: scoreResult.verdict,
           confidence: scoreResult.confidence,
           summary: packet.summary,
-          rawSignals: signals as object,
           decisionPacket: packet as object,
         },
       });
@@ -155,6 +157,7 @@ export async function POST(req: NextRequest) {
       analysis: {
         id: analysisRunId,
         mode: input.mode,
+        executionTier,
         inputUrl: input.url,
         linkType,
         title: page.title || signals.productName,

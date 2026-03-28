@@ -7,6 +7,7 @@ import { getUserId } from "@/lib/userId";
 import AppNav from "@/components/AppNav";
 
 type AnalysisMode = "operator" | "consultant" | "saas";
+type ExecutionTier = "core" | "elite";
 
 type DecisionPacket = {
   summary: string;
@@ -104,6 +105,7 @@ type ExecutionChecklist = {
 };
 type AssetPackage = {
   mode: string;
+  executionTier?: ExecutionTier;
   adHooks: AdHook[];
   adScripts: AdScript[];
   adBriefs: AdBrief[];
@@ -115,6 +117,7 @@ type AssetPackage = {
 type AnalysisResult = {
   id: string | null;
   mode: string;
+  executionTier?: ExecutionTier;
   inputUrl: string;
   linkType: string;
   title: string;
@@ -586,6 +589,7 @@ function AnalyzeContent() {
   const searchParams = useSearchParams();
   const [url, setUrl] = useState(() => searchParams.get("url") ?? "");
   const [mode, setMode] = useState<AnalysisMode>("operator");
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
   const [loadingStep, setLoadingStep] = useState<LoadingStep>("idle");
   const [error, setError] = useState("");
   const [result, setResult] = useState<AnalysisResult | null>(null);
@@ -627,7 +631,7 @@ function AnalyzeContent() {
       const res = await fetch("/api/analyze", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: normalized, mode }),
+        body: JSON.stringify({ url: normalized, mode, executionTier }),
       });
 
       clearTimeout(t1);
@@ -655,7 +659,7 @@ function AnalyzeContent() {
       setError("Network error. Please check your connection.");
       setLoadingStep("idle");
     }
-  }, [url, mode]);
+  }, [url, mode, executionTier]);
 
   useEffect(() => {
     const autoUrl = searchParams.get("url");
@@ -723,7 +727,7 @@ function AnalyzeContent() {
               Drop a competitor's link, your current store, or a raw idea. The AI will scan the market, build your strategy, and **auto-generate your funnel and ads**.
             </p>
 
-            <div className="w-full bg-[#050a14] border border-white/[0.08] shadow-2xl rounded-3xl p-3 flex flex-col transition-all focus-within:border-cyan-500/40 focus-within:shadow-[0_0_40px_rgba(6,182,212,0.1)]">
+          <div className="w-full bg-[#050a14] border border-white/[0.08] shadow-2xl rounded-3xl p-3 flex flex-col transition-all focus-within:border-cyan-500/40 focus-within:shadow-[0_0_40px_rgba(6,182,212,0.1)]">
               <textarea
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
@@ -749,6 +753,15 @@ function AnalyzeContent() {
                     <option value="operator">🛒 E-Commerce / Dropship</option>
                     <option value="consultant">💼 Agency / Consultant</option>
                     <option value="saas">💻 SaaS / Software</option>
+                  </select>
+                  <select
+                    value={executionTier}
+                    onChange={(e) => setExecutionTier(e.target.value as ExecutionTier)}
+                    disabled={isLoading}
+                    className="appearance-none bg-white/[0.03] hover:bg-white/[0.06] border border-white/[0.05] rounded-xl px-4 py-2 text-xs font-semibold text-white/70 outline-none cursor-pointer transition disabled:opacity-50"
+                  >
+                    <option value="core">⚙️ Core Execution</option>
+                    <option value="elite">🏆 Elite Execution</option>
                   </select>
                 </div>
 
@@ -790,12 +803,14 @@ function AnalyzeContent() {
             )}
 
             {!isLoading && !error && (
-              <div className="mt-12 flex gap-4 text-xs font-semibold text-white/30 uppercase tracking-widest">
+              <div className="mt-12 flex flex-wrap justify-center gap-4 text-xs font-semibold text-white/30 uppercase tracking-widest">
                 <span>1. Scan The Market</span>
                 <span className="text-white/10">•</span>
                 <span>2. AI Generates Assets</span>
                 <span className="text-white/10">•</span>
                 <span>3. 1-Click Funnel Launch</span>
+                <span className="text-white/10">•</span>
+                <span>{executionTier === "elite" ? "Elite Quality" : "Core Quality"}</span>
               </div>
             )}
           </div>
@@ -822,9 +837,18 @@ function AnalyzeContent() {
               Open Workspace →
             </Link>
           ) : (
-            <span className="text-xs px-2 py-1 rounded-lg border border-white/10 bg-white/5 text-white/40">
-              Not saved
-            </span>
+            <div className="flex items-center gap-2">
+              <span className={`text-[10px] px-2 py-1 rounded-lg border ${
+                (assets.executionTier ?? result.executionTier ?? "core") === "elite"
+                  ? "border-amber-500/30 bg-amber-500/10 text-amber-300"
+                  : "border-white/10 bg-white/5 text-white/40"
+              }`}>
+                {(assets.executionTier ?? result.executionTier ?? "core").toUpperCase()}
+              </span>
+              <span className="text-xs px-2 py-1 rounded-lg border border-white/10 bg-white/5 text-white/40">
+                Not saved
+              </span>
+            </div>
           )
         )}
 
@@ -1058,6 +1082,7 @@ function AnalyzeContent() {
           isOpen={isStudioOpen}
           onClose={() => setIsStudioOpen(false)}
           brief={activeBrief}
+          executionTier={executionTier}
         />
       )}
     </main>

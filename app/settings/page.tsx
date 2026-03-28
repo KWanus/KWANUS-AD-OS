@@ -636,17 +636,20 @@ interface OptInForm {
   buttonText: string;
   tags: string[];
   redirectUrl?: string;
+  executionTier?: "core" | "elite";
   active: boolean;
   views: number;
   submissions: number;
 }
+
+type FormExecutionTier = "core" | "elite";
 
 function OptInFormsManager() {
   const [forms, setForms] = useState<OptInForm[]>([]);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [showNew, setShowNew] = useState(false);
-  const [newForm, setNewForm] = useState({ name: "", headline: "", subheadline: "", buttonText: "Subscribe", tags: "", redirectUrl: "" });
+  const [newForm, setNewForm] = useState({ name: "", headline: "", subheadline: "", buttonText: "Subscribe", tags: "", redirectUrl: "", executionTier: "elite" as FormExecutionTier });
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -671,13 +674,14 @@ function OptInFormsManager() {
           buttonText: newForm.buttonText || "Subscribe",
           tags: newForm.tags.split(",").map((t) => t.trim()).filter(Boolean),
           redirectUrl: newForm.redirectUrl || undefined,
+          executionTier: newForm.executionTier,
         }),
       });
       const data = await res.json() as { ok: boolean; form?: OptInForm };
       if (data.ok && data.form) {
         setForms((p) => [data.form!, ...p]);
         setShowNew(false);
-        setNewForm({ name: "", headline: "", subheadline: "", buttonText: "Subscribe", tags: "", redirectUrl: "" });
+        setNewForm({ name: "", headline: "", subheadline: "", buttonText: "Subscribe", tags: "", redirectUrl: "", executionTier: "elite" });
         toast.success("Form created");
       }
     } catch {
@@ -715,6 +719,16 @@ function OptInFormsManager() {
               form.active ? "text-green-400 bg-green-500/10 border-green-500/20" : "text-white/30 bg-white/5 border-white/10"
             }`}>
               {form.active ? "Active" : "Paused"}
+            </span>
+          </div>
+
+          <div className="mb-3 flex flex-wrap items-center gap-2">
+            <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.2em] ${
+              (form.executionTier ?? "elite") === "elite"
+                ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
+                : "border-white/10 bg-white/5 text-white/45"
+            }`}>
+              {(form.executionTier ?? "elite")}
             </span>
           </div>
 
@@ -786,6 +800,39 @@ function OptInFormsManager() {
               />
             </div>
           ))}
+          <div>
+            <label className="block text-[10px] font-black uppercase tracking-widest text-white/25 mb-2">Execution Lane</label>
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-2">
+              {[
+                { id: "core" as const, label: "Core", description: "Clean form experience that ships quickly." },
+                { id: "elite" as const, label: "Elite", description: "Sharper public form presentation with stronger premium polish." },
+              ].map((tier) => {
+                const active = newForm.executionTier === tier.id;
+                return (
+                  <button
+                    key={tier.id}
+                    type="button"
+                    onClick={() => setNewForm((f) => ({ ...f, executionTier: tier.id }))}
+                    className={`rounded-xl border p-3 text-left transition-all ${
+                      active
+                        ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                        : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
+                    }`}
+                  >
+                    <div className="flex items-center justify-between gap-3">
+                      <span className={`text-xs font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
+                      <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+                        {tier.id}
+                      </span>
+                    </div>
+                    <p className={`mt-2 text-[11px] leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+                      {tier.description}
+                    </p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
           <div className="flex gap-2">
             <button onClick={() => setShowNew(false)} className="flex-1 py-2 rounded-lg border border-white/[0.08] text-white/30 text-xs font-bold hover:text-white/50 transition">
               Cancel

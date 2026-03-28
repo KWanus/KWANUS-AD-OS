@@ -31,10 +31,12 @@ import {
   Check,
   ExternalLink,
   Search,
+  Wand2,
 } from "lucide-react";
 import BlockRenderer, { Block, BlockType } from "@/components/site-builder/BlockRenderer";
 import BlockPropsEditor from "@/components/site-builder/BlockPropsEditor";
 import WebsiteCopilotPanel from "@/components/site-builder/WebsiteCopilotPanel";
+import { auditSitePage } from "@/lib/site-builder/publishAudit";
 
 // ---------------------------------------------------------------------------
 // Block library
@@ -135,6 +137,7 @@ type GenerationContext = {
   location?: string;
   templateId?: string;
   pageType?: string;
+  executionTier?: "core" | "elite";
   blueprintScore?: { overall?: number };
   conversionNotes?: {
     primary_goal?: string;
@@ -164,6 +167,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
   const [tab, setTab] = useState<"blocks" | "add" | "seo">("blocks");
   const [rightTab, setRightTab] = useState<"properties" | "copilot">("copilot");
   const [seoSaving, setSeoSaving] = useState(false);
+  const [autoFillingSeo, setAutoFillingSeo] = useState(false);
   const [addCategory, setAddCategory] = useState("Layout");
   const [previewMode, setPreviewMode] = useState(false);
   const [publishing, setPublishing] = useState(false);
@@ -294,6 +298,32 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
     }
   }
 
+  async function applyLaunchBasics() {
+    setAutoFillingSeo(true);
+    try {
+      const response = await fetch(`/api/sites/${siteId}/launch-basics`, { method: "POST" });
+      const data = await response.json() as { ok?: boolean; error?: string };
+      if (!response.ok || !data.ok) {
+        throw new Error(data.error ?? "Failed to generate SEO");
+      }
+
+      const siteResponse = await fetch(`/api/sites/${siteId}`);
+      const siteData = await siteResponse.json() as { ok: boolean; site?: { id: string; name: string; slug: string; theme: Record<string, unknown>; published: boolean; pages: SitePage[] } };
+      if (siteData.ok && siteData.site) {
+        setSite(siteData.site);
+        const refreshedPage = siteData.site.pages.find((candidate) => candidate.id === pageId);
+        if (refreshedPage) {
+          setPage({
+            ...refreshedPage,
+            blocks: (refreshedPage.blocks as unknown as Block[]) ?? [],
+          });
+        }
+      }
+    } finally {
+      setAutoFillingSeo(false);
+    }
+  }
+
   async function saveTheme(themeFields: Record<string, unknown>) {
     if (!site) return;
     const newTheme = { ...site.theme, ...themeFields };
@@ -368,6 +398,16 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
     );
   }
 
+  const pageAudit = auditSitePage({
+    id: page.id,
+    title: page.title,
+    slug: page.slug,
+    published: true,
+    blocks: page.blocks,
+    seoTitle: page.seoTitle,
+    seoDesc: page.seoDesc,
+  });
+
   return (
     <div className="h-screen bg-[#050a14] flex flex-col overflow-hidden">
       {/* Top bar */}
@@ -418,8 +458,137 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
         )}
       </header>
 
+      {!previewMode && (
+        <div className="shrink-0 border-b border-white/[0.07] bg-[#081120] px-4 py-3">
+          <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Publish Readiness</p>
+              <div className="mt-1 flex flex-wrap items-center gap-3">
+                <p className="text-lg font-black text-white">{pageAudit.score}/100</p>
+                <p className="text-xs text-white/35">
+                  {pageAudit.blockCount} blocks ·
+                  {pageAudit.seoReady ? " SEO ready" : " SEO missing"} ·
+                  {pageAudit.hasPrimaryCta ? " CTA ready" : " CTA missing"} ·
+                  {pageAudit.hasTrust ? " trust ready" : " trust missing"}
+                </p>
+              </div>
+              <p className="mt-1 text-xs leading-5 text-white/45">
+                {pageAudit.issues[0] ?? "This page has the key conversion ingredients in place."}
+              </p>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              {!pageAudit.hasPrimaryCta && (
+                <button
+                  onClick={() => queueCopilotInstruction("add a stronger CTA section to this page")}
+                  className="rounded-xl border border-cyan-500/25 bg-cyan-500/10 px-3 py-2 text-[11px] font-black text-cyan-200"
+                >
+                  Add CTA
+                </button>
+              )}
+              {!pageAudit.hasTrust && (
+                <button
+                  onClick={() => queueCopilotInstruction("add trust proof to this page")}
+                  className="rounded-xl border border-cyan-500/25 bg-cyan-500/10 px-3 py-2 text-[11px] font-black text-cyan-200"
+                >
+                  Add Trust
+                </button>
+              )}
+              {!pageAudit.hasFaq && (
+                <button
+                  onClick={() => queueCopilotInstruction("add faq to this page")}
+                  className="rounded-xl border border-white/[0.1] bg-white/[0.05] px-3 py-2 text-[11px] font-black text-white/75"
+                >
+                  Add FAQ
+                </button>
+              )}
+              {!pageAudit.seoReady && (
+                <button
+                  onClick={() => setTab("seo")}
+                  className="rounded-xl border border-white/[0.1] bg-white/[0.05] px-3 py-2 text-[11px] font-black text-white/75"
+                >
+                  Fix SEO
+                </button>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Main 3-panel layout */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {!previewMode && pageAudit && (
+          <div className="shrink-0 border-b border-white/[0.07] bg-[#060d19] px-4 py-3">
+            <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
+              <div className="flex flex-wrap items-center gap-3">
+                <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-cyan-200">
+                  Page Readiness
+                </span>
+                <div className="flex items-center gap-2">
+                  <span className="text-lg font-black text-white">{pageAudit.score}</span>
+                  <span className="text-xs font-bold text-white/35">/ 100</span>
+                </div>
+                <span className={`rounded-full px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.18em] ${
+                  pageAudit.score >= 80
+                    ? "border border-emerald-500/20 bg-emerald-500/10 text-emerald-200"
+                    : pageAudit.score >= 60
+                      ? "border border-amber-500/20 bg-amber-500/10 text-amber-100"
+                      : "border border-red-500/20 bg-red-500/10 text-red-200"
+                }`}>
+                  {pageAudit.score >= 80 ? "Strong" : pageAudit.score >= 60 ? "Needs Work" : "Critical"}
+                </span>
+                <span className="text-xs text-white/35">
+                  {pageAudit.blockCount} blocks · {pageAudit.seoReady ? "SEO ready" : "SEO missing"} · {pageAudit.hasPrimaryCta ? "CTA ready" : "CTA missing"} · {pageAudit.hasTrust ? "Trust ready" : "Trust missing"}
+                </span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {!pageAudit.seoReady && (
+                  <button
+                    onClick={() => setTab("seo")}
+                    className="rounded-xl border border-white/[0.1] bg-white/[0.05] px-3 py-2 text-[11px] font-black text-white/75"
+                  >
+                    Fix SEO
+                  </button>
+                )}
+                {!pageAudit.hasTrust && (
+                  <button
+                    onClick={() => queueCopilotInstruction("improve trust on this page")}
+                    className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-[11px] font-black text-cyan-200"
+                  >
+                    Add Trust
+                  </button>
+                )}
+                {!pageAudit.hasPrimaryCta && (
+                  <button
+                    onClick={() => queueCopilotInstruction("add a stronger CTA to this page")}
+                    className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-[11px] font-black text-cyan-200"
+                  >
+                    Add CTA
+                  </button>
+                )}
+                {!pageAudit.hasHero && (
+                  <button
+                    onClick={() => queueCopilotInstruction("add or improve the hero section on this page")}
+                    className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-[11px] font-black text-cyan-200"
+                  >
+                    Improve Hero
+                  </button>
+                )}
+              </div>
+            </div>
+            {pageAudit.issues.length > 0 && (
+              <div className="mt-3 flex flex-wrap gap-2">
+                {pageAudit.issues.slice(0, 3).map((issue) => (
+                  <span key={issue} className="rounded-full border border-white/[0.08] bg-black/20 px-3 py-1 text-[11px] text-white/60">
+                    {issue}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        <div className="flex-1 flex overflow-hidden">
 
         {/* Left panel — block list + add */}
         {!previewMode && (
@@ -529,6 +698,15 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                 >
                   {seoSaving ? <Loader2 className="w-3 h-3 animate-spin" /> : <Check className="w-3 h-3" />}
                   Save SEO
+                </button>
+
+                <button
+                  onClick={() => void applyLaunchBasics()}
+                  disabled={autoFillingSeo}
+                  className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg border border-white/[0.08] bg-white/[0.04] text-white/70 text-[11px] font-bold hover:bg-white/[0.06] transition disabled:opacity-40"
+                >
+                  {autoFillingSeo ? <Loader2 className="w-3 h-3 animate-spin" /> : <Wand2 className="w-3 h-3" />}
+                  Auto-Fill Launch SEO
                 </button>
 
                 <div className="border-t border-white/[0.06] pt-4 space-y-3">
@@ -848,6 +1026,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
             )}
           </aside>
         )}
+        </div>
       </div>
     </div>
   );
