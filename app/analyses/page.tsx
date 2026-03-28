@@ -261,6 +261,16 @@ export default function AnalysesPage() {
   const [verdictFilter, setVerdictFilter] = useState("");
   const [modeFilter, setModeFilter] = useState("");
   const [sortBy, setSortBy] = useState("createdAt");
+  const [compareMode, setCompareMode] = useState(false);
+  const [compareIds, setCompareIds] = useState<string[]>([]);
+  const [compareResult, setCompareResult] = useState<{
+    analysisA: { title: string; score: number };
+    analysisB: { title: string; score: number };
+    scoreDiff: number;
+    summary: string;
+    comparison: { dimension: string; a: number; b: number; diff: number; winner: string }[];
+  } | null>(null);
+  const [comparing, setComparing] = useState(false);
 
   const fetchAnalyses = useCallback(async () => {
     setLoading(true);
@@ -337,6 +347,18 @@ export default function AnalysesPage() {
           )}
 
           <div className="flex items-center gap-2">
+            {analyses.length >= 2 && (
+              <button
+                onClick={() => { setCompareMode(v => !v); setCompareIds([]); setCompareResult(null); }}
+                className={`flex items-center gap-1.5 px-3 py-2.5 rounded-xl border text-xs font-semibold transition ${
+                  compareMode
+                    ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-400"
+                    : "border-white/[0.08] bg-white/[0.03] text-white/50 hover:text-white hover:border-white/20"
+                }`}
+              >
+                Compare
+              </button>
+            )}
             {analyses.length > 0 && (
               <a
                 href="/api/analyses/export"
@@ -353,6 +375,74 @@ export default function AnalysesPage() {
             </Link>
           </div>
         </div>
+
+        {/* Compare bar */}
+        {compareMode && (
+          <div className="mb-4 flex items-center gap-3 px-4 py-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/20">
+            <span className="text-xs font-bold text-cyan-300">
+              {compareIds.length === 0 ? "Select 2 scans to compare" : compareIds.length === 1 ? "Select 1 more scan" : "Ready to compare"}
+            </span>
+            {compareIds.length === 2 && (
+              <button
+                onClick={async () => {
+                  setComparing(true);
+                  try {
+                    const res = await fetch("/api/analyses/compare", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ analysisIdA: compareIds[0], analysisIdB: compareIds[1] }),
+                    });
+                    const data = await res.json() as { ok: boolean; analysisA?: { title: string; score: number }; analysisB?: { title: string; score: number }; scoreDiff?: number; summary?: string; comparison?: { dimension: string; a: number; b: number; diff: number; winner: string }[] };
+                    if (data.ok) setCompareResult({ analysisA: data.analysisA!, analysisB: data.analysisB!, scoreDiff: data.scoreDiff!, summary: data.summary!, comparison: data.comparison! });
+                  } catch { /* non-fatal */ } finally { setComparing(false); }
+                }}
+                disabled={comparing}
+                className="px-3 py-1.5 rounded-lg bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 text-xs font-bold hover:bg-cyan-500/30 transition disabled:opacity-40"
+              >
+                {comparing ? "Comparing..." : "Compare Now"}
+              </button>
+            )}
+            <button onClick={() => { setCompareIds([]); setCompareResult(null); }} className="text-xs text-white/30 hover:text-white/60 ml-auto">Clear</button>
+          </div>
+        )}
+
+        {/* Compare result */}
+        {compareResult && (
+          <div className="mb-6 bg-white/[0.02] border border-white/[0.07] rounded-2xl p-5">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-xs font-black uppercase tracking-widest text-white/30">Comparison Result</h3>
+              <p className="text-xs text-white/40">{compareResult.summary}</p>
+            </div>
+            <div className="grid grid-cols-2 gap-4 mb-4">
+              <div className="bg-white/[0.02] rounded-xl p-3 text-center">
+                <p className="text-[10px] text-white/30 font-bold">A</p>
+                <p className="text-sm font-black text-white truncate">{compareResult.analysisA.title}</p>
+                <p className="text-lg font-black text-cyan-400">{compareResult.analysisA.score}/100</p>
+              </div>
+              <div className="bg-white/[0.02] rounded-xl p-3 text-center">
+                <p className="text-[10px] text-white/30 font-bold">B</p>
+                <p className="text-sm font-black text-white truncate">{compareResult.analysisB.title}</p>
+                <p className="text-lg font-black text-purple-400">{compareResult.analysisB.score}/100</p>
+              </div>
+            </div>
+            <div className="space-y-1.5">
+              {compareResult.comparison.map(c => (
+                <div key={c.dimension} className="flex items-center gap-3 text-xs">
+                  <span className="w-32 text-white/40 truncate">{c.dimension}</span>
+                  <span className={`w-10 text-right font-bold ${c.winner === "a" ? "text-cyan-400" : "text-white/30"}`}>{c.a}</span>
+                  <div className="flex-1 h-1.5 bg-white/[0.04] rounded-full overflow-hidden relative">
+                    <div className="absolute inset-y-0 left-0 bg-cyan-500/50 rounded-full" style={{ width: `${c.a}%` }} />
+                    <div className="absolute inset-y-0 right-0 bg-purple-500/50 rounded-full" style={{ width: `${c.b}%` }} />
+                  </div>
+                  <span className={`w-10 font-bold ${c.winner === "b" ? "text-purple-400" : "text-white/30"}`}>{c.b}</span>
+                  <span className={`w-12 text-right text-[10px] font-bold ${c.diff > 0 ? "text-purple-400" : c.diff < 0 ? "text-cyan-400" : "text-white/20"}`}>
+                    {c.diff > 0 ? `+${c.diff}` : c.diff}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Filters */}
         <div className="flex items-center gap-3 flex-wrap mb-6">
@@ -416,11 +506,32 @@ export default function AnalysesPage() {
             <EmptyState filtered={isFiltered} />
           ) : (
             analyses.map((analysis) => (
-              <AnalysisRow
-                key={analysis.id}
-                analysis={analysis}
-                onDelete={(id) => setAnalyses(prev => prev.filter(a => a.id !== id))}
-              />
+              <div key={analysis.id} className="relative">
+                {compareMode && (
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      setCompareIds(prev => {
+                        if (prev.includes(analysis.id)) return prev.filter(id => id !== analysis.id);
+                        if (prev.length >= 2) return prev;
+                        return [...prev, analysis.id];
+                      });
+                    }}
+                    className={`absolute left-2 top-1/2 -translate-y-1/2 z-10 w-5 h-5 rounded-md border-2 flex items-center justify-center transition ${
+                      compareIds.includes(analysis.id) ? "border-cyan-500 bg-cyan-500 text-white" : "border-white/20 bg-transparent"
+                    }`}
+                  >
+                    {compareIds.includes(analysis.id) && <span className="text-[10px] font-black">{compareIds.indexOf(analysis.id) + 1}</span>}
+                  </button>
+                )}
+                <div className={compareMode ? "pl-8" : ""}>
+                  <AnalysisRow
+                    analysis={analysis}
+                    onDelete={(id) => setAnalyses(prev => prev.filter(a => a.id !== id))}
+                  />
+                </div>
+              </div>
             ))
           )}
         </div>
