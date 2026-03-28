@@ -78,6 +78,8 @@ interface ReportScoreRow {
   status: "good" | "warning" | "critical";
 }
 
+type ExecutionTier = "core" | "elite";
+
 interface Recommendation {
   priority: number;
   action: string;
@@ -640,6 +642,7 @@ function ReviewSystemTab({ audit, onRefresh }: { audit: LocalAudit; onRefresh: (
 
 function SeoReportTab({ audit, onRefresh }: { audit: LocalAudit; onRefresh: () => void }) {
   const [generating, setGenerating] = useState(false);
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
 
   async function handleGenerate() {
     setGenerating(true);
@@ -647,7 +650,7 @@ function SeoReportTab({ audit, onRefresh }: { audit: LocalAudit; onRefresh: () =
       const res = await fetch("/api/local/seo-report", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ auditId: audit.id }),
+        body: JSON.stringify({ auditId: audit.id, executionTier }),
       });
       const data = await res.json() as { ok: boolean; error?: string };
       if (data.ok) { toast.success("Report generated"); onRefresh(); }
@@ -664,6 +667,46 @@ function SeoReportTab({ audit, onRefresh }: { audit: LocalAudit; onRefresh: () =
         <FileText className="w-10 h-10 text-white/10 mb-4" />
         <p className="text-sm font-bold text-white/30 mb-1">No client report yet</p>
         <p className="text-xs text-white/20 mb-5">Generate a polished SEO report to share with the business</p>
+        <div className="w-full max-w-2xl mb-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            {([
+              {
+                id: "core" as const,
+                label: "Core",
+                description: "Professional, practical, and client-ready local SEO reporting.",
+              },
+              {
+                id: "elite" as const,
+                label: "Elite",
+                description: "Sharper executive framing, stronger ROI pressure, and higher-end agency positioning.",
+              },
+            ]).map((tier) => {
+              const active = executionTier === tier.id;
+              return (
+                <button
+                  key={tier.id}
+                  type="button"
+                  onClick={() => setExecutionTier(tier.id)}
+                  className={`rounded-2xl border p-4 text-left transition-all ${
+                    active
+                      ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                      : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span className={`text-sm font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
+                    <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+                      {tier.id}
+                    </span>
+                  </div>
+                  <p className={`mt-2 text-xs leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+                    {tier.description}
+                  </p>
+                </button>
+              );
+            })}
+          </div>
+        </div>
         <button
           onClick={handleGenerate}
           disabled={generating}

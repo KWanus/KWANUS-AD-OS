@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
+import { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -40,6 +41,7 @@ export async function POST(req: NextRequest) {
       location: string;
       auditId?: string;
     };
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
 
     if (!businessName || !niche || !location) {
       return NextResponse.json(
@@ -62,6 +64,11 @@ export async function POST(req: NextRequest) {
 Business Name: ${businessName}
 Niche: ${niche}
 Location: ${location}
+Execution Tier: ${executionTier}
+
+${executionTier === "elite"
+  ? "Elite mode: make the content calendar feel like it came from a premium local content strategist. Use stronger local trust, offer framing, seasonal relevance, and booking intent."
+  : "Core mode: produce a strong, practical local content calendar with clear CTAs and useful topic variation."}
 
 Requirements:
 - Mix post types: offer (25%), update (35%), event (15%), product (25%)
@@ -98,7 +105,7 @@ Return this exact JSON structure:
       });
     }
 
-    return NextResponse.json({ ok: true, calendar: result });
+    return NextResponse.json({ ok: true, calendar: result, executionTier });
   } catch (err) {
     console.error("GMB posts generate POST error:", err);
     return NextResponse.json(

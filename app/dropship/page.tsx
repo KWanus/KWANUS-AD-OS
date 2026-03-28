@@ -11,6 +11,7 @@ import {
 // ─── Types ────────────────────────────────────────────────────────────────────
 
 type ProductStatus = "researching" | "testing" | "winning" | "scaling" | "dead";
+type ExecutionTier = "core" | "elite";
 
 interface ScoreBreakdown {
   demand: number;
@@ -109,6 +110,55 @@ function CopyBlock({ label, content }: { label: string; content: string }) {
   );
 }
 
+function ExecutionTierPicker({
+  value,
+  onChange,
+}: {
+  value: ExecutionTier;
+  onChange: (tier: ExecutionTier) => void;
+}) {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {[
+        {
+          id: "core" as const,
+          label: "Core",
+          description: "Strong launch-ready ecom output with practical testing and asset logic.",
+        },
+        {
+          id: "elite" as const,
+          label: "Elite",
+          description: "Sharper operator-grade product judgment, stronger creative angles, and better monetization structure.",
+        },
+      ].map((tier) => {
+        const active = value === tier.id;
+        return (
+          <button
+            key={tier.id}
+            type="button"
+            onClick={() => onChange(tier.id)}
+            className={`rounded-2xl border p-4 text-left transition-all ${
+              active
+                ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
+            }`}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <span className={`text-sm font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
+              <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+                {tier.id}
+              </span>
+            </div>
+            <p className={`mt-2 text-xs leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+              {tier.description}
+            </p>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 // ─── Score Ring ───────────────────────────────────────────────────────────────
 
 function ScoreRing({ score }: { score: number }) {
@@ -165,6 +215,7 @@ function ProductDetailPanel({
 }) {
   const [loading, setLoading] = useState<string | null>(null);
   const [result, setResult] = useState<{ type: string; data: unknown } | null>(null);
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
 
   async function callAction(action: string, endpoint: string) {
     setLoading(action);
@@ -173,9 +224,20 @@ function ProductDetailPanel({
       const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: product.id }),
+        body: JSON.stringify({ productId: product.id, executionTier }),
       });
-      const data = (await res.json()) as unknown;
+      const payload = (await res.json()) as {
+        analysis?: unknown;
+        storeContent?: unknown;
+        ads?: unknown;
+        emails?: unknown;
+      };
+      const data =
+        action === "analyze" ? payload.analysis :
+        action === "content" ? payload.storeContent :
+        action === "ads" ? payload.ads :
+        action === "emails" ? payload.emails :
+        payload;
       setResult({ type: action, data });
       await onRefresh(product.id);
       toast.success(`${action} complete`);
@@ -263,6 +325,7 @@ function ProductDetailPanel({
           {/* Actions */}
           <div className="space-y-2">
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Actions</p>
+            <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
             {[
               { key: "analyze",  label: "Full Analysis",   icon: BarChart2,  endpoint: "/api/dropship/products/analyze" },
               { key: "content",  label: "Store Content",   icon: FileText,   endpoint: "/api/dropship/products/store-content" },
@@ -512,6 +575,7 @@ function ResearchTab() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ResearchResult | null>(null);
   const [saving, setSaving] = useState<string | null>(null);
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -521,10 +585,39 @@ function ResearchTab() {
       const res = await fetch("/api/dropship/products/research", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, executionTier }),
       });
-      const data = (await res.json()) as { ok: boolean; result?: ResearchResult };
-      if (data.ok && data.result) setResult(data.result);
+      const data = (await res.json()) as {
+        ok: boolean;
+        research?: {
+          marketAnalysis?: string;
+          productOpportunities?: Array<{
+            name: string;
+            estimatedRetailPrice?: string;
+            estimatedMargin?: string;
+            winnerScore: number;
+            bestSupplierPlatform: string;
+            topAngle: string;
+          }>;
+          trendingNow?: string[];
+          avoidList?: string[];
+        };
+      };
+      if (data.ok && data.research) {
+        setResult({
+          marketAnalysis: data.research.marketAnalysis ?? "",
+          products: (data.research.productOpportunities ?? []).map((p) => ({
+            name: p.name,
+            estimatedPriceRange: p.estimatedRetailPrice ?? "Unknown",
+            marginPercent: Number.parseInt((p.estimatedMargin ?? "0").replace(/[^\d]/g, ""), 10) || 0,
+            winnerScore: p.winnerScore,
+            bestSupplierPlatform: p.bestSupplierPlatform,
+            topAngle: p.topAngle,
+          })),
+          trendingNow: data.research.trendingNow ?? [],
+          avoidList: data.research.avoidList ?? [],
+        });
+      }
       else toast.error("Research failed");
     } catch {
       toast.error("Research failed");
@@ -561,6 +654,9 @@ function ResearchTab() {
     <div className="max-w-3xl space-y-6">
       <form onSubmit={(e) => void handleSubmit(e)}
         className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-5 grid grid-cols-3 gap-3">
+        <div className="col-span-3">
+          <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
+        </div>
         <div>
           <label className="text-[10px] font-black uppercase tracking-widest text-white/30 block mb-1">Niche *</label>
           <input required value={form.niche} onChange={(e) => setForm((f) => ({ ...f, niche: e.target.value }))}
@@ -798,6 +894,7 @@ function ProfitCalculatorTab() {
 function GenerateAssetsTab({ products }: { products: DropshipProduct[] }) {
   const [selectedId, setSelectedId] = useState("");
   const [loading, setLoading] = useState<string | null>(null);
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [results, setResults] = useState<Record<string, any>>({});
   const [subTabs, setSubTabs] = useState<Record<string, number>>({});
@@ -809,9 +906,20 @@ function GenerateAssetsTab({ products }: { products: DropshipProduct[] }) {
       const res = await fetch(endpoint, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ productId: selectedId }),
+        body: JSON.stringify({ productId: selectedId, executionTier }),
       });
-      const data = (await res.json()) as unknown;
+      const payload = (await res.json()) as {
+        storeContent?: unknown;
+        ads?: unknown;
+        emails?: unknown;
+        analysis?: unknown;
+      };
+      const data =
+        key === "store" ? payload.storeContent :
+        key === "ads" ? payload.ads :
+        key === "emails" ? payload.emails :
+        key === "analysis" ? payload.analysis :
+        payload;
       setResults((r) => ({ ...r, [key]: data }));
       toast.success("Generated successfully");
     } catch {
@@ -880,6 +988,9 @@ function GenerateAssetsTab({ products }: { products: DropshipProduct[] }) {
   return (
     <div className="space-y-5">
       <div>
+        <div className="mb-4">
+          <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
+        </div>
         <label className="text-[10px] font-black uppercase tracking-widest text-white/30 block mb-1">Select Product</label>
         <select value={selectedId} onChange={(e) => setSelectedId(e.target.value)}
           className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-cyan-500/40 min-w-[260px]">

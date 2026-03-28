@@ -72,6 +72,8 @@ type AnalysisRun = {
   decisionPacket: Record<string, unknown> | null;
 };
 
+type ExecutionTier = "core" | "elite";
+
 type Campaign = {
   id: string;
   name: string;
@@ -86,6 +88,9 @@ type Campaign = {
   emailDrafts: EmailDraft[];
   checklistItems: ChecklistItem[];
   analysisRun: AnalysisRun | null;
+  workflowState?: {
+    executionTier?: ExecutionTier;
+  } | null;
 };
 
 type BusinessProfileSummary = {
@@ -173,6 +178,55 @@ function NavItem({
   );
 }
 
+function ExecutionTierPicker({
+  value,
+  onChange,
+}: {
+  value: ExecutionTier;
+  onChange: (tier: ExecutionTier) => void;
+}) {
+  return (
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {[
+        {
+          id: "core" as const,
+          label: "Core",
+          description: "Strong operator-ready assets with clean structure and fast execution.",
+        },
+        {
+          id: "elite" as const,
+          label: "Elite",
+          description: "Sharper premium positioning, stronger proof logic, and higher-conviction execution.",
+        },
+      ].map((tier) => {
+        const active = value === tier.id;
+        return (
+          <button
+            key={tier.id}
+            type="button"
+            onClick={() => onChange(tier.id)}
+            className={`rounded-2xl border p-4 text-left transition-all ${
+              active
+                ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
+            }`}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <span className={`text-sm font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
+              <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+                {tier.id}
+              </span>
+            </div>
+            <p className={`mt-2 text-xs leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+              {tier.description}
+            </p>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 // ── Main Page ─────────────────────────────────────────────────────────────────
 
 export default function CampaignWorkspace() {
@@ -250,7 +304,12 @@ export default function CampaignWorkspace() {
       .catch(() => {});
   }, []);
 
-  async function updateCampaign(patch: { name?: string; status?: string; notes?: string }) {
+  async function updateCampaign(patch: {
+    name?: string;
+    status?: string;
+    notes?: string;
+    workflowState?: Campaign["workflowState"];
+  }) {
     setSaving(true);
     const res = await fetch(`/api/campaigns/${id}`, {
       method: "PATCH",
@@ -496,6 +555,7 @@ export default function CampaignWorkspace() {
   const doneCount = campaign.checklistItems.filter((i) => i.done).length;
   const totalCount = campaign.checklistItems.length;
   const productUrl = campaign.productUrl ?? campaign.analysisRun?.inputUrl ?? "";
+  const executionTier: ExecutionTier = campaign.workflowState?.executionTier === "core" ? "core" : "elite";
 
   // Landing preview data — merge saved state with live edits
   const previewLanding: Partial<LandingDraft> = campaign.landingDraft
@@ -524,6 +584,9 @@ export default function CampaignWorkspace() {
                 <option key={s} value={s} className="bg-[#0a0f1e]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
               ))}
             </select>
+            <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300">
+              {executionTier}
+            </span>
             {saving && <span className="text-[10px] text-white/20">saving...</span>}
           </div>
           {campaign.productName && (
@@ -669,6 +732,42 @@ export default function CampaignWorkspace() {
                   )}
                 </div>
               )}
+
+              <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+                <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+                  <div className="max-w-2xl">
+                    <p className="text-xs uppercase tracking-widest text-white/30 mb-3">Execution Lane</p>
+                    <h3 className="text-xl font-bold text-white">
+                      {executionTier === "elite" ? "Elite campaign execution is active" : "Core campaign execution is active"}
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-white/60">
+                      This sets the quality bar for regenerated hooks, scripts, emails, and checklist guidance. Switching lanes updates the stored campaign strategy so future generations stay aligned.
+                    </p>
+                  </div>
+                  <div className="shrink-0 rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-xs uppercase tracking-[0.18em] text-white/45">
+                    Stored on campaign
+                  </div>
+                </div>
+
+                <div className="mt-5">
+                  <ExecutionTierPicker
+                    value={executionTier}
+                    onChange={(tier) => {
+                      if (tier === executionTier) return;
+                      void updateCampaign({
+                        workflowState: {
+                          ...(campaign.workflowState ?? {}),
+                          executionTier: tier,
+                        },
+                      });
+                    }}
+                  />
+                </div>
+
+                <div className="mt-4 rounded-xl border border-cyan-500/15 bg-cyan-500/[0.05] px-4 py-3 text-xs leading-relaxed text-cyan-100/80">
+                  Regenerate assets after switching if you want the current workspace to reflect the new execution lane immediately.
+                </div>
+              </div>
 
               {/* Quick status of all assets */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
@@ -1310,6 +1409,7 @@ export default function CampaignWorkspace() {
           isOpen={studioOpen}
           onClose={() => setStudioOpen(false)}
           brief={studioBrief}
+          executionTier={executionTier}
         />
       )}
     </main>

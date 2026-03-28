@@ -37,6 +37,7 @@ export async function POST(
       pageTitle?: string;
       siteName?: string;
       selectedBlockId?: string | null;
+      executionTier?: "core" | "elite";
     };
     if (!body.instruction?.trim()) {
       return NextResponse.json({ ok: false, error: "Instruction is required" }, { status: 400 });
@@ -48,6 +49,7 @@ export async function POST(
       pageTitle: body.pageTitle || page.title,
       blocks: body.blocks ?? ((page.blocks as unknown as Block[]) ?? []),
       selectedBlockId: body.selectedBlockId,
+      executionTier: body.executionTier === "core" ? "core" : "elite",
       generationContext: typeof site.theme === "object" && site.theme && "generation" in (site.theme as Record<string, unknown>)
         ? ((site.theme as Record<string, unknown>).generation as {
             businessName?: string;
@@ -56,6 +58,7 @@ export async function POST(
             sourceUrl?: string;
             templateId?: string;
             pageType?: string;
+            executionTier?: "core" | "elite";
             blueprintScore?: { overall?: number };
             conversionNotes?: { primary_goal?: string; trust_elements_used?: string[]; objections_addressed?: string[] };
           })
@@ -66,6 +69,7 @@ export async function POST(
       ok: true,
       updatedBlocks,
       report,
+      executionTier: body.executionTier === "core" ? "core" : "elite",
     });
   } catch (error) {
     console.error("Website copilot route failed:", error);

@@ -72,6 +72,8 @@ interface KeywordResults {
   contentIdeas: Array<{ title: string; format: string }>;
 }
 
+type ExecutionTier = "core" | "elite";
+
 // ---------------------------------------------------------------------------
 // Config
 // ---------------------------------------------------------------------------
@@ -206,6 +208,55 @@ function CopyBlock({ label, text }: { label: string; text: string }) {
   );
 }
 
+function ExecutionTierPicker({
+  value,
+  onChange,
+}: {
+  value: ExecutionTier;
+  onChange: (tier: ExecutionTier) => void;
+}) {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {[
+        {
+          id: "core" as const,
+          label: "Core",
+          description: "Strong local marketing outputs with practical structure and clear delivery.",
+        },
+        {
+          id: "elite" as const,
+          label: "Elite",
+          description: "Sharper local positioning, better offer logic, stronger proof, and top-operator execution.",
+        },
+      ].map((tier) => {
+        const active = value === tier.id;
+        return (
+          <button
+            key={tier.id}
+            type="button"
+            onClick={() => onChange(tier.id)}
+            className={`rounded-2xl border p-4 text-left transition-all ${
+              active
+                ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
+            }`}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <span className={`text-sm font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
+              <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+                {tier.id}
+              </span>
+            </div>
+            <p className={`mt-2 text-xs leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+              {tier.description}
+            </p>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Audit modal
 // ---------------------------------------------------------------------------
@@ -294,6 +345,7 @@ function AuditsTab() {
   const [showForm, setShowForm] = useState(false);
   const [running, setRunning] = useState(false);
   const [selectedAudit, setSelectedAudit] = useState<LocalAudit | null>(null);
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
 
   const [bizName, setBizName] = useState("");
   const [bizUrl, setBizUrl] = useState("");
@@ -319,7 +371,13 @@ function AuditsTab() {
       const res = await fetch("/api/local/audit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ businessName: bizName, businessUrl: bizUrl || undefined, niche, location }),
+        body: JSON.stringify({
+          businessName: bizName,
+          businessUrl: bizUrl || undefined,
+          niche,
+          location,
+          executionTier,
+        }),
       });
       const data = await res.json() as { ok: boolean; error?: string };
       if (data.ok) {
@@ -355,6 +413,7 @@ function AuditsTab() {
       {showForm && (
         <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4 mb-4 space-y-3">
           <SectionLabel>New Business Audit</SectionLabel>
+          <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
           <InputField placeholder="Business name" value={bizName} onChange={setBizName} />
           <InputField placeholder="Website URL (optional)" value={bizUrl} onChange={setBizUrl} />
           <div className="flex gap-3">
@@ -437,6 +496,7 @@ function PackagesTab() {
   const [generating, setGenerating] = useState(false);
   const [genNiche, setGenNiche] = useState("");
   const [genLocation, setGenLocation] = useState("");
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
 
   const fetchPackages = useCallback(async () => {
     try {
@@ -457,7 +517,7 @@ function PackagesTab() {
       const res = await fetch("/api/local/packages/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ niche: genNiche, location: genLocation }),
+        body: JSON.stringify({ niche: genNiche, location: genLocation, executionTier }),
       });
       const data = await res.json() as { ok: boolean; error?: string };
       if (data.ok) {
@@ -486,6 +546,7 @@ function PackagesTab() {
       {showForm && (
         <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4 mb-4 space-y-3">
           <SectionLabel>Generate Packages</SectionLabel>
+          <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
           <InputField placeholder="Niche (e.g. HVAC, landscaping)" value={genNiche} onChange={setGenNiche} />
           <InputField placeholder="Location (optional)" value={genLocation} onChange={setGenLocation} />
           <PrimaryButton onClick={handleGenerate} disabled={!genNiche.trim()} loading={generating}>
@@ -557,6 +618,9 @@ function GmbTab({ audits }: { audits: LocalAudit[] }) {
   const [seoAuditId, setSeoAuditId] = useState("");
   const [seoLoading, setSeoLoading] = useState(false);
   const [seoReport, setSeoReport] = useState<Record<string, string> | null>(null);
+  const [seoTier, setSeoTier] = useState<ExecutionTier>("elite");
+  const [reviewTier, setReviewTier] = useState<ExecutionTier>("elite");
+  const [postTier, setPostTier] = useState<ExecutionTier>("elite");
 
   async function handleReviewGen() {
     if (!revBiz.trim() || !revNiche.trim()) return;
@@ -565,12 +629,24 @@ function GmbTab({ audits }: { audits: LocalAudit[] }) {
       const res = await fetch("/api/local/review-request/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ businessName: revBiz, niche: revNiche, reviewPlatform: revPlatform }),
+        body: JSON.stringify({
+          businessName: revBiz,
+          niche: revNiche,
+          reviewPlatform: revPlatform,
+          executionTier: reviewTier,
+        }),
       });
-      const data = await res.json() as { ok: boolean; sms: string[]; email: string[]; error?: string };
+      const data = await res.json() as {
+        ok: boolean;
+        templates?: { sms?: Array<{ message: string }>; email?: Array<{ subject: string; body: string }> };
+        error?: string;
+      };
       if (data.ok) {
         toast.success("Review templates generated");
-        setRevResult({ sms: data.sms ?? [], email: data.email ?? [] });
+        setRevResult({
+          sms: data.templates?.sms?.map((item) => item.message) ?? [],
+          email: data.templates?.email?.map((item) => `${item.subject}\n\n${item.body}`) ?? [],
+        });
       } else {
         toast.error(data.error ?? "Generation failed");
       }
@@ -588,12 +664,26 @@ function GmbTab({ audits }: { audits: LocalAudit[] }) {
       const res = await fetch("/api/local/gmb-posts/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ businessName: postBiz, niche: postNiche, location: postLocation }),
+        body: JSON.stringify({
+          businessName: postBiz,
+          niche: postNiche,
+          location: postLocation,
+          executionTier: postTier,
+        }),
       });
-      const data = await res.json() as { ok: boolean; posts: GmbPost[]; error?: string };
+      const data = await res.json() as {
+        ok: boolean;
+        calendar?: { posts?: Array<GmbPost & { bestPostTime?: string }> };
+        error?: string;
+      };
       if (data.ok) {
         toast.success("30-day post calendar ready");
-        setPostCalendar(data.posts ?? []);
+        setPostCalendar(
+          (data.calendar?.posts ?? []).map((post) => ({
+            ...post,
+            bestTime: post.bestTime ?? post.bestPostTime ?? "Best local posting window",
+          }))
+        );
       } else {
         toast.error(data.error ?? "Generation failed");
       }
@@ -611,7 +701,7 @@ function GmbTab({ audits }: { audits: LocalAudit[] }) {
       const res = await fetch("/api/local/seo-report", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ auditId: seoAuditId }),
+        body: JSON.stringify({ auditId: seoAuditId, executionTier: seoTier }),
       });
       const data = await res.json() as { ok: boolean; report: Record<string, string>; error?: string };
       if (data.ok) {
@@ -645,6 +735,7 @@ function GmbTab({ audits }: { audits: LocalAudit[] }) {
           <h3 className="text-sm font-black text-white">Review Request Generator</h3>
         </div>
         <div className="space-y-3">
+          <ExecutionTierPicker value={reviewTier} onChange={setReviewTier} />
           <div className="flex gap-3">
             <InputField placeholder="Business name" value={revBiz} onChange={setRevBiz} />
             <InputField placeholder="Niche" value={revNiche} onChange={setRevNiche} />
@@ -687,6 +778,7 @@ function GmbTab({ audits }: { audits: LocalAudit[] }) {
           <h3 className="text-sm font-black text-white">GMB Post Calendar</h3>
         </div>
         <div className="space-y-3">
+          <ExecutionTierPicker value={postTier} onChange={setPostTier} />
           <div className="flex gap-3">
             <InputField placeholder="Business name" value={postBiz} onChange={setPostBiz} />
             <InputField placeholder="Niche" value={postNiche} onChange={setPostNiche} />
@@ -727,6 +819,7 @@ function GmbTab({ audits }: { audits: LocalAudit[] }) {
           <p className="text-sm text-white/25">Run an audit first to generate an SEO report.</p>
         ) : (
           <div className="space-y-3">
+            <ExecutionTierPicker value={seoTier} onChange={setSeoTier} />
             <select
               value={seoAuditId}
               onChange={(e) => setSeoAuditId(e.target.value)}
@@ -769,6 +862,7 @@ function KeywordsTab() {
   const [radius, setRadius] = useState("10mi");
   const [loading, setLoading] = useState(false);
   const [results, setResults] = useState<KeywordResults | null>(null);
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
 
   async function handleResearch() {
     if (!niche.trim() || !location.trim()) return;
@@ -777,12 +871,39 @@ function KeywordsTab() {
       const res = await fetch("/api/local/keywords/research", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ niche, location, radius }),
+        body: JSON.stringify({ niche, location, radius, executionTier }),
       });
-      const data = await res.json() as { ok: boolean; results: KeywordResults; error?: string };
+      const data = await res.json() as {
+        ok: boolean;
+        keywords?: {
+          primaryKeywords?: Array<{
+            keyword: string;
+            intent: string;
+            difficulty: string;
+            searchVolume?: string;
+          }>;
+          longTail?: string[];
+          nearMeKeywords?: string[];
+          contentIdeas?: Array<{ title: string; type?: string; format?: string }>;
+        };
+        error?: string;
+      };
       if (data.ok) {
         toast.success("Keyword research complete");
-        setResults(data.results);
+        setResults({
+          primaryKeywords: (data.keywords?.primaryKeywords ?? []).map((kw) => ({
+            keyword: kw.keyword,
+            intent: kw.intent,
+            difficulty: kw.difficulty,
+            volume: kw.searchVolume ?? "Unknown",
+          })),
+          longTail: data.keywords?.longTail ?? [],
+          nearMe: data.keywords?.nearMeKeywords ?? [],
+          contentIdeas: (data.keywords?.contentIdeas ?? []).map((idea) => ({
+            title: idea.title,
+            format: idea.format ?? idea.type ?? "blog",
+          })),
+        });
       } else {
         toast.error(data.error ?? "Research failed");
       }
@@ -797,6 +918,7 @@ function KeywordsTab() {
     <div>
       <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5 mb-5 space-y-3">
         <SectionLabel>Keyword Research</SectionLabel>
+        <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
         <div className="flex gap-3">
           <InputField placeholder="Niche (e.g. plumber, roofer)" value={niche} onChange={setNiche} />
           <InputField placeholder="Location (e.g. Denver CO)" value={location} onChange={setLocation} />

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
+import { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -33,6 +34,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     const { niche, businessType, competitorUrls, targetRevenue, auditId } = body;
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
 
     if (!niche || !businessType) {
       return NextResponse.json({ ok: false, error: "niche and businessType are required" }, { status: 400 });
@@ -53,6 +55,11 @@ Niche: ${niche}
 Business Type of clients: ${businessType}
 ${competitorUrls ? `Competitor URLs to research: ${Array.isArray(competitorUrls) ? competitorUrls.join(", ") : competitorUrls}` : ""}
 ${targetRevenue ? `Agency target monthly revenue: $${targetRevenue}` : ""}
+Execution Tier: ${executionTier}
+
+${executionTier === "elite"
+  ? "Elite mode: think like a premium agency owner. Push for better value anchors, higher-confidence premium positioning, stronger package differentiation, and better upsell logic."
+  : "Core mode: produce a strong practical pricing strategy with clean package logic and credible market positioning."}
 
 Research what top agencies in this space actually charge. Factor in value delivery, market sophistication, and client ROI.
 Position the recommended pricing to win clients while maximizing profit margin.
@@ -86,7 +93,7 @@ Return this exact JSON structure:
       });
     }
 
-    return NextResponse.json({ ok: true, pricing: result, ...(audit ? { auditId } : {}) });
+    return NextResponse.json({ ok: true, pricing: result, executionTier, ...(audit ? { auditId } : {}) });
   } catch (err) {
     console.error("Pricing generate error:", err);
     return NextResponse.json({ ok: false, error: "Failed to generate pricing" }, { status: 500 });

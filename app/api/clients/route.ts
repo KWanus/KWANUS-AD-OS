@@ -4,6 +4,28 @@ import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { computeHealthScore } from "@/lib/clients/healthScore";
 
+type ExecutionTier = "core" | "elite";
+
+function normalizeExecutionTier(value: unknown): ExecutionTier {
+  return value === "core" ? "core" : "elite";
+}
+
+function mergeExecutionTier(customFields: unknown, executionTier: ExecutionTier) {
+  return {
+    ...(customFields && typeof customFields === "object" && !Array.isArray(customFields)
+      ? (customFields as Record<string, unknown>)
+      : {}),
+    executionTier,
+  };
+}
+
+function readExecutionTier(customFields: unknown): ExecutionTier {
+  if (!customFields || typeof customFields !== "object" || Array.isArray(customFields)) {
+    return "elite";
+  }
+  return normalizeExecutionTier((customFields as Record<string, unknown>).executionTier);
+}
+
 export async function GET(req: NextRequest) {
   try {
     const { userId: clerkId } = await auth();
@@ -51,7 +73,16 @@ export async function GET(req: NextRequest) {
       prisma.client.count({ where }),
     ]);
 
-    return NextResponse.json({ ok: true, clients, total, page, limit });
+    return NextResponse.json({
+      ok: true,
+      clients: clients.map((client) => ({
+        ...client,
+        executionTier: readExecutionTier(client.customFields),
+      })),
+      total,
+      page,
+      limit,
+    });
   } catch (err) {
     console.error("Clients GET:", err);
     return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });
@@ -78,11 +109,14 @@ export async function POST(req: NextRequest) {
       notes?: string;
       sourceCampaignId?: string;
       priority?: string;
+      executionTier?: ExecutionTier;
     };
 
     if (!body.name?.trim()) {
       return NextResponse.json({ ok: false, error: "Name is required" }, { status: 400 });
     }
+
+    const executionTier = normalizeExecutionTier(body.executionTier);
 
     const { score, status } = computeHealthScore({
       lastContactAt: null,
@@ -106,6 +140,7 @@ export async function POST(req: NextRequest) {
         notes: body.notes?.trim() || null,
         sourceCampaignId: body.sourceCampaignId || null,
         priority: body.priority ?? "normal",
+        customFields: mergeExecutionTier(null, executionTier),
         healthScore: score,
         healthStatus: status,
       },
@@ -122,7 +157,13 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    return NextResponse.json({ ok: true, client });
+    return NextResponse.json({
+      ok: true,
+      client: {
+        ...client,
+        executionTier,
+      },
+    });
   } catch (err) {
     console.error("Clients POST:", err);
     return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });

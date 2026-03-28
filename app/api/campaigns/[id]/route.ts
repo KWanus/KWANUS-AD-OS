@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
@@ -65,10 +66,12 @@ export async function PATCH(
     if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 
     // Verify ownership
-    const existing = await prisma.campaign.findFirst({ where: { id, userId: user.id } });
-    if (!existing) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
-
-    const body = await req.json() as { name?: string; status?: string; notes?: string };
+    const body = await req.json() as {
+      name?: string;
+      status?: string;
+      notes?: string;
+      workflowState?: Prisma.InputJsonValue;
+    };
 
     const campaign = await prisma.campaign.update({
       where: { id },
@@ -76,6 +79,7 @@ export async function PATCH(
         ...(body.name !== undefined && { name: body.name }),
         ...(body.status !== undefined && { status: body.status }),
         ...(body.notes !== undefined && { notes: body.notes }),
+        ...(body.workflowState !== undefined && { workflowState: body.workflowState }),
       },
     });
 

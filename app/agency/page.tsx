@@ -21,6 +21,7 @@ import {
 // ---------------------------------------------------------------------------
 
 type BusinessType = "consultant" | "local" | "ecommerce" | "saas" | "affiliate" | "agency";
+type ExecutionTier = "core" | "elite";
 
 interface ScoreBreakdown {
   Traffic: number;
@@ -229,6 +230,55 @@ function Modal({ children, onClose }: { children: React.ReactNode; onClose: () =
   );
 }
 
+function ExecutionTierPicker({
+  value,
+  onChange,
+}: {
+  value: ExecutionTier;
+  onChange: (tier: ExecutionTier) => void;
+}) {
+  return (
+    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+      {[
+        {
+          id: "core" as const,
+          label: "Core",
+          description: "Strong operator-ready output with practical structure and clean delivery.",
+        },
+        {
+          id: "elite" as const,
+          label: "Elite",
+          description: "Sharper premium positioning, stronger proof logic, and top-agency execution.",
+        },
+      ].map((tier) => {
+        const active = value === tier.id;
+        return (
+          <button
+            key={tier.id}
+            type="button"
+            onClick={() => onChange(tier.id)}
+            className={`rounded-2xl border p-4 text-left transition-all ${
+              active
+                ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
+            }`}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <span className={`text-sm font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
+              <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+                {tier.id}
+              </span>
+            </div>
+            <p className={`mt-2 text-xs leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+              {tier.description}
+            </p>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Tab: Audits
 // ---------------------------------------------------------------------------
@@ -239,6 +289,7 @@ function AuditsTab() {
   const [submitting, setSubmitting] = useState(false);
   const [selectedAudit, setSelectedAudit] = useState<Audit | null>(null);
   const [generatingFor, setGeneratingFor] = useState<string | null>(null);
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
 
   const [form, setForm] = useState({
     businessName: "",
@@ -251,7 +302,10 @@ function AuditsTab() {
   const fetchAudits = useCallback(async () => {
     try {
       const res = await fetch("/api/agency/audit");
-      if (res.ok) setAudits(await res.json());
+      if (res.ok) {
+        const data = await res.json() as { audits?: Audit[] };
+        setAudits(data.audits ?? []);
+      }
     } catch {
       toast.error("Failed to load audits");
     } finally {
@@ -273,7 +327,7 @@ function AuditsTab() {
       const res = await fetch("/api/agency/audit", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, executionTier }),
       });
       if (!res.ok) throw new Error();
       toast.success("Audit complete!", { id: "audit" });
@@ -298,7 +352,7 @@ function AuditsTab() {
       const res = await fetch(endpointMap[type], {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ auditId }),
+        body: JSON.stringify({ auditId, executionTier }),
       });
       if (!res.ok) throw new Error();
       toast.success(`${type.charAt(0).toUpperCase() + type.slice(1)} generated!`, { id: type });
@@ -316,6 +370,7 @@ function AuditsTab() {
       {/* Run New Audit Form */}
       <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5 space-y-4">
         <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Run New Audit</p>
+        <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
         <form onSubmit={runAudit} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <input
             className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-cyan-500/40"
@@ -469,6 +524,10 @@ function AuditsTab() {
           )}
 
           {/* Action buttons */}
+          <div className="space-y-3">
+            <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Execution Tier</p>
+            <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
+          </div>
           <div className="grid grid-cols-3 gap-3">
             {(["strategy", "proposal", "pricing"] as const).map((type) => {
               const isGenerating = generatingFor === `${selectedAudit.id}-${type}`;
@@ -501,11 +560,15 @@ function StrategyTab() {
   const [loading, setLoading] = useState(true);
   const [selectedAudit, setSelectedAudit] = useState<Audit | null>(null);
   const [generating, setGenerating] = useState<string | null>(null);
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
 
   const fetchAudits = useCallback(async () => {
     try {
       const res = await fetch("/api/agency/audit");
-      if (res.ok) setAudits(await res.json());
+      if (res.ok) {
+        const data = await res.json() as { audits?: Audit[] };
+        setAudits(data.audits ?? []);
+      }
     } catch {
       toast.error("Failed to load audits");
     } finally {
@@ -522,7 +585,7 @@ function StrategyTab() {
       const res = await fetch("/api/agency/strategy/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ auditId }),
+        body: JSON.stringify({ auditId, executionTier }),
       });
       if (!res.ok) throw new Error();
       toast.success("Strategy generated!", { id: "strategy" });
@@ -592,6 +655,7 @@ function StrategyTab() {
       {withoutStrategy.length > 0 && (
         <div className="space-y-3">
           <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Generate Strategy</p>
+          <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
           <div className="space-y-2">
             {withoutStrategy.map((audit) => (
               <div key={audit.id} className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4 flex items-center justify-between gap-3">
@@ -683,11 +747,15 @@ function ProposalsTab() {
   const [selectedAudit, setSelectedAudit] = useState<Audit | null>(null);
   const [generating, setGenerating] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
 
   const fetchAudits = useCallback(async () => {
     try {
       const res = await fetch("/api/agency/audit");
-      if (res.ok) setAudits(await res.json());
+      if (res.ok) {
+        const data = await res.json() as { audits?: Audit[] };
+        setAudits(data.audits ?? []);
+      }
     } catch {
       toast.error("Failed to load audits");
     } finally {
@@ -704,7 +772,7 @@ function ProposalsTab() {
       const res = await fetch("/api/agency/proposal/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ auditId }),
+        body: JSON.stringify({ auditId, executionTier }),
       });
       if (!res.ok) throw new Error();
       toast.success("Proposal generated!", { id: "proposal" });
@@ -780,6 +848,7 @@ function ProposalsTab() {
       {withoutProposal.length > 0 && (
         <div className="space-y-3">
           <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Generate Proposal</p>
+          <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
           <div className="space-y-2">
             {withoutProposal.map((audit) => (
               <div key={audit.id} className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4 flex items-center justify-between gap-3">
@@ -872,6 +941,7 @@ function PricingTab() {
   const [form, setForm] = useState({ niche: "", businessType: "local" as BusinessType, targetRevenue: "" });
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<PricingResult | null>(null);
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
 
   async function generate(e: React.FormEvent) {
     e.preventDefault();
@@ -882,10 +952,11 @@ function PricingTab() {
       const res = await fetch("/api/agency/pricing/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(form),
+        body: JSON.stringify({ ...form, executionTier }),
       });
       if (!res.ok) throw new Error();
-      setResult(await res.json());
+      const data = await res.json() as { pricing?: PricingResult };
+      setResult(data.pricing ?? null);
       toast.success("Pricing generated!", { id: "pricing" });
     } catch {
       toast.error("Failed to generate pricing", { id: "pricing" });
@@ -899,6 +970,7 @@ function PricingTab() {
       {/* Form */}
       <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5 space-y-4">
         <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Generate Pricing Strategy</p>
+        <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
         <form onSubmit={generate} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <input
             className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-cyan-500/40"

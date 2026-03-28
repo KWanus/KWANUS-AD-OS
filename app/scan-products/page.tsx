@@ -1,6 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
+import AppNav from "@/components/AppNav";
 
 type ProductScanResult = {
   id: string;
@@ -13,12 +14,64 @@ type ProductScanResult = {
   createdAt: string;
 };
 
+type ExecutionTier = "core" | "elite";
+
 type ScanApiResponse = {
   success: boolean;
   mode: "product";
   data: ProductScanResult;
+  executionTier?: ExecutionTier;
   error?: string;
 };
+
+function ExecutionTierPicker({
+  value,
+  onChange,
+}: {
+  value: ExecutionTier;
+  onChange: (tier: ExecutionTier) => void;
+}) {
+  return (
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      {[
+        {
+          id: "core" as const,
+          label: "Core",
+          description: "Strong practical opportunity scan with direct next moves.",
+        },
+        {
+          id: "elite" as const,
+          label: "Elite",
+          description: "Sharper premium quality for the campaign and product follow-up flow.",
+        },
+      ].map((tier) => {
+        const active = value === tier.id;
+        return (
+          <button
+            key={tier.id}
+            type="button"
+            onClick={() => onChange(tier.id)}
+            className={`rounded-2xl border p-4 text-left transition-all ${
+              active
+                ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
+            }`}
+          >
+            <div className="flex items-center justify-between gap-3">
+              <span className={`text-sm font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
+              <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+                {tier.id}
+              </span>
+            </div>
+            <p className={`mt-2 text-xs leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+              {tier.description}
+            </p>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
 
 function scoreColor(score: number): string {
   if (score >= 70) return "text-green-400";
@@ -31,6 +84,7 @@ export default function ScanProductsPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
   const [result, setResult] = useState<ProductScanResult | null>(null);
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
 
   async function handleScan() {
     if (!productInput.trim()) {
@@ -45,7 +99,7 @@ export default function ScanProductsPage() {
       const res = await fetch("/api/scan", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode: "product", productInput: productInput.trim() }),
+        body: JSON.stringify({ mode: "product", productInput: productInput.trim(), executionTier }),
       });
       const payload = (await res.json()) as ScanApiResponse;
       if (!payload.success || !payload.data) {
@@ -62,14 +116,19 @@ export default function ScanProductsPage() {
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white flex flex-col">
+      <AppNav />
       <header className="px-8 py-6 border-b border-white/10">
         <Link href="/" className="text-cyan-400 text-sm hover:underline">← Back to Dashboard</Link>
         <h1 className="text-2xl font-bold mt-2">Scan Products</h1>
-        <p className="text-sm text-white/40 mt-1">Describe your product to get demand and competition analysis.</p>
+        <p className="text-sm text-white/40 mt-1">Describe your product, pick the execution lane, and keep that quality level through the rest of the build flow.</p>
       </header>
 
       <div className="flex-1 px-8 py-10 max-w-3xl mx-auto w-full">
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6 mb-6">
+          <div className="mb-5">
+            <label className="block mb-2 text-sm text-white/60">Execution Lane</label>
+            <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
+          </div>
           <label className="block mb-2 text-sm text-white/60">Product Description</label>
           <textarea
             value={productInput}
@@ -102,6 +161,9 @@ export default function ScanProductsPage() {
                 <span className="text-2xl text-white/30">/100</span>
               </p>
               <p className="text-white/40 text-sm mt-2 truncate">{result.name}</p>
+              <div className="mt-3 inline-flex rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300">
+                {executionTier} lane
+              </div>
               <div className="flex items-center gap-4 mt-4 pt-4 border-t border-white/[0.06]">
                 <span className="text-[11px] text-white/30 font-medium">Score legend:</span>
                 <span className="text-[11px] text-green-400 font-semibold">70–100 Strong opportunity</span>
@@ -135,13 +197,13 @@ export default function ScanProductsPage() {
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Link
-                href="/analyze"
+                href={`/analyze?prefill=${encodeURIComponent(result.name)}&mode=operator&execution_tier=${executionTier}`}
                 className="block w-full rounded-xl border border-cyan-400/30 bg-cyan-500/10 hover:bg-cyan-500/20 px-6 py-4 text-center text-sm font-semibold text-cyan-400 transition"
               >
                 ⚡ Run Full AI Campaign Analysis →
               </Link>
               <Link
-                href={`/skills?skill=ad-campaign`}
+                href={`/skills?skill=ad-campaign&execution_tier=${executionTier}`}
                 className="block w-full rounded-xl border border-purple-400/30 bg-purple-500/10 hover:bg-purple-500/20 px-6 py-4 text-center text-sm font-semibold text-purple-400 transition"
               >
                 🎯 Build an Ad Campaign →

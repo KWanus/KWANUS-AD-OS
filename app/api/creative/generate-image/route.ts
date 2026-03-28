@@ -10,6 +10,13 @@ const RATIO_TO_SIZE: Record<string, "1024x1024" | "1024x1792" | "1792x1024"> = {
   "16:9": "1792x1024",
 };
 
+function buildCreativePrompt(prompt: string, executionTier: "core" | "elite") {
+  if (executionTier === "elite") {
+    return `Create a premium direct-response advertising image with category-leading visual polish, stronger product clarity, richer trust cues, sharper composition, better emotional pull, and conversion-first framing.\n\nOriginal brief:\n${prompt}`;
+  }
+  return `Create a clean, effective performance-marketing image with strong clarity, practical commercial composition, and clear ad-ready execution.\n\nOriginal brief:\n${prompt}`;
+}
+
 export async function POST(req: NextRequest) {
   const { userId: clerkId } = await auth();
   if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
@@ -32,7 +39,9 @@ export async function POST(req: NextRequest) {
       aspectRatio?: "1:1" | "9:16" | "16:9";
       model?: "dall-e-3" | "dall-e-2";
       quality?: "standard" | "hd";
+      executionTier?: "core" | "elite";
     };
+    const executionTier = body.executionTier === "core" ? "core" : "elite";
 
     // Credit check
     try {
@@ -46,7 +55,7 @@ export async function POST(req: NextRequest) {
 
     const response = await client.images.generate({
       model: body.model ?? "dall-e-3",
-      prompt: body.prompt,
+      prompt: buildCreativePrompt(body.prompt, executionTier),
       n: 1,
       size,
       quality: body.quality ?? "standard",
@@ -60,7 +69,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "No image returned" }, { status: 500 });
     }
 
-    return NextResponse.json({ ok: true, url, revisedPrompt });
+    return NextResponse.json({ ok: true, url, revisedPrompt, executionTier });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Generation failed";
     console.error("Image generation error:", err);

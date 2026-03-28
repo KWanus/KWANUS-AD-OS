@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
+import { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -33,6 +34,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     const { auditId, businessName, niche, businessType, summary } = body;
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
 
     let audit = null;
     let contextBusinessName = businessName;
@@ -73,6 +75,11 @@ Niche: ${contextNiche}
 Business Type: ${contextBusinessType}
 ${contextSummary ? `Summary: ${contextSummary}` : ""}
 ${auditContext}
+Execution Tier: ${executionTier}
+
+${executionTier === "elite"
+  ? "Elite mode: write this like a killer premium agency proposal. Sharpen diagnosis, premium positioning, proof framing, package contrast, urgency, and close-rate logic."
+  : "Core mode: write a strong, persuasive agency proposal with clear structure, value framing, and practical next steps."}
 
 Create a proposal that closes. Use the proven agency proposal formula: pain → hope → proof → offer → urgency.
 Price packages at market rates for top-tier agencies in this niche. The Starter should be a no-brainer entry point.
@@ -120,7 +127,7 @@ Return this exact JSON structure:
       });
     }
 
-    return NextResponse.json({ ok: true, proposal: result, ...(audit ? { auditId } : {}) });
+    return NextResponse.json({ ok: true, proposal: result, executionTier, ...(audit ? { auditId } : {}) });
   } catch (err) {
     console.error("Proposal generate error:", err);
     return NextResponse.json({ ok: false, error: "Failed to generate proposal" }, { status: 500 });

@@ -4,6 +4,8 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 
+type ExecutionTier = "core" | "elite";
+
 export async function POST(req: NextRequest) {
   try {
     // Auth is optional for scans — allow unauthenticated usage
@@ -19,6 +21,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     const { mode, url, productInput } = body;
+    const executionTier: ExecutionTier = body?.executionTier === "core" ? "core" : "elite";
 
     if (!mode || (mode !== "business" && mode !== "product")) {
       return NextResponse.json(
@@ -42,14 +45,14 @@ export async function POST(req: NextRequest) {
           data: {
             mode: "business",
             title: result.url,
-            payloadJson: result as object,
+            payloadJson: { ...result, executionTier } as object,
           },
         });
       } catch (dbErr) {
         console.error("DB write failed (non-fatal):", dbErr);
       }
 
-      return NextResponse.json({ success: true, mode: "business", data: result });
+      return NextResponse.json({ success: true, mode: "business", data: result, executionTier });
     }
 
     if (mode === "product") {
@@ -61,14 +64,14 @@ export async function POST(req: NextRequest) {
           data: {
             mode: "product",
             title: result.name,
-            payloadJson: result as object,
+            payloadJson: { ...result, executionTier } as object,
           },
         });
       } catch (dbErr) {
         console.error("DB write failed (non-fatal):", dbErr);
       }
 
-      return NextResponse.json({ success: true, mode: "product", data: result });
+      return NextResponse.json({ success: true, mode: "product", data: result, executionTier });
     }
   } catch (err) {
     console.error("Scan error:", err);

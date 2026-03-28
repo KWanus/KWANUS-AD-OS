@@ -5,6 +5,28 @@ import { getOrCreateUser } from "@/lib/auth";
 import { computeHealthScore } from "@/lib/clients/healthScore";
 import { isDatabaseUnavailable } from "@/lib/db/runtime";
 
+type ExecutionTier = "core" | "elite";
+
+function normalizeExecutionTier(value: unknown): ExecutionTier {
+  return value === "core" ? "core" : "elite";
+}
+
+function mergeExecutionTier(customFields: unknown, executionTier: ExecutionTier) {
+  return {
+    ...(customFields && typeof customFields === "object" && !Array.isArray(customFields)
+      ? (customFields as Record<string, unknown>)
+      : {}),
+    executionTier,
+  };
+}
+
+function readExecutionTier(customFields: unknown): ExecutionTier {
+  if (!customFields || typeof customFields !== "object" || Array.isArray(customFields)) {
+    return "elite";
+  }
+  return normalizeExecutionTier((customFields as Record<string, unknown>).executionTier);
+}
+
 export async function GET(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -24,7 +46,13 @@ export async function GET(
       },
     });
     if (!client) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
-    return NextResponse.json({ ok: true, client });
+    return NextResponse.json({
+      ok: true,
+      client: {
+        ...client,
+        executionTier: readExecutionTier(client.customFields),
+      },
+    });
   } catch (err) {
     console.error("Client GET:", err);
     if (isDatabaseUnavailable(err)) {
@@ -58,7 +86,10 @@ export async function PATCH(
       notes?: string;
       priority?: string;
       lastContactAt?: string | null;
+      executionTier?: ExecutionTier;
     };
+
+    const executionTier = body.executionTier ? normalizeExecutionTier(body.executionTier) : undefined;
 
     // If stage is changing, log it
     const existing = await prisma.client.findFirst({ where: { id, userId: user.id } });
@@ -91,6 +122,7 @@ export async function PATCH(
         ...(body.notes !== undefined && { notes: body.notes || null }),
         ...(body.priority !== undefined && { priority: body.priority }),
         ...(body.lastContactAt !== undefined && { lastContactAt: newLastContact }),
+        ...(executionTier !== undefined && { customFields: mergeExecutionTier(existing.customFields, executionTier) }),
         healthScore: score,
         healthStatus: status,
       },
@@ -109,7 +141,13 @@ export async function PATCH(
       });
     }
 
-    return NextResponse.json({ ok: true, client });
+    return NextResponse.json({
+      ok: true,
+      client: {
+        ...client,
+        executionTier: executionTier ?? readExecutionTier(client.customFields),
+      },
+    });
   } catch (err) {
     console.error("Client PATCH:", err);
     return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });

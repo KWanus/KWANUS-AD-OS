@@ -31,6 +31,7 @@ interface Client {
   healthStatus: "green" | "yellow" | "red";
   lastContactAt?: string;
   createdAt: string;
+  executionTier?: "core" | "elite";
 }
 
 // ---------------------------------------------------------------------------
@@ -193,6 +194,11 @@ function RecentlyAdded({ clients }: { clients: Client[] }) {
                 <p className="text-xs font-bold text-white/70 group-hover:text-white transition truncate">{client.name}</p>
                 {client.company && <p className="text-[10px] text-white/25 truncate">{client.company}</p>}
               </div>
+              <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${
+                client.executionTier === "core" ? "text-white/25" : "text-cyan-300/70"
+              }`}>
+                {client.executionTier ?? "elite"}
+              </span>
               <span className={`text-[10px] font-bold ${STAGE_COLORS_MAP[client.pipelineStage] ?? "text-white/30"}`}>
                 {client.pipelineStage}
               </span>
@@ -241,6 +247,7 @@ export default function ClientDashboardPage() {
     .filter((c) => c.pipelineStage === "won")
     .reduce((s, c) => s + (c.dealValue ?? 0), 0);
   const avgHealth = total > 0 ? Math.round(clients.reduce((s, c) => s + c.healthScore, 0) / total) : 0;
+  const eliteClients = clients.filter((c) => (c.executionTier ?? "elite") === "elite").length;
 
   // Overdue follow-ups (last contact > 14 days or never)
   const overdueFollowUps = clients.filter((c) => {
@@ -289,7 +296,7 @@ export default function ClientDashboardPage() {
             <MetricCard label="Avg Health" value={`${avgHealth}/100`} icon={Activity} color="text-cyan-400" />
             <MetricCard label="Need Follow-up" value={overdueFollowUps.length} icon={Clock} color="text-amber-400" sub="No contact in 14+ days" />
             <MetricCard label="Never Contacted" value={neverContacted.length} icon={AlertTriangle} color="text-red-400/80" />
-            <MetricCard label="Health: Green" value={clients.filter((c) => c.healthStatus === "green").length} icon={BarChart2} color="text-green-400" />
+            <MetricCard label="Elite Lane" value={eliteClients} icon={BarChart2} color="text-green-400" />
           </div>
 
           {/* AI Insight panel */}

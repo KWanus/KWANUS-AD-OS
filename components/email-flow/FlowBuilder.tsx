@@ -54,12 +54,13 @@ import NodeEditor from "@/components/email-flow/NodeEditor";
 // ---------------------------------------------------------------------------
 
 type FlowStatus = "draft" | "active" | "paused";
+type ExecutionTier = "core" | "elite";
 
 interface FlowData {
   id: string;
   name: string;
   trigger: string;
-  triggerConfig?: Record<string, unknown>;
+  triggerConfig?: Record<string, unknown> & { executionTier?: ExecutionTier };
   nodes: Node[];
   edges: Edge[];
   status: FlowStatus;
@@ -231,6 +232,7 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
 
   const [selectedNode, setSelectedNode] = useState<Node<AnyRecord> | null>(null);
   const [businessProfile, setBusinessProfile] = useState<BusinessProfileSummary | null>(null);
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
   const [saveState, setSaveState] = useState<"idle" | "saving" | "saved">("idle");
   const [loading, setLoading] = useState(true);
   const [editingName, setEditingName] = useState(false);
@@ -250,6 +252,7 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
         if (data.ok && data.flow) {
           const f = data.flow;
           setFlowMeta({ id: f.id, name: f.name, trigger: f.trigger, triggerConfig: f.triggerConfig, status: f.status, tags: f.tags });
+          setExecutionTier(f.triggerConfig?.executionTier === "core" ? "core" : "elite");
 
           const loadedNodes: Node<AnyRecord>[] = Array.isArray(f.nodes)
             ? (f.nodes as Node<AnyRecord>[])
@@ -323,6 +326,10 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
         body: JSON.stringify({
           name: meta.name,
           status: meta.status,
+          triggerConfig: {
+            ...(meta.triggerConfig ?? {}),
+            executionTier,
+          },
           nodes: saveNodes,
           edges: saveEdges,
         }),
@@ -496,6 +503,19 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
     })();
   }
 
+  function handleExecutionTierChange(tier: ExecutionTier) {
+    setExecutionTier(tier);
+    const updated = {
+      ...flowMeta,
+      triggerConfig: {
+        ...(flowMeta.triggerConfig ?? {}),
+        executionTier: tier,
+      },
+    };
+    setFlowMeta(updated);
+    scheduleSave(nodes as Node<AnyRecord>[], edges, updated);
+  }
+
   // -------------------------------------------------------------------------
   // Nodes change handler — sync with auto-save
   // -------------------------------------------------------------------------
@@ -605,6 +625,48 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
                 {flowMeta.trigger.replace(/_/g, " ")}
               </p>
             </div>
+          </div>
+        </div>
+
+        <div className="px-4 py-3 border-b border-white/[0.06]">
+          <p className="text-[10px] font-black uppercase tracking-widest text-white/25 mb-2">Execution Lane</p>
+          <div className="grid grid-cols-1 gap-2">
+            {[
+              {
+                id: "core" as const,
+                label: "Core",
+                description: "Clean automations with practical copy and fast execution.",
+              },
+              {
+                id: "elite" as const,
+                label: "Elite",
+                description: "Sharper lifecycle framing with stronger persuasion and premium polish.",
+              },
+            ].map((tier) => {
+              const active = executionTier === tier.id;
+              return (
+                <button
+                  key={tier.id}
+                  type="button"
+                  onClick={() => handleExecutionTierChange(tier.id)}
+                  className={`rounded-2xl border p-3 text-left transition-all ${
+                    active
+                      ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                      : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
+                  }`}
+                >
+                  <div className="flex items-center justify-between gap-3">
+                    <span className={`text-sm font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
+                    <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+                      {tier.id}
+                    </span>
+                  </div>
+                  <p className={`mt-2 text-[11px] leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+                    {tier.description}
+                  </p>
+                </button>
+              );
+            })}
           </div>
         </div>
 

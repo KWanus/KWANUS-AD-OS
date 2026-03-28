@@ -17,6 +17,7 @@ const KonvaCanvas = dynamic(() => import("./KonvaCanvas"), { ssr: false });
 // ── Types ─────────────────────────────────────────────────────────────────────
 
 type StudioMode = "storyboard" | "image" | "video" | "prompts";
+type ExecutionTier = "core" | "elite";
 
 export interface StudioBrief {
   id: string;
@@ -34,6 +35,7 @@ interface CreativeStudioProps {
   isOpen: boolean;
   onClose: () => void;
   brief: StudioBrief;
+  executionTier?: ExecutionTier;
 }
 
 type AdFormat = { id: string; label: string; w: number; h: number; ratio: string };
@@ -101,17 +103,26 @@ type PromptTool = typeof PROMPT_TOOLS[number]["id"];
 
 function uid() { return Math.random().toString(36).slice(2); }
 
-function genPrompt(scene: StudioBrief["scenes"][0], kit: StudioBrief["productionKit"], tool: PromptTool, platform: string): string {
+function genPrompt(
+  scene: StudioBrief["scenes"][0],
+  kit: StudioBrief["productionKit"],
+  tool: PromptTool,
+  platform: string,
+  executionTier: ExecutionTier
+): string {
   const ar = (platform === "TikTok" || platform.includes("Story")) ? "9:16" : platform === "Cinematic" ? "16:9" : "1:1";
+  const qualityTail = executionTier === "elite"
+    ? "premium direct-response campaign quality, sharper product focus, stronger buyer emotion, conversion-first composition"
+    : "strong performance-marketing creative, clear focal point, practical ad-ready composition";
   switch (tool) {
     case "runway":
-      return `${scene.shotType.toLowerCase().includes("wide") ? "wide establishing shot" : scene.shotType.toLowerCase().includes("close") ? "extreme close-up" : "smooth dolly push"}, ${scene.visual.toLowerCase()}, ${kit.lighting.toLowerCase()} lighting, ${kit.colorGrade.toLowerCase()} color grade, 4K cinematic, 24fps`;
+      return `${scene.shotType.toLowerCase().includes("wide") ? "wide establishing shot" : scene.shotType.toLowerCase().includes("close") ? "extreme close-up" : "smooth dolly push"}, ${scene.visual.toLowerCase()}, ${kit.lighting.toLowerCase()} lighting, ${kit.colorGrade.toLowerCase()} color grade, ${qualityTail}, 4K cinematic, 24fps`;
     case "pika":
-      return `${scene.visual}. Camera: ${scene.shotType}. Lighting: ${kit.lighting}. Style: ${kit.colorGrade}. Motion: subtle natural. Quality: ultra HD.`;
+      return `${scene.visual}. Camera: ${scene.shotType}. Lighting: ${kit.lighting}. Style: ${kit.colorGrade}. Motion: subtle natural. Quality: ultra HD. Direction: ${qualityTail}.`;
     case "midjourney":
-      return `${scene.visual}, ${kit.casting}, ${kit.lighting} lighting, ${kit.colorGrade} color grade, ${kit.location}, ultra-realistic commercial photography, 8K --ar ${ar} --style raw --q 2 --v 6.1`;
+      return `${scene.visual}, ${kit.casting}, ${kit.lighting} lighting, ${kit.colorGrade} color grade, ${kit.location}, ${qualityTail}, ultra-realistic commercial photography, 8K --ar ${ar} --style raw --q 2 --v 6.1`;
     case "dalle":
-      return `A high-end advertising photograph: ${scene.visual}. Setting: ${kit.location}. ${kit.lighting} professional lighting. ${kit.colorGrade} color treatment. Cinematic commercial photography, 8K, award-winning campaign quality.`;
+      return `A high-end advertising photograph: ${scene.visual}. Setting: ${kit.location}. ${kit.lighting} professional lighting. ${kit.colorGrade} color treatment. ${qualityTail}. Cinematic commercial photography, 8K, award-winning campaign quality.`;
   }
 }
 
@@ -128,13 +139,16 @@ function genCaptionLayer(text: string, w: number, h: number): CanvasLayer {
   };
 }
 
-function buildImagePrompt(brief: StudioBrief): string {
+function buildImagePrompt(brief: StudioBrief, executionTier: ExecutionTier): string {
   const ia = brief.imageAd;
   const kit = brief.productionKit;
+  const qualityTail = executionTier === "elite"
+    ? "Make it feel premium, category-leading, trust-rich, and built to win cold traffic."
+    : "Make it feel strong, clean, and immediately usable in a paid ad.";
   if (ia) {
-    return `${ia.visualDirection}. Professional advertising image for ${brief.platform}. ${kit.lighting} lighting. ${kit.colorGrade} color treatment. Commercial photography quality, 8K resolution. Include compelling headline: "${ia.headline}"`;
+    return `${ia.visualDirection}. Professional advertising image for ${brief.platform}. ${kit.lighting} lighting. ${kit.colorGrade} color treatment. Commercial photography quality, 8K resolution. ${qualityTail} Include compelling headline: "${ia.headline}"`;
   }
-  return `${brief.concept}. ${kit.lighting} lighting, ${kit.colorGrade} color grade, ${kit.location}, commercial advertising photography, 8K, ultra-detailed.`;
+  return `${brief.concept}. ${kit.lighting} lighting, ${kit.colorGrade} color grade, ${kit.location}, commercial advertising photography, 8K, ultra-detailed. ${qualityTail}`;
 }
 
 // ── CopyBtn ───────────────────────────────────────────────────────────────────
@@ -154,9 +168,16 @@ function CopyBtn({ text, label = "Copy" }: { text: string; label?: string }) {
 
 // ── Main Studio ───────────────────────────────────────────────────────────────
 
-export default function CreativeStudio({ isOpen, onClose, brief }: CreativeStudioProps) {
+export default function CreativeStudio({ isOpen, onClose, brief, executionTier: executionTierProp }: CreativeStudioProps) {
   const [mode, setMode] = useState<StudioMode>("storyboard");
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>(executionTierProp === "core" ? "core" : "elite");
   const theme = THEMES[brief.platform] ?? THEMES.Static;
+
+  useEffect(() => {
+    if (executionTierProp) {
+      setExecutionTier(executionTierProp === "core" ? "core" : "elite");
+    }
+  }, [executionTierProp]);
 
   if (!isOpen) return null;
 
@@ -201,6 +222,23 @@ export default function CreativeStudio({ isOpen, onClose, brief }: CreativeStudi
         </div>
 
         <div className="flex items-center gap-2 w-64 shrink-0 justify-end">
+          <div className="flex items-center gap-1 rounded-xl border border-white/[0.07] bg-white/[0.04] p-1">
+            {(["core", "elite"] as const).map((tier) => {
+              const active = executionTier === tier;
+              return (
+                <button
+                  key={tier}
+                  onClick={() => setExecutionTier(tier)}
+                  className="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-[0.18em] transition"
+                  style={active
+                    ? { background: `linear-gradient(135deg,${theme.from},${theme.to})`, color: "#050a14" }
+                    : { color: "rgba(255,255,255,0.4)" }}
+                >
+                  {tier}
+                </button>
+              );
+            })}
+          </div>
           <span className="text-[10px] text-white/15 font-mono">{brief.duration}</span>
           <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-white/8 text-white/25 hover:text-white transition">
             <X className="w-5 h-5" />
@@ -210,10 +248,10 @@ export default function CreativeStudio({ isOpen, onClose, brief }: CreativeStudi
 
       {/* ── Content ── */}
       <main className="relative z-10 flex-1 overflow-hidden">
-        {mode === "storyboard" && <StoryboardMode brief={brief} theme={theme} />}
-        {mode === "image" && <ImageStudio brief={brief} theme={theme} />}
-        {mode === "video" && <VideoLab brief={brief} theme={theme} />}
-        {mode === "prompts" && <PromptLab brief={brief} theme={theme} />}
+        {mode === "storyboard" && <StoryboardMode brief={brief} theme={theme} executionTier={executionTier} />}
+        {mode === "image" && <ImageStudio brief={brief} theme={theme} executionTier={executionTier} />}
+        {mode === "video" && <VideoLab brief={brief} theme={theme} executionTier={executionTier} />}
+        {mode === "prompts" && <PromptLab brief={brief} theme={theme} executionTier={executionTier} />}
       </main>
     </div>
   );
@@ -223,7 +261,7 @@ export default function CreativeStudio({ isOpen, onClose, brief }: CreativeStudi
 // STORYBOARD MODE
 // ─────────────────────────────────────────────────────────────────────────────
 
-function StoryboardMode({ brief, theme }: { brief: StudioBrief; theme: { from: string; to: string } }) {
+function StoryboardMode({ brief, theme, executionTier }: { brief: StudioBrief; theme: { from: string; to: string }; executionTier: ExecutionTier }) {
   const [active, setActive] = useState(0);
   const scene = brief.scenes[active];
 
@@ -304,8 +342,8 @@ function StoryboardMode({ brief, theme }: { brief: StudioBrief; theme: { from: s
               {(["runway", "midjourney"] as PromptTool[]).map(tool => (
                 <div key={tool} className="flex items-start gap-3">
                   <span className="text-[9px] font-black uppercase text-white/15 w-16 pt-0.5 shrink-0">{tool}</span>
-                  <p className="text-[11px] text-white/45 flex-1 leading-relaxed font-mono">{genPrompt(scene, brief.productionKit, tool, brief.platform)}</p>
-                  <CopyBtn text={genPrompt(scene, brief.productionKit, tool, brief.platform)} />
+                  <p className="text-[11px] text-white/45 flex-1 leading-relaxed font-mono">{genPrompt(scene, brief.productionKit, tool, brief.platform, executionTier)}</p>
+                  <CopyBtn text={genPrompt(scene, brief.productionKit, tool, brief.platform, executionTier)} />
                 </div>
               ))}
             </div>
@@ -342,17 +380,21 @@ function StoryboardMode({ brief, theme }: { brief: StudioBrief; theme: { from: s
 // IMAGE STUDIO — Real Konva canvas editor + AI generation
 // ─────────────────────────────────────────────────────────────────────────────
 
-function ImageStudio({ brief, theme }: { brief: StudioBrief; theme: { from: string; to: string } }) {
+function ImageStudio({ brief, theme, executionTier }: { brief: StudioBrief; theme: { from: string; to: string }; executionTier: ExecutionTier }) {
   const [fmt, setFmt] = useState(AD_FORMATS[0]);
   const [selectedId, setSelectedId] = useState<string | null>(null);
   const [bg, setBg] = useState(BG_PRESETS[0]);
   const [generating, setGenerating] = useState(false);
   const [genError, setGenError] = useState("");
-  const [customPrompt, setCustomPrompt] = useState(() => buildImagePrompt(brief));
+  const [customPrompt, setCustomPrompt] = useState(() => buildImagePrompt(brief, executionTier));
   const [showPromptEdit, setShowPromptEdit] = useState(false);
   const [downloading, setDownloading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [saveOk, setSaveOk] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    setCustomPrompt(buildImagePrompt(brief, executionTier));
+  }, [brief, executionTier]);
 
   // Canvas state
   const [canvas, setCanvas] = useState<CanvasState>(() => {
@@ -468,7 +510,7 @@ function ImageStudio({ brief, theme }: { brief: StudioBrief; theme: { from: stri
       const res = await fetch("/api/creative/generate-image", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: customPrompt, aspectRatio: ar }),
+        body: JSON.stringify({ prompt: customPrompt, aspectRatio: ar, executionTier }),
       });
       const data = await res.json() as { ok: boolean; url?: string; error?: string; message?: string };
       if (!data.ok) {
@@ -494,14 +536,16 @@ function ImageStudio({ brief, theme }: { brief: StudioBrief; theme: { from: stri
     setSaving(true);
     setSaveOk(null);
     try {
+      const outputUrl = canvas.layers.find((layer) => layer.type === "image")?.src ?? undefined;
       const res = await fetch("/api/creative/save", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           name: `Image Ad — ${brief.title}`,
           type: "image",
-          state: canvas,
+          state: { ...canvas, executionTier },
           campaignId: null,
+          outputUrl,
         }),
       });
       const data = (await res.json()) as { ok: boolean };
@@ -575,6 +619,13 @@ function ImageStudio({ brief, theme }: { brief: StudioBrief; theme: { from: stri
               className="flex-1 py-1.5 rounded-lg border border-white/[0.07] text-[10px] text-white/35 hover:text-white/55 transition">
               {showPromptEdit ? "Hide prompt" : "Edit prompt"}
             </button>
+            <div className={`px-3 py-1.5 rounded-lg border text-[10px] font-black uppercase tracking-[0.18em] ${
+              executionTier === "elite"
+                ? "border-cyan-400/30 bg-cyan-500/10 text-cyan-300"
+                : "border-white/[0.07] bg-white/[0.04] text-white/45"
+            }`}>
+              {executionTier}
+            </div>
           </div>
           {genError && genError.includes("OPENAI_API_KEY") ? (
             <div className="rounded-lg border border-yellow-500/20 bg-yellow-500/5 p-3 text-[10px] text-yellow-300/70 leading-relaxed">
@@ -586,7 +637,7 @@ function ImageStudio({ brief, theme }: { brief: StudioBrief; theme: { from: stri
           <button onClick={generateImage} disabled={generating}
             className="w-full py-2.5 rounded-xl font-black text-[11px] uppercase tracking-widest text-[#050a14] flex items-center justify-center gap-2 disabled:opacity-60 transition"
             style={{ background: `linear-gradient(135deg,${theme.from},${theme.to})` }}>
-            {generating ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Generating...</> : <><Sparkles className="w-3.5 h-3.5" /> Generate Image</>}
+            {generating ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Generating...</> : <><Sparkles className="w-3.5 h-3.5" /> Generate {executionTier === "elite" ? "Elite" : "Core"} Image</>}
           </button>
         </div>
 
@@ -778,14 +829,28 @@ function ImageStudio({ brief, theme }: { brief: StudioBrief; theme: { from: stri
 // VIDEO LAB — Per-scene AI video generation with Runway
 // ─────────────────────────────────────────────────────────────────────────────
 
-function VideoLab({ brief, theme }: { brief: StudioBrief; theme: { from: string; to: string } }) {
+function VideoLab({ brief, theme, executionTier }: { brief: StudioBrief; theme: { from: string; to: string }; executionTier: ExecutionTier }) {
   const [scenes, setScenes] = useState(brief.scenes);
   const [videoJobs, setVideoJobs] = useState<SceneVideoState[]>(() =>
     brief.scenes.map(s => ({
       jobId: null, status: "idle" as VideoJobStatus, videoUrl: null, progress: 0,
-      prompt: genPrompt(s, brief.productionKit, "runway", brief.platform),
+      prompt: genPrompt(s, brief.productionKit, "runway", brief.platform, executionTier),
     }))
   );
+
+  useEffect(() => {
+    setVideoJobs(brief.scenes.map((s, index) => {
+      const existing = videoJobs[index];
+      return {
+        jobId: existing?.jobId ?? null,
+        status: existing?.status ?? "idle",
+        videoUrl: existing?.videoUrl ?? null,
+        progress: existing?.progress ?? 0,
+        prompt: existing?.jobId ? existing.prompt : genPrompt(s, brief.productionKit, "runway", brief.platform, executionTier),
+      };
+    }));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [brief, executionTier]);
 
   async function generateScene(i: number) {
     setVideoJobs(prev => prev.map((j, idx) => idx === i ? { ...j, status: "pending" } : j));
@@ -793,7 +858,7 @@ function VideoLab({ brief, theme }: { brief: StudioBrief; theme: { from: string;
       const res = await fetch("/api/creative/generate-video", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt: videoJobs[i].prompt, duration: 5, ratio: "768:1344" }),
+        body: JSON.stringify({ prompt: videoJobs[i].prompt, duration: 5, ratio: "768:1344", executionTier }),
       });
       const data = await res.json() as { ok: boolean; jobId?: string; error?: string; message?: string };
       if (!data.ok || !data.jobId) {
@@ -843,7 +908,7 @@ function VideoLab({ brief, theme }: { brief: StudioBrief; theme: { from: string;
                 <div className="w-1 h-1 rounded-full bg-cyan-400" /> Auto-Captions
               </button>
               <button className="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase bg-white/5 text-white/40 border border-white/[0.07]">
-                Hook First
+                {executionTier === "elite" ? "Elite Framing" : "Hook First"}
               </button>
               <span className="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase text-[#050a14]" style={{ background: `linear-gradient(135deg,${theme.from},${theme.to})` }}>1080×1920</span>
             </div>
@@ -901,7 +966,7 @@ function VideoLab({ brief, theme }: { brief: StudioBrief; theme: { from: string;
                         ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Processing...</>
                         : job.status === "succeeded"
                           ? <><RefreshCw className="w-3.5 h-3.5" /> Regenerate</>
-                          : <><Video className="w-3.5 h-3.5" /> Generate with Runway</>}
+                          : <><Video className="w-3.5 h-3.5" /> Generate {executionTier === "elite" ? "Elite" : "Core"} Clip</>}
                     </button>
                   </div>
                 </div>
@@ -952,10 +1017,10 @@ function VideoLab({ brief, theme }: { brief: StudioBrief; theme: { from: string;
 // PROMPT LAB
 // ─────────────────────────────────────────────────────────────────────────────
 
-function PromptLab({ brief, theme }: { brief: StudioBrief; theme: { from: string; to: string } }) {
+function PromptLab({ brief, theme, executionTier }: { brief: StudioBrief; theme: { from: string; to: string }; executionTier: ExecutionTier }) {
   const [tool, setTool] = useState<PromptTool>("runway");
   const activeTool = PROMPT_TOOLS.find(t => t.id === tool)!;
-  const allPrompts = brief.scenes.map((s, i) => `// Scene ${i + 1} [${s.timestamp}]\n${genPrompt(s, brief.productionKit, tool, brief.platform)}`).join("\n\n");
+  const allPrompts = brief.scenes.map((s, i) => `// Scene ${i + 1} [${s.timestamp}]\n${genPrompt(s, brief.productionKit, tool, brief.platform, executionTier)}`).join("\n\n");
 
   return (
     <div className="flex h-full">
@@ -1037,10 +1102,10 @@ function PromptLab({ brief, theme }: { brief: StudioBrief; theme: { from: string
                 <span className="w-6 h-6 rounded-lg flex items-center justify-center font-black text-[10px] text-white" style={{ background: `${theme.from}22` }}>{i + 1}</span>
                 <span className="text-[10px] font-mono text-white/25">{scene.timestamp}</span>
                 <span className="text-[10px] uppercase font-bold text-white/15 tracking-widest flex-1">{scene.shotType}</span>
-                <CopyBtn text={genPrompt(scene, brief.productionKit, tool, brief.platform)} />
+                <CopyBtn text={genPrompt(scene, brief.productionKit, tool, brief.platform, executionTier)} />
               </div>
               <div className="p-4">
-                <p className="text-[11px] text-white/50 font-mono leading-relaxed bg-black/20 rounded-lg p-3">{genPrompt(scene, brief.productionKit, tool, brief.platform)}</p>
+                <p className="text-[11px] text-white/50 font-mono leading-relaxed bg-black/20 rounded-lg p-3">{genPrompt(scene, brief.productionKit, tool, brief.platform, executionTier)}</p>
                 <p className="text-[9px] text-white/20 mt-2 italic">From: {scene.visual.slice(0, 70)}…</p>
               </div>
             </div>

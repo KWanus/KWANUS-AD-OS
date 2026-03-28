@@ -35,9 +35,11 @@ export async function POST(
     }
 
     const input = await req.json() as Record<string, string>;
+    const executionTier = input.executionTier === "core" ? "core" : "elite";
     const profile = await prisma.businessProfile.findUnique({ where: { userId: user.id } });
     const enrichedInput: Record<string, string> = {
       ...input,
+      executionTier,
       ...(profile?.businessName && !input.business_name ? { business_name: profile.businessName } : {}),
       ...(profile?.businessName && !input.businessName ? { businessName: profile.businessName } : {}),
       ...(profile?.mainOffer && !input.offer ? { offer: profile.mainOffer } : {}),
