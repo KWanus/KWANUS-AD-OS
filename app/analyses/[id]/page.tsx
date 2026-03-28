@@ -441,14 +441,22 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
                 <h1 className="text-xl font-black text-white truncate">{analysis.title || analysis.inputUrl}</h1>
                 <VerdictBadge verdict={analysis.verdict} />
               </div>
-              <a
-                href={analysis.inputUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-sm text-cyan-400/60 hover:text-cyan-400 transition flex items-center gap-1 mb-3"
-              >
-                <ExternalLink className="w-3 h-3" /> {analysis.inputUrl}
-              </a>
+              <div className="flex items-center gap-3 mb-3">
+                <a
+                  href={analysis.inputUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-sm text-cyan-400/60 hover:text-cyan-400 transition flex items-center gap-1"
+                >
+                  <ExternalLink className="w-3 h-3" /> {analysis.inputUrl}
+                </a>
+                <Link
+                  href={`/scan?prefill=${encodeURIComponent(analysis.inputUrl)}`}
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.08] text-[10px] font-bold text-white/40 hover:text-white/70 hover:border-white/[0.15] transition"
+                >
+                  <Search className="w-2.5 h-2.5" /> Rescan
+                </Link>
+              </div>
               {analysis.summary && (
                 <p className="text-sm text-white/50 leading-relaxed max-w-2xl">{analysis.summary}</p>
               )}
