@@ -170,6 +170,14 @@ function AIAssistPanel({ client }: { client: Client }) {
     setExecutionTier(client.executionTier === "core" ? "core" : "elite");
   }, [client.executionTier]);
 
+  // Auto-run "next action" on first load
+  useEffect(() => {
+    if (!result && !loading) {
+      void run();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
   async function run() {
     setLoading(true);
     setError("");
