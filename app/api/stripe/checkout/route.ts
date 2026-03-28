@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getOrCreateUser } from "@/lib/auth";
+import { config } from "@/lib/config";
 
 export const CREDIT_BUNDLES = {
   starter: { credits: 100,  price: 900,   label: "Starter",  priceId: "starter" },
@@ -12,7 +13,7 @@ export const CREDIT_BUNDLES = {
 export type BundleKey = keyof typeof CREDIT_BUNDLES;
 
 export async function POST(req: NextRequest) {
-  const stripeKey = process.env.STRIPE_SECRET_KEY;
+  const stripeKey = config.stripeSecretKey;
   if (!stripeKey) {
     return NextResponse.json({ ok: false, error: "no_stripe_key" }, { status: 402 });
   }

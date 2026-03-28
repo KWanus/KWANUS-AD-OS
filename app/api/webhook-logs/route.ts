@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
 
     const source = req.nextUrl.searchParams.get("source") ?? "";
     const status = req.nextUrl.searchParams.get("status") ?? "";
-    const limit = Math.min(parseInt(req.nextUrl.searchParams.get("limit") ?? "50"), 100);
+    const limit = Math.min(parseInt(req.nextUrl.searchParams.get("limit") ?? "50", 10) || 50, 100);
 
     const where = {
       ...(source && { source }),

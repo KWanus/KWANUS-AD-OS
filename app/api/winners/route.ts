@@ -262,7 +262,7 @@ export async function GET(req: NextRequest) {
   const niche = searchParams.get("niche") ?? "";
   const platform = searchParams.get("platform") ?? "";
   const format = searchParams.get("format") ?? "";
-  const minScore = parseInt(searchParams.get("minScore") ?? "0");
+  const minScore = parseInt(searchParams.get("minScore") ?? "0", 10) || 0;
   const sortBy = searchParams.get("sortBy") ?? "score";
 
   let filtered = MOCK_WINNERS;

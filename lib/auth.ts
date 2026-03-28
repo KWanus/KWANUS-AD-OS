@@ -24,14 +24,29 @@ export async function getOrCreateUser() {
 
         if (!email) return null;
 
-        user = await prisma.user.create({
-            data: {
-                clerkId,
-                email,
-                name: name || null,
-                credits: 10, // Initial welcome credits
-            },
-        });
+        try {
+            user = await prisma.user.create({
+                data: {
+                    clerkId,
+                    email,
+                    name: name || null,
+                    credits: 10, // Initial welcome credits
+                },
+            });
+        } catch (err: unknown) {
+            // Handle race condition: two simultaneous requests can both hit findUnique→null
+            // then both attempt create, causing a unique constraint violation on clerkId.
+            // Recover gracefully by fetching the record that the other request created.
+            const isUniqueViolation =
+                err instanceof Error &&
+                (err.message.includes("P2002") || err.message.includes("unique constraint"));
+
+            if (isUniqueViolation) {
+                user = await prisma.user.findUnique({ where: { clerkId } });
+            } else {
+                throw err;
+            }
+        }
     }
 
     return user;

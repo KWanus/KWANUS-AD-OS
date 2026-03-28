@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { deductCredits, getOrCreateUser } from "@/lib/auth";
 import { auth } from "@clerk/nextjs/server";
+import { config } from "@/lib/config";
 
 // Supported aspect ratios mapped to OpenAI size params
 const RATIO_TO_SIZE: Record<string, "1024x1024" | "1024x1792" | "1792x1024"> = {
@@ -23,7 +24,7 @@ export async function POST(req: NextRequest) {
   const user = await getOrCreateUser();
   if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 
-  const apiKey = process.env.OPENAI_API_KEY;
+  const apiKey = config.openAiApiKey;
 
   if (!apiKey) {
     return NextResponse.json({

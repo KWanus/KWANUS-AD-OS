@@ -43,15 +43,29 @@ export async function POST(
       }
     }
 
-    const body = await req.json().catch(() => ({})) as {
+    const body = await req.json() as {
       pipelineStage?: string;
       dealValue?: number;
     };
 
+    const ALLOWED_STAGES = ["lead", "prospect", "proposal", "negotiation", "won", "lost"] as const;
+    const pipelineStage = ALLOWED_STAGES.includes(body.pipelineStage as never)
+      ? body.pipelineStage!
+      : "lead";
+
+    // Validate dealValue: must be a non-negative finite number if provided
+    const rawDeal = body.dealValue;
+    if (rawDeal !== undefined && rawDeal !== null) {
+      if (typeof rawDeal !== "number" || !isFinite(rawDeal) || rawDeal < 0) {
+        return NextResponse.json({ ok: false, error: "dealValue must be a non-negative number" }, { status: 400 });
+      }
+    }
+    const dealValue = rawDeal ?? undefined;
+
     const { score, status } = computeHealthScore({
       lastContactAt: new Date(),
-      pipelineStage: body.pipelineStage ?? "lead",
-      dealValue: body.dealValue,
+      pipelineStage,
+      dealValue,
       createdAt: new Date(),
     });
 
@@ -60,8 +74,8 @@ export async function POST(
         userId: user.id,
         name,
         email: contact.email,
-        pipelineStage: body.pipelineStage ?? "lead",
-        dealValue: body.dealValue ?? undefined,
+        pipelineStage,
+        dealValue,
         tags: ["converted-from-subscriber", ...(contact.tags as string[] ?? [])],
         healthScore: score,
         healthStatus: status,

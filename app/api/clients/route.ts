@@ -38,8 +38,8 @@ export async function GET(req: NextRequest) {
     const stage = searchParams.get("stage") ?? "";
     const health = searchParams.get("health") ?? "";
     const sortBy = searchParams.get("sortBy") ?? "updatedAt";
-    const page = parseInt(searchParams.get("page") ?? "1");
-    const limit = Math.min(parseInt(searchParams.get("limit") ?? "50"), 100);
+    const page  = parseInt(searchParams.get("page")  ?? "1",  10) || 1;
+    const limit = Math.min(parseInt(searchParams.get("limit") ?? "50", 10) || 50, 100);
 
     const where = {
       userId: user.id,

@@ -6,6 +6,7 @@ import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
 import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 import { AI_MODELS } from "@/lib/ai/models";
 import { checkRateLimit, RATE_LIMITS } from "@/lib/rateLimit";
+import { config } from "@/lib/config";
 
 const BODY_SIZE_LIMIT = 32 * 1024; // 32 KB
 
@@ -76,7 +77,7 @@ Respond ONLY with valid JSON in this exact format:
   "body": "..."
 }`;
 
-    const openaiKey = process.env.OPENAI_API_KEY;
+    const openaiKey = config.openAiApiKey;
     if (!openaiKey) {
       // Return a smart placeholder when no key configured
       const placeholders = getSmartPlaceholder(body.trigger ?? "custom", flowName, executionTier);

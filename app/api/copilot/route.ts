@@ -8,8 +8,9 @@ import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
 import { ARCHETYPES, type BusinessType, type SystemSlug } from "@/lib/archetypes";
 import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 import { AI_MODELS } from "@/lib/ai/models";
+import { config } from "@/lib/config";
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 
 // ─── Context builder ───────────────────────────────────────────────────────────
 
@@ -340,7 +341,7 @@ Rules:
 
 export async function POST(req: NextRequest) {
   try {
-    if (!process.env.ANTHROPIC_API_KEY) {
+    if (!config.anthropicApiKey) {
       return NextResponse.json(
         { ok: false, error: "AI service not configured. Please set ANTHROPIC_API_KEY in your environment." },
         { status: 503 }

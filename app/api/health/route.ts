@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { isAnthropicConfigured, isStripeConfigured, isEmailConfigured } from "@/lib/config";
 
 export const dynamic = "force-dynamic";
 
@@ -16,9 +17,9 @@ export async function GET() {
   }
 
   // Anthropic API check (key presence only — don't make a real call)
-  checks.anthropic = process.env.ANTHROPIC_API_KEY
+  checks.anthropic = isAnthropicConfigured()
     ? { status: "ok" }
-    : { status: "error", error: "ANTHROPIC_API_KEY not set" };
+    : { status: "error", error: "ANTHROPIC_API_KEY not set or is a placeholder" };
 
   // Clerk check (key presence)
   checks.clerk = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
@@ -26,12 +27,12 @@ export async function GET() {
     : { status: "error", error: "Clerk keys not set" };
 
   // Stripe check (key presence)
-  checks.stripe = process.env.STRIPE_SECRET_KEY
+  checks.stripe = isStripeConfigured()
     ? { status: "ok" }
-    : { status: "error", error: "STRIPE_SECRET_KEY not set" };
+    : { status: "error", error: "STRIPE_SECRET_KEY not set or is a placeholder" };
 
   // Resend check (key presence — optional)
-  checks.resend = process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== "re_REPLACE_ME"
+  checks.resend = isEmailConfigured()
     ? { status: "ok" }
     : { status: "error", error: "RESEND_API_KEY not configured (optional)" };
 

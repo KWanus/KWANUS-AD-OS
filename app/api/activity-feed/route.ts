@@ -25,7 +25,7 @@ export async function GET(req: NextRequest) {
     const user = await getOrCreateUser();
     if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 
-    const limit = Math.min(parseInt(req.nextUrl.searchParams.get("limit") ?? "20"), 50);
+    const limit = Math.min(parseInt(req.nextUrl.searchParams.get("limit") ?? "20", 10) || 20, 50);
 
     // Fetch recent items from multiple tables in parallel
     const [

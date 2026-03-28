@@ -4,8 +4,9 @@ import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
 import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 import { AI_MODELS } from "@/lib/ai/models";
+import { config } from "@/lib/config";
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 
 const GLOBAL_RULE = `You are the world's best affiliate marketing strategist inside Himalaya Agency OS.
 Return valid JSON only. No markdown. No commentary outside JSON.

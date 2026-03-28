@@ -1,15 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import Stripe from "stripe";
+import { config } from "@/lib/config";
 
 function getStripe() {
-    const stripeKey = process.env.STRIPE_SECRET_KEY;
+    const stripeKey = config.stripeSecretKey;
     if (!stripeKey) return null;
 
     return new Stripe(stripeKey);
 }
 
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+const webhookSecret = config.stripeWebhookSecret;
 
 export async function POST(req: NextRequest) {
     try {

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { Resend } from "resend";
+import { config } from "@/lib/config";
 
 export async function POST(
   req: NextRequest,
@@ -34,7 +35,7 @@ export async function POST(
       return NextResponse.json({ ok: false, error: "No email address for this lead. Add one manually." }, { status: 400 });
     }
 
-    const resendKey = user.resendApiKey ?? process.env.RESEND_API_KEY;
+    const resendKey = user.resendApiKey ?? config.resendApiKey;
     if (!resendKey || resendKey === "re_REPLACE_ME") {
       return NextResponse.json({ ok: false, error: "Configure your Resend API key in Settings first." }, { status: 400 });
     }

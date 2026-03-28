@@ -5,8 +5,9 @@ import Anthropic from "@anthropic-ai/sdk";
 import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
 import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 import { AI_MODELS } from "@/lib/ai/models";
+import { config } from "@/lib/config";
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 
 const GLOBAL_RULE = `You are a structured business-generation engine inside Himalaya Agency OS.
 Your job is to analyze businesses in any niche and generate useful, conversion-focused outputs.

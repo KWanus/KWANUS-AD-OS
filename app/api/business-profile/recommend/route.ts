@@ -7,8 +7,9 @@ import { prisma } from "@/lib/prisma";
 import { ARCHETYPES, type BusinessType } from "@/lib/archetypes";
 import { buildFallbackRecommendation, type Recommendation } from "@/lib/archetypes/recommendation";
 import { AI_MODELS } from "@/lib/ai/models";
+import { config } from "@/lib/config";
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 
 type RecommendBody = {
   businessType?: BusinessType;
@@ -61,7 +62,7 @@ export async function POST(req: NextRequest) {
 
     let recommendation = buildFallbackRecommendation(businessType, niche, goal, stage);
 
-    if (process.env.ANTHROPIC_API_KEY) {
+    if (config.anthropicApiKey) {
       try {
         const prompt = `You are a world-class business strategist. Based on this business profile:
 - Business Type: ${businessType} - ${archetype.label}

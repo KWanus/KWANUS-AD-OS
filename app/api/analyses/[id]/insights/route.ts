@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { AI_MODELS } from "@/lib/ai/models";
+import { config } from "@/lib/config";
 
 export async function POST(
   _req: NextRequest,
@@ -92,8 +93,8 @@ Provide a JSON response with this exact structure:
 
 Be specific to THIS offer — no generic advice. Reference actual signals from the data.`;
 
-    const anthropicKey = process.env.ANTHROPIC_API_KEY;
-    const openaiKey = process.env.OPENAI_API_KEY;
+    const anthropicKey = config.anthropicApiKey;
+    const openaiKey = config.openAiApiKey;
 
     if (anthropicKey) {
       const response = await fetch("https://api.anthropic.com/v1/messages", {

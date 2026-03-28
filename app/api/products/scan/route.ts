@@ -5,8 +5,9 @@ import { fetchPage } from "@/src/logic/ad-os/fetchPage";
 import Anthropic from "@anthropic-ai/sdk";
 import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 import { AI_MODELS } from "@/lib/ai/models";
+import { config } from "@/lib/config";
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 
 type Platform = "clickbank" | "amazon" | "aliexpress" | "jvzoo" | "warriorplus" | "cj" | "custom" | "dropship";
 

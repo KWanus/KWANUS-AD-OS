@@ -3,9 +3,10 @@ import { prisma } from "@/lib/prisma";
 import Stripe from "stripe";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
+import { config } from "@/lib/config";
 
 function getStripe() {
-    const stripeKey = process.env.STRIPE_SECRET_KEY;
+    const stripeKey = config.stripeSecretKey;
     if (!stripeKey) return null;
 
     return new Stripe(stripeKey);

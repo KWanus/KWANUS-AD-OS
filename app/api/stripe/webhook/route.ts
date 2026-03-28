@@ -1,10 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { prisma } from "@/lib/prisma";
+import { config } from "@/lib/config";
 
 export async function POST(req: NextRequest) {
-  const stripeKey = process.env.STRIPE_SECRET_KEY;
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+  const stripeKey = config.stripeSecretKey;
+  const webhookSecret = config.stripeWebhookSecret;
 
   if (!stripeKey || !webhookSecret) {
     return NextResponse.json({ error: "Stripe not configured" }, { status: 400 });

@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { AI_MODELS } from "@/lib/ai/models";
+import { config } from "@/lib/config";
 
 type ExecutionTier = "core" | "elite";
 
@@ -102,8 +103,8 @@ Explain in 2–3 sentences: why this score, what risks it implies, what would im
     const prompt = prompts[body.action] ?? prompts.summarize;
 
     // Try Anthropic Claude first, fallback to OpenAI, fallback to smart local response
-    const anthropicKey = process.env.ANTHROPIC_API_KEY;
-    const openaiKey = process.env.OPENAI_API_KEY;
+    const anthropicKey = config.anthropicApiKey;
+    const openaiKey = config.openAiApiKey;
 
     if (anthropicKey) {
       const response = await fetch("https://api.anthropic.com/v1/messages", {
