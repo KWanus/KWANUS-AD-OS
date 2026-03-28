@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { toast } from "sonner";
 import Link from "next/link";
 import AppNav from "@/components/AppNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
@@ -494,8 +495,10 @@ export default function MySystemPage() {
       const data = await res.json() as { ok: boolean; profile?: Record<string, unknown> };
       if (!data.ok) throw new Error("Failed to save profile");
       setProfile(normalizeProfile(data.profile));
+      toast.success("Business profile saved");
     } catch {
       setError("We couldn't create your profile yet.");
+      toast.error("Failed to save profile");
     } finally {
       setSaving(false);
     }
@@ -518,8 +521,10 @@ export default function MySystemPage() {
       const data = await res.json() as { ok: boolean; profile?: Record<string, unknown> };
       if (!data.ok) throw new Error("Failed to update systems");
       setProfile(normalizeProfile(data.profile));
+      toast.success("System updated");
     } catch {
       setError("We couldn't update your system right now.");
+      toast.error("Failed to update system");
     } finally {
       setSaving(false);
     }
