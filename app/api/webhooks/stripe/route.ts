@@ -6,10 +6,7 @@ function getStripe() {
     const stripeKey = process.env.STRIPE_SECRET_KEY;
     if (!stripeKey) return null;
 
-    // @ts-ignore
-    return new Stripe(stripeKey, {
-        apiVersion: "2024-11-20.acacia" as any,
-    });
+    return new Stripe(stripeKey);
 }
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
