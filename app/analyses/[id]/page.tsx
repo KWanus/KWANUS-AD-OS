@@ -3,6 +3,7 @@
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import { format, formatDistanceToNow } from "date-fns";
+import { toast } from "sonner";
 import AppNav from "@/components/AppNav";
 import ScanSubNav from "@/components/ScanSubNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
@@ -456,6 +457,15 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
                 >
                   <Search className="w-2.5 h-2.5" /> Rescan
                 </Link>
+                <button
+                  onClick={() => {
+                    navigator.clipboard.writeText(window.location.href);
+                    toast.success("Report link copied");
+                  }}
+                  className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/[0.04] border border-white/[0.08] text-[10px] font-bold text-white/40 hover:text-white/70 hover:border-white/[0.15] transition"
+                >
+                  <Copy className="w-2.5 h-2.5" /> Share
+                </button>
               </div>
               {analysis.summary && (
                 <p className="text-sm text-white/50 leading-relaxed max-w-2xl">{analysis.summary}</p>
