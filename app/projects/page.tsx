@@ -64,6 +64,9 @@ export default function ProjectsPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
+  // Projects are now part of the Campaigns tab
+  useEffect(() => { router.replace("/campaigns"); }, [router]);
+
   useEffect(() => {
     async function loadProjects() {
       try {

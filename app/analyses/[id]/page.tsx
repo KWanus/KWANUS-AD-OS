@@ -4,6 +4,7 @@ import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import { format, formatDistanceToNow } from "date-fns";
 import AppNav from "@/components/AppNav";
+import ScanSubNav from "@/components/ScanSubNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import {
   ArrowLeft,
@@ -315,6 +316,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
     return (
       <div className="min-h-screen bg-[#050a14] text-white">
         <AppNav />
+        <ScanSubNav />
         <div className="flex items-center justify-center min-h-[50vh]">
           <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
         </div>
@@ -326,6 +328,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
     return (
       <div className="min-h-screen bg-[#050a14] text-white">
         <AppNav />
+        <ScanSubNav />
         <div className="mx-auto flex min-h-[50vh] max-w-3xl flex-col justify-center gap-4 px-4">
           <DatabaseFallbackNotice visible={databaseUnavailable} />
           <div className="flex flex-col items-center gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8">
