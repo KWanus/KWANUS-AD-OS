@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import { Zap, Check, Loader2, ChevronLeft, Crown, Sparkles, TrendingUp, Shield, Star } from "lucide-react";
+import AppNav from "@/components/AppNav";
 
 type BundleKey = "starter" | "growth" | "scale" | "pro";
 
@@ -182,6 +183,7 @@ function BillingContent() {
 
   return (
     <main className="min-h-screen bg-[#050a14] text-white flex flex-col">
+      <AppNav />
       {/* Background */}
       <div className="fixed inset-0 opacity-[0.025] pointer-events-none" style={{ backgroundImage: "radial-gradient(#fff 1px,transparent 1px)", backgroundSize: "28px 28px" }} />
       <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px] opacity-[0.06] blur-[100px] pointer-events-none" style={{ background: "linear-gradient(to bottom,#06b6d4,#8b5cf6)" }} />
