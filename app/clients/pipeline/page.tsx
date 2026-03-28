@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { toast } from "sonner";
 import {
   DndContext,
   DragEndEvent,
@@ -310,7 +311,8 @@ export default function PipelinePage() {
         body: JSON.stringify({ pipelineStage: targetStage }),
       });
     } catch {
-      // Rollback on error
+      // Rollback on error and notify
+      toast.error("Failed to move client — reverted");
       setClients((prev) =>
         prev.map((c) => (c.id === dragged.id ? { ...c, pipelineStage: dragged.pipelineStage } : c))
       );
