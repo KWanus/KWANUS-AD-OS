@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { isDatabaseUnavailable } from "@/lib/db/runtime";
+import { getTemplateById } from "@/templates/siteTemplates";
 
 function slugify(name: string) {
   return name
@@ -45,7 +46,7 @@ export async function POST(req: NextRequest) {
     const user = await getOrCreateUser();
     if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 
-    const body = await req.json() as { name: string; description?: string; template?: string; campaignId?: string };
+    const body = await req.json() as { name: string; description?: string; template?: string; campaignId?: string; templateId?: string };
     if (!body.name?.trim()) {
       return NextResponse.json({ ok: false, error: "Site name required" }, { status: 400 });
     }
@@ -65,7 +66,32 @@ export async function POST(req: NextRequest) {
       draft = await prisma.landingDraft.findFirst({ where: { campaignId: body.campaignId } });
     }
 
-    // Create site + home page in a transaction
+    // Resolve blocks — prefer templateId, then template type, then blank
+    let pageCreates;
+    const siteTemplate = body.templateId ? getTemplateById(body.templateId) : undefined;
+
+    if (siteTemplate) {
+      // Build all pages from the template
+      pageCreates = siteTemplate.pages.map((page, i) => ({
+        title: page.name,
+        slug: page.slug,
+        order: i,
+        blocks: page.blocks.map((b, j) => ({
+          id: `${b.type}-${j}`,
+          type: b.type,
+          props: b.props,
+        })),
+      }));
+    } else {
+      pageCreates = [{
+        title: "Home",
+        slug: "home",
+        order: 0,
+        blocks: getStarterBlocks(body.template ?? "blank", body.name.trim(), draft),
+      }];
+    }
+
+    // Create site + pages in a transaction
     const site = await prisma.site.create({
       data: {
         userId: user.id,
@@ -73,12 +99,7 @@ export async function POST(req: NextRequest) {
         slug,
         description: body.description?.trim() || null,
         pages: {
-          create: {
-            title: "Home",
-            slug: "home",
-            order: 0,
-            blocks: getStarterBlocks(body.template ?? "blank", body.name.trim(), draft),
-          },
+          create: pageCreates,
         },
       },
       include: {

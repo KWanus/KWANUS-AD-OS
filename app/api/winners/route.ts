@@ -256,6 +256,52 @@ const MOCK_WINNERS: WinnerAd[] = [
   },
 ];
 
-export async function GET(_req: NextRequest) {
-  return NextResponse.json({ ok: true, winners: MOCK_WINNERS });
+export async function GET(req: NextRequest) {
+  const { searchParams } = req.nextUrl;
+  const search = searchParams.get("search")?.toLowerCase() ?? "";
+  const niche = searchParams.get("niche") ?? "";
+  const platform = searchParams.get("platform") ?? "";
+  const format = searchParams.get("format") ?? "";
+  const minScore = parseInt(searchParams.get("minScore") ?? "0");
+  const sortBy = searchParams.get("sortBy") ?? "score";
+
+  let filtered = MOCK_WINNERS;
+
+  if (search) {
+    filtered = filtered.filter(w =>
+      w.title.toLowerCase().includes(search) ||
+      w.hook.toLowerCase().includes(search) ||
+      w.niche.toLowerCase().includes(search)
+    );
+  }
+  if (niche) filtered = filtered.filter(w => w.niche === niche);
+  if (platform) filtered = filtered.filter(w => w.platform === platform);
+  if (format) filtered = filtered.filter(w => w.format === format);
+  if (minScore > 0) filtered = filtered.filter(w => w.score >= minScore);
+
+  if (sortBy === "roas") {
+    filtered.sort((a, b) => b.metrics.roas - a.metrics.roas);
+  } else if (sortBy === "views") {
+    filtered.sort((a, b) => parseViewCount(b.metrics.views) - parseViewCount(a.metrics.views));
+  } else {
+    filtered.sort((a, b) => b.score - a.score);
+  }
+
+  const niches = [...new Set(MOCK_WINNERS.map(w => w.niche))];
+  const platforms = [...new Set(MOCK_WINNERS.map(w => w.platform))];
+  const formats = [...new Set(MOCK_WINNERS.map(w => w.format))];
+
+  return NextResponse.json({
+    ok: true,
+    winners: filtered,
+    total: filtered.length,
+    filters: { niches, platforms, formats },
+  });
+}
+
+function parseViewCount(views: string): number {
+  const num = parseFloat(views.replace(/[^0-9.]/g, ""));
+  if (views.includes("M")) return num * 1_000_000;
+  if (views.includes("k") || views.includes("K")) return num * 1_000;
+  return num;
 }
