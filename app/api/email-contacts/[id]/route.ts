@@ -45,8 +45,8 @@ export async function PATCH(
       select: { tags: true },
     });
     if (!existing) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
-    const contact = await prisma.emailContact.update({
-      where: { id },
+    const result = await prisma.emailContact.updateMany({
+      where: { id, userId: user.id },
       data: {
         ...(body.firstName !== undefined && { firstName: body.firstName }),
         ...(body.lastName !== undefined && { lastName: body.lastName }),
@@ -57,14 +57,8 @@ export async function PATCH(
         ...(body.status !== undefined && { status: body.status }),
       },
     });
-    return NextResponse.json({
-      ok: true,
-      contact: {
-        ...contact,
-        tags: visibleTags(contact.tags),
-        executionTier: parseExecutionTier(contact.tags),
-      },
-    });
+    if (result.count === 0) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
+    return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Contact PATCH:", err);
     return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });

@@ -25,7 +25,17 @@ export async function POST(req: NextRequest) {
         }
 
         const body = await req.json();
-        const { siteId, productId, returnUrl } = body;
+        const { siteId, productId } = body;
+        // Validate returnUrl to prevent open redirects — must be an https URL or omitted
+        let returnUrl: string | undefined;
+        if (body.returnUrl) {
+          try {
+            const parsed = new URL(String(body.returnUrl));
+            if (parsed.protocol === "https:") returnUrl = parsed.href;
+          } catch {
+            // invalid URL — ignore and fall back to default
+          }
+        }
 
         if (!siteId || !productId) {
             return NextResponse.json({ ok: false, error: "Missing required fields" }, { status: 400 });

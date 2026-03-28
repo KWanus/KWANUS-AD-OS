@@ -38,10 +38,6 @@ export async function PATCH(
     const user = await getOrCreateUser();
     if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 
-    // Verify ownership
-    const existing = await prisma.emailFlow.findFirst({ where: { id, userId: user.id } });
-    if (!existing) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
-
     const body = await req.json() as {
       name?: string;
       trigger?: string;
@@ -52,6 +48,11 @@ export async function PATCH(
       tags?: string[];
       executionTier?: "core" | "elite";
     };
+
+    // Fetch to get current tags (needed for executionTier merge), verifies ownership
+    const existing = await prisma.emailFlow.findFirst({ where: { id, userId: user.id }, select: { tags: true } });
+    if (!existing) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
+
     const triggerConfig =
       body.triggerConfig !== undefined || body.executionTier !== undefined
         ? {
@@ -59,8 +60,8 @@ export async function PATCH(
             ...(body.executionTier !== undefined ? { executionTier: body.executionTier === "core" ? "core" : "elite" } : {}),
           }
         : undefined;
-    const flow = await prisma.emailFlow.update({
-      where: { id },
+    const result = await prisma.emailFlow.updateMany({
+      where: { id, userId: user.id },
       data: {
         ...(body.name !== undefined && { name: body.name }),
         ...(body.trigger !== undefined && { trigger: body.trigger }),
@@ -71,7 +72,8 @@ export async function PATCH(
         ...(body.tags !== undefined && { tags: body.tags }),
       },
     });
-    return NextResponse.json({ ok: true, flow });
+    if (result.count === 0) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
+    return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("EmailFlow PATCH:", err);
     return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });

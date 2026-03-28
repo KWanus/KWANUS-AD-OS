@@ -12,10 +12,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { createSiteFromScan } from "@/lib/sites/scanMode";
+import { config } from "@/lib/config";
 
 function validateSecret(req: NextRequest): boolean {
-  const secret = process.env.WEBHOOK_SECRET;
-  if (!secret || secret === "REPLACE_ME") return true; // dev mode — skip auth
+  const secret = config.webhookSecret;
+  if (!secret || secret === "REPLACE_ME") {
+    // Fail closed — if secret is not configured, reject all requests
+    console.error("[n8n webhook] WEBHOOK_SECRET not configured — rejecting request");
+    return false;
+  }
   return req.headers.get("x-webhook-secret") === secret;
 }
 
@@ -42,35 +47,40 @@ async function handleLeadIntake(body: unknown): Promise<NextResponse> {
     return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
   }
 
+  // Cap intake to prevent runaway inserts
+  const MAX_BUSINESSES = 100;
+  const businesses = data.businesses.slice(0, MAX_BUSINESSES);
+
+  // Batch-check for existing leads — single query instead of N+1
+  const names = businesses.map((b) => b.name).filter(Boolean);
+  const existingLeads = await prisma.lead.findMany({
+    where: { userId: data.userId, location: data.location, name: { in: names } },
+    select: { name: true },
+  });
+  const existingNames = new Set(existingLeads.map((l) => l.name));
+
   const businessIds: string[] = [];
 
-  for (const biz of data.businesses) {
-    if (!biz.name) continue;
+  for (const biz of businesses) {
+    if (!biz.name || existingNames.has(biz.name)) continue;
 
-    const existing = await prisma.lead.findFirst({
-      where: { userId: data.userId, name: biz.name, location: data.location },
-      select: { id: true },
+    const lead = await prisma.lead.create({
+      data: {
+        userId: data.userId,
+        name: biz.name,
+        niche: data.niche,
+        location: data.location,
+        website: biz.website ?? null,
+        phone: biz.phone ?? null,
+        email: biz.email ?? null,
+        address: biz.address ?? null,
+        rating: biz.rating ?? null,
+        reviewCount: biz.reviewCount ?? null,
+        googlePlaceId: biz.googlePlaceId ?? null,
+        status: "new",
+      },
     });
-
-    if (!existing) {
-      const lead = await prisma.lead.create({
-        data: {
-          userId: data.userId,
-          name: biz.name,
-          niche: data.niche,
-          location: data.location,
-          website: biz.website ?? null,
-          phone: biz.phone ?? null,
-          email: biz.email ?? null,
-          address: biz.address ?? null,
-          rating: biz.rating ?? null,
-          reviewCount: biz.reviewCount ?? null,
-          googlePlaceId: biz.googlePlaceId ?? null,
-          status: "new",
-        },
-      });
-      businessIds.push(lead.id);
-    }
+    businessIds.push(lead.id);
   }
 
   return NextResponse.json({
@@ -91,23 +101,34 @@ async function handleBusinessProcessing(body: unknown): Promise<NextResponse> {
     return NextResponse.json({ success: false, error: "No business_ids provided" }, { status: 400 });
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  // Cap to prevent runaway processing
+  const MAX_IDS = 50;
+  const ids = data.business_ids.slice(0, MAX_IDS);
+  const baseUrl = config.appUrl || "http://localhost:3000";
   let processed = 0;
   let failed = 0;
 
-  for (const id of data.business_ids) {
-    try {
-      if (!data.skip_analyze) {
-        const analyzeRes = await fetch(`${baseUrl}/api/leads/${id}/analyze`, { method: "POST" });
-        if (!analyzeRes.ok) { failed++; continue; }
-      }
-
-      const generateRes = await fetch(`${baseUrl}/api/leads/${id}/generate`, { method: "POST" });
-      if (!generateRes.ok) { failed++; continue; }
-
-      processed++;
-    } catch {
-      failed++;
+  // Process with concurrency limit to avoid overwhelming the server
+  const CONCURRENCY = 5;
+  for (let i = 0; i < ids.length; i += CONCURRENCY) {
+    const batch = ids.slice(i, i + CONCURRENCY);
+    const results = await Promise.all(
+      batch.map(async (id) => {
+        try {
+          if (!data.skip_analyze) {
+            const analyzeRes = await fetch(`${baseUrl}/api/leads/${id}/analyze`, { method: "POST" });
+            if (!analyzeRes.ok) return "failed";
+          }
+          const generateRes = await fetch(`${baseUrl}/api/leads/${id}/generate`, { method: "POST" });
+          return generateRes.ok ? "ok" : "failed";
+        } catch {
+          return "failed";
+        }
+      })
+    );
+    for (const r of results) {
+      if (r === "ok") processed++;
+      else failed++;
     }
   }
 
@@ -123,7 +144,7 @@ async function handleOutreach(body: unknown): Promise<NextResponse> {
     return NextResponse.json({ success: false, error: "Missing business_id or to_email" }, { status: 400 });
   }
 
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+  const baseUrl = config.appUrl || "http://localhost:3000";
   const res = await fetch(`${baseUrl}/api/leads/${data.business_id}/outreach`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },

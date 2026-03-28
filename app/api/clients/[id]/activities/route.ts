@@ -67,8 +67,8 @@ export async function POST(
 
     // Update lastContactAt when logging a real touchpoint
     if (["email", "call", "meeting", "sms"].includes(body.type)) {
-      await prisma.client.update({
-        where: { id },
+      await prisma.client.updateMany({
+        where: { id, userId: user.id },
         data: { lastContactAt: new Date() },
       });
     }

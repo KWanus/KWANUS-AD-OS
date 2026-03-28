@@ -4,6 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { sendEmail, markdownToHtml } from "@/lib/email/send";
 import { fireWebhook } from "@/lib/webhooks";
+import { checkRateLimit } from "@/lib/rateLimit";
 
 const EXECUTION_TIER_PREFIX = "__execution_tier:";
 
@@ -30,6 +31,12 @@ export async function POST(
       return NextResponse.json({ ok: false, error: "Already sent" }, { status: 400 });
     }
 
+    // Rate limit: max 5 broadcast sends per minute per user
+    const rl = checkRateLimit(`broadcast-send:${user.id}`, { limit: 5, windowSeconds: 60 });
+    if (!rl.allowed) {
+      return NextResponse.json({ ok: false, error: "Too many broadcasts — please wait before sending again" }, { status: 429 });
+    }
+
     // Load contacts — filter by segmentTags if set
     const segmentTags = visibleSegmentTags(broadcast.segmentTags);
     const contactWhere = {
@@ -50,8 +57,8 @@ export async function POST(
     }
 
     // Mark as sending
-    await prisma.emailBroadcast.update({
-      where: { id },
+    await prisma.emailBroadcast.updateMany({
+      where: { id, userId: user.id },
       data: { status: "sending", recipients: contacts.length },
     });
 
@@ -86,14 +93,15 @@ export async function POST(
     }
 
     // Mark as sent
-    const updated = await prisma.emailBroadcast.update({
-      where: { id },
+    await prisma.emailBroadcast.updateMany({
+      where: { id, userId: user.id },
       data: {
         status: "sent",
         sentAt: new Date(),
         recipients: sent,
       },
     });
+    const updated = await prisma.emailBroadcast.findFirst({ where: { id, userId: user.id } });
 
     // Fire webhook (fire-and-forget)
     fireWebhook(user.id, {

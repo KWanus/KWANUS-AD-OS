@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
+import { config } from "@/lib/config";
 
 export async function GET(
   _req: NextRequest,
@@ -12,7 +13,7 @@ export async function GET(
   if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 
   const { jobId } = await params;
-  const apiKey = process.env.RUNWAY_API_KEY;
+  const apiKey = config.runwayApiKey;
 
   if (!apiKey) {
     return NextResponse.json({ ok: false, error: "No Runway API key" }, { status: 402 });
@@ -47,6 +48,7 @@ export async function GET(
       progress: data.progress ?? 0,
     });
   } catch (err) {
-    return NextResponse.json({ ok: false, error: String(err) }, { status: 500 });
+    console.error("Video status error:", err);
+    return NextResponse.json({ ok: false, error: "Status check failed" }, { status: 500 });
   }
 }

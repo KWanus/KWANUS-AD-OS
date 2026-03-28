@@ -73,15 +73,8 @@ export async function PATCH(
       workflowState?: Prisma.InputJsonValue;
     };
 
-    // Verify ownership first, then update — include userId in WHERE to prevent cross-tenant writes
-    const existing = await prisma.campaign.findFirst({
+    const result = await prisma.campaign.updateMany({
       where: { id, userId: user.id },
-      select: { id: true },
-    });
-    if (!existing) return NextResponse.json({ ok: false, error: "Campaign not found" }, { status: 404 });
-
-    const campaign = await prisma.campaign.update({
-      where: { id },
       data: {
         ...(body.name !== undefined && { name: body.name }),
         ...(body.status !== undefined && { status: body.status }),
@@ -89,8 +82,9 @@ export async function PATCH(
         ...(body.workflowState !== undefined && { workflowState: body.workflowState }),
       },
     });
+    if (result.count === 0) return NextResponse.json({ ok: false, error: "Campaign not found" }, { status: 404 });
 
-    return NextResponse.json({ ok: true, campaign });
+    return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Campaign PATCH error:", err);
     return NextResponse.json({ ok: false, error: "Failed to update campaign" }, { status: 500 });

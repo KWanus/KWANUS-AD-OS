@@ -43,7 +43,7 @@ export async function PATCH(
     }
 
     const product = await prisma.siteProduct.update({
-      where: { id },
+      where: { id, siteId: body.siteId },
       data: {
         ...(body.name !== undefined && { name: body.name }),
         ...(body.description !== undefined && { description: body.description || null }),

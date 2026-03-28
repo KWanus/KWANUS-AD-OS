@@ -29,6 +29,10 @@ export const config = {
   stripeWebhookSecret:   readEnv("STRIPE_WEBHOOK_SECRET"),
   resendApiKey:          readEnv("RESEND_API_KEY"),
   cronSecret:            readEnv("CRON_SECRET"),
+  runwayApiKey:          readEnv("RUNWAY_API_KEY"),
+  serpApiKey:            readEnv("SERPAPI_KEY"),
+  webhookSecret:         readEnv("WEBHOOK_SECRET"),
+  appUrl:                readEnv("NEXT_PUBLIC_APP_URL"),
 } as const;
 
 // ─── Feature-gate helpers ─────────────────────────────────────────────────

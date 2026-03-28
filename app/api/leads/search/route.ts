@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
+import { config } from "@/lib/config";
 
 interface SerpApiResult {
   place_id?: string;
@@ -18,7 +19,7 @@ interface SerpApiResponse {
 }
 
 async function searchSerpApi(niche: string, location: string): Promise<{ results: SerpApiResult[]; isDemo: boolean }> {
-  const key = process.env.SERPAPI_KEY;
+  const key = config.serpApiKey;
   if (!key || key === "REPLACE_ME") {
     // Return demo data clearly marked — won't be saved to DB
     return { results: getDemoLeads(niche, location), isDemo: true };
@@ -90,46 +91,43 @@ export async function POST(req: NextRequest) {
       });
     }
 
-    // Upsert real leads into DB (skip duplicates by name+location)
-    const created: string[] = [];
-    for (const r of results.slice(0, 15)) {
-      if (!r.title) continue;
+    // Insert new leads — batch-check existing to avoid N+1
+    const candidates = results.slice(0, 15).filter((r) => !!r.title);
+    const names = candidates.map((r) => r.title as string);
 
-      const existing = await prisma.lead.findFirst({
-        where: {
+    const existingLeads = await prisma.lead.findMany({
+      where: { userId: user.id, location, name: { in: names } },
+      select: { name: true },
+    });
+    const existingNames = new Set(existingLeads.map((l) => l.name));
+
+    const toCreate = candidates.filter((r) => !existingNames.has(r.title as string));
+    if (toCreate.length > 0) {
+      await prisma.lead.createMany({
+        data: toCreate.map((r) => ({
           userId: user.id,
-          name: r.title,
+          name: r.title as string,
+          niche,
           location,
-        },
-        select: { id: true },
+          website: r.website ?? null,
+          phone: r.phone ?? null,
+          address: r.address ?? null,
+          rating: r.rating ?? null,
+          reviewCount: r.reviews ?? null,
+          googlePlaceId: r.place_id ?? null,
+          status: "new",
+        })),
+        skipDuplicates: true,
       });
-
-      if (!existing) {
-        const lead = await prisma.lead.create({
-          data: {
-            userId: user.id,
-            name: r.title,
-            niche,
-            location,
-            website: r.website ?? null,
-            phone: r.phone ?? null,
-            address: r.address ?? null,
-            rating: r.rating ?? null,
-            reviewCount: r.reviews ?? null,
-            googlePlaceId: r.place_id ?? null,
-            status: "new",
-          },
-        });
-        created.push(lead.id);
-      }
     }
+    const created = toCreate;
 
     return NextResponse.json({
       ok: true,
       found: results.length,
       created: created.length,
       isDemo: false,
-    });
+    } as const);
   } catch (err) {
     console.error("Lead search error:", err);
     return NextResponse.json({ ok: false, error: "Search failed. Try again." }, { status: 500 });
