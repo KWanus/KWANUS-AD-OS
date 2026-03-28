@@ -183,19 +183,62 @@ export async function POST(req: NextRequest) {
 
   const workflow = req.nextUrl.searchParams.get("workflow");
   const body = await req.json();
+  const startTime = Date.now();
+
+  // Log the incoming webhook
+  let logId: string | null = null;
+  try {
+    const log = await prisma.webhookLog.create({
+      data: {
+        source: "n8n",
+        workflow: workflow ?? "unknown",
+        status: "received",
+        payload: body as object,
+      },
+    });
+    logId = log.id;
+  } catch {
+    // Non-fatal — continue processing even if log fails
+  }
+
+  let response: NextResponse;
 
   switch (workflow) {
     case "lead-intake":
-      return handleLeadIntake(body);
+      response = await handleLeadIntake(body);
+      break;
     case "business-processing":
-      return handleBusinessProcessing(body);
+      response = await handleBusinessProcessing(body);
+      break;
     case "outreach":
-      return handleOutreach(body);
+      response = await handleOutreach(body);
+      break;
     case "site-scan":
-      return handleSiteScan(body);
+      response = await handleSiteScan(body);
+      break;
     default:
-      return NextResponse.json({ success: false, error: `Unknown workflow: ${workflow ?? "none"}` }, { status: 400 });
+      response = NextResponse.json({ success: false, error: `Unknown workflow: ${workflow ?? "none"}` }, { status: 400 });
   }
+
+  // Update the webhook log with result
+  if (logId) {
+    try {
+      const responseBody = await response.clone().json().catch(() => null);
+      await prisma.webhookLog.update({
+        where: { id: logId },
+        data: {
+          status: response.ok ? "processed" : "failed",
+          response: responseBody as object ?? undefined,
+          error: response.ok ? undefined : (responseBody as Record<string, unknown>)?.error as string ?? undefined,
+          durationMs: Date.now() - startTime,
+        },
+      });
+    } catch {
+      // Non-fatal
+    }
+  }
+
+  return response;
 }
 
 // Health check
