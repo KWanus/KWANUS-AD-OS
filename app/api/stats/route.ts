@@ -133,6 +133,8 @@ export async function GET(_req: NextRequest) {
       leadCount,
       emailFlowCount,
       clientCount,
+      atRiskClientCount,
+      analysisCount,
       businessProfile,
     ] = await Promise.all([
       prisma.campaign.count({ where: { userId: user.id } }),
@@ -145,6 +147,8 @@ export async function GET(_req: NextRequest) {
       prisma.lead.count({ where: { userId: user.id } }),
       prisma.emailFlow.count({ where: { userId: user.id } }),
       prisma.client.count({ where: { userId: user.id } }),
+      prisma.client.count({ where: { userId: user.id, healthStatus: "red" } }),
+      prisma.analysisRun.count({ where: { userId: user.id } }),
       prisma.businessProfile.findUnique({
         where: { userId: user.id },
         select: {
@@ -200,6 +204,8 @@ export async function GET(_req: NextRequest) {
         leads: leadCount,
         emailFlows: emailFlowCount,
         clients: clientCount,
+        atRiskClients: atRiskClientCount,
+        analyses: analysisCount,
         systemScore: businessProfile?.systemScore ?? 0,
         effectiveSystemScore,
         businessType: businessProfile?.businessType ?? null,
