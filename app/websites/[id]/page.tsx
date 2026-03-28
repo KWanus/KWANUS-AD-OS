@@ -139,8 +139,17 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ published: !site.published }),
       });
+      const wasPublished = site.published;
       setSite(prev => prev ? { ...prev, published: !prev.published } : prev);
-      toast.success(site.published ? "Site unpublished" : "Site is now live!");
+      if (wasPublished) {
+        toast.success("Site unpublished");
+      } else {
+        toast.success(`Site is now live!`, {
+          description: `${window.location.origin}/s/${site.slug}`,
+          action: { label: "View", onClick: () => window.open(`/s/${site.slug}`, "_blank") },
+          duration: 8000,
+        });
+      }
     } finally {
       setPublishing(false);
     }
