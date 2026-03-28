@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { toast } from "sonner";
 import {
   ArrowLeft,
   ArrowRight,
@@ -465,8 +466,19 @@ export default function NewClientPage() {
           executionTier: form.executionTier,
         }),
       });
-      const data = await res.json() as { ok: boolean; client?: { id: string }; error?: string };
-      if (!data.ok) throw new Error(data.error ?? "Failed");
+      const data = await res.json() as { ok: boolean; client?: { id: string }; error?: string; duplicate?: boolean; existingClientId?: string };
+      if (!data.ok) {
+        if (data.duplicate && data.existingClientId) {
+          toast.error("A client with this name or email already exists", {
+            action: { label: "View Existing", onClick: () => router.push(`/clients/${data.existingClientId}`) },
+            duration: 8000,
+          });
+          setCreating(false);
+          return;
+        }
+        throw new Error(data.error ?? "Failed");
+      }
+      toast.success("Client created successfully");
       router.push(`/clients/${data.client?.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
