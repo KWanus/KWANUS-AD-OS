@@ -6,7 +6,8 @@ import AppNav from "@/components/AppNav";
 import CampaignSubNav from "@/components/BuildSubNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import { WorkspaceHero, WorkspaceShell } from "@/components/ui/WorkspaceShell";
-import { Search, Plus, Trash2, ArrowRight, BarChart2, Mail, CheckSquare, Clock, Zap, Copy } from "lucide-react";
+import { Search, Plus, Trash2, ArrowRight, BarChart2, Mail, CheckSquare, Clock, Zap, Copy, Loader2 } from "lucide-react";
+import { toast } from "sonner";
 
 type Campaign = {
   id: string;
@@ -143,9 +144,15 @@ export default function CampaignsPage() {
 
   async function handleDelete(e: React.MouseEvent, id: string) {
     e.stopPropagation();
-    await fetch(`/api/campaigns/${id}`, { method: "DELETE" });
-    setCampaigns((prev) => prev.filter((c) => c.id !== id));
-    setDeleteConfirm(null);
+    try {
+      const res = await fetch(`/api/campaigns/${id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error();
+      setCampaigns((prev) => prev.filter((c) => c.id !== id));
+      setDeleteConfirm(null);
+      toast.success("Campaign deleted");
+    } catch {
+      toast.error("Failed to delete campaign");
+    }
   }
 
   const filtered = campaigns.filter(c =>
@@ -431,9 +438,12 @@ export default function CampaignsPage() {
                               const res = await fetch(`/api/campaigns/${c.id}/clone`, { method: "POST" });
                               const data = await res.json() as { ok: boolean; campaign?: { id: string } };
                               if (data.ok && data.campaign) {
+                                toast.success("Campaign duplicated");
                                 router.push(`/campaigns/${data.campaign.id}`);
+                              } else {
+                                toast.error("Failed to duplicate campaign");
                               }
-                            } catch { /* non-fatal */ }
+                            } catch { toast.error("Failed to duplicate"); }
                           }}
                           className="p-2 rounded-lg hover:bg-cyan-500/10 text-white/20 hover:text-cyan-400 transition opacity-0 group-hover:opacity-100"
                           title="Duplicate campaign"

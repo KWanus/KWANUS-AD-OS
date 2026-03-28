@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import AppNav from "@/components/AppNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
@@ -256,9 +257,12 @@ function FlowCard({
     e.stopPropagation();
     setDeleting(true);
     try {
-      await fetch(`/api/email-flows/${flow.id}`, { method: "DELETE" });
+      const res = await fetch(`/api/email-flows/${flow.id}`, { method: "DELETE" });
+      if (!res.ok) throw new Error();
       onDelete(flow.id);
+      toast.success("Flow deleted");
     } catch {
+      toast.error("Failed to delete flow");
       setDeleting(false);
       setConfirmDelete(false);
     }
@@ -309,9 +313,12 @@ function FlowCard({
                   const res = await fetch(`/api/email-flows/${flow.id}/clone`, { method: "POST" });
                   const data = await res.json() as { ok: boolean; flow?: { id: string } };
                   if (data.ok && data.flow) {
+                    toast.success("Flow duplicated");
                     window.location.href = `/emails/flows/${data.flow.id}`;
+                  } else {
+                    toast.error("Failed to duplicate flow");
                   }
-                } catch { /* non-fatal */ }
+                } catch { toast.error("Failed to duplicate"); }
               }}
               className="p-1.5 rounded-lg hover:bg-cyan-500/10 text-white/20 hover:text-cyan-400"
               aria-label="Duplicate flow"
