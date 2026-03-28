@@ -14,18 +14,27 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const status = searchParams.get("status") ?? undefined;
     const niche = searchParams.get("niche") ?? undefined;
+    const limit = Math.min(parseInt(searchParams.get("limit") ?? "50"), 100);
+    const cursor = searchParams.get("cursor") ?? undefined;
+
+    const where = {
+      userId: user.id,
+      ...(status ? { status } : {}),
+      ...(niche ? { niche } : {}),
+    };
 
     const leads = await prisma.lead.findMany({
-      where: {
-        userId: user.id,
-        ...(status ? { status } : {}),
-        ...(niche ? { niche } : {}),
-      },
+      where,
       orderBy: { createdAt: "desc" },
-      take: 100,
+      take: limit + 1,
+      ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
     });
 
-    return NextResponse.json({ ok: true, leads });
+    const hasMore = leads.length > limit;
+    if (hasMore) leads.pop();
+    const nextCursor = hasMore ? leads[leads.length - 1]?.id : undefined;
+
+    return NextResponse.json({ ok: true, leads, nextCursor, hasMore });
   } catch (err) {
     console.error("Leads fetch error:", err);
     if (isDatabaseUnavailable(err)) {

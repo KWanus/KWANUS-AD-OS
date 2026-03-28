@@ -1,21 +1,30 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { createHmac } from "crypto";
+
+/**
+ * Generate an HMAC-based unsubscribe token.
+ * Uses a server secret so tokens can't be forged by knowing email + contactId.
+ */
+export function generateUnsubscribeToken(email: string, contactId: string): string {
+  const secret = process.env.WEBHOOK_SECRET || process.env.CRON_SECRET || "kwanus-unsub-secret";
+  return createHmac("sha256", secret).update(`${email}:${contactId}`).digest("hex").slice(0, 32);
+}
 
 /**
  * GET /api/email-contacts/unsubscribe?email=xxx&token=xxx
  * Public endpoint — no auth required.
  * Unsubscribes an email contact. Used in email footer links.
  *
- * Token is a simple hash: base64(email + ":" + contactId)
- * This prevents random unsubscribe attacks while keeping it simple.
+ * Token is HMAC-SHA256(email:contactId) — prevents forgery.
  */
 export async function GET(req: NextRequest) {
   try {
     const email = req.nextUrl.searchParams.get("email")?.trim().toLowerCase();
     const token = req.nextUrl.searchParams.get("token");
 
-    if (!email) {
-      return new NextResponse(renderPage("Missing email parameter.", false), {
+    if (!email || !token) {
+      return new NextResponse(renderPage("Invalid unsubscribe link.", false), {
         headers: { "Content-Type": "text/html" },
         status: 400,
       });
@@ -33,15 +42,13 @@ export async function GET(req: NextRequest) {
       });
     }
 
-    // Verify token if provided (optional security layer)
-    if (token) {
-      const expected = Buffer.from(`${email}:${contact.id}`).toString("base64");
-      if (token !== expected) {
-        return new NextResponse(renderPage("Invalid unsubscribe link.", false), {
-          headers: { "Content-Type": "text/html" },
-          status: 400,
-        });
-      }
+    // Verify HMAC token (required — no optional bypass)
+    const expected = generateUnsubscribeToken(email, contact.id);
+    if (token !== expected) {
+      return new NextResponse(renderPage("Invalid unsubscribe link.", false), {
+        headers: { "Content-Type": "text/html" },
+        status: 400,
+      });
     }
 
     if (contact.status === "unsubscribed") {

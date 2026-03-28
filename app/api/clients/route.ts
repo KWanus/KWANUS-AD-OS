@@ -116,6 +116,35 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "Name is required" }, { status: 400 });
     }
 
+    const VALID_STAGES = ["lead", "qualified", "proposal", "active", "won", "churned"];
+    if (body.pipelineStage && !VALID_STAGES.includes(body.pipelineStage)) {
+      return NextResponse.json(
+        { ok: false, error: `pipelineStage must be one of: ${VALID_STAGES.join(", ")}` },
+        { status: 400 }
+      );
+    }
+
+    const VALID_PRIORITIES = ["low", "normal", "high"];
+    if (body.priority && !VALID_PRIORITIES.includes(body.priority)) {
+      return NextResponse.json(
+        { ok: false, error: `priority must be one of: ${VALID_PRIORITIES.join(", ")}` },
+        { status: 400 }
+      );
+    }
+
+    if (body.email?.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(body.email.trim())) {
+        return NextResponse.json({ ok: false, error: "Invalid email format" }, { status: 400 });
+      }
+    }
+
+    if (body.dealValue !== undefined && body.dealValue !== null) {
+      if (typeof body.dealValue !== "number" || body.dealValue < 0) {
+        return NextResponse.json({ ok: false, error: "dealValue must be a non-negative number" }, { status: 400 });
+      }
+    }
+
     // Duplicate detection — check by name or email
     const duplicateCheck = await prisma.client.findFirst({
       where: {

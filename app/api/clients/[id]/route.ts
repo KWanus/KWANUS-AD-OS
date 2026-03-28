@@ -89,6 +89,22 @@ export async function PATCH(
       executionTier?: ExecutionTier;
     };
 
+    const VALID_STAGES = ["lead", "qualified", "proposal", "active", "won", "churned"];
+    if (body.pipelineStage && !VALID_STAGES.includes(body.pipelineStage)) {
+      return NextResponse.json(
+        { ok: false, error: `pipelineStage must be one of: ${VALID_STAGES.join(", ")}` },
+        { status: 400 }
+      );
+    }
+
+    const VALID_PRIORITIES = ["low", "normal", "high"];
+    if (body.priority && !VALID_PRIORITIES.includes(body.priority)) {
+      return NextResponse.json(
+        { ok: false, error: `priority must be one of: ${VALID_PRIORITIES.join(", ")}` },
+        { status: 400 }
+      );
+    }
+
     const executionTier = body.executionTier ? normalizeExecutionTier(body.executionTier) : undefined;
 
     // If stage is changing, log it

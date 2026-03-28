@@ -87,6 +87,32 @@ export async function PATCH(req: NextRequest) {
       onboardingCompleted?: boolean;
     };
 
+    // Validate URLs if provided
+    for (const urlField of ["webhookUrl", "businessUrl"] as const) {
+      const val = body[urlField];
+      if (val?.trim()) {
+        try {
+          new URL(val.trim());
+        } catch {
+          return NextResponse.json({ ok: false, error: `${urlField} must be a valid URL` }, { status: 400 });
+        }
+      }
+    }
+
+    // Validate businessType
+    const VALID_TYPES = ["consultant", "ecommerce", "service", "affiliate", "dropship"];
+    if (body.businessType && !VALID_TYPES.includes(body.businessType)) {
+      return NextResponse.json(
+        { ok: false, error: `businessType must be one of: ${VALID_TYPES.join(", ")}` },
+        { status: 400 }
+      );
+    }
+
+    // Validate Google Analytics ID format
+    if (body.googleAnalyticsId?.trim() && !/^G-[A-Z0-9]+$/.test(body.googleAnalyticsId.trim())) {
+      return NextResponse.json({ ok: false, error: "googleAnalyticsId must match format G-XXXXXXXX" }, { status: 400 });
+    }
+
     await prisma.user.update({
       where: { id: user.id },
       data: {
