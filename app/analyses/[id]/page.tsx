@@ -98,6 +98,40 @@ interface AIInsights {
   raw?: string;
 }
 
+interface TruthEngineBreakdown {
+  dimension: string;
+  rawScore: number;
+  weight: number;
+  weightedScore: number;
+  grade: "A" | "B" | "C" | "D" | "F";
+  isRisk: boolean;
+}
+
+interface TruthEngineDiagnostic {
+  severity: "critical" | "warning" | "info" | "positive";
+  dimension: string;
+  message: string;
+  fix?: string;
+}
+
+interface TruthEngineResult {
+  totalScore: number;
+  verdict: string;
+  confidence: string;
+  profile: string;
+  breakdown: TruthEngineBreakdown[];
+  diagnostics: TruthEngineDiagnostic[];
+  strengthSummary: string;
+  weaknessSummary: string;
+  actionPlan: string[];
+}
+
+interface ScoringProfileInfo {
+  key: string;
+  name: string;
+  description: string;
+}
+
 // ---------------------------------------------------------------------------
 // Dimension config
 // ---------------------------------------------------------------------------
@@ -219,13 +253,22 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
   const [insights, setInsights] = useState<AIInsights | null>(null);
   const [loadingInsights, setLoadingInsights] = useState(false);
   const [copiedHook, setCopiedHook] = useState<number | null>(null);
+  const [truthResult, setTruthResult] = useState<TruthEngineResult | null>(null);
+  const [loadingTruth, setLoadingTruth] = useState(false);
+  const [profiles, setProfiles] = useState<ScoringProfileInfo[]>([]);
+  const [selectedProfile, setSelectedProfile] = useState("balanced");
 
   useEffect(() => {
-    fetch(`/api/analyses/${id}`)
-      .then(r => r.json() as Promise<{ ok: boolean; analysis?: Analysis | null; databaseUnavailable?: boolean }>)
-      .then(data => {
-        setDatabaseUnavailable(Boolean(data.databaseUnavailable));
-        if (data.ok && data.analysis) setAnalysis(data.analysis);
+    Promise.all([
+      fetch(`/api/analyses/${id}`)
+        .then(r => r.json() as Promise<{ ok: boolean; analysis?: Analysis | null; databaseUnavailable?: boolean }>),
+      fetch("/api/truth-engine")
+        .then(r => r.json() as Promise<{ ok: boolean; profiles?: ScoringProfileInfo[] }>),
+    ])
+      .then(([analysisData, profilesData]) => {
+        setDatabaseUnavailable(Boolean(analysisData.databaseUnavailable));
+        if (analysisData.ok && analysisData.analysis) setAnalysis(analysisData.analysis);
+        if (profilesData.ok && profilesData.profiles) setProfiles(profilesData.profiles);
       })
       .catch(console.error)
       .finally(() => setLoading(false));
@@ -241,6 +284,24 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
       // non-fatal
     } finally {
       setLoadingInsights(false);
+    }
+  }
+
+  async function runTruthRescore(profile: string) {
+    setLoadingTruth(true);
+    setSelectedProfile(profile);
+    try {
+      const res = await fetch("/api/truth-engine", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ analysisId: id, profile }),
+      });
+      const data = await res.json() as { ok: boolean; result?: TruthEngineResult };
+      if (data.ok && data.result) setTruthResult(data.result);
+    } catch {
+      // non-fatal
+    } finally {
+      setLoadingTruth(false);
     }
   }
 
@@ -452,6 +513,134 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
                   <div className="mt-4 bg-cyan-500/5 border border-cyan-500/15 rounded-xl p-3">
                     <p className="text-[9px] font-black uppercase tracking-widest text-cyan-400/50 mb-1">Recommended Path</p>
                     <p className="text-xs text-cyan-100/70 leading-relaxed">{opp.recommendedPath}</p>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Truth Engine — Rescore Panel */}
+            {opp && profiles.length > 0 && (
+              <div className="bg-gradient-to-br from-cyan-900/15 to-purple-900/15 border border-cyan-500/20 rounded-2xl p-5">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <BarChart2 className="w-4 h-4 text-cyan-400" />
+                    <h2 className="text-xs font-black uppercase tracking-widest text-white/30">Truth Engine</h2>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <select
+                      value={selectedProfile}
+                      onChange={(e) => void runTruthRescore(e.target.value)}
+                      className="bg-white/[0.04] border border-white/[0.1] rounded-xl px-3 py-1.5 text-xs text-white/60 focus:outline-none focus:border-cyan-500/50 transition appearance-none cursor-pointer"
+                    >
+                      {profiles.map(p => (
+                        <option key={p.key} value={p.key} className="bg-[#0d1525]">{p.name}</option>
+                      ))}
+                    </select>
+                    {loadingTruth && <Loader2 className="w-3.5 h-3.5 text-cyan-400 animate-spin" />}
+                  </div>
+                </div>
+
+                {truthResult ? (
+                  <div className="space-y-4">
+                    {/* Score + Verdict */}
+                    <div className="flex items-center gap-4">
+                      <div className="text-3xl font-black text-white">{truthResult.totalScore}</div>
+                      <div>
+                        <span className={`text-xs font-black uppercase px-2 py-1 rounded-lg border ${
+                          truthResult.verdict === "Pursue" ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400"
+                          : truthResult.verdict === "Reject" ? "bg-red-500/10 border-red-500/20 text-red-400"
+                          : "bg-amber-500/10 border-amber-500/20 text-amber-400"
+                        }`}>
+                          {truthResult.verdict}
+                        </span>
+                        <span className="text-[10px] text-white/25 ml-2">{truthResult.confidence} confidence · {truthResult.profile} profile</span>
+                      </div>
+                    </div>
+
+                    {/* Grade Breakdown */}
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2">
+                      {truthResult.breakdown.map((b) => {
+                        const gradeColors: Record<string, string> = {
+                          A: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
+                          B: "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
+                          C: "text-amber-400 bg-amber-500/10 border-amber-500/20",
+                          D: "text-orange-400 bg-orange-500/10 border-orange-500/20",
+                          F: "text-red-400 bg-red-500/10 border-red-500/20",
+                        };
+                        return (
+                          <div key={b.dimension} className="bg-white/[0.02] border border-white/[0.05] rounded-lg p-2 text-center">
+                            <span className={`text-lg font-black ${gradeColors[b.grade]?.split(" ")[0] ?? "text-white/40"}`}>{b.grade}</span>
+                            <p className="text-[9px] text-white/30 font-bold mt-0.5 truncate">{b.dimension}</p>
+                            <p className="text-[10px] text-white/20">{b.rawScore}/100</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+
+                    {/* Diagnostics */}
+                    {truthResult.diagnostics.length > 0 && (
+                      <div className="space-y-1.5">
+                        <p className="text-[9px] font-black uppercase tracking-widest text-white/25">Diagnostics</p>
+                        {truthResult.diagnostics.map((d, i) => {
+                          const sevConfig: Record<string, { color: string; icon: React.ElementType }> = {
+                            critical: { color: "text-red-400 bg-red-500/5 border-red-500/15", icon: XCircle },
+                            warning: { color: "text-amber-400 bg-amber-500/5 border-amber-500/15", icon: AlertTriangle },
+                            info: { color: "text-blue-400 bg-blue-500/5 border-blue-500/15", icon: Eye },
+                            positive: { color: "text-emerald-400 bg-emerald-500/5 border-emerald-500/15", icon: CheckCircle },
+                          };
+                          const cfg = sevConfig[d.severity] ?? sevConfig.info;
+                          const Icon = cfg.icon;
+                          return (
+                            <div key={i} className={`flex items-start gap-2 p-2 rounded-lg border ${cfg.color}`}>
+                              <Icon className="w-3 h-3 shrink-0 mt-0.5" />
+                              <div className="flex-1 min-w-0">
+                                <p className="text-[11px] font-semibold">{d.message}</p>
+                                {d.fix && <p className="text-[10px] opacity-60 mt-0.5">{d.fix}</p>}
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    )}
+
+                    {/* Action Plan */}
+                    {truthResult.actionPlan.length > 0 && (
+                      <div className="bg-cyan-500/5 border border-cyan-500/15 rounded-xl p-3">
+                        <p className="text-[9px] font-black uppercase tracking-widest text-cyan-400/50 mb-2">Prioritized Action Plan</p>
+                        <ul className="space-y-1">
+                          {truthResult.actionPlan.map((a, i) => (
+                            <li key={i} className="text-xs text-white/60 flex items-start gap-2">
+                              <span className="text-cyan-400 font-black shrink-0">{i + 1}.</span>
+                              <span>{a}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+
+                    {/* Summary */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="bg-white/[0.02] rounded-lg p-2.5">
+                        <p className="text-[9px] font-black uppercase tracking-widest text-emerald-400/50 mb-1">Strengths</p>
+                        <p className="text-[11px] text-white/50">{truthResult.strengthSummary}</p>
+                      </div>
+                      <div className="bg-white/[0.02] rounded-lg p-2.5">
+                        <p className="text-[9px] font-black uppercase tracking-widest text-red-400/50 mb-1">Weaknesses</p>
+                        <p className="text-[11px] text-white/50">{truthResult.weaknessSummary}</p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div className="text-center py-4">
+                    <p className="text-[11px] text-white/25 mb-3">Select a scoring profile to run the Truth Engine diagnostic</p>
+                    <button
+                      onClick={() => void runTruthRescore(selectedProfile)}
+                      disabled={loadingTruth}
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 text-xs font-bold hover:bg-cyan-500/30 transition disabled:opacity-40"
+                    >
+                      {loadingTruth ? <Loader2 className="w-3 h-3 animate-spin" /> : <BarChart2 className="w-3 h-3" />}
+                      Run Truth Engine
+                    </button>
                   </div>
                 )}
               </div>

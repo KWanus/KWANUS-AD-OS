@@ -1,10 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
-import { deductCredits } from "@/lib/auth";
+import { deductCredits, getOrCreateUser } from "@/lib/auth";
+import { auth } from "@clerk/nextjs/server";
 
 // Runway Gen-3 Alpha Turbo via REST API
 // Docs: https://docs.dev.runwayml.com/
 
 export async function POST(req: NextRequest) {
+  const { userId: clerkId } = await auth();
+  if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+  const user = await getOrCreateUser();
+  if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
   const apiKey = process.env.RUNWAY_API_KEY;
 
   if (!apiKey) {
