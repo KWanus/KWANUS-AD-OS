@@ -4,6 +4,11 @@ import { deductCredits, getOrCreateUser } from "@/lib/auth";
 import { auth } from "@clerk/nextjs/server";
 import { config } from "@/lib/config";
 
+function sanitizeInput(value: unknown, max = 1000): string {
+  if (value === undefined || value === null) return "";
+  return String(value).replace(/\x00/g, "").replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "").trim().slice(0, max);
+}
+
 // Supported aspect ratios mapped to OpenAI size params
 const RATIO_TO_SIZE: Record<string, "1024x1024" | "1024x1792" | "1792x1024"> = {
   "1:1": "1024x1024",
@@ -56,7 +61,7 @@ export async function POST(req: NextRequest) {
 
     const response = await client.images.generate({
       model: body.model ?? "dall-e-3",
-      prompt: buildCreativePrompt(body.prompt, executionTier),
+      prompt: buildCreativePrompt(sanitizeInput(body.prompt), executionTier),
       n: 1,
       size,
       quality: body.quality ?? "standard",
@@ -72,8 +77,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ ok: true, url, revisedPrompt, executionTier });
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Generation failed";
     console.error("Image generation error:", err);
-    return NextResponse.json({ ok: false, error: message }, { status: 500 });
+    return NextResponse.json({ ok: false, error: "Generation failed" }, { status: 500 });
   }
 }

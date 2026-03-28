@@ -9,6 +9,11 @@ import { config } from "@/lib/config";
 
 const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 
+function sanitize(value: unknown, max = 500): string {
+  if (value === undefined || value === null) return "";
+  return String(value).replace(/\x00/g, "").replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "").trim().slice(0, max);
+}
+
 const GLOBAL_RULE = `You are the world's best digital marketing agency consultant inside Himalaya Agency OS.
 Return valid JSON only. No markdown. No commentary outside JSON.
 Before generating any output, analyze what TOP 1% agencies charge, deliver, and promise for this business type and niche.
@@ -55,11 +60,11 @@ export async function POST(req: NextRequest) {
 
     const prompt = `Generate a comprehensive 90-day growth roadmap based on this business audit.
 
-Business: ${audit.businessName}
-${audit.businessUrl ? `Website: ${audit.businessUrl}` : ""}
-Niche: ${audit.niche}
-Business Type: ${audit.businessType}
-${audit.location ? `Location: ${audit.location}` : ""}
+Business: ${sanitize(audit.businessName)}
+${audit.businessUrl ? `Website: ${sanitize(audit.businessUrl, 2000)}` : ""}
+Niche: ${sanitize(audit.niche)}
+Business Type: ${sanitize(audit.businessType)}
+${audit.location ? `Location: ${sanitize(audit.location)}` : ""}
 ${audit.overallScore != null ? `Overall Audit Score: ${audit.overallScore}/100` : ""}
 ${auditContext}
 ${businessContext}

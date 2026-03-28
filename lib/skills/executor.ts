@@ -10,6 +10,20 @@ const anthropic = new Anthropic({
 });
 
 // ---------------------------------------------------------------------------
+// Input sanitization — prevent prompt injection via user-controlled fields
+// ---------------------------------------------------------------------------
+
+function sanitizePromptInput(value: unknown, maxLength = 500): string {
+  if (value === undefined || value === null) return "";
+  // Strip null bytes and other ASCII control characters (keep newlines/tabs)
+  return String(value)
+    .replace(/\x00/g, "")
+    .replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "")
+    .trim()
+    .slice(0, maxLength);
+}
+
+// ---------------------------------------------------------------------------
 // Prompt builders
 // ---------------------------------------------------------------------------
 
@@ -18,11 +32,11 @@ function buildPrompt(slug: string, input: SkillInput): string {
     case "ad-copy":
       return `You are a world-class direct-response copywriter. Generate 5 high-converting ad variations.
 
-OFFER: ${input.offer}
-TARGET AUDIENCE: ${input.audience}
-PLATFORM: ${input.platform}
-OBJECTIVE: ${input.objective}
-TONE: ${input.tone ?? "Bold & direct"}
+OFFER: ${sanitizePromptInput(input.offer)}
+TARGET AUDIENCE: ${sanitizePromptInput(input.audience)}
+PLATFORM: ${sanitizePromptInput(input.platform)}
+OBJECTIVE: ${sanitizePromptInput(input.objective)}
+TONE: ${sanitizePromptInput(input.tone) || "Bold & direct"}
 
 For each variation, provide:
 - HOOK (first line — must stop the scroll)
@@ -40,11 +54,11 @@ CTA: ...
 Make the hooks radically different (curiosity, stat, story, pain, bold claim). Be specific, not generic.`;
 
     case "tiktok-script":
-      return `You are a viral TikTok creator and ad strategist. Write a ${input.duration ?? "30 seconds"} video script.
+      return `You are a viral TikTok creator and ad strategist. Write a ${sanitizePromptInput(input.duration) || "30 seconds"} video script.
 
-PRODUCT/SERVICE: ${input.product}
-HOOK ANGLE: ${input.hook_angle}
-CTA: ${input.cta ?? "Link in bio"}
+PRODUCT/SERVICE: ${sanitizePromptInput(input.product)}
+HOOK ANGLE: ${sanitizePromptInput(input.hook_angle)}
+CTA: ${sanitizePromptInput(input.cta) || "Link in bio"}
 
 Format:
 [0:00–0:03] HOOK (spoken + text overlay)
@@ -57,10 +71,10 @@ Keep every line punchy. The hook must work in the first 2 seconds. Include 3 alt
     case "google-ads":
       return `You are a Google Ads expert. Create a complete Responsive Search Ad pack.
 
-BUSINESS: ${input.business}
-LANDING URL: ${input.landing_url ?? "TBD"}
-LOCATION: ${input.location ?? "United States"}
-DAILY BUDGET: $${input.budget_daily ?? "50"}
+BUSINESS: ${sanitizePromptInput(input.business)}
+LANDING URL: ${sanitizePromptInput(input.landing_url) || "TBD"}
+LOCATION: ${sanitizePromptInput(input.location) || "United States"}
+DAILY BUDGET: $${sanitizePromptInput(input.budget_daily) || "50"}
 
 Provide:
 1. 15 HEADLINES (max 30 characters each — be specific, include keywords)
@@ -74,10 +88,10 @@ Format clearly with numbered lists for each section.`;
     case "landing-page":
       return `You are a conversion copywriter. Write complete copy for an 8-block landing page.
 
-OFFER: ${input.offer}
-AUDIENCE: ${input.audience}
-BRAND: ${input.business_name}
-TONE: ${input.tone ?? "Professional & clean"}
+OFFER: ${sanitizePromptInput(input.offer)}
+AUDIENCE: ${sanitizePromptInput(input.audience)}
+BRAND: ${sanitizePromptInput(input.business_name)}
+TONE: ${sanitizePromptInput(input.tone) || "Professional & clean"}
 
 Return a JSON object with this exact structure:
 {
@@ -95,9 +109,9 @@ Return ONLY valid JSON, no markdown fences.`;
     case "seo-audit":
       return `You are an SEO expert. Provide a comprehensive SEO audit.
 
-URL: ${input.url}
-NICHE: ${input.niche ?? "general business"}
-TARGET KEYWORD: ${input.target_keyword ?? "not specified"}
+URL: ${sanitizePromptInput(input.url, 2000)}
+NICHE: ${sanitizePromptInput(input.niche) || "general business"}
+TARGET KEYWORD: ${sanitizePromptInput(input.target_keyword) || "not specified"}
 
 Audit format:
 ## SEO SCORE: [0–100]/100
@@ -132,10 +146,10 @@ Week 3–4: ...`;
     case "email-sequence":
       return `You are an email marketing strategist. Write a 5-email nurture sequence.
 
-OFFER: ${input.offer}
-AUDIENCE: ${input.audience}
-FROM NAME: ${input.from_name ?? "Your Brand"}
-GOAL: ${input.sequence_goal ?? "Sell a product"}
+OFFER: ${sanitizePromptInput(input.offer)}
+AUDIENCE: ${sanitizePromptInput(input.audience)}
+FROM NAME: ${sanitizePromptInput(input.from_name) || "Your Brand"}
+GOAL: ${sanitizePromptInput(input.sequence_goal) || "Sell a product"}
 
 For each email provide:
 EMAIL [N]: [name of email in sequence]
@@ -156,10 +170,10 @@ Use {{first_name}} for personalization. Write like a human, not a robot.`;
     case "broadcast-blast":
       return `You are a top email copywriter. Write one high-converting broadcast email.
 
-TOPIC: ${input.subject_matter}
-TONE: ${input.tone ?? "Exciting / launch energy"}
-CTA TEXT: ${input.cta_text ?? "Learn More"}
-CTA URL: ${input.cta_url ?? "#"}
+TOPIC: ${sanitizePromptInput(input.subject_matter)}
+TONE: ${sanitizePromptInput(input.tone) || "Exciting / launch energy"}
+CTA TEXT: ${sanitizePromptInput(input.cta_text) || "Learn More"}
+CTA URL: ${sanitizePromptInput(input.cta_url, 2000) || "#"}
 
 Return:
 SUBJECT LINE: ...
@@ -172,10 +186,10 @@ Rules: One topic. One CTA. Make the opening line irresistible. Use short paragra
     case "lead-magnet":
       return `You are a lead generation strategist. Create a complete lead magnet package.
 
-TOPIC: ${input.topic}
-AUDIENCE: ${input.audience}
-FORMAT: ${input.format}
-BUSINESS: ${input.business_name ?? "Your Business"}
+TOPIC: ${sanitizePromptInput(input.topic)}
+AUDIENCE: ${sanitizePromptInput(input.audience)}
+FORMAT: ${sanitizePromptInput(input.format)}
+BUSINESS: ${sanitizePromptInput(input.business_name) || "Your Business"}
 
 Provide:
 ## LEAD MAGNET OUTLINE
@@ -197,12 +211,12 @@ Body: [100–150 words delivering the lead magnet + next step]
 3 best ways to drive traffic to this specific lead magnet`;
 
     case "offer-script":
-      return `You are a world-class sales copywriter. Write a complete ${input.format ?? "VSL (video sales letter)"}.
+      return `You are a world-class sales copywriter. Write a complete ${sanitizePromptInput(input.format) || "VSL (video sales letter)"}.
 
-OFFER: ${input.offer_name}
-PRICE: ${input.price}
-AUDIENCE: ${input.audience}
-BIG PROMISE: ${input.big_promise ?? "Transform your results"}
+OFFER: ${sanitizePromptInput(input.offer_name)}
+PRICE: ${sanitizePromptInput(input.price)}
+AUDIENCE: ${sanitizePromptInput(input.audience)}
+BIG PROMISE: ${sanitizePromptInput(input.big_promise) || "Transform your results"}
 
 Script structure with timestamps:
 [0:00–0:30] OPENING HOOK — grab attention, qualify viewer

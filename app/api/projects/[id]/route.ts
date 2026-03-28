@@ -31,8 +31,8 @@ export async function GET(
 
     return NextResponse.json({ ok: true, project });
   } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
-    return NextResponse.json({ ok: false, message: msg }, { status: 500 });
+    console.error("Project GET error:", error);
+    return NextResponse.json({ ok: false, message: "Failed to load project" }, { status: 500 });
   }
 }
 
@@ -74,7 +74,7 @@ export async function PATCH(
 
     return NextResponse.json({ ok: true, project });
   } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
-    return NextResponse.json({ ok: false, message: msg }, { status: 500 });
+    console.error("Project PATCH error:", error);
+    return NextResponse.json({ ok: false, message: "Failed to update project" }, { status: 500 });
   }
 }

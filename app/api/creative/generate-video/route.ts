@@ -5,6 +5,11 @@ import { auth } from "@clerk/nextjs/server";
 // Runway Gen-3 Alpha Turbo via REST API
 // Docs: https://docs.dev.runwayml.com/
 
+function sanitizeInput(value: unknown, max = 1000): string {
+  if (value === undefined || value === null) return "";
+  return String(value).replace(/\x00/g, "").replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "").trim().slice(0, max);
+}
+
 function buildVideoPrompt(prompt: string, executionTier: "core" | "elite") {
   if (executionTier === "elite") {
     return `Create a premium commercial video shot with top-operator ad polish, stronger product readability, cleaner motion discipline, sharper focal hierarchy, richer buyer emotion, and a conversion-first finish.\n\nOriginal brief:\n${prompt}`;
@@ -47,7 +52,7 @@ export async function POST(req: NextRequest) {
 
     const payload: Record<string, unknown> = {
       model: "gen3a_turbo",
-      promptText: buildVideoPrompt(body.prompt, executionTier),
+      promptText: buildVideoPrompt(sanitizeInput(body.prompt), executionTier),
       duration: body.duration ?? 5,
       ratio: body.ratio ?? "768:1344", // 9:16
     };
@@ -76,8 +81,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, jobId: data.id, status: data.status, executionTier });
 
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Video generation failed";
     console.error("Video generation error:", err);
-    return NextResponse.json({ ok: false, error: message }, { status: 500 });
+    return NextResponse.json({ ok: false, error: "Video generation failed" }, { status: 500 });
   }
 }

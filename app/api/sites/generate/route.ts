@@ -71,7 +71,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Site generate route failed:", error);
     return NextResponse.json(
-      { ok: false, error: error instanceof Error ? error.message : "Failed to generate site" },
+      { ok: false, error: "Failed to generate site" },
       { status: 500 }
     );
   }

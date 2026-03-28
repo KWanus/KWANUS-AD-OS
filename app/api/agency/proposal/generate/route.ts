@@ -8,6 +8,11 @@ import { config } from "@/lib/config";
 
 const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 
+function sanitize(value: unknown, max = 500): string {
+  if (value === undefined || value === null) return "";
+  return String(value).replace(/\x00/g, "").replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "").trim().slice(0, max);
+}
+
 const GLOBAL_RULE = `You are the world's best digital marketing agency consultant inside Himalaya Agency OS.
 Return valid JSON only. No markdown. No commentary outside JSON.
 Before generating any output, analyze what TOP 1% agencies charge, deliver, and promise for this business type and niche.
@@ -72,10 +77,10 @@ export async function POST(req: NextRequest) {
 
     const prompt = `Generate a high-converting white-label agency proposal for this prospect.
 
-Business: ${contextBusinessName}
-Niche: ${contextNiche}
-Business Type: ${contextBusinessType}
-${contextSummary ? `Summary: ${contextSummary}` : ""}
+Business: ${sanitize(contextBusinessName)}
+Niche: ${sanitize(contextNiche)}
+Business Type: ${sanitize(contextBusinessType)}
+${contextSummary ? `Summary: ${sanitize(contextSummary, 1000)}` : ""}
 ${auditContext}
 Execution Tier: ${executionTier}
 

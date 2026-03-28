@@ -41,7 +41,7 @@ export async function GET() {
 
     return NextResponse.json({ ok: true, projects });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to load projects";
-    return NextResponse.json({ ok: false, message }, { status: 500 });
+    console.error("Projects GET error:", error);
+    return NextResponse.json({ ok: false, message: "Failed to load projects" }, { status: 500 });
   }
 }
