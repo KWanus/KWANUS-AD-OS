@@ -15,6 +15,7 @@ import { detectOpportunityGaps } from "@/src/logic/ad-os/detectOpportunityGaps";
 import { recommendOpportunityPath } from "@/src/logic/ad-os/recommendOpportunityPath";
 import { buildOpportunityPacket } from "@/src/logic/ad-os/buildOpportunityPacket";
 import { buildAssetPackage } from "@/src/logic/ad-os/buildAssetPackage";
+import { runTruthEngine, getProfileForMode } from "@/rules/truthEngine";
 
 export async function POST(req: NextRequest) {
   try {
@@ -80,8 +81,12 @@ export async function POST(req: NextRequest) {
     const recommendation = recommendOpportunityPath(classified.status, dimensions, input.mode);
     const opportunityPacket = buildOpportunityPacket(classified, dimensions, gaps, recommendation);
 
+    // Phase 2 — Truth Engine (configurable weighted scoring)
+    const truthProfile = getProfileForMode(input.mode);
+    const truthResult = runTruthEngine(dimensions, truthProfile);
+
     // Phase 4 — Asset Generator (skip for Reject)
-    const isReject = scoreResult.verdict === "Reject" || opportunityPacket.status === "Reject";
+    const isReject = truthResult.verdict === "Reject" || opportunityPacket.status === "Reject";
     const assets = isReject ? null : buildAssetPackage(packet, opportunityPacket, input.mode);
 
     // Persist — non-blocking
@@ -153,13 +158,24 @@ export async function POST(req: NextRequest) {
         inputUrl: input.url,
         linkType,
         title: page.title || signals.productName,
-        score: scoreResult.total,
-        verdict: scoreResult.verdict,
-        confidence: scoreResult.confidence,
+        score: truthResult.totalScore,
+        verdict: truthResult.verdict,
+        confidence: truthResult.confidence,
         summary: packet.summary,
         decisionPacket: packet,
       },
       opportunityAssessment: opportunityPacket,
+      truthEngine: {
+        totalScore: truthResult.totalScore,
+        verdict: truthResult.verdict,
+        confidence: truthResult.confidence,
+        profile: truthResult.profile,
+        breakdown: truthResult.breakdown,
+        diagnostics: truthResult.diagnostics,
+        strengthSummary: truthResult.strengthSummary,
+        weaknessSummary: truthResult.weaknessSummary,
+        actionPlan: truthResult.actionPlan,
+      },
       assetPackage: assets,
     });
   } catch (err) {
