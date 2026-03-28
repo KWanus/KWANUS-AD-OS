@@ -351,10 +351,16 @@ export async function POST(req: NextRequest) {
     const lastUserMsg = [...body.messages].reverse().find((m) => m.role === "user");
     const detectedUrl = lastUserMsg ? extractUrl(lastUserMsg.content) : null;
 
-    const [workspaceContext, businessContext, osContext, urlScan] = await Promise.all([
+    const [workspaceContext, businessContext, osContext, quickActionsRes, urlScan] = await Promise.all([
       buildUserContext(user.id),
       getBusinessContext(user.id),
       buildOsContext(user.id),
+      fetch(new URL("/api/quick-actions", req.url), {
+        headers: { cookie: req.headers.get("cookie") ?? "" },
+      }).then(r => r.json()).catch(() => ({ ok: false })) as Promise<{
+        ok: boolean;
+        actions?: { priority: string; title: string; href: string }[];
+      }>,
       detectedUrl
         ? Promise.race([
             scanUrlForCopilot(detectedUrl).catch(() => null),
@@ -363,8 +369,16 @@ export async function POST(req: NextRequest) {
         : Promise.resolve(null),
     ]);
 
-    // Build system prompt with workspace context
-    let systemPrompt = buildSystemPrompt(workspaceContext, businessContext, osContext);
+    const quickActionsContext = quickActionsRes.ok && quickActionsRes.actions?.length
+      ? `\n=== PRIORITIZED ACTIONS ===\n${quickActionsRes.actions.slice(0, 5).map(a => `[${a.priority.toUpperCase()}] ${a.title} → ${a.href}`).join("\n")}`
+      : "";
+
+    // Build system prompt with workspace context + quick actions
+    let systemPrompt = buildSystemPrompt(
+      workspaceContext + quickActionsContext,
+      businessContext,
+      osContext
+    );
 
     // Inject URL scan data if present
     if (urlScan) {

@@ -3,6 +3,7 @@ import { Inter, Outfit } from "next/font/google";
 import { ClerkProvider } from "@clerk/nextjs";
 import { Toaster } from "sonner";
 import GlobalCopilotDock from "@/components/GlobalCopilotDock";
+import KeyboardShortcuts from "@/components/KeyboardShortcuts";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -24,6 +25,7 @@ export default function RootLayout({
         <body className={`${inter.variable} ${outfit.variable} antialiased bg-[#050a14] text-white`}>
           {children}
           <GlobalCopilotDock />
+          <KeyboardShortcuts />
           <Toaster position="bottom-right" theme="dark" richColors />
         </body>
       </html>
