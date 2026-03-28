@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
   } catch (error) {
     console.error("Site scan route failed:", error);
     return NextResponse.json(
-      { ok: false, error: error instanceof Error ? error.message : "Failed to scan and build site" },
+      { ok: false, error: "Failed to scan and build site" },
       { status: 500 }
     );
   }

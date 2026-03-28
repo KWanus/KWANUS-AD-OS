@@ -52,6 +52,24 @@ export async function PATCH(
       tags?: string[];
       executionTier?: "core" | "elite";
     };
+
+    // Validate status
+    const VALID_STATUSES = ["draft", "active", "paused", "archived"];
+    if (body.status && !VALID_STATUSES.includes(body.status)) {
+      return NextResponse.json({ ok: false, error: `status must be one of: ${VALID_STATUSES.join(", ")}` }, { status: 400 });
+    }
+
+    // Validate trigger
+    const VALID_TRIGGERS = ["signup", "purchase", "abandoned_cart", "browse_abandon", "custom", "manual"];
+    if (body.trigger && !VALID_TRIGGERS.includes(body.trigger)) {
+      return NextResponse.json({ ok: false, error: `trigger must be one of: ${VALID_TRIGGERS.join(", ")}` }, { status: 400 });
+    }
+
+    // Validate name not empty
+    if (body.name !== undefined && !body.name.trim()) {
+      return NextResponse.json({ ok: false, error: "Flow name cannot be empty" }, { status: 400 });
+    }
+
     const triggerConfig =
       body.triggerConfig !== undefined || body.executionTier !== undefined
         ? {

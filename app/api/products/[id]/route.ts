@@ -30,6 +30,25 @@ export async function PATCH(
       return NextResponse.json({ ok: false, error: "siteId is required" }, { status: 400 });
     }
 
+    // Validate price is a positive number if provided
+    if (body.price !== undefined) {
+      const p = parseInt(String(body.price), 10);
+      if (isNaN(p) || p < 0) {
+        return NextResponse.json({ ok: false, error: "price must be a non-negative integer (cents)" }, { status: 400 });
+      }
+    }
+
+    // Validate status enum
+    const VALID_STATUSES = ["active", "draft", "archived"];
+    if (body.status && !VALID_STATUSES.includes(body.status)) {
+      return NextResponse.json({ ok: false, error: `status must be one of: ${VALID_STATUSES.join(", ")}` }, { status: 400 });
+    }
+
+    // Validate name not empty
+    if (body.name !== undefined && !body.name.trim()) {
+      return NextResponse.json({ ok: false, error: "Product name cannot be empty" }, { status: 400 });
+    }
+
     const existing = await prisma.siteProduct.findFirst({
       where: {
         id,

@@ -49,19 +49,37 @@ export async function PATCH(
       name?: string;
       description?: string;
       faviconEmoji?: string;
-      theme?: any;
+      theme?: Record<string, unknown>;
       customDomain?: string;
       published?: boolean;
     };
 
+    // Validate name is not empty/whitespace
+    if (body.name !== undefined && !body.name.trim()) {
+      return NextResponse.json({ ok: false, error: "Site name cannot be empty" }, { status: 400 });
+    }
+
+    // Validate theme is a plain object (not array, not null)
+    if (body.theme !== undefined && (typeof body.theme !== "object" || body.theme === null || Array.isArray(body.theme))) {
+      return NextResponse.json({ ok: false, error: "theme must be a JSON object" }, { status: 400 });
+    }
+
+    // Validate custom domain format
+    if (body.customDomain?.trim()) {
+      const domain = body.customDomain.trim().toLowerCase();
+      if (!/^[a-z0-9]([a-z0-9-]*[a-z0-9])?(\.[a-z0-9]([a-z0-9-]*[a-z0-9])?)+$/.test(domain)) {
+        return NextResponse.json({ ok: false, error: "customDomain must be a valid domain (e.g. example.com)" }, { status: 400 });
+      }
+    }
+
     await prisma.site.updateMany({
       where: { id, userId: user.id },
       data: {
-        ...(body.name !== undefined && { name: body.name }),
+        ...(body.name !== undefined && { name: body.name.trim() }),
         ...(body.description !== undefined && { description: body.description || null }),
         ...(body.faviconEmoji !== undefined && { faviconEmoji: body.faviconEmoji }),
         ...(body.theme !== undefined && { theme: body.theme }),
-        ...(body.customDomain !== undefined && { customDomain: body.customDomain || null }),
+        ...(body.customDomain !== undefined && { customDomain: body.customDomain?.trim().toLowerCase() || null }),
         ...(body.published !== undefined && { published: body.published }),
       },
     });

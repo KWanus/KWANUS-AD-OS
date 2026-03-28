@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 export async function POST(req: Request) {
     try {
         const { userId: clerkId } = await auth();
-        if (!clerkId) return NextResponse.json({ ok: false, message: "Unauthorized" }, { status: 401 });
+        if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 
         const { name, sourceUrl, sourceType, executionTier } = await req.json() as {
             name?: string;
@@ -17,7 +17,7 @@ export async function POST(req: Request) {
 
         // Sync user
         const user = await prisma.user.findUnique({ where: { clerkId } });
-        if (!user) return NextResponse.json({ ok: false, message: "User not synced" }, { status: 400 });
+        if (!user) return NextResponse.json({ ok: false, error: "User not synced" }, { status: 400 });
 
         const project = await prisma.campaign.create({
             data: {
@@ -39,8 +39,8 @@ export async function POST(req: Request) {
         });
 
         return NextResponse.json({ ok: true, projectId: project.id });
-    } catch (error: any) {
+    } catch (error) {
         console.error("Project creation failed:", error);
-        return NextResponse.json({ ok: false, message: error.message }, { status: 500 });
+        return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });
     }
 }

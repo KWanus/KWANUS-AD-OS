@@ -11,29 +11,16 @@ export async function GET() {
   try {
     await prisma.$queryRaw`SELECT 1`;
     checks.database = { status: "ok", latency: Date.now() - dbStart };
-  } catch (err) {
-    checks.database = { status: "error", latency: Date.now() - dbStart, error: err instanceof Error ? err.message : "Unknown" };
+  } catch {
+    checks.database = { status: "error", latency: Date.now() - dbStart };
   }
 
-  // Anthropic API check (key presence only — don't make a real call)
-  checks.anthropic = process.env.ANTHROPIC_API_KEY
-    ? { status: "ok" }
-    : { status: "error", error: "ANTHROPIC_API_KEY not set" };
-
-  // Clerk check (key presence)
-  checks.clerk = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
-    ? { status: "ok" }
-    : { status: "error", error: "Clerk keys not set" };
-
-  // Stripe check (key presence)
-  checks.stripe = process.env.STRIPE_SECRET_KEY
-    ? { status: "ok" }
-    : { status: "error", error: "STRIPE_SECRET_KEY not set" };
-
-  // Resend check (key presence — optional)
-  checks.resend = process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== "re_REPLACE_ME"
-    ? { status: "ok" }
-    : { status: "error", error: "RESEND_API_KEY not configured (optional)" };
+  // Service checks (key presence only — don't leak env var names)
+  checks.anthropic = process.env.ANTHROPIC_API_KEY ? { status: "ok" } : { status: "error" };
+  checks.clerk = process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY ? { status: "ok" } : { status: "error" };
+  checks.stripe = process.env.STRIPE_SECRET_KEY ? { status: "ok" } : { status: "error" };
+  checks.resend = (process.env.RESEND_API_KEY && process.env.RESEND_API_KEY !== "re_REPLACE_ME")
+    ? { status: "ok" } : { status: "error" };
 
   const allOk = checks.database.status === "ok" && checks.anthropic.status === "ok" && checks.clerk.status === "ok";
   const overallStatus = allOk ? "healthy" : "degraded";

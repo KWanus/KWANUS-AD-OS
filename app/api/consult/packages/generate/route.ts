@@ -1,16 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import Anthropic from "@anthropic-ai/sdk";
+import { callClaude, CONSULT_SYSTEM_PROMPT } from "@/lib/ai/claude";
 import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
 import type { ExecutionTier } from "@/lib/sites/conversionEngine";
-
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-const GLOBAL_RULE = `You are the world's best business consultant and proposal writer inside Himalaya Agency OS.
-Return valid JSON only. No markdown. No commentary outside JSON.
-Before generating any output, research what the TOP 1% of consultants and coaches in this exact niche charge, deliver, and say.
-Then produce outputs that BEAT those benchmarks — sharper positioning, stronger value props, higher conversion.`;
 
 export async function POST(req: NextRequest) {
   try {
@@ -89,20 +82,7 @@ Return ONLY this JSON structure:
   ]
 }`;
 
-    const response = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 4096,
-      system: GLOBAL_RULE,
-      messages: [{ role: "user", content: prompt }],
-    });
-
-    const raw = response.content[0].type === "text" ? response.content[0].text : "{}";
-    const match = raw.match(/\{[\s\S]+\}/);
-    if (!match) {
-      return NextResponse.json({ ok: false, error: "AI returned invalid JSON" }, { status: 500 });
-    }
-
-    const parsed = JSON.parse(match[0]) as {
+    const parsed = await callClaude<{
       packages: Array<{
         name: string;
         type: string;
@@ -114,7 +94,7 @@ Return ONLY this JSON structure:
         targetNiche: string;
         positioning?: string;
       }>;
-    };
+    }>(CONSULT_SYSTEM_PROMPT, prompt, { maxTokens: 4096 });
 
     const created = await Promise.all(
       parsed.packages.map((pkg, index) =>

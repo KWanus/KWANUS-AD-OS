@@ -74,6 +74,12 @@ export async function PATCH(
       scheduledAt?: string | null;
       executionTier?: "core" | "elite";
     };
+    // Validate status enum
+    const VALID_STATUSES = ["draft", "scheduled", "sending", "sent", "failed"];
+    if (body.status && !VALID_STATUSES.includes(body.status)) {
+      return NextResponse.json({ ok: false, error: `status must be one of: ${VALID_STATUSES.join(", ")}` }, { status: 400 });
+    }
+
     const existing = await prisma.emailBroadcast.findFirst({
       where: { id, userId: user.id },
       select: { segmentTags: true },

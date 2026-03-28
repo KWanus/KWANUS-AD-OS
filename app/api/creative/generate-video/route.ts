@@ -76,8 +76,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, jobId: data.id, status: data.status, executionTier });
 
   } catch (err) {
-    const message = err instanceof Error ? err.message : "Video generation failed";
     console.error("Video generation error:", err);
-    return NextResponse.json({ ok: false, error: message }, { status: 500 });
+    return NextResponse.json({ ok: false, error: "Video generation failed" }, { status: 500 });
   }
 }

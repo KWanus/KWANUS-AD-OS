@@ -1,41 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import Anthropic from "@anthropic-ai/sdk";
 import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
+import { callClaude, LOCAL_SYSTEM_PROMPT } from "@/lib/ai/claude";
 import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
-
-const GLOBAL_RULE = `You are a structured business-generation engine inside Himalaya Agency OS.
-Your job is to analyze businesses in any niche and generate useful, conversion-focused outputs.
-Rules:
-- Return valid JSON only
-- Do not include markdown
-- Do not include commentary outside the JSON
-- Be specific, practical, and business-relevant
-- Do not hardcode any niche
-- Adapt to the business type, location, and observed weaknesses
-- Prioritize clarity, conversion, trust, and simplicity
-- If information is missing, make grounded assumptions and include them in an "assumptions" field
-- Keep outputs concise but high quality
-- All recommendations must be realistic for a small business
-- Before generating any output, mentally model what the TOP 1% of high-converting sites, ads, and emails in this specific niche look like
-- Study the patterns of industry leaders, viral campaigns, and 8-figure funnels in this space
-- Then produce outputs that BEAT those benchmarks — better hooks, sharper copy, stronger conversion architecture
-- Never produce average or generic — every output must feel like it was crafted by the world's best copywriter and conversion specialist for this exact niche`;
-
 async function callSkill(prompt: string): Promise<unknown> {
-  const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
-    max_tokens: 2048,
-    system: GLOBAL_RULE,
-    messages: [{ role: "user", content: prompt }],
-  });
-  const raw = response.content[0].type === "text" ? response.content[0].text : "{}";
-  const match = raw.match(/\{[\s\S]+\}/);
-  if (!match) throw new Error("No JSON returned from skill");
-  return JSON.parse(match[0]);
+  return callClaude(LOCAL_SYSTEM_PROMPT, prompt);
 }
 
 export async function POST(

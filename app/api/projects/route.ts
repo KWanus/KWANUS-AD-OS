@@ -6,7 +6,7 @@ export async function GET(req: NextRequest) {
   try {
     const { userId: clerkId } = await auth();
     if (!clerkId) {
-      return NextResponse.json({ ok: false, message: "Unauthorized" }, { status: 401 });
+      return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
     }
 
     const user = await prisma.user.findUnique({
@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
     });
 
     if (!user) {
-      return NextResponse.json({ ok: false, message: "User not synced" }, { status: 400 });
+      return NextResponse.json({ ok: false, error: "User not synced" }, { status: 400 });
     }
 
     const limit = Math.min(parseInt(req.nextUrl.searchParams.get("limit") ?? "50"), 100);
@@ -54,7 +54,7 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({ ok: true, projects, nextCursor, hasMore });
   } catch (error) {
-    const message = error instanceof Error ? error.message : "Failed to load projects";
-    return NextResponse.json({ ok: false, message }, { status: 500 });
+    console.error("Projects GET:", error);
+    return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });
   }
 }

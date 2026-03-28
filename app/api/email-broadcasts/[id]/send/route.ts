@@ -15,8 +15,8 @@ export async function POST(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
   try {
-    const { id } = await params;
     const { userId: clerkId } = await auth();
     if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
     const user = await getOrCreateUser();
@@ -111,8 +111,7 @@ export async function POST(
     return NextResponse.json({ ok: true, broadcast: updated, sent, failed, total: contacts.length });
   } catch (err) {
     console.error("Broadcast send:", err);
-    // Mark as failed if errored
-    const { id } = await params;
+    // Revert to draft status so user can retry
     await prisma.emailBroadcast.updateMany({
       where: { id },
       data: { status: "draft" },

@@ -150,6 +150,16 @@ export async function GET(req: NextRequest) {
       });
     }
 
+    // Sort by relevance: exact title match > starts-with > contains
+    const qLower = q.toLowerCase();
+    results.sort((a, b) => {
+      const aTitle = a.title.toLowerCase();
+      const bTitle = b.title.toLowerCase();
+      const aExact = aTitle === qLower ? 3 : aTitle.startsWith(qLower) ? 2 : 1;
+      const bExact = bTitle === qLower ? 3 : bTitle.startsWith(qLower) ? 2 : 1;
+      return bExact - aExact;
+    });
+
     return NextResponse.json({ ok: true, results, total: results.length });
   } catch (err) {
     console.error("Search error:", err);

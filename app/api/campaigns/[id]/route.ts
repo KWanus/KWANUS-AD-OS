@@ -65,13 +65,22 @@ export async function PATCH(
     const user = await getOrCreateUser();
     if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 
-    // Verify ownership
     const body = await req.json() as {
       name?: string;
       status?: string;
       notes?: string;
       workflowState?: Prisma.InputJsonValue;
     };
+
+    // Validate status enum
+    const VALID_STATUSES = ["draft", "active", "paused", "completed", "archived"];
+    if (body.status && !VALID_STATUSES.includes(body.status)) {
+      return NextResponse.json({ ok: false, error: `status must be one of: ${VALID_STATUSES.join(", ")}` }, { status: 400 });
+    }
+
+    // Verify ownership before update
+    const existing = await prisma.campaign.findFirst({ where: { id, userId: user.id }, select: { id: true } });
+    if (!existing) return NextResponse.json({ ok: false, error: "Campaign not found" }, { status: 404 });
 
     const campaign = await prisma.campaign.update({
       where: { id },

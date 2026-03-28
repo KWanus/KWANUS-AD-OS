@@ -9,9 +9,9 @@ export async function GET(
 ) {
   try {
     const { userId: clerkId } = await auth();
-    if (!clerkId) return NextResponse.json({ ok: false, message: "Unauthorized" }, { status: 401 });
+    if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
     const user = await getOrCreateUser();
-    if (!user) return NextResponse.json({ ok: false, message: "Unauthorized" }, { status: 401 });
+    if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 
     const { id } = await params;
     const project = await prisma.campaign.findFirst({
@@ -27,12 +27,12 @@ export async function GET(
       },
     });
 
-    if (!project) return NextResponse.json({ ok: false, message: "Project not found" }, { status: 404 });
+    if (!project) return NextResponse.json({ ok: false, error: "Project not found" }, { status: 404 });
 
     return NextResponse.json({ ok: true, project });
   } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
-    return NextResponse.json({ ok: false, message: msg }, { status: 500 });
+    console.error("Project GET:", error);
+    return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });
   }
 }
 
@@ -42,9 +42,9 @@ export async function PATCH(
 ) {
   try {
     const { userId: clerkId } = await auth();
-    if (!clerkId) return NextResponse.json({ ok: false, message: "Unauthorized" }, { status: 401 });
+    if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
     const user = await getOrCreateUser();
-    if (!user) return NextResponse.json({ ok: false, message: "Unauthorized" }, { status: 401 });
+    if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 
     const { id } = await params;
     const body = await req.json() as Record<string, unknown>;
@@ -59,14 +59,14 @@ export async function PATCH(
       if (ALLOWED_FIELDS.has(key)) updates[key] = val;
     }
     if (Object.keys(updates).length === 0) {
-      return NextResponse.json({ ok: false, message: "No valid fields to update" }, { status: 400 });
+      return NextResponse.json({ ok: false, error: "No valid fields to update" }, { status: 400 });
     }
 
     const existing = await prisma.campaign.findFirst({
       where: { id, userId: user.id },
       select: { id: true },
     });
-    if (!existing) return NextResponse.json({ ok: false, message: "Project not found" }, { status: 404 });
+    if (!existing) return NextResponse.json({ ok: false, error: "Project not found" }, { status: 404 });
     const project = await prisma.campaign.update({
       where: { id },
       data: updates,
@@ -74,7 +74,30 @@ export async function PATCH(
 
     return NextResponse.json({ ok: true, project });
   } catch (error) {
-    const msg = error instanceof Error ? error.message : String(error);
-    return NextResponse.json({ ok: false, message: msg }, { status: 500 });
+    console.error("Project PATCH:", error);
+    return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { userId: clerkId } = await auth();
+    if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    const user = await getOrCreateUser();
+    if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    const { id } = await params;
+    const deleted = await prisma.campaign.deleteMany({ where: { id, userId: user.id } });
+    if (deleted.count === 0) {
+      return NextResponse.json({ ok: false, error: "Project not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (error) {
+    console.error("Project DELETE:", error);
+    return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });
   }
 }
