@@ -9,6 +9,7 @@ const isPublicRoute = createRouteMatcher([
   "/api/opt-in-forms/(.*)/submit", // Public form submissions
   "/api/email-contacts/unsubscribe", // Email unsubscribe (public)
   "/api/health",                // Health check (monitoring)
+  "/api/sites/(.*)/track",      // Site view tracking (public)
   "/api/cron/(.*)",             // Cron jobs (secured via CRON_SECRET)
 ]);
 
