@@ -4,6 +4,7 @@ import type { SkillInput, SkillResult } from "./types";
 import { getSkill } from "./registry";
 import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
 import { getSkillPrompt, hasSkillPrompt, buildSystemPrompt } from "@/prompts/skillPrompts";
+import { extractJson } from "@/lib/ai/claude";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -258,10 +259,9 @@ async function saveResults(
   try {
     if (slug === "landing-page") {
       // Parse the JSON response and build a site
-      const jsonMatch = rawText.match(/\{[\s\S]*\}/);
-      if (jsonMatch) {
+      try {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        const parsed = JSON.parse(jsonMatch[0]) as Record<string, any>;
+        const parsed = extractJson<Record<string, any>>(rawText);
         data.parsed = parsed;
 
         // Build blocks from parsed sections
@@ -296,6 +296,8 @@ async function saveResults(
         });
         created.siteId = site.id;
         data.pageId = site.pages[0]?.id ?? null;
+      } catch (parseErr) {
+        console.error("Landing page JSON parse error:", parseErr);
       }
     }
 
@@ -387,9 +389,13 @@ export async function runSkill(
     const executionTier = input.executionTier === "core" ? "core" : "elite";
     const system = buildSkillSystemPrompt(skill.name, businessContext, executionTier);
 
+    // Skills that produce structured content need more tokens
+    const LONG_FORM_SKILLS = new Set(["landing-page", "email-sequence", "sales-script", "lead-magnet", "broadcast-blast"]);
+    const maxTokens = LONG_FORM_SKILLS.has(slug) ? 4096 : 2048;
+
     const message = await anthropic.messages.create({
       model: "claude-sonnet-4-6",
-      max_tokens: 2048,
+      max_tokens: maxTokens,
       system,
       messages: [{ role: "user", content: prompt }],
     });

@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { generateUnsubscribeToken } from "@/app/api/email-contacts/unsubscribe/route";
 
 interface SendEmailOptions {
   to: string | string[];
@@ -10,6 +11,8 @@ interface SendEmailOptions {
   replyTo?: string;
   /** User's own Resend API key (overrides platform key) */
   apiKey?: string;
+  /** Contact ID for unsubscribe link generation */
+  contactId?: string;
 }
 
 function markdownToHtml(md: string): string {
@@ -64,7 +67,19 @@ export async function sendEmail(opts: SendEmailOptions): Promise<{ ok: boolean; 
   const fromName = opts.fromName ?? "KWANUS AD OS";
   const from = `${fromName} <${fromEmail}>`;
 
-  const htmlBody = opts.html.includes("<html") ? opts.html : wrapHtml(opts.html, fromName);
+  let htmlBody = opts.html.includes("<html") ? opts.html : wrapHtml(opts.html, fromName);
+
+  // Replace unsubscribe placeholder with actual link
+  const recipients = Array.isArray(opts.to) ? opts.to : [opts.to];
+  if (recipients.length === 1 && opts.contactId) {
+    const email = recipients[0];
+    const token = generateUnsubscribeToken(email, opts.contactId);
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.VERCEL_URL
+      ? `https://${process.env.VERCEL_URL}`
+      : "http://localhost:3000";
+    const unsubUrl = `${baseUrl}/api/email-contacts/unsubscribe?email=${encodeURIComponent(email)}&token=${token}`;
+    htmlBody = htmlBody.replace(/\{\{unsubscribe_url\}\}/g, unsubUrl);
+  }
 
   try {
     const result = await resend.emails.send({
