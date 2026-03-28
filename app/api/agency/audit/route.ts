@@ -13,23 +13,30 @@ export async function GET(req: NextRequest) {
     const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } });
     if (!user) return NextResponse.json({ ok: false, error: "User not found" }, { status: 404 });
 
-    const limited = rateLimit(`ai:${user.id}`, RATE_LIMITS.aiGeneration);
-    if (limited) return limited;
-
     const { searchParams } = new URL(req.url);
     const status = searchParams.get("status") ?? undefined;
     const businessType = searchParams.get("businessType") ?? undefined;
+    const limit = Math.min(parseInt(searchParams.get("limit") ?? "50"), 100);
+    const cursor = searchParams.get("cursor") ?? undefined;
+
+    const where = {
+      userId: user.id,
+      ...(status ? { status } : {}),
+      ...(businessType ? { businessType } : {}),
+    };
 
     const audits = await prisma.agencyAudit.findMany({
-      where: {
-        userId: user.id,
-        ...(status ? { status } : {}),
-        ...(businessType ? { businessType } : {}),
-      },
+      where,
       orderBy: { createdAt: "desc" },
+      take: limit + 1,
+      ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
     });
 
-    return NextResponse.json({ ok: true, audits });
+    const hasMore = audits.length > limit;
+    if (hasMore) audits.pop();
+    const nextCursor = hasMore ? audits[audits.length - 1]?.id : undefined;
+
+    return NextResponse.json({ ok: true, audits, nextCursor, hasMore });
   } catch (err) {
     console.error("AgencyAudit GET error:", err);
     return NextResponse.json({ ok: false, error: "Failed to fetch audits" }, { status: 500 });

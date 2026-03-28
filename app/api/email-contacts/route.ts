@@ -59,14 +59,16 @@ export async function GET(req: NextRequest) {
       prisma.emailContact.count({ where }),
     ]);
 
-    // Get unique tags across all contacts
-    const allContacts = await prisma.emailContact.findMany({
-      where: { userId: user.id },
-      select: { tags: true },
-    });
-    const allTags = [
-      ...new Set(allContacts.flatMap((c: { tags: string[] }) => visibleTags(c.tags))),
-    ].sort();
+    // Get unique tags using raw query instead of fetching all contacts
+    const tagRows = await prisma.$queryRaw<{ tag: string }[]>`
+      SELECT DISTINCT unnest(tags) AS tag
+      FROM "EmailContact"
+      WHERE "userId" = ${user.id}
+      ORDER BY tag
+    `.catch(() => []);
+    const allTags = tagRows
+      .map(r => r.tag)
+      .filter(t => !t.startsWith(EXECUTION_TIER_PREFIX));
 
     return NextResponse.json({
       ok: true,
@@ -161,10 +163,10 @@ export async function PUT(req: NextRequest) {
       (c: { email: string; firstName?: string; lastName?: string; tags?: string[] }) =>
         c.email?.includes("@")
     );
-    let imported = 0;
 
-    for (const c of valid) {
-      await prisma.emailContact.upsert({
+    // Batch upsert using a transaction instead of individual queries
+    const ops = valid.map(c =>
+      prisma.emailContact.upsert({
         where: { userId_email: { userId: user.id, email: c.email.toLowerCase().trim() } },
         update: { firstName: c.firstName, lastName: c.lastName, tags: withExecutionTier(c.tags, c.executionTier) },
         create: {
@@ -176,11 +178,19 @@ export async function PUT(req: NextRequest) {
           source: "import",
           status: "subscribed",
         },
-      });
-      imported++;
+      })
+    );
+
+    // Process in batches of 50 within transactions
+    const BATCH = 50;
+    let imported = 0;
+    for (let i = 0; i < ops.length; i += BATCH) {
+      const batch = ops.slice(i, i + BATCH);
+      await prisma.$transaction(batch);
+      imported += batch.length;
     }
 
-    return NextResponse.json({ ok: true, imported, skipped: body.contacts.length - imported });
+    return NextResponse.json({ ok: true, imported, skipped: body.contacts.length - valid.length });
   } catch (err) {
     console.error("Contacts bulk import:", err);
     return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });

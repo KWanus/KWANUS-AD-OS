@@ -40,37 +40,52 @@ export async function POST(req: NextRequest) {
     let skipped = 0;
     let invalid = 0;
 
+    // Normalize and validate all emails upfront
+    const validContacts: typeof body.contacts = [];
     for (const contact of body.contacts) {
       const email = contact.email?.trim().toLowerCase();
-      if (!email || !email.includes("@")) {
+      if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
         invalid++;
         continue;
       }
+      validContacts.push({ ...contact, email });
+    }
 
-      // Check for duplicate
-      if (body.skipDuplicates !== false) {
-        const existing = await prisma.emailContact.findFirst({
-          where: { userId: user.id, email },
-          select: { id: true },
-        });
-        if (existing) {
-          skipped++;
-          continue;
-        }
+    // Batch check for existing emails in one query
+    const emails = validContacts.map(c => c.email.trim().toLowerCase());
+    const existingEmails = new Set<string>();
+    if (body.skipDuplicates !== false && emails.length > 0) {
+      const existing = await prisma.emailContact.findMany({
+        where: { userId: user.id, email: { in: emails } },
+        select: { email: true },
+      });
+      for (const e of existing) existingEmails.add(e.email);
+    }
+
+    // Batch create non-duplicates using transaction
+    const toCreate = validContacts.filter(c => {
+      if (existingEmails.has(c.email.trim().toLowerCase())) {
+        skipped++;
+        return false;
       }
+      return true;
+    });
 
-      await prisma.emailContact.create({
-        data: {
+    if (toCreate.length > 0) {
+      // Use createMany for batch insert (much faster than individual creates)
+      const result = await prisma.emailContact.createMany({
+        data: toCreate.map(contact => ({
           userId: user.id,
-          email,
+          email: contact.email.trim().toLowerCase(),
           firstName: contact.firstName?.trim() || null,
           lastName: contact.lastName?.trim() || null,
           tags: contact.tags ?? [],
           source: contact.source ?? "csv_import",
           status: "subscribed",
-        },
+        })),
+        skipDuplicates: true,
       });
-      created++;
+      created = result.count;
     }
 
     return NextResponse.json({

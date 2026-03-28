@@ -22,17 +22,33 @@ function withExecutionTier(tags: string[] | undefined, tier?: string) {
   return [...visibleSegmentTags(tags), `${EXECUTION_TIER_PREFIX}${normalizeExecutionTier(tier)}`];
 }
 
-export async function GET(_req: NextRequest) {
+export async function GET(req: NextRequest) {
   try {
     const { userId: clerkId } = await auth();
     if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
     const user = await getOrCreateUser();
     if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 
+    const limit = Math.min(parseInt(req.nextUrl.searchParams.get("limit") ?? "50"), 100);
+    const cursor = req.nextUrl.searchParams.get("cursor") ?? undefined;
+    const status = req.nextUrl.searchParams.get("status") ?? undefined;
+
+    const where = {
+      userId: user.id,
+      ...(status ? { status } : {}),
+    };
+
     const broadcasts = await prisma.emailBroadcast.findMany({
-      where: { userId: user.id },
+      where,
       orderBy: { updatedAt: "desc" },
+      take: limit + 1,
+      ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
     });
+
+    const hasMore = broadcasts.length > limit;
+    if (hasMore) broadcasts.pop();
+    const nextCursor = hasMore ? broadcasts[broadcasts.length - 1]?.id : undefined;
+
     return NextResponse.json({
       ok: true,
       broadcasts: broadcasts.map((broadcast) => ({
@@ -40,6 +56,8 @@ export async function GET(_req: NextRequest) {
         segmentTags: visibleSegmentTags(broadcast.segmentTags),
         executionTier: parseExecutionTier(broadcast.segmentTags),
       })),
+      nextCursor,
+      hasMore,
     });
   } catch (err) {
     console.error("EmailBroadcasts GET:", err);
