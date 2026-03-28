@@ -33,6 +33,8 @@ const SHORTCUTS: Shortcut[] = [
   { keys: "n w", label: "N W", description: "New Website", category: "Actions" },
 
   // Global
+  { keys: "/", label: "/", description: "Open search", category: "Global" },
+  { keys: "meta+k", label: "Cmd K", description: "Open search", category: "Global" },
   { keys: "shift+/", label: "?", description: "Show keyboard shortcuts", category: "Global" },
   { keys: "escape", label: "Esc", description: "Close dialog / Go back", category: "Global" },
 ];
