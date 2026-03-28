@@ -501,6 +501,24 @@ export default function ClientsPage() {
         )}
       </div>
 
+      {/* Actions */}
+      {clients.length > 0 && !loading && (
+        <div className="flex items-center gap-2 mb-4">
+          <Link
+            href="/clients/new"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition"
+          >
+            <Users className="w-3.5 h-3.5" /> Add Client
+          </Link>
+          <a
+            href="/api/clients/export"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/50 text-xs font-semibold hover:text-white hover:border-white/20 transition"
+          >
+            Export CSV
+          </a>
+        </div>
+      )}
+
       {/* Filters */}
       <div className="flex items-center gap-3 flex-wrap mb-6">
         <div className="relative flex-1 min-w-[200px] max-w-sm">
