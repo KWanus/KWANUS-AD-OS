@@ -60,10 +60,9 @@ export async function POST(req: NextRequest) {
       slug = `${base}-${attempt}`;
     }
 
-    let draft = null;
+    let draft: Record<string, unknown> | null = null;
     if (body.campaignId) {
-      // @ts-ignore
-      draft = await prisma.landingDraft.findFirst({ where: { campaignId: body.campaignId } });
+      draft = await prisma.landingDraft.findFirst({ where: { campaignId: body.campaignId } }) as Record<string, unknown> | null;
     }
 
     // Resolve blocks — prefer templateId, then template type, then blank
