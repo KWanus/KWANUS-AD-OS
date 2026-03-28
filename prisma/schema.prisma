@@ -66,6 +66,7 @@ model User {
   optInForms      OptInForm[]
   sites           Site[]
   leads           Lead[]
+  automations     Automation[]
   businessProfile BusinessProfile?
 
   createdAt DateTime @default(now())
@@ -859,4 +860,29 @@ model BusinessProfile {
 
   createdAt           DateTime @default(now())
   updatedAt           DateTime @updatedAt
+}
+
+// ─── Campaign Automations ─────────────────────────────────────────────────────
+
+model Automation {
+  id          String   @id @default(cuid())
+  userId      String
+  user        User     @relation(fields: [userId], references: [id])
+  campaignId  String?
+  name        String
+  description String?
+  trigger     String   @default("manual") // manual | form_submit | stage_change | schedule | webhook
+  triggerConfig Json?  // { event, schedule, webhookUrl, etc. }
+  status      String   @default("draft") // draft | active | paused | archived
+  nodes       Json     @default("[]")    // ReactFlow node array
+  edges       Json     @default("[]")    // ReactFlow edge array
+  // Stats
+  runsTotal   Int      @default(0)
+  runsSuccess Int      @default(0)
+  runsFailed  Int      @default(0)
+  lastRunAt   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([userId, status])
 }
