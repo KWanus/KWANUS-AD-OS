@@ -33,8 +33,8 @@ export async function GET(req: NextRequest) {
     const search = searchParams.get("search") ?? "";
     const tag = searchParams.get("tag") ?? "";
     const status = searchParams.get("status") ?? "";
-    const page = parseInt(searchParams.get("page") ?? "1");
-    const limit = Math.min(parseInt(searchParams.get("limit") ?? "50"), 100);
+    const page  = parseInt(searchParams.get("page")  ?? "1",  10) || 1;
+    const limit = Math.min(parseInt(searchParams.get("limit") ?? "50", 10) || 50, 100);
 
     const where = {
       userId: user.id,
@@ -157,30 +157,32 @@ export async function PUT(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "No contacts provided" }, { status: 400 });
     }
 
-    const valid = body.contacts.filter(
-      (c: { email: string; firstName?: string; lastName?: string; tags?: string[] }) =>
-        c.email?.includes("@")
-    );
-    let imported = 0;
-
-    for (const c of valid) {
-      await prisma.emailContact.upsert({
-        where: { userId_email: { userId: user.id, email: c.email.toLowerCase().trim() } },
-        update: { firstName: c.firstName, lastName: c.lastName, tags: withExecutionTier(c.tags, c.executionTier) },
-        create: {
-          userId: user.id,
-          email: c.email.toLowerCase().trim(),
-          firstName: c.firstName,
-          lastName: c.lastName,
-          tags: withExecutionTier(c.tags, c.executionTier),
-          source: "import",
-          status: "subscribed",
-        },
-      });
-      imported++;
+    const MAX_BULK = 500;
+    if (body.contacts.length > MAX_BULK) {
+      return NextResponse.json(
+        { ok: false, error: `Bulk import is limited to ${MAX_BULK} contacts per request` },
+        { status: 400 }
+      );
     }
 
-    return NextResponse.json({ ok: true, imported, skipped: body.contacts.length - imported });
+    const valid = body.contacts.filter((c) => c.email?.includes("@"));
+    const skipped = body.contacts.length - valid.length;
+
+    // createMany with skipDuplicates is O(1) DB round-trip vs N individual upserts
+    const result = await prisma.emailContact.createMany({
+      data: valid.map((c) => ({
+        userId: user.id,
+        email: c.email.toLowerCase().trim().slice(0, 254),
+        firstName: c.firstName?.trim().slice(0, 100) ?? null,
+        lastName:  c.lastName?.trim().slice(0, 100) ?? null,
+        tags: withExecutionTier(c.tags, c.executionTier),
+        source: "import" as const,
+        status: "subscribed" as const,
+      })),
+      skipDuplicates: true,
+    });
+
+    return NextResponse.json({ ok: true, imported: result.count, skipped: skipped + (valid.length - result.count) });
   } catch (err) {
     console.error("Contacts bulk import:", err);
     return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });

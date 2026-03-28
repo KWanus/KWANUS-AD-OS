@@ -2,6 +2,17 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
+import { checkRateLimit } from "@/lib/rateLimit";
+
+const BODY_SIZE_LIMIT = 16 * 1024; // 16 KB
+
+function getClientIp(req: NextRequest): string {
+  return (
+    req.headers.get("x-forwarded-for")?.split(",")[0].trim() ??
+    req.headers.get("x-real-ip") ??
+    "unknown"
+  );
+}
 import { normalizeInput } from "@/src/logic/ad-os/normalizeInput";
 import { fetchPage } from "@/src/logic/ad-os/fetchPage";
 import { classifyLink } from "@/src/logic/ad-os/classifyLink";
@@ -20,6 +31,22 @@ import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate limiting: authenticated users get 30/min, anonymous get 5/min
+    const ip = getClientIp(req);
+    const rl = checkRateLimit(`analyze:${ip}`, { limit: 30, windowSeconds: 60 });
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { ok: false, error: "Too many requests — please wait before analyzing again" },
+        { status: 429, headers: { "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } }
+      );
+    }
+
+    // Body size guard
+    const contentLength = parseInt(req.headers.get("content-length") ?? "0", 10);
+    if (contentLength > BODY_SIZE_LIMIT) {
+      return NextResponse.json({ ok: false, error: "Request body too large" }, { status: 413 });
+    }
+
     const body = await req.json() as { url?: string; mode?: string; executionTier?: ExecutionTier };
     const input = normalizeInput(body.url ?? "", body.mode ?? "operator");
     const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";

@@ -108,6 +108,10 @@ model AnalysisRun {
   opportunityAssessments OpportunityAssessment[]
   assetPackages          AssetPackage[]
   campaigns              Campaign[]
+
+  @@index([userId])
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([userId, verdict])
 }
 
 model OpportunityAssessment {
@@ -133,6 +137,8 @@ model OpportunityAssessment {
 
   analysisRun    AnalysisRun     @relation(fields: [analysisRunId], references: [id], onDelete: Cascade)
   assetPackages  AssetPackage[]
+
+  @@index([analysisRunId])
 }
 
 model AssetPackage {
@@ -182,6 +188,10 @@ model Campaign {
   emailDrafts    EmailDraft[]
   checklistItems ChecklistItem[]
   creatives      CreativeWork[]
+
+  @@index([userId])
+  @@index([userId, status])
+  @@index([userId, createdAt(sort: Desc)])
 }
 
 model CreativeWork {
@@ -318,6 +328,8 @@ model EmailContact {
   updatedAt  DateTime @updatedAt
 
   @@unique([userId, email])
+  @@index([userId, status])
+  @@index([userId, createdAt(sort: Desc)])
 }
 
 model EmailBroadcast {
