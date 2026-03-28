@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import type { SkillInput, SkillResult } from "./types";
 import { getSkill } from "./registry";
 import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
+import { getSkillPrompt, hasSkillPrompt, buildSystemPrompt } from "@/prompts/skillPrompts";
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -372,9 +373,10 @@ export async function runSkill(
   }
 
   try {
-    const prompt = buildPrompt(slug, input);
+    // Use centralized prompt library if available, fallback to inline prompts
+    const prompt = hasSkillPrompt(slug) ? getSkillPrompt(slug, input) : buildPrompt(slug, input);
     const businessContext = await getBusinessContext(userId);
-    const system = buildSkillSystemPrompt(skill.name, businessContext);
+    const system = buildSystemPrompt(skill.name, businessContext);
 
     const message = await anthropic.messages.create({
       model: "claude-sonnet-4-6",
