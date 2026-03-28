@@ -198,6 +198,7 @@ export default function Dashboard() {
   const [recentAnalyses, setRecentAnalyses] = useState<RecentAnalysis[]>([]);
   const [atRiskClients, setAtRiskClients] = useState<ClientSummary[]>([]);
   const [totalClients, setTotalClients] = useState(0);
+  const [activityFeed, setActivityFeed] = useState<{ id: string; type: string; title: string; subtitle: string; href: string; timestamp: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [syncingSystem, setSyncingSystem] = useState(false);
   const [refreshingRecommendations, setRefreshingRecommendations] = useState(false);
@@ -212,7 +213,7 @@ export default function Dashboard() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const [settingsRes, leadsRes, campaignsRes, sitesRes, profileRes, emailFlowsRes, statsRes, analysesRes, clientsRes] = await Promise.allSettled([
+      const [settingsRes, leadsRes, campaignsRes, sitesRes, profileRes, emailFlowsRes, statsRes, analysesRes, clientsRes, feedRes] = await Promise.allSettled([
         fetch("/api/settings").then((r) => r.json() as Promise<{ ok: boolean; settings?: SettingsState }>),
         fetch("/api/leads").then((r) => r.json() as Promise<{ ok: boolean; leads?: Lead[] }>),
         fetch("/api/campaigns").then((r) => r.json() as Promise<{ ok: boolean; campaigns?: Campaign[] }>),
@@ -222,6 +223,7 @@ export default function Dashboard() {
         fetch("/api/stats").then((r) => r.json() as Promise<{ ok: boolean; stats?: StatsSummary | null }>),
         fetch("/api/analyses?limit=5").then((r) => r.json() as Promise<{ ok: boolean; analyses?: RecentAnalysis[]; total?: number }>),
         fetch("/api/clients?sortBy=healthScore&limit=5").then((r) => r.json() as Promise<{ ok: boolean; clients?: ClientSummary[]; total?: number }>),
+        fetch("/api/activity-feed?limit=8").then((r) => r.json() as Promise<{ ok: boolean; feed?: { id: string; type: string; title: string; subtitle: string; href: string; timestamp: string }[] }>),
       ]);
 
       if (settingsRes.status === "fulfilled" && settingsRes.value.ok) {
@@ -255,6 +257,9 @@ export default function Dashboard() {
       if (clientsRes.status === "fulfilled" && clientsRes.value.ok) {
         setAtRiskClients((clientsRes.value.clients ?? []).filter((c) => c.healthStatus === "red" || c.healthStatus === "yellow"));
         setTotalClients(clientsRes.value.total ?? 0);
+      }
+      if (feedRes.status === "fulfilled" && feedRes.value.ok) {
+        setActivityFeed(feedRes.value.feed ?? []);
       }
     } finally {
       setLoading(false);
@@ -715,6 +720,30 @@ export default function Dashboard() {
             ))}
           </div>
         </section>
+
+        {/* Activity Feed */}
+        {!loading && activityFeed.length > 0 && (
+          <section className="mb-8">
+            <SectionLabel>Recent Activity</SectionLabel>
+            <div className="rounded-[28px] border border-white/[0.07] bg-white/[0.03] p-5">
+              <div className="space-y-2">
+                {activityFeed.slice(0, 6).map((item) => (
+                  <Link
+                    key={item.id}
+                    href={item.href}
+                    className="flex items-center justify-between gap-3 rounded-2xl border border-white/[0.06] bg-black/20 px-4 py-3 transition hover:border-white/[0.12] group"
+                  >
+                    <div className="min-w-0 flex-1">
+                      <p className="truncate text-sm font-bold text-white/70 group-hover:text-white transition">{item.title}</p>
+                      <p className="truncate text-xs text-white/30">{item.subtitle}</p>
+                    </div>
+                    <span className="text-[10px] text-white/20 shrink-0">{timeAgo(item.timestamp)}</span>
+                  </Link>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
 
         <div className="grid gap-6 lg:grid-cols-[1.5fr_1fr]">
           <section className="rounded-[28px] border border-white/[0.07] bg-white/[0.03] p-5">
