@@ -12,7 +12,7 @@ const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 // ─── Context builder ───────────────────────────────────────────────────────────
 
 async function buildUserContext(userId: string): Promise<string> {
-  const [leads, affiliateOffers, dropshipProducts, proposals, agencyAudits, localAudits] =
+  const [leads, affiliateOffers, dropshipProducts, proposals, agencyAudits, localAudits, recentAnalyses, clients] =
     await Promise.all([
       prisma.lead.findMany({
         where: { userId },
@@ -50,6 +50,18 @@ async function buildUserContext(userId: string): Promise<string> {
         take: 5,
         select: { id: true, businessName: true, niche: true, overallScore: true },
       }),
+      prisma.analysisRun.findMany({
+        where: { userId },
+        orderBy: { createdAt: "desc" },
+        take: 5,
+        select: { id: true, title: true, inputUrl: true, score: true, verdict: true, mode: true },
+      }),
+      prisma.client.findMany({
+        where: { userId },
+        orderBy: { healthScore: "asc" },
+        take: 10,
+        select: { id: true, name: true, pipelineStage: true, healthScore: true, healthStatus: true, dealValue: true },
+      }),
     ]);
 
   const leadsLine = leads.length
@@ -76,7 +88,22 @@ async function buildUserContext(userId: string): Promise<string> {
     ? localAudits.map((a) => `${a.businessName} [${a.niche ?? "?"} - ${a.overallScore ?? "??"}/100]`).join(", ")
     : "none";
 
+  const analysesLine = recentAnalyses.length
+    ? recentAnalyses.map((a) => `${a.title || a.inputUrl} [${a.score ?? "??"}/100 - ${a.verdict ?? "??"} - ${a.mode}]`).join(", ")
+    : "none";
+
+  const clientsLine = clients.length
+    ? clients.map((c) => `${c.name} [${c.pipelineStage} - health:${c.healthScore}/100 (${c.healthStatus})${c.dealValue ? ` - $${c.dealValue}` : ""}]`).join(", ")
+    : "none";
+
+  const atRiskClients = clients.filter((c) => c.healthStatus === "red");
+  const clientAlert = atRiskClients.length > 0
+    ? `\n⚠️ AT-RISK CLIENTS (${atRiskClients.length}): ${atRiskClients.map((c) => `${c.name} (score:${c.healthScore})`).join(", ")} — recommend immediate follow-up`
+    : "";
+
   return `=== YOUR ACTIVE WORKSPACE ===
+RECENT SCANS (${recentAnalyses.length}): ${analysesLine}
+CLIENTS (${clients.length}): ${clientsLine}${clientAlert}
 LEADS (${leads.length}): ${leadsLine}
 AFFILIATE OFFERS (${affiliateOffers.length}): ${offersLine}
 DROPSHIP PRODUCTS (${dropshipProducts.length}): ${dropshipLine}
