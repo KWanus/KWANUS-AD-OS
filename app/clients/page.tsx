@@ -589,6 +589,36 @@ export default function ClientsPage() {
         </div>
       )}
 
+      {/* Quick filter chips */}
+      {!loading && clients.length > 0 && (
+        <div className="flex items-center gap-2 flex-wrap mb-3">
+          {[
+            { label: "At Risk", filter: () => { setHealthFilter("red"); setStageFilter(""); }, active: healthFilter === "red" },
+            { label: "Needs Attention", filter: () => { setHealthFilter("yellow"); setStageFilter(""); }, active: healthFilter === "yellow" },
+            { label: "Active Deals", filter: () => { setStageFilter("active"); setHealthFilter(""); }, active: stageFilter === "active" },
+            { label: "Won", filter: () => { setStageFilter("won"); setHealthFilter(""); }, active: stageFilter === "won" },
+            { label: "Leads", filter: () => { setStageFilter("lead"); setHealthFilter(""); }, active: stageFilter === "lead" },
+          ].map(chip => (
+            <button
+              key={chip.label}
+              onClick={() => { if (chip.active) { setHealthFilter(""); setStageFilter(""); } else chip.filter(); }}
+              className={`px-3 py-1.5 rounded-lg text-[10px] font-bold transition ${
+                chip.active
+                  ? "bg-cyan-500/15 text-cyan-400 border border-cyan-500/30"
+                  : "bg-white/[0.03] text-white/30 border border-white/[0.06] hover:text-white/50 hover:border-white/[0.12]"
+              }`}
+            >
+              {chip.label}
+            </button>
+          ))}
+          {(healthFilter || stageFilter) && (
+            <button onClick={() => { setHealthFilter(""); setStageFilter(""); }} className="text-[10px] text-white/25 hover:text-white/50 transition">
+              Clear filters
+            </button>
+          )}
+        </div>
+      )}
+
       {/* Filters */}
       <div className="flex items-center gap-3 flex-wrap mb-6">
         <div className="relative flex-1 min-w-[200px] max-w-sm">
