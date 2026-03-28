@@ -217,12 +217,26 @@ function RecentlyAdded({ clients }: { clients: Client[] }) {
 export default function ClientDashboardPage() {
   const [clients, setClients] = useState<Client[]>([]);
   const [loading, setLoading] = useState(true);
+  const [pipelineStats, setPipelineStats] = useState<{
+    weightedPipeline: number;
+    winRate: number;
+    avgDealSize: number;
+  } | null>(null);
+  const [growth, setGrowth] = useState<{ clients: { thisMonth: number; growth: number } } | null>(null);
 
   const fetchClients = useCallback(async () => {
     try {
-      const res = await fetch("/api/clients?limit=100");
-      const data = await res.json() as { ok: boolean; clients?: Client[] };
+      const [clientRes, pipelineRes, growthRes] = await Promise.all([
+        fetch("/api/clients?limit=100"),
+        fetch("/api/stats/pipeline"),
+        fetch("/api/stats/growth"),
+      ]);
+      const data = await clientRes.json() as { ok: boolean; clients?: Client[] };
+      const pData = await pipelineRes.json() as { ok: boolean; pipeline?: { weightedPipeline: number; winRate: number; avgDealSize: number } };
+      const gData = await growthRes.json() as { ok: boolean; metrics?: { clients: { thisMonth: number; growth: number } } };
       if (data.ok) setClients(data.clients ?? []);
+      if (pData.ok && pData.pipeline) setPipelineStats(pData.pipeline);
+      if (gData.ok && gData.metrics) setGrowth(gData.metrics);
     } catch {
       // non-fatal
     } finally {
@@ -295,9 +309,33 @@ export default function ClientDashboardPage() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <MetricCard label="Avg Health" value={`${avgHealth}/100`} icon={Activity} color="text-cyan-400" />
             <MetricCard label="Need Follow-up" value={overdueFollowUps.length} icon={Clock} color="text-amber-400" sub="No contact in 14+ days" />
-            <MetricCard label="Never Contacted" value={neverContacted.length} icon={AlertTriangle} color="text-red-400/80" />
-            <MetricCard label="Elite Lane" value={eliteClients} icon={BarChart2} color="text-green-400" />
+            <MetricCard
+              label="Win Rate"
+              value={pipelineStats ? `${pipelineStats.winRate}%` : "—"}
+              icon={CheckCircle}
+              color="text-emerald-400"
+              sub={pipelineStats?.avgDealSize ? `Avg deal: $${pipelineStats.avgDealSize.toLocaleString()}` : undefined}
+            />
+            <MetricCard
+              label="This Month"
+              value={growth?.clients.thisMonth ?? 0}
+              icon={TrendingUp}
+              color="text-green-400"
+              sub={growth?.clients.growth !== undefined ? `${growth.clients.growth >= 0 ? "+" : ""}${growth.clients.growth}% vs last month` : undefined}
+            />
           </div>
+
+          {/* Weighted pipeline */}
+          {pipelineStats && pipelineStats.weightedPipeline > 0 && (
+            <div className="bg-cyan-500/5 border border-cyan-500/15 rounded-2xl p-4 flex items-center justify-between">
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-widest text-cyan-400/50">Weighted Pipeline</p>
+                <p className="text-lg font-black text-white mt-1">${pipelineStats.weightedPipeline.toLocaleString()}</p>
+                <p className="text-[10px] text-white/30 mt-0.5">Probability-adjusted value across all active stages</p>
+              </div>
+              <Link href="/clients/pipeline" className="text-xs font-bold text-cyan-400/60 hover:text-cyan-400 transition">View pipeline →</Link>
+            </div>
+          )}
 
           {/* AI Insight panel */}
           {(atRisk.length > 0 || overdueFollowUps.length > 0) && (

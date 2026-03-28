@@ -131,7 +131,7 @@ function HealthBadge({ score, status }: { score: number; status: string }) {
 // Client Row
 // ---------------------------------------------------------------------------
 
-function ClientRow({ client, onDelete }: { client: Client; onDelete: (id: string) => void }) {
+function ClientRow({ client, onDelete, selected, onToggle }: { client: Client; onDelete: (id: string) => void; selected?: boolean; onToggle?: () => void }) {
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
   const stage = STAGES[client.pipelineStage] ?? STAGES.lead;
@@ -154,6 +154,15 @@ function ClientRow({ client, onDelete }: { client: Client; onDelete: (id: string
       href={`/clients/${client.id}`}
       className="group flex items-center gap-4 px-5 py-4 hover:bg-white/[0.025] border-b border-white/[0.04] transition-colors"
     >
+      {/* Select checkbox */}
+      <input
+        type="checkbox"
+        checked={selected ?? false}
+        onChange={(e) => { e.preventDefault(); e.stopPropagation(); onToggle?.(); }}
+        onClick={(e) => e.stopPropagation()}
+        className="w-3.5 h-3.5 rounded accent-cyan-500 shrink-0"
+      />
+
       {/* Avatar */}
       <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500/20 to-purple-600/20 border border-white/10 flex items-center justify-center text-sm font-black text-white/70 shrink-0">
         {client.name.charAt(0).toUpperCase()}
@@ -315,6 +324,9 @@ export default function ClientsPage() {
   const [sortBy, setSortBy] = useState("updatedAt");
   const [syncingSystem, setSyncingSystem] = useState(false);
   const [refreshingRecommendations, setRefreshingRecommendations] = useState(false);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const [bulkAction, setBulkAction] = useState("");
+  const [bulkLoading, setBulkLoading] = useState(false);
 
   const fetchClients = useCallback(async () => {
     setLoading(true);
@@ -352,6 +364,53 @@ export default function ClientsPage() {
   }, [fetchClients, search]);
 
   const isFiltered = !!(search || stageFilter || healthFilter);
+
+  function toggleSelect(id: string) {
+    setSelectedIds(prev => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id); else next.add(id);
+      return next;
+    });
+  }
+
+  function toggleSelectAll() {
+    if (selectedIds.size === clients.length) {
+      setSelectedIds(new Set());
+    } else {
+      setSelectedIds(new Set(clients.map(c => c.id)));
+    }
+  }
+
+  async function executeBulkAction() {
+    if (!bulkAction || selectedIds.size === 0) return;
+    setBulkLoading(true);
+    try {
+      const body: Record<string, unknown> = { action: bulkAction, clientIds: [...selectedIds] };
+      if (bulkAction === "stage_change") {
+        const stage = prompt("Enter new pipeline stage (lead, qualified, proposal, active, won, churned):");
+        if (!stage) { setBulkLoading(false); return; }
+        body.pipelineStage = stage;
+      }
+      if (bulkAction === "add_tags") {
+        const tags = prompt("Enter tags to add (comma separated):");
+        if (!tags) { setBulkLoading(false); return; }
+        body.tags = tags.split(",").map(t => t.trim()).filter(Boolean);
+      }
+      if (bulkAction === "delete") {
+        if (!confirm(`Delete ${selectedIds.size} client(s)? This cannot be undone.`)) { setBulkLoading(false); return; }
+      }
+      await fetch("/api/clients/bulk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      setSelectedIds(new Set());
+      setBulkAction("");
+      await fetchClients();
+    } catch { /* non-fatal */ } finally {
+      setBulkLoading(false);
+    }
+  }
 
   // Summary stats
   const atRisk = clients.filter((c) => c.healthStatus === "red").length;
@@ -572,10 +631,47 @@ export default function ClientsPage() {
         </select>
       </div>
 
+      {/* Bulk action bar */}
+      {selectedIds.size > 0 && (
+        <div className="flex items-center gap-3 mb-4 px-4 py-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/20">
+          <span className="text-xs font-bold text-cyan-300">{selectedIds.size} selected</span>
+          <select
+            value={bulkAction}
+            onChange={e => setBulkAction(e.target.value)}
+            className="bg-white/[0.06] border border-white/[0.1] rounded-lg px-2 py-1.5 text-xs text-white/60 outline-none"
+          >
+            <option value="">Choose action...</option>
+            <option value="stage_change">Change stage</option>
+            <option value="add_tags">Add tags</option>
+            <option value="recalculate_health">Recalculate health</option>
+            <option value="delete">Delete</option>
+          </select>
+          <button
+            onClick={() => void executeBulkAction()}
+            disabled={!bulkAction || bulkLoading}
+            className="px-3 py-1.5 rounded-lg bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 text-xs font-bold hover:bg-cyan-500/30 transition disabled:opacity-40"
+          >
+            {bulkLoading ? "Running..." : "Apply"}
+          </button>
+          <button
+            onClick={() => { setSelectedIds(new Set()); setBulkAction(""); }}
+            className="text-xs text-white/30 hover:text-white/60 transition ml-auto"
+          >
+            Clear
+          </button>
+        </div>
+      )}
+
       {/* Table */}
       <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl overflow-hidden">
         {/* Header row */}
         <div className="flex items-center gap-4 px-5 py-3 border-b border-white/[0.06] bg-white/[0.015]">
+          <input
+            type="checkbox"
+            checked={clients.length > 0 && selectedIds.size === clients.length}
+            onChange={toggleSelectAll}
+            className="w-3.5 h-3.5 rounded accent-cyan-500 shrink-0"
+          />
           <div className="w-9 shrink-0" />
           <div className="flex-1 text-[10px] font-black uppercase tracking-widest text-white/25">Client</div>
           <div className="hidden sm:block w-20 text-[10px] font-black uppercase tracking-widest text-white/25">Stage</div>
@@ -594,6 +690,8 @@ export default function ClientsPage() {
             <ClientRow
               key={client.id}
               client={client}
+              selected={selectedIds.has(client.id)}
+              onToggle={() => toggleSelect(client.id)}
               onDelete={(id) => setClients((prev) => prev.filter((c) => c.id !== id))}
             />
           ))
