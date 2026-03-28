@@ -34,39 +34,85 @@ function MessageBubble({ message }: { message: Message }) {
   // Basic markdown rendering: **bold**, *italic*, bullet points, inline code, links
   function renderContent(text: string) {
     const lines = text.split("\n");
-    return lines.map((line, i) => {
-      if (!line.trim()) return <br key={i} />;
+    let inCodeBlock = false;
+    let codeLines: string[] = [];
+
+    const elements: React.ReactNode[] = [];
+
+    for (let i = 0; i < lines.length; i++) {
+      const line = lines[i];
+
+      // Code block toggle
+      if (line.trim().startsWith("```")) {
+        if (inCodeBlock) {
+          elements.push(
+            <pre key={`code-${i}`} className="bg-black/30 border border-white/[0.08] rounded-xl px-4 py-3 my-2 overflow-x-auto text-xs text-white/70 font-mono leading-relaxed">
+              {codeLines.join("\n")}
+            </pre>
+          );
+          codeLines = [];
+          inCodeBlock = false;
+        } else {
+          inCodeBlock = true;
+        }
+        continue;
+      }
+
+      if (inCodeBlock) {
+        codeLines.push(line);
+        continue;
+      }
+
+      if (!line.trim()) { elements.push(<br key={i} />); continue; }
 
       // Convert inline formatting
       const formatted = line
         .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
         .replace(/\*(.+?)\*/g, "<em>$1</em>")
-        .replace(/`(.+?)`/g, "<code>$1</code>")
+        .replace(/`(.+?)`/g, '<code style="background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:4px;font-size:12px">$1</code>')
         .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color:#06b6d4;text-decoration:underline">$1</a>');
+
+      // Numbered lists
+      const numMatch = line.match(/^(\d+)\.\s(.+)/);
+      if (numMatch) {
+        elements.push(
+          <div key={i} style={{ display: "flex", gap: 8, marginBottom: 4 }}>
+            <span style={{ color: "#06b6d4", flexShrink: 0, fontWeight: 800, fontSize: 12, minWidth: 16 }}>{numMatch[1]}.</span>
+            <span dangerouslySetInnerHTML={{ __html: formatted.replace(/^\d+\.\s/, "") }} />
+          </div>
+        );
+        continue;
+      }
 
       // Bullet points
       if (line.trim().startsWith("- ") || line.trim().startsWith("• ")) {
-        return (
+        elements.push(
           <div key={i} style={{ display: "flex", gap: 8, marginBottom: 4 }}>
             <span style={{ color: "#06b6d4", flexShrink: 0, marginTop: 2 }}>•</span>
             <span dangerouslySetInnerHTML={{ __html: formatted.replace(/^[-•]\s/, "") }} />
           </div>
         );
+        continue;
       }
 
       // Headers
       if (line.startsWith("### ")) {
-        return <p key={i} style={{ fontWeight: 800, fontSize: 15, margin: "12px 0 4px" }} dangerouslySetInnerHTML={{ __html: formatted.replace(/^###\s/, "") }} />;
+        elements.push(<p key={i} style={{ fontWeight: 800, fontSize: 15, margin: "12px 0 4px" }} dangerouslySetInnerHTML={{ __html: formatted.replace(/^###\s/, "") }} />);
+        continue;
       }
       if (line.startsWith("## ")) {
-        return <p key={i} style={{ fontWeight: 800, fontSize: 16, margin: "16px 0 4px" }} dangerouslySetInnerHTML={{ __html: formatted.replace(/^##\s/, "") }} />;
+        elements.push(<p key={i} style={{ fontWeight: 800, fontSize: 16, margin: "16px 0 4px" }} dangerouslySetInnerHTML={{ __html: formatted.replace(/^##\s/, "") }} />);
+        continue;
       }
       if (line.startsWith("**→")) {
-        return <p key={i} style={{ fontWeight: 700, color: "#06b6d4", margin: "8px 0 2px" }} dangerouslySetInnerHTML={{ __html: formatted }} />;
+        elements.push(<p key={i} style={{ fontWeight: 700, color: "#06b6d4", margin: "8px 0 2px" }} dangerouslySetInnerHTML={{ __html: formatted }} />);
+        continue;
       }
 
-      return <p key={i} style={{ margin: "4px 0" }} dangerouslySetInnerHTML={{ __html: formatted }} />;
-    });
+      elements.push(<p key={i} style={{ margin: "4px 0" }} dangerouslySetInnerHTML={{ __html: formatted }} />);
+    }
+
+    return elements;
   }
 
   if (isUser) {
