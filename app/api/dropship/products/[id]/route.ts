@@ -45,22 +45,22 @@ export async function PATCH(
 
     const { id } = await params;
 
-    const existing = await prisma.dropshipProduct.findFirst({
-      where: { id, userId: user.id },
-    });
-    if (!existing) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
-
     const body = await req.json();
 
-    // Prevent changing ownership
-    const { userId: _uid, id: _id, ...safeFields } = body;
+    // Whitelist updatable fields — never allow ownership fields
+    const ALLOWED: (keyof typeof body)[] = ["name", "niche", "supplierUrl", "supplierPrice", "shippingCost", "status", "notes", "targetPrice"];
+    const data: Record<string, unknown> = {};
+    for (const key of ALLOWED) {
+      if (key in body) data[key] = body[key];
+    }
 
-    const updated = await prisma.dropshipProduct.update({
-      where: { id },
-      data: safeFields,
+    const result = await prisma.dropshipProduct.updateMany({
+      where: { id, userId: user.id },
+      data,
     });
+    if (result.count === 0) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
 
-    return NextResponse.json({ ok: true, product: updated });
+    return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("DropshipProduct PATCH error:", err);
     return NextResponse.json({ ok: false, error: "Failed to update product" }, { status: 500 });
@@ -80,17 +80,13 @@ export async function DELETE(
 
     const { id } = await params;
 
-    const existing = await prisma.dropshipProduct.findFirst({
+    const result = await prisma.dropshipProduct.updateMany({
       where: { id, userId: user.id },
-    });
-    if (!existing) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
-
-    const updated = await prisma.dropshipProduct.update({
-      where: { id },
       data: { status: "dead" },
     });
+    if (result.count === 0) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
 
-    return NextResponse.json({ ok: true, product: updated });
+    return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("DropshipProduct DELETE error:", err);
     return NextResponse.json({ ok: false, error: "Failed to delete product" }, { status: 500 });

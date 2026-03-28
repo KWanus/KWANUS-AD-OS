@@ -84,8 +84,8 @@ Return this exact JSON structure:
 
     const result = await callClaude(GLOBAL_RULE, prompt);
 
-    const updated = await prisma.dropshipProduct.update({
-      where: { id: productId },
+    const updated = await prisma.dropshipProduct.updateMany({
+      where: { id: productId, userId: user.id },
       data: { emailsJson: result as object },
     });
 

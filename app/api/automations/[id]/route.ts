@@ -40,9 +40,6 @@ export async function PATCH(
     const user = await getOrCreateUser();
     if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 
-    const existing = await prisma.automation.findFirst({ where: { id, userId: user.id } });
-    if (!existing) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
-
     const body = await req.json() as {
       name?: string;
       description?: string;
@@ -53,8 +50,8 @@ export async function PATCH(
       edges?: unknown[];
     };
 
-    const automation = await prisma.automation.update({
-      where: { id },
+    const result = await prisma.automation.updateMany({
+      where: { id, userId: user.id },
       data: {
         ...(body.name !== undefined && { name: body.name }),
         ...(body.description !== undefined && { description: body.description || null }),
@@ -65,8 +62,9 @@ export async function PATCH(
         ...(body.edges !== undefined && { edges: body.edges as object }),
       },
     });
+    if (result.count === 0) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
 
-    return NextResponse.json({ ok: true, automation });
+    return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Automation PATCH:", err);
     return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });

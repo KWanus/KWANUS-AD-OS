@@ -134,8 +134,8 @@ Return this exact JSON structure:
     if (pricing.shippingCost != null) updateData.shippingCost = pricing.shippingCost;
 
     if (productId && product) {
-      const updated = await prisma.dropshipProduct.update({
-        where: { id: productId },
+      const updated = await prisma.dropshipProduct.updateMany({
+        where: { id: productId, userId: user.id },
         data: updateData,
       });
       return NextResponse.json({ ok: true, analysis: result, product: updated, executionTier });

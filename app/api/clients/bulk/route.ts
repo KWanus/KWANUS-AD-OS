@@ -53,31 +53,34 @@ export async function POST(req: NextRequest) {
         if (!body.pipelineStage) {
           return NextResponse.json({ ok: false, error: "pipelineStage is required" }, { status: 400 });
         }
-        for (const client of clients) {
-          if (client.pipelineStage === body.pipelineStage) continue;
-
-          const { score, status } = computeHealthScore({
-            lastContactAt: client.lastContactAt,
-            pipelineStage: body.pipelineStage,
-            dealValue: client.dealValue,
-            createdAt: client.createdAt,
+        const toMove = clients.filter(c => c.pipelineStage !== body.pipelineStage);
+        if (toMove.length > 0) {
+          // Health scores differ per client — compute and batch via transaction
+          const updates = toMove.map(client => {
+            const { score, status } = computeHealthScore({
+              lastContactAt: client.lastContactAt,
+              pipelineStage: body.pipelineStage as string,
+              dealValue: client.dealValue,
+              createdAt: client.createdAt,
+            });
+            return prisma.client.updateMany({
+              where: { id: client.id, userId: user.id },
+              data: { pipelineStage: body.pipelineStage as string, healthScore: score, healthStatus: status },
+            });
           });
-
-          await prisma.client.update({
-            where: { id: client.id },
-            data: { pipelineStage: body.pipelineStage, healthScore: score, healthStatus: status },
-          });
-
-          await prisma.clientActivity.create({
-            data: {
-              clientId: client.id,
-              type: "stage_change",
-              content: `Bulk moved from ${client.pipelineStage} to ${body.pipelineStage}`,
-              metadata: { from: client.pipelineStage, to: body.pipelineStage, bulk: true },
-              createdBy: user.id,
-            },
-          });
-          affected++;
+          const activityInserts = toMove.map(client =>
+            prisma.clientActivity.create({
+              data: {
+                clientId: client.id,
+                type: "stage_change",
+                content: `Bulk moved from ${client.pipelineStage} to ${body.pipelineStage}`,
+                metadata: { from: client.pipelineStage, to: body.pipelineStage, bulk: true },
+                createdBy: user.id,
+              },
+            })
+          );
+          await prisma.$transaction([...updates, ...activityInserts]);
+          affected = toMove.length;
         }
         break;
       }
@@ -86,13 +89,17 @@ export async function POST(req: NextRequest) {
         if (!body.tags?.length) {
           return NextResponse.json({ ok: false, error: "tags are required" }, { status: 400 });
         }
-        for (const client of clients) {
-          const existingTags = (client.tags as string[]) ?? [];
-          const newTags = [...new Set([...existingTags, ...body.tags])];
-          if (newTags.length !== existingTags.length) {
-            await prisma.client.update({ where: { id: client.id }, data: { tags: newTags } });
-            affected++;
-          }
+        const tagUpdates = clients
+          .map(client => {
+            const existingTags = (client.tags as string[]) ?? [];
+            const newTags = [...new Set([...existingTags, ...body.tags!])];
+            if (newTags.length === existingTags.length) return null;
+            return prisma.client.updateMany({ where: { id: client.id, userId: user.id }, data: { tags: newTags } });
+          })
+          .filter(Boolean);
+        if (tagUpdates.length > 0) {
+          await prisma.$transaction(tagUpdates as Parameters<typeof prisma.$transaction>[0]);
+          affected = tagUpdates.length;
         }
         break;
       }
@@ -102,13 +109,17 @@ export async function POST(req: NextRequest) {
           return NextResponse.json({ ok: false, error: "tags are required" }, { status: 400 });
         }
         const tagsToRemove = new Set(body.tags);
-        for (const client of clients) {
-          const existingTags = (client.tags as string[]) ?? [];
-          const newTags = existingTags.filter(t => !tagsToRemove.has(t));
-          if (newTags.length !== existingTags.length) {
-            await prisma.client.update({ where: { id: client.id }, data: { tags: newTags } });
-            affected++;
-          }
+        const removeUpdates = clients
+          .map(client => {
+            const existingTags = (client.tags as string[]) ?? [];
+            const newTags = existingTags.filter(t => !tagsToRemove.has(t));
+            if (newTags.length === existingTags.length) return null;
+            return prisma.client.updateMany({ where: { id: client.id, userId: user.id }, data: { tags: newTags } });
+          })
+          .filter(Boolean);
+        if (removeUpdates.length > 0) {
+          await prisma.$transaction(removeUpdates as Parameters<typeof prisma.$transaction>[0]);
+          affected = removeUpdates.length;
         }
         break;
       }
@@ -122,20 +133,24 @@ export async function POST(req: NextRequest) {
       }
 
       case "recalculate_health": {
-        for (const client of clients) {
-          const { score, status } = computeHealthScore({
-            lastContactAt: client.lastContactAt,
-            pipelineStage: client.pipelineStage,
-            dealValue: client.dealValue,
-            createdAt: client.createdAt,
-          });
-          if (score !== client.healthScore || status !== client.healthStatus) {
-            await prisma.client.update({
-              where: { id: client.id },
+        const healthUpdates = clients
+          .map(client => {
+            const { score, status } = computeHealthScore({
+              lastContactAt: client.lastContactAt,
+              pipelineStage: client.pipelineStage,
+              dealValue: client.dealValue,
+              createdAt: client.createdAt,
+            });
+            if (score === client.healthScore && status === client.healthStatus) return null;
+            return prisma.client.updateMany({
+              where: { id: client.id, userId: user.id },
               data: { healthScore: score, healthStatus: status },
             });
-            affected++;
-          }
+          })
+          .filter(Boolean);
+        if (healthUpdates.length > 0) {
+          await prisma.$transaction(healthUpdates as Parameters<typeof prisma.$transaction>[0]);
+          affected = healthUpdates.length;
         }
         break;
       }

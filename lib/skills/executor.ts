@@ -4,9 +4,11 @@ import type { SkillInput, SkillResult } from "./types";
 import { getSkill } from "./registry";
 import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
 import { getSkillPrompt, hasSkillPrompt, buildSystemPrompt } from "@/prompts/skillPrompts";
+import { config } from "@/lib/config";
+import { AI_MODELS } from "@/lib/ai/models";
 
 const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
+  apiKey: config.anthropicApiKey,
 });
 
 // ---------------------------------------------------------------------------
@@ -391,7 +393,7 @@ export async function runSkill(
   }
 
   try {
-    if (!process.env.ANTHROPIC_API_KEY) {
+    if (!config.anthropicApiKey) {
       return { ok: false, skill: slug, summary: "", created: {}, data: {}, error: "AI service not configured. Please set ANTHROPIC_API_KEY." };
     }
 
@@ -402,7 +404,7 @@ export async function runSkill(
     const system = buildSkillSystemPrompt(skill.name, businessContext, executionTier);
 
     const message = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
+      model: AI_MODELS.CLAUDE_PRIMARY,
       max_tokens: 2048,
       system,
       messages: [{ role: "user", content: prompt }],

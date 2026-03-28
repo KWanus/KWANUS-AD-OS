@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser, deductCredits } from "@/lib/auth";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 import { runSkill } from "@/lib/skills/executor";
 import { getSkill } from "@/lib/skills/registry";
 import { prisma } from "@/lib/prisma";
@@ -45,6 +46,12 @@ export async function POST(
           { status: 400 }
         );
       }
+    }
+
+    // Rate limit: 10 skill runs per minute per user
+    const rl = checkRateLimit(`skill-run:${user.id}`, RATE_LIMITS.AI_ANALYSIS);
+    if (!rl.allowed) {
+      return NextResponse.json({ ok: false, error: "Too many skill requests — please wait a moment" }, { status: 429 });
     }
 
     // Atomic credit check + deduction (prevents race condition)

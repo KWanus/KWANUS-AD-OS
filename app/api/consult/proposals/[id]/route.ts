@@ -24,8 +24,8 @@ export async function GET(_req: NextRequest, { params }: RouteContext) {
     }
 
     // Increment view count
-    await prisma.proposal.update({
-      where: { id },
+    await prisma.proposal.updateMany({
+      where: { id, userId: user.id },
       data: {
         viewCount: { increment: 1 },
         viewedAt: proposal.viewedAt ?? new Date(),
@@ -78,8 +78,8 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
       respondedAt,
     } = body;
 
-    const updated = await prisma.proposal.update({
-      where: { id },
+    const patch = await prisma.proposal.updateMany({
+      where: { id, userId: user.id },
       data: {
         ...(title !== undefined && { title }),
         ...(problemStatement !== undefined && { problemStatement }),
@@ -96,8 +96,9 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
         ...(respondedAt !== undefined && { respondedAt: new Date(respondedAt) }),
       },
     });
+    if (patch.count === 0) return NextResponse.json({ ok: false, error: "Proposal not found" }, { status: 404 });
 
-    return NextResponse.json({ ok: true, proposal: updated });
+    return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Proposal update error:", err);
     return NextResponse.json({ ok: false, error: "Failed to update proposal" }, { status: 500 });
@@ -122,8 +123,8 @@ export async function DELETE(_req: NextRequest, { params }: RouteContext) {
       return NextResponse.json({ ok: false, error: "Proposal not found" }, { status: 404 });
     }
 
-    await prisma.proposal.update({
-      where: { id },
+    await prisma.proposal.updateMany({
+      where: { id, userId: user.id },
       data: { status: "deleted" },
     });
 

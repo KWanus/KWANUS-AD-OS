@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/rateLimit";
 import { extractUrl, scanUrlForCopilot, formatScanForPrompt } from "@/lib/scanForCopilot";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
@@ -376,6 +377,12 @@ export async function POST(req: NextRequest) {
     // Resolve internal user ID for DB queries
     const user = await getOrCreateUser();
     if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    // Rate limit: 20 AI calls per minute per user
+    const rl = checkRateLimit(`copilot:${user.id}`, RATE_LIMITS.AI_GENERATION);
+    if (!rl.allowed) {
+      return NextResponse.json({ ok: false, error: "Too many requests — please wait a moment" }, { status: 429 });
+    }
 
     // Fetch workspace context and detect URL in parallel
     const lastUserMsg = [...body.messages].reverse().find((m) => m.role === "user");
