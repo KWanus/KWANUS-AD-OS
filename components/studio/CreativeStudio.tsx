@@ -797,7 +797,8 @@ function VideoLab({ brief, theme }: { brief: StudioBrief; theme: { from: string;
       });
       const data = await res.json() as { ok: boolean; jobId?: string; error?: string; message?: string };
       if (!data.ok || !data.jobId) {
-        setVideoJobs(prev => prev.map((j, idx) => idx === i ? { ...j, status: "failed" } : j));
+        const errMsg = data.message ?? data.error ?? "Generation failed";
+        setVideoJobs(prev => prev.map((j, idx) => idx === i ? { ...j, status: "failed", prompt: `${j.prompt}\n[Error: ${errMsg}]` } : j));
         return;
       }
       setVideoJobs(prev => prev.map((j, idx) => idx === i ? { ...j, jobId: data.jobId!, status: "running" } : j));

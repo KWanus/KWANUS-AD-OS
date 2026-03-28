@@ -17,11 +17,11 @@ interface SerpApiResponse {
   error?: string;
 }
 
-async function searchSerpApi(niche: string, location: string): Promise<SerpApiResult[]> {
+async function searchSerpApi(niche: string, location: string): Promise<{ results: SerpApiResult[]; isDemo: boolean }> {
   const key = process.env.SERPAPI_KEY;
   if (!key || key === "REPLACE_ME") {
-    // Return demo data so the UI works without a key
-    return getDemoLeads(niche, location);
+    // Return demo data clearly marked — won't be saved to DB
+    return { results: getDemoLeads(niche, location), isDemo: true };
   }
 
   const query = encodeURIComponent(`${niche} in ${location}`);
@@ -33,7 +33,7 @@ async function searchSerpApi(niche: string, location: string): Promise<SerpApiRe
   const data = await res.json() as SerpApiResponse;
   if (data.error) throw new Error(data.error);
 
-  return data.local_results ?? [];
+  return { results: data.local_results ?? [], isDemo: false };
 }
 
 function getDemoLeads(niche: string, location: string): SerpApiResult[] {
@@ -70,14 +70,31 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "Niche and location are required" }, { status: 400 });
     }
 
-    const results = await searchSerpApi(niche, location);
+    const { results, isDemo } = await searchSerpApi(niche, location);
 
-    // Upsert leads into DB (skip duplicates by place_id or name+location)
+    // Don't save demo leads to the database — only show them in the UI
+    if (isDemo) {
+      return NextResponse.json({
+        ok: true,
+        found: results.length,
+        created: 0,
+        isDemo: true,
+        demoResults: results.map(r => ({
+          name: r.title ?? "Unknown",
+          website: r.website,
+          phone: r.phone,
+          address: r.address,
+          rating: r.rating,
+          reviews: r.reviews,
+        })),
+      });
+    }
+
+    // Upsert real leads into DB (skip duplicates by name+location)
     const created: string[] = [];
     for (const r of results.slice(0, 15)) {
       if (!r.title) continue;
 
-      // Check if lead already exists for this user
       const existing = await prisma.lead.findFirst({
         where: {
           userId: user.id,
@@ -111,7 +128,7 @@ export async function POST(req: NextRequest) {
       ok: true,
       found: results.length,
       created: created.length,
-      isDemo: !process.env.SERPAPI_KEY || process.env.SERPAPI_KEY === "REPLACE_ME",
+      isDemo: false,
     });
   } catch (err) {
     console.error("Lead search error:", err);

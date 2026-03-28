@@ -75,6 +75,7 @@ type DockState = {
   unsyncedSystems: string[];
   osVerdict: StatsPayload["osVerdict"] | null;
   databaseUnavailable: boolean;
+  loadError?: boolean;
 };
 
 type ActionItem = {
@@ -230,7 +231,7 @@ export default function GlobalCopilotDock() {
             (statsRes.status === "fulfilled" && statsRes.value.ok ? Boolean(statsRes.value.stats?.databaseUnavailable) : false),
         });
       } catch {
-        if (!cancelled) setState(INITIAL_STATE);
+        if (!cancelled) setState({ ...INITIAL_STATE, loadError: true });
       }
     }
 
@@ -598,9 +599,15 @@ export default function GlobalCopilotDock() {
           compact ? "w-[120px] rounded-[24px]" : "w-[350px] rounded-[28px]"
         }`}
       >
-        {state.databaseUnavailable && (
+        {state.loadError && (
+          <div className="border-b border-red-500/20 bg-red-500/10 px-4 py-2.5 text-[11px] leading-5 text-red-200 flex items-center gap-2">
+            <CircleAlert className="w-3.5 h-3.5 shrink-0" />
+            Could not load workspace data. Check your connection.
+          </div>
+        )}
+        {state.databaseUnavailable && !state.loadError && (
           <div className="border-b border-amber-500/20 bg-amber-500/10 px-4 py-3 text-[11px] leading-5 text-amber-100">
-            Workspace data is running in fallback mode because the production database is unreachable. The app shell stays up, but signed-in data may appear empty until the database connection is fixed.
+            Workspace data is running in fallback mode because the production database is unreachable.
           </div>
         )}
         <div
