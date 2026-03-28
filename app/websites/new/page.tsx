@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, Check, Loader2, Rocket, Sparkles, Wand2 } from "lucide-react";
+import { toast } from "sonner";
 
 type Campaign = { id: string; name: string };
 type BusinessProfile = {
@@ -124,8 +125,10 @@ export default function NewSitePage() {
         throw new Error(data.error || "Failed to create site");
       }
 
+      toast.success("Site created!");
       router.push(`/websites/${data.site.id}`);
     } catch (err) {
+      toast.error(err instanceof Error ? err.message : "Failed to create site");
       setError(err instanceof Error ? err.message : "Failed to create site");
       setLoading(false);
     }
