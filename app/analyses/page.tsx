@@ -334,12 +334,22 @@ export default function AnalysesPage() {
             </div>
           )}
 
-          <Link
-            href="/scan"
-            className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition-opacity"
-          >
-            <ScanSearch className="w-4 h-4" /> New Scan
-          </Link>
+          <div className="flex items-center gap-2">
+            {analyses.length > 0 && (
+              <a
+                href="/api/analyses/export"
+                className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl border border-white/[0.08] bg-white/[0.03] text-white/50 text-xs font-semibold hover:text-white hover:border-white/20 transition"
+              >
+                Export CSV
+              </a>
+            )}
+            <Link
+              href="/scan"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition-opacity"
+            >
+              <ScanSearch className="w-4 h-4" /> New Scan
+            </Link>
+          </div>
         </div>
 
         {/* Filters */}
