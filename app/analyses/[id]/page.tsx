@@ -12,6 +12,7 @@ import {
   CheckCircle,
   XCircle,
   TrendingUp,
+  Users,
   AlertTriangle,
   Sparkles,
   Loader2,
@@ -244,6 +245,67 @@ function InsightCard({ title, content, icon: Icon, color }: {
 
 // ---------------------------------------------------------------------------
 // Page
+// ---------------------------------------------------------------------------
+// Convert Button (create client/campaign from scan)
+// ---------------------------------------------------------------------------
+
+function ConvertButton({ label, icon, endpoint, successRedirect, successLabel }: {
+  label: string;
+  icon: React.ReactNode;
+  endpoint: string;
+  successRedirect: string;
+  successLabel: string;
+}) {
+  const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState("");
+
+  async function handleClick() {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+      const data = await res.json() as { ok: boolean; error?: string; duplicate?: boolean; existingClientId?: string };
+      if (!data.ok) {
+        if (data.duplicate) {
+          setError("Already exists");
+        } else {
+          setError(data.error ?? "Failed");
+        }
+        return;
+      }
+      setDone(true);
+    } catch {
+      setError("Network error");
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  if (done) {
+    return (
+      <Link
+        href={successRedirect}
+        className="flex items-center gap-2 p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-xs font-semibold text-emerald-400"
+      >
+        <CheckCircle className="w-3.5 h-3.5" /> {successLabel} — View →
+      </Link>
+    );
+  }
+
+  return (
+    <button
+      onClick={() => void handleClick()}
+      disabled={loading}
+      className="w-full flex items-center gap-2 p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-white/[0.1] transition text-xs font-semibold text-white/50 hover:text-white/70 disabled:opacity-40 text-left"
+    >
+      {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : icon}
+      {label}
+      {error && <span className="ml-auto text-[10px] text-red-400">{error}</span>}
+    </button>
+  );
+}
+
 // ---------------------------------------------------------------------------
 
 export default function AnalysisDetailPage({ params }: { params: Promise<{ id: string }> }) {
@@ -800,11 +862,25 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
             <div className="bg-white/[0.02] border border-white/[0.07] rounded-2xl p-4">
               <h3 className="text-xs font-black uppercase tracking-widest text-white/30 mb-3">Quick Actions</h3>
               <div className="space-y-2">
+                <ConvertButton
+                  label="Create Client from Scan"
+                  icon={<Users className="w-3.5 h-3.5 text-cyan-400/60" />}
+                  endpoint={`/api/analyses/${id}/create-client`}
+                  successRedirect="/clients"
+                  successLabel="Client created"
+                />
+                <ConvertButton
+                  label="Create Campaign from Scan"
+                  icon={<Megaphone className="w-3.5 h-3.5 text-purple-400/60" />}
+                  endpoint={`/api/analyses/${id}/create-campaign`}
+                  successRedirect="/campaigns"
+                  successLabel="Campaign created"
+                />
                 <Link
                   href={`/skills?skill=ad-campaign&prefill_url=${encodeURIComponent(analysis.inputUrl)}&prefill_mode=${analysis.mode}`}
                   className="flex items-center gap-2 p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-white/[0.1] transition text-xs font-semibold text-white/50 hover:text-white/70"
                 >
-                  <Megaphone className="w-3.5 h-3.5 text-cyan-400/60" /> Generate Ad Campaign
+                  <Zap className="w-3.5 h-3.5 text-amber-400/60" /> Generate Ad Campaign
                 </Link>
                 <Link
                   href={`/skills?skill=landing-page&prefill_offer=${encodeURIComponent(analysis.title ?? analysis.inputUrl)}&prefill_audience=${encodeURIComponent((packet?.audience as string) ?? "")}`}
