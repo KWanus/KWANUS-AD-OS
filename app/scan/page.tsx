@@ -93,12 +93,7 @@ type BuildAction = {
   gradient: string;
 };
 
-function getActions(mode: ScanMode, result: ScanResult): BuildAction[] {
-  const { analysis, opportunityAssessment } = result;
-  const url = analysis.inputUrl;
-  const audience = analysis.decisionPacket.audience;
-  const angle = analysis.decisionPacket.angle;
-
+function getActions(mode: ScanMode, _result: ScanResult): BuildAction[] {
   if (mode === "consultant") {
     return [
       {

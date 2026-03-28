@@ -455,7 +455,7 @@ export default function SetupPage() {
             {step === 4 && (
               <div>
                 <p className="text-[10px] font-black uppercase tracking-[0.28em] text-cyan-200/70">Step 4</p>
-                <h1 className="mt-3 text-4xl font-black tracking-tight text-white">What's your #1 goal right now?</h1>
+                <h1 className="mt-3 text-4xl font-black tracking-tight text-white">What&apos;s your #1 goal right now?</h1>
                 <p className="mt-4 max-w-2xl text-sm leading-7 text-white/60">
                   This lets us prioritize the operating system in the right order. Two businesses in the same niche can need very different workflows depending on whether they want leads, automation, or scale.
                 </p>
