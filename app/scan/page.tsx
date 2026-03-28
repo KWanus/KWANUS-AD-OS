@@ -186,6 +186,77 @@ function ScoreGauge({ score }: { score: number }) {
   );
 }
 
+function BatchScanPanel({ mode }: { mode: string }) {
+  const [open, setOpen] = useState(false);
+  const [urls, setUrls] = useState("");
+  const [running, setRunning] = useState(false);
+  const [results, setResults] = useState<{ url: string; ok: boolean; score?: number; verdict?: string; title?: string; error?: string }[]>([]);
+
+  async function runBatch() {
+    const urlList = urls.split("\n").map(u => u.trim()).filter(Boolean);
+    if (urlList.length === 0 || urlList.length > 5) return;
+    setRunning(true);
+    setResults([]);
+    try {
+      const res = await fetch("/api/analyze/batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ urls: urlList, mode }),
+      });
+      const data = await res.json() as { ok: boolean; results?: typeof results };
+      if (data.ok) setResults(data.results ?? []);
+    } catch { /* non-fatal */ } finally { setRunning(false); }
+  }
+
+  if (!open) {
+    return (
+      <button onClick={() => setOpen(true)} className="mb-4 text-xs text-white/25 hover:text-cyan-400/60 transition">
+        Scan multiple URLs at once →
+      </button>
+    );
+  }
+
+  return (
+    <div className="mb-6 bg-white/[0.02] border border-white/[0.07] rounded-2xl p-5">
+      <div className="flex items-center justify-between mb-3">
+        <h3 className="text-xs font-black uppercase tracking-widest text-white/30">Batch Scan (up to 5 URLs)</h3>
+        <button onClick={() => setOpen(false)} className="text-xs text-white/25 hover:text-white/50">Close</button>
+      </div>
+      <textarea
+        value={urls}
+        onChange={e => setUrls(e.target.value)}
+        placeholder={"https://example1.com\nhttps://example2.com\nhttps://example3.com"}
+        rows={4}
+        className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/40 transition resize-none mb-3 font-mono"
+      />
+      <button
+        onClick={() => void runBatch()}
+        disabled={running || !urls.trim()}
+        className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 disabled:opacity-30 transition"
+      >
+        {running ? "Scanning..." : `Scan ${urls.split("\n").filter(u => u.trim()).length} URLs`}
+      </button>
+      {results.length > 0 && (
+        <div className="mt-4 space-y-2">
+          {results.map((r, i) => (
+            <div key={i} className={`flex items-center gap-3 p-3 rounded-xl border ${r.ok ? "bg-white/[0.02] border-white/[0.06]" : "bg-red-500/5 border-red-500/15"}`}>
+              <span className={`text-base font-black w-8 text-center ${r.ok ? ((r.score ?? 0) >= 70 ? "text-emerald-400" : (r.score ?? 0) >= 45 ? "text-amber-400" : "text-red-400") : "text-red-400"}`}>
+                {r.ok ? r.score ?? "—" : "X"}
+              </span>
+              <div className="flex-1 min-w-0">
+                <p className="text-xs font-bold text-white/60 truncate">{r.title ?? r.url}</p>
+                <p className="text-[10px] text-white/25 truncate">{r.url}</p>
+              </div>
+              {r.ok && <span className={`text-[10px] font-black uppercase px-1.5 py-0.5 rounded border ${r.verdict === "Pursue" ? "bg-emerald-500/10 border-emerald-500/20 text-emerald-400" : r.verdict === "Reject" ? "bg-red-500/10 border-red-500/20 text-red-400" : "bg-amber-500/10 border-amber-500/20 text-amber-400"}`}>{r.verdict}</span>}
+              {!r.ok && <span className="text-[10px] text-red-400">{r.error}</span>}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 function ScanPageInner() {
   const searchParams = useSearchParams();
   const [mode, setMode] = useState<ScanMode>("consultant");
@@ -514,6 +585,11 @@ function ScanPageInner() {
             {loading ? "Scanning…" : "Scan"}
           </button>
         </div>
+
+        {/* Batch scan */}
+        {!loading && !result && (
+          <BatchScanPanel mode={mode} />
+        )}
 
         {/* Scanning animation */}
         {loading && (
