@@ -98,64 +98,149 @@ const nodeTypes = {
 // ---------------------------------------------------------------------------
 
 export default function AutomationsBuilder() {
+    const [automationId, setAutomationId] = useState<string | null>(null);
+    const [automationName, setAutomationName] = useState("New Automation");
+    const [automationStatus, setAutomationStatus] = useState("draft");
     const [nodes, setNodes] = useState<Node[]>([]);
     const [edges, setEdges] = useState<Edge[]>([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [saved, setSaved] = useState(false);
     const [campaigns, setCampaigns] = useState<{ id: string, name: string }[]>([]);
     const [selectedCampaignId, setSelectedCampaignId] = useState("");
+    const [automationList, setAutomationList] = useState<{ id: string; name: string; status: string; updatedAt: string }[]>([]);
 
+    // Load campaigns and existing automations
     useEffect(() => {
-        fetch("/api/campaigns")
-            .then((r) => r.json())
-            .then((data) => {
-                if (data.ok) setCampaigns(data.campaigns);
-            });
+        Promise.all([
+            fetch("/api/campaigns").then((r) => r.json()),
+            fetch("/api/automations").then((r) => r.json()),
+        ]).then(([campData, autoData]) => {
+            if (campData.ok) setCampaigns(campData.campaigns ?? []);
+            if (autoData.ok) setAutomationList(autoData.automations ?? []);
+        }).catch(() => {});
     }, []);
+
+    // Load a specific automation
+    async function loadAutomation(id: string) {
+        setLoading(true);
+        try {
+            const res = await fetch(`/api/automations/${id}`);
+            const data = await res.json() as { ok: boolean; automation?: { id: string; name: string; status: string; nodes: Node[]; edges: Edge[] } };
+            if (data.ok && data.automation) {
+                setAutomationId(data.automation.id);
+                setAutomationName(data.automation.name);
+                setAutomationStatus(data.automation.status);
+                setNodes(data.automation.nodes ?? []);
+                setEdges(data.automation.edges ?? []);
+            }
+        } catch {
+            // non-fatal
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    // Save automation
+    async function handleSave() {
+        setSaving(true);
+        setSaved(false);
+        try {
+            if (automationId) {
+                await fetch(`/api/automations/${automationId}`, {
+                    method: "PATCH",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ name: automationName, nodes, edges }),
+                });
+            } else {
+                const res = await fetch("/api/automations", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        name: automationName,
+                        campaignId: selectedCampaignId || undefined,
+                        trigger: "manual",
+                        nodes,
+                        edges,
+                    }),
+                });
+                const data = await res.json() as { ok: boolean; automation?: { id: string } };
+                if (data.ok && data.automation) {
+                    setAutomationId(data.automation.id);
+                }
+            }
+            setSaved(true);
+            setTimeout(() => setSaved(false), 2000);
+        } catch {
+            // non-fatal
+        } finally {
+            setSaving(false);
+        }
+    }
+
+    // Publish (activate) automation
+    async function handlePublish() {
+        if (!automationId) {
+            await handleSave();
+        }
+        if (automationId) {
+            await fetch(`/api/automations/${automationId}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status: "active", nodes, edges }),
+            });
+            setAutomationStatus("active");
+        }
+    }
 
     async function handleAutoGenerate() {
         if (!selectedCampaignId) return;
         setLoading(true);
-        // Simulate API analysis fetch & node construction based on the Campaign's Copilot strategy
-        setTimeout(() => {
-            setNodes([
-                { id: "1", type: "trigger", data: { label: "Abandoned Checkout", subtitle: "User left with items in cart" }, position: { x: 250, y: 50 } },
-                { id: "2", type: "delay", data: { label: "Wait 1 hour" }, position: { x: 250, y: 200 } },
-                { id: "3", type: "email", data: { label: "1. Forgot something?", stats: "Subject: You left this behind..." }, position: { x: 250, y: 350 } },
-                { id: "4", type: "delay", data: { label: "Wait 24 hours" }, position: { x: 250, y: 500 } },
-                { id: "5", type: "email", data: { label: "2. Your cart is expiring", stats: "Subject: Final notice for your cart" }, position: { x: 250, y: 650 } },
-            ]);
-            setEdges([
-                { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#06b6d4" } },
-                { id: "e2-3", source: "2", target: "3", animated: true, style: { stroke: "#8b5cf6" } },
-                { id: "e3-4", source: "3", target: "4", animated: true, style: { stroke: "#06b6d4" } },
-                { id: "e4-5", source: "4", target: "5", animated: true, style: { stroke: "#8b5cf6" } },
-            ]);
+        try {
+            // Fetch campaign data to build a contextual flow
+            const res = await fetch(`/api/campaigns/${selectedCampaignId}`);
+            const data = await res.json() as { ok: boolean; campaign?: { name: string; productName?: string; mode: string } };
+            const campaign = data.campaign;
+            const productLabel = campaign?.productName || campaign?.name || "your product";
+
+            const generatedNodes: Node[] = [
+                { id: "t1", type: "trigger", data: { label: "New Subscriber", subtitle: `Joins ${productLabel} list` }, position: { x: 250, y: 50 } },
+                { id: "d1", type: "delay", data: { label: "Wait 5 minutes" }, position: { x: 250, y: 200 } },
+                { id: "e1", type: "email", data: { label: `Welcome to ${productLabel}`, stats: "Welcome email with key benefits" }, position: { x: 250, y: 350 } },
+                { id: "d2", type: "delay", data: { label: "Wait 1 day" }, position: { x: 250, y: 500 } },
+                { id: "e2", type: "email", data: { label: "The #1 mistake to avoid", stats: "Education + authority building" }, position: { x: 250, y: 650 } },
+                { id: "d3", type: "delay", data: { label: "Wait 2 days" }, position: { x: 250, y: 800 } },
+                { id: "c1", type: "condition", data: { label: "Opened previous email?" }, position: { x: 250, y: 950 } },
+                { id: "e3", type: "email", data: { label: "Special offer inside", stats: "Conversion email with urgency" }, position: { x: 100, y: 1100 } },
+                { id: "e4", type: "email", data: { label: "Re-engagement nudge", stats: "Softer approach for cold leads" }, position: { x: 400, y: 1100 } },
+            ];
+            const generatedEdges: Edge[] = [
+                { id: "e-t1-d1", source: "t1", target: "d1", animated: true, style: { stroke: "#06b6d4" } },
+                { id: "e-d1-e1", source: "d1", target: "e1", animated: true, style: { stroke: "#8b5cf6" } },
+                { id: "e-e1-d2", source: "e1", target: "d2", animated: true, style: { stroke: "#06b6d4" } },
+                { id: "e-d2-e2", source: "d2", target: "e2", animated: true, style: { stroke: "#8b5cf6" } },
+                { id: "e-e2-d3", source: "e2", target: "d3", animated: true, style: { stroke: "#06b6d4" } },
+                { id: "e-d3-c1", source: "d3", target: "c1", animated: true, style: { stroke: "#10b981" } },
+                { id: "e-c1-e3", source: "c1", target: "e3", animated: true, style: { stroke: "#8b5cf6" }, label: "Yes" },
+                { id: "e-c1-e4", source: "c1", target: "e4", animated: true, style: { stroke: "#f59e0b" }, label: "No" },
+            ];
+
+            setNodes(generatedNodes);
+            setEdges(generatedEdges);
+            setAutomationName(`${productLabel} — Automated Flow`);
+        } catch {
+            // non-fatal
+        } finally {
             setLoading(false);
-        }, 1500);
+        }
     }
 
-    // Placeholder initial nodes
+    // Default starter nodes
     useEffect(() => {
         setNodes([
-            {
-                id: "1",
-                type: "trigger",
-                data: { label: "Abandoned Checkout", subtitle: "User left with items in cart" },
-                position: { x: 250, y: 50 },
-            },
-            {
-                id: "2",
-                type: "delay",
-                data: { label: "Wait 1 hour" },
-                position: { x: 250, y: 200 },
-            },
-            {
-                id: "3",
-                type: "email",
-                data: { label: "1. Forgot something?", stats: "Draft" },
-                position: { x: 250, y: 350 },
-            },
+            { id: "1", type: "trigger", data: { label: "New Subscriber", subtitle: "When someone joins your list" }, position: { x: 250, y: 50 } },
+            { id: "2", type: "delay", data: { label: "Wait 5 minutes" }, position: { x: 250, y: 200 } },
+            { id: "3", type: "email", data: { label: "Welcome Email", stats: "Draft — click to edit" }, position: { x: 250, y: 350 } },
         ]);
         setEdges([
             { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#06b6d4" } },
@@ -195,29 +280,55 @@ export default function AutomationsBuilder() {
             {/* Header */}
             <header className="h-14 shrink-0 bg-[#050a14] border-b border-white/[0.08] flex items-center justify-between px-6 z-10">
                 <div className="flex items-center gap-4">
-                    <button className="flex items-center gap-1.5 text-white/40 hover:text-white transition group">
+                    <a href="/campaigns" className="flex items-center gap-1.5 text-white/40 hover:text-white transition group">
                         <ArrowLeft className="w-4 h-4" />
                         <span className="text-sm font-bold hidden sm:block">Back</span>
-                    </button>
+                    </a>
                     <div className="h-4 w-[1px] bg-white/10" />
-                    <h1 className="text-base font-black text-white">Abandoned Cart Series</h1>
-                    <span className="px-2.5 py-1 rounded-md bg-white/5 border border-white/10 text-[10px] font-black uppercase text-white/50 tracking-wider">
-                        Draft
+                    <input
+                        value={automationName}
+                        onChange={(e) => setAutomationName(e.target.value)}
+                        className="text-base font-black text-white bg-transparent border-none outline-none max-w-[250px] truncate hover:text-cyan-300 focus:text-cyan-300 transition"
+                    />
+                    <span className={`px-2.5 py-1 rounded-md border text-[10px] font-black uppercase tracking-wider ${
+                        automationStatus === "active"
+                            ? "bg-green-500/10 border-green-500/20 text-green-400"
+                            : "bg-white/5 border-white/10 text-white/50"
+                    }`}>
+                        {automationStatus}
                     </span>
+                    {saved && <span className="text-[10px] text-emerald-400 font-bold">Saved!</span>}
                 </div>
 
                 <div className="flex flex-1 items-center justify-center">
-                    {/* Quick stats could go here */}
+                    {automationList.length > 0 && (
+                        <select
+                            onChange={(e) => { if (e.target.value) void loadAutomation(e.target.value); }}
+                            className="bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-1.5 text-xs text-white/50 outline-none"
+                        >
+                            <option value="">Load saved automation...</option>
+                            {automationList.map(a => (
+                                <option key={a.id} value={a.id} className="bg-[#0d1525]">{a.name} ({a.status})</option>
+                            ))}
+                        </select>
+                    )}
                 </div>
 
                 <div className="flex items-center gap-3">
-                    <button className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white/[0.05] text-white/60 hover:text-white hover:bg-white/10 transition border border-white/[0.08]">
-                        <Play className="w-3.5 h-3.5" />
-                        Test Flow
+                    <button
+                        onClick={() => void handleSave()}
+                        disabled={saving}
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-white/[0.05] text-white/60 hover:text-white hover:bg-white/10 transition border border-white/[0.08] disabled:opacity-40"
+                    >
+                        {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
+                        Save
                     </button>
-                    <button className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:opacity-90 transition">
-                        <Save className="w-3.5 h-3.5" />
-                        Save & Publish
+                    <button
+                        onClick={() => void handlePublish()}
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:opacity-90 transition"
+                    >
+                        <Play className="w-3.5 h-3.5" />
+                        {automationStatus === "active" ? "Published" : "Save & Publish"}
                     </button>
                 </div>
             </header>
