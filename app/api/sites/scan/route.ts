@@ -21,6 +21,7 @@ export async function POST(req: NextRequest) {
       niche?: string;
       notes?: string;
       mode?: SiteScanMode;
+      executionTier?: "core" | "elite";
       triggerN8n?: boolean;
     };
 
@@ -36,6 +37,7 @@ export async function POST(req: NextRequest) {
       niche: body.niche,
       notes: body.notes,
       mode,
+      executionTier: body.executionTier === "core" ? "core" : "elite",
       triggerN8n: body.triggerN8n,
     });
 

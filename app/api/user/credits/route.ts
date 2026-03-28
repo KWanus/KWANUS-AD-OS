@@ -6,7 +6,12 @@ export async function GET() {
         const user = await getOrCreateUser();
         if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 
-        return NextResponse.json({ ok: true, credits: user.credits });
+        return NextResponse.json({
+            ok: true,
+            credits: user.credits,
+            plan: user.plan,
+            planExpiresAt: user.planExpiresAt,
+        });
     } catch (err) {
         return NextResponse.json({ ok: false, error: String(err) }, { status: 500 });
     }

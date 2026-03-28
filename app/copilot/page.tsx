@@ -15,6 +15,8 @@ interface Message {
   content: string;
 }
 
+type ExecutionTier = "core" | "elite";
+
 type OsStats = {
   effectiveSystemScore?: number;
   databaseUnavailable?: boolean;
@@ -133,6 +135,7 @@ function CopilotPageContent() {
   const [input, setInput] = useState(prefill);
   const [streaming, setStreaming] = useState(false);
   const [scanning, setScanning] = useState(false);
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
   const [osStats, setOsStats] = useState<OsStats | null>(null);
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
@@ -186,6 +189,7 @@ function CopilotPageContent() {
           messages: history
             .filter((m) => m.content) // skip empty
             .map((m) => ({ role: m.role, content: m.content })),
+          executionTier,
         }),
       });
 
@@ -278,6 +282,25 @@ function CopilotPageContent() {
             )}
           </div>
           <div className="flex items-center gap-2">
+            <div className="hidden sm:flex items-center gap-1 rounded-xl border border-white/[0.08] bg-white/[0.03] p-1">
+              {(["core", "elite"] as const).map((tier) => {
+                const active = executionTier === tier;
+                return (
+                  <button
+                    key={tier}
+                    type="button"
+                    onClick={() => setExecutionTier(tier)}
+                    className={`rounded-lg px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] transition ${
+                      active
+                        ? "bg-cyan-500/15 text-cyan-300"
+                        : "text-white/35 hover:bg-white/[0.05] hover:text-white/75"
+                    }`}
+                  >
+                    {tier}
+                  </button>
+                );
+              })}
+            </div>
             {fromOnboarding && (
               <>
                 <Link
@@ -306,7 +329,38 @@ function CopilotPageContent() {
 
         {/* Suggestion chips — always visible, condensed after first message */}
         {!streaming && (
-          <div className="flex flex-wrap gap-2 mb-4">
+          <div className="mb-4 space-y-3">
+            <div className="flex items-center justify-between gap-3 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 sm:hidden">
+              <div>
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/35">Execution Lane</p>
+                <p className="mt-1 text-xs text-white/55">
+                  {executionTier === "elite"
+                    ? "Elite: premium positioning and stronger operator judgment"
+                    : "Core: strong pragmatic guidance and fast execution"}
+                </p>
+              </div>
+              <div className="flex items-center gap-1 rounded-xl border border-white/[0.08] bg-black/20 p-1">
+                {(["core", "elite"] as const).map((tier) => {
+                  const active = executionTier === tier;
+                  return (
+                    <button
+                      key={tier}
+                      type="button"
+                      onClick={() => setExecutionTier(tier)}
+                      className={`rounded-lg px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] transition ${
+                        active
+                          ? "bg-cyan-500/15 text-cyan-300"
+                          : "text-white/35 hover:bg-white/[0.05] hover:text-white/75"
+                      }`}
+                    >
+                      {tier}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
             {(messages.length === 1 ? COPILOT_SUGGESTIONS : COPILOT_SUGGESTIONS.slice(0, 3)).map((s) => (
               <button
                 key={s}
@@ -316,6 +370,7 @@ function CopilotPageContent() {
                 {s}
               </button>
             ))}
+            </div>
           </div>
         )}
 
@@ -377,7 +432,7 @@ function CopilotPageContent() {
         </div>
 
         <p className="text-center text-[10px] text-white/20 mt-3">
-          Himalaya Copilot · Powered by Claude · <Link href="/settings" className="hover:text-white/40 transition">Settings</Link>
+          Himalaya Copilot · {executionTier === "elite" ? "Elite lane" : "Core lane"} · Powered by Claude · <Link href="/settings" className="hover:text-white/40 transition">Settings</Link>
         </p>
       </div>
     </div>

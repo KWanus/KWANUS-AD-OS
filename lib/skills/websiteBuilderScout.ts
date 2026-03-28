@@ -27,6 +27,7 @@ import { buildOpportunityPacket } from "@/src/logic/ad-os/buildOpportunityPacket
 import { buildAssetPackage } from "@/src/logic/ad-os/buildAssetPackage";
 import { prisma } from "@/lib/prisma";
 import type { SkillMeta, SkillResult } from "./types";
+import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 export const websiteBuilderScoutMeta: SkillMeta = {
   slug: "website-builder-scout",
@@ -88,7 +89,7 @@ function slugify(str: string) {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-function buildGoldenBlocks(siteName: string, draft: any): any[] {
+function buildGoldenBlocks(siteName: string, draft: any, executionTier: ExecutionTier = "core"): any[] {
   const h1 = draft?.headline || `${siteName} — Serving You Better`;
   const subh = draft?.subheadline || "Trusted local service. Proven results.";
   const ctaCopy = draft?.ctaCopy || "Get a Free Quote";
@@ -104,7 +105,7 @@ function buildGoldenBlocks(siteName: string, draft: any): any[] {
       ? (draft.trustBar.slice(0, 4) as string[])
       : ["5★ Reviews", "Locally Owned", "Insured", "Same-Day Service"];
 
-  return [
+  const base = [
     {
       id: "hero-1",
       type: "hero",
@@ -214,6 +215,35 @@ function buildGoldenBlocks(siteName: string, draft: any): any[] {
       },
     },
   ];
+
+  if (executionTier !== "elite") return base;
+
+  return [
+    ...base.slice(0, 3),
+    {
+      id: "proof-1",
+      type: "stats_bar",
+      props: {
+        items: [
+          { value: "24/7", label: "Fast Response" },
+          { value: "5-Star", label: "Trust Signals" },
+          { value: "Same-Day", label: "Booking Potential" },
+        ],
+        bgColor: "#020509",
+      },
+    },
+    ...base.slice(3, 5),
+    {
+      id: "guarantee-1",
+      type: "guarantee",
+      props: {
+        headline: draft?.guaranteeText || "Clear guarantees remove hesitation before the call.",
+        subheadline: "Premium operators reduce friction by answering trust objections before the visitor asks.",
+        bgColor: "#07101f",
+      },
+    },
+    ...base.slice(5),
+  ];
 }
 
 export async function runWebsiteBuilderScout(input: {
@@ -222,8 +252,10 @@ export async function runWebsiteBuilderScout(input: {
   niche?: string;
   outreachGoal?: string;
   userId: string;
+  executionTier?: ExecutionTier;
 }): Promise<SkillResult> {
   const SKILL = "website-builder-scout";
+  const executionTier: ExecutionTier = input.executionTier === "core" ? "core" : "elite";
 
   // ── 1. Normalize & validate URL ─────────────────────────────────────────────
   const normalized = normalizeInput(input.url, "consultant");
@@ -250,7 +282,7 @@ export async function runWebsiteBuilderScout(input: {
   const gaps = detectOpportunityGaps(dimensions, signals);
   const recommendation = recommendOpportunityPath(classified.status, dimensions, "consultant");
   const opportunityPacket = buildOpportunityPacket(classified, dimensions, gaps, recommendation);
-  const assets = buildAssetPackage(packet, opportunityPacket, "consultant");
+  const assets = buildAssetPackage(packet, opportunityPacket, "consultant", executionTier);
 
   const businessName =
     input.businessName?.trim() ||
@@ -313,7 +345,7 @@ export async function runWebsiteBuilderScout(input: {
         verdict: scoreResult.verdict,
         confidence: scoreResult.confidence,
         summary: packet.summary,
-        rawSignals: signals as object,
+        rawSignals: { ...(signals as object), executionTier } as object,
         decisionPacket: packet as object,
       },
     });
@@ -370,6 +402,10 @@ export async function runWebsiteBuilderScout(input: {
         productUrl: normalized.url,
         analysisRunId,
         status: "draft",
+        workflowState: {
+          executionTier,
+          sourceSkill: SKILL,
+        } as object,
       },
     });
     campaignId = campaign.id;
@@ -516,13 +552,20 @@ export async function runWebsiteBuilderScout(input: {
         slug,
         description: `AI-generated demo site built by Website Builder Scout for ${businessName}`,
         faviconEmoji: "🏗️",
+        theme: {
+          generation: {
+            sourceMode: "website_builder_scout",
+            templateId: "golden_funnel",
+            executionTier,
+          },
+        } as object,
         pages: {
           create: {
             title: "Home",
             slug: "home",
             order: 0,
             published: true,
-            blocks: buildGoldenBlocks(businessName, assets.landingPage),
+            blocks: buildGoldenBlocks(businessName, assets.landingPage, executionTier),
           },
         },
       },
@@ -538,8 +581,12 @@ export async function runWebsiteBuilderScout(input: {
   const welcomeEmail = assets.emailSequences.welcome?.[0];
 
   const outreachEmail = {
-    subject: `I built a new version of the ${businessName} website`,
-    preview: `Quick question — took me about an hour. Would love your feedback.`,
+    subject: executionTier === "elite"
+      ? `I mocked up a higher-converting version of the ${businessName} site`
+      : `I built a new version of the ${businessName} website`,
+    preview: executionTier === "elite"
+      ? `Quick question — I spotted a few conversion leaks and rebuilt the key pages.`
+      : `Quick question — took me about an hour. Would love your feedback.`,
     body: `Hi ${businessName} team,
 
 I was doing some research on local ${niche} businesses and came across your site.
@@ -548,6 +595,8 @@ I noticed a few things that could be costing you leads:
 ${topGaps.map((g) => `• ${g}`).join("\n")}
 
 I already built a cleaner, faster version — took me about an hour using AI. Happy to share the live link.
+
+${executionTier === "elite" ? "\nI also structured it to answer the trust and response-time objections that usually stop local buyers from calling." : ""}
 
 No pitch, no pressure. Just thought you'd want to see what's possible.
 
@@ -571,9 +620,10 @@ Best,
   return {
     ok: true,
     skill: SKILL,
-    summary: `Scouted ${businessName} (score: ${opportunityScore}/100). Created CRM client, full campaign, and demo site.`,
+    summary: `Scouted ${businessName} (score: ${opportunityScore}/100) with ${executionTier} execution. Created CRM client, full campaign, and demo site.`,
     created: { clientId, campaignId, siteId },
     data: {
+      executionTier,
       businessName,
       siteScore: opportunityScore,
       verdict: scoreResult.verdict,

@@ -65,6 +65,7 @@ type StatsSummary = {
     reason?: string;
   };
 };
+type ExecutionTier = "core" | "elite";
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: ReactNode }> = {
   new: { label: "New", color: "text-white/55 border-white/10 bg-white/[0.04]", icon: <Clock className="h-3 w-3" /> },
@@ -234,6 +235,7 @@ function LeadCard({
 }
 
 export default function LeadsPage() {
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
   const [niche, setNiche] = useState("");
   const [location, setLocation] = useState("");
   const [leadQuery, setLeadQuery] = useState("");
@@ -293,7 +295,7 @@ export default function LeadsPage() {
       const res = await fetch("/api/leads/search", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ niche: niche.trim(), location: location.trim() }),
+        body: JSON.stringify({ niche: niche.trim(), location: location.trim(), executionTier }),
       });
       const data = await res.json() as { ok: boolean; found: number; created: number; isDemo?: boolean; error?: string };
 
@@ -313,7 +315,11 @@ export default function LeadsPage() {
   async function processLead(id: string, action: "analyze" | "generate") {
     setProcessingIds((current) => new Set(current).add(id));
     try {
-      await fetch(`/api/leads/${id}/${action}`, { method: "POST" });
+      await fetch(`/api/leads/${id}/${action}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ executionTier }),
+      });
       await fetchLeads();
     } finally {
       setProcessingIds((current) => {
@@ -517,6 +523,27 @@ export default function LeadsPage() {
             <p className="mt-2 max-w-2xl text-sm leading-7 text-white/45">
               Search a niche and market, then let the engine turn raw businesses into scored opportunities you can analyze and convert.
             </p>
+
+            <div className="mt-5 grid gap-2 sm:grid-cols-2">
+              {([
+                ["core", "Core", "Strong local lead research and launch-ready outreach assets."],
+                ["elite", "Elite", "Sharper operator-grade diagnosis, stronger offers, and better outreach framing."],
+              ] as const).map(([value, label, description]) => (
+                <button
+                  key={value}
+                  type="button"
+                  onClick={() => setExecutionTier(value)}
+                  className={`rounded-2xl border px-4 py-3 text-left transition ${
+                    executionTier === value
+                      ? "border-cyan-500/25 bg-cyan-500/10 text-cyan-100"
+                      : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+                  }`}
+                >
+                  <p className="text-sm font-black">{label}</p>
+                  <p className="mt-1 text-xs leading-5 text-inherit/75">{description}</p>
+                </button>
+              ))}
+            </div>
 
             <div className="mt-5 grid gap-3 md:grid-cols-[1fr,1fr,auto]">
               <input

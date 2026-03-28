@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
+import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -20,6 +21,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     const { leadId, businessName, niche, location, website, score, gaps, strengths } = body;
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
 
     if (!businessName || !niche) {
       return NextResponse.json(
@@ -57,6 +59,11 @@ Overall Score: ${score ?? "Unknown"}/100
 Known Gaps: ${JSON.stringify(gaps ?? [])}
 Known Strengths: ${JSON.stringify(strengths ?? [])}
 ${leadContext}
+Execution Tier: ${executionTier}
+
+${executionTier === "elite"
+  ? "Elite mode: write this like a premium consultant using the audit to create urgency, authority, and clear ROI framing. Sharpen the diagnosis, value framing, and proposed engagement."
+  : "Core mode: write a strong, practical consultant audit report with clear gaps, wins, and next-step recommendations."}
 
 Create a comprehensive, professional audit report that would impress a business owner and position you as the obvious expert. Be specific to their niche. Include actionable insights.
 
@@ -188,12 +195,13 @@ Return ONLY this JSON:
           niche,
           location: location ?? null,
           website: website ?? null,
+          executionTier,
           ...auditData,
         } as object,
       },
     });
 
-    return NextResponse.json({ ok: true, proposal, report: auditData }, { status: 201 });
+    return NextResponse.json({ ok: true, proposal, report: auditData, executionTier }, { status: 201 });
   } catch (err) {
     console.error("Audit report generate error:", err);
     return NextResponse.json({ ok: false, error: "Failed to generate audit report" }, { status: 500 });

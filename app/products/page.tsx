@@ -9,6 +9,7 @@ import {
   Search, Loader2, Plus, Copy, CheckCircle, Trash2,
   Megaphone, Globe, AlertCircle, Zap, Package, ArrowRight, Link2,
 } from "lucide-react";
+type ExecutionTier = "core" | "elite";
 
 type Product = {
   id: string;
@@ -21,6 +22,9 @@ type Product = {
   commission: string | null;
   niche: string | null;
   createdAt: string;
+  scanData?: {
+    executionTier?: ExecutionTier;
+  } | null;
 };
 
 type BusinessProfileSummary = {
@@ -48,6 +52,7 @@ type StatsSummary = {
 
 type ScanResult = {
   ok: boolean;
+  executionTier?: ExecutionTier;
   platform: string;
   affiliateUrl: string | null;
   hasAffiliateId: boolean;
@@ -99,9 +104,10 @@ function CopyBtn({ text }: { text: string }) {
 }
 
 function ProductCard({ product, onDelete }: { product: Product; onDelete: (id: string) => void }) {
+  const executionTier: ExecutionTier = product.scanData?.executionTier === "core" ? "core" : "elite";
   const launchUrl = (skill: string) => {
     const u = product.affiliateUrl ?? product.productUrl;
-    return `/skills?skill=${skill}&prefill_url=${encodeURIComponent(u)}&prefill_mode=operator`;
+    return `/skills?skill=${skill}&prefill_url=${encodeURIComponent(u)}&prefill_mode=operator&execution_tier=${executionTier}`;
   };
 
   return (
@@ -111,6 +117,15 @@ function ProductCard({ product, onDelete }: { product: Product; onDelete: (id: s
           <h3 className="text-sm font-black text-white truncate">{product.name}</h3>
           <div className="flex flex-wrap gap-2 mt-1.5">
             <PlatformBadge platform={product.platform} />
+            <span
+              className={`text-[10px] font-black uppercase tracking-[0.16em] px-2 py-0.5 rounded-lg border ${
+                executionTier === "elite"
+                  ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-100"
+                  : "border-white/[0.08] bg-white/[0.05] text-white/50"
+              }`}
+            >
+              {executionTier}
+            </span>
             {product.niche && (
               <span className="text-[10px] text-white/30 bg-white/[0.04] px-2 py-0.5 rounded-lg border border-white/[0.07] capitalize">
                 {product.niche}
@@ -167,7 +182,7 @@ function ProductCard({ product, onDelete }: { product: Product; onDelete: (id: s
           <Globe className="w-3 h-3" /> Build Site
         </Link>
         <Link
-          href={`/scan?url=${encodeURIComponent(product.productUrl)}&mode=operator`}
+          href={`/scan?url=${encodeURIComponent(product.productUrl)}&mode=operator&execution_tier=${executionTier}`}
           className="flex items-center justify-center gap-1.5 py-2 px-3 rounded-xl bg-white/[0.03] border border-white/[0.07] text-white/30 text-[11px] font-bold hover:text-white/60 transition"
         >
           <Search className="w-3 h-3" />
@@ -185,6 +200,7 @@ function verdictTone(status?: string) {
 
 export default function ProductsPage() {
   const [tab, setTab] = useState<"library" | "add">("library");
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
   const [products, setProducts] = useState<Product[]>([]);
   const [businessProfile, setBusinessProfile] = useState<BusinessProfileSummary | null>(null);
   const [osStats, setOsStats] = useState<StatsSummary | null>(null);
@@ -222,7 +238,7 @@ export default function ProductsPage() {
     const res = await fetch("/api/products/scan", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ url: url.trim() }),
+      body: JSON.stringify({ url: url.trim(), executionTier }),
     });
     const data = await res.json() as ScanResult;
     setScanResult(data);
@@ -244,7 +260,10 @@ export default function ProductsPage() {
         commission: scanResult.product.commission,
         niche: scanResult.product.niche,
         description: scanResult.product.description,
-        scanData: scanResult.product,
+        scanData: {
+          ...scanResult.product,
+          executionTier: scanResult.executionTier ?? executionTier,
+        },
       }),
     });
     const data = await res.json() as { ok: boolean };
@@ -435,6 +454,26 @@ export default function ProductsPage() {
                 Works with ClickBank, Amazon, AliExpress, JVZoo, WarriorPlus, Shopify stores, or any product page.
                 We detect the platform, build your affiliate link, and scan the product.
               </p>
+              <div className="mb-4 grid gap-2 sm:grid-cols-2">
+                {([
+                  ["core", "Core", "Clean extraction and launch-ready product research."],
+                  ["elite", "Elite", "Sharper offer diagnosis, buyer language, and more usable hook research."],
+                ] as const).map(([value, label, description]) => (
+                  <button
+                    key={value}
+                    type="button"
+                    onClick={() => setExecutionTier(value)}
+                    className={`rounded-2xl border px-4 py-3 text-left transition ${
+                      executionTier === value
+                        ? "border-cyan-500/25 bg-cyan-500/10 text-cyan-100"
+                        : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+                    }`}
+                  >
+                    <p className="text-sm font-black">{label}</p>
+                    <p className="mt-1 text-xs leading-5 text-inherit/75">{description}</p>
+                  </button>
+                ))}
+              </div>
               <div className="flex gap-2">
                 <input
                   type="url"
@@ -460,6 +499,15 @@ export default function ProductsPage() {
                 {/* Platform + affiliate URL */}
                 <div className="flex items-center gap-3 flex-wrap">
                   <PlatformBadge platform={scanResult.platform} />
+                  <span
+                    className={`text-[10px] font-black uppercase tracking-[0.16em] px-2 py-0.5 rounded-lg border ${
+                      (scanResult.executionTier ?? executionTier) === "elite"
+                        ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-100"
+                        : "border-white/[0.08] bg-white/[0.05] text-white/50"
+                    }`}
+                  >
+                    {(scanResult.executionTier ?? executionTier).toUpperCase()}
+                  </span>
                   {scanResult.hasAffiliateId ? (
                     <div className="flex items-center gap-2 px-3 py-1.5 bg-emerald-500/[0.08] border border-emerald-500/20 rounded-xl">
                       <CheckCircle className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
@@ -522,7 +570,7 @@ export default function ProductsPage() {
                     {saved ? "Saved!" : "Save to Library"}
                   </button>
                   <Link
-                    href={`/skills?skill=ad-campaign&prefill_url=${encodeURIComponent(scanResult.affiliateUrl ?? url)}&prefill_mode=operator`}
+                    href={`/skills?skill=ad-campaign&prefill_url=${encodeURIComponent(scanResult.affiliateUrl ?? url)}&prefill_mode=operator&execution_tier=${scanResult.executionTier ?? executionTier}`}
                     className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-bold hover:bg-cyan-500/15 transition"
                   >
                     <Megaphone className="w-4 h-4" /> Build Campaign Now

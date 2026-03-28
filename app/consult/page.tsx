@@ -39,6 +39,8 @@ interface OnboardingSection {
   questions: string[];
 }
 
+type ExecutionTier = "core" | "elite";
+
 // ---------------------------------------------------------------------------
 // Config maps
 // ---------------------------------------------------------------------------
@@ -128,6 +130,39 @@ function EmptyState({ icon: Icon, title, subtitle }: { icon: React.ElementType; 
   );
 }
 
+function ExecutionTierPicker({
+  value,
+  onChange,
+  options,
+}: {
+  value: ExecutionTier;
+  onChange: (tier: ExecutionTier) => void;
+  options: Record<ExecutionTier, string>;
+}) {
+  return (
+    <div className="grid gap-2 sm:grid-cols-2">
+      {([
+        ["core", "Core"],
+        ["elite", "Elite"],
+      ] as const).map(([tier, label]) => (
+        <button
+          key={tier}
+          type="button"
+          onClick={() => onChange(tier)}
+          className={`rounded-2xl border px-4 py-3 text-left transition ${
+            value === tier
+              ? "border-cyan-500/25 bg-cyan-500/10 text-cyan-100"
+              : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+          }`}
+        >
+          <p className="text-sm font-black">{label}</p>
+          <p className="mt-1 text-xs leading-5 text-inherit/75">{options[tier]}</p>
+        </button>
+      ))}
+    </div>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Proposal modal
 // ---------------------------------------------------------------------------
@@ -213,6 +248,7 @@ const ai = proposal.aiJson as Record<string, any> | null;
 // ---------------------------------------------------------------------------
 
 function PackagesTab() {
+  const [executionTier, setExecutionTier] = useState<"core" | "elite">("elite");
   const [packages, setPackages] = useState<ConsultPackage[]>([]);
   const [loading, setLoading] = useState(true);
   const [showGenForm, setShowGenForm] = useState(false);
@@ -250,7 +286,12 @@ function PackagesTab() {
       const res = await fetch("/api/consult/packages/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ niche: genNiche, businessType: genBusinessType, targetClient: genTargetClient }),
+        body: JSON.stringify({
+          niche: genNiche,
+          businessType: genBusinessType,
+          targetClient: genTargetClient,
+          executionTier,
+        }),
       });
       const data = await res.json() as { ok: boolean; error?: string };
       if (data.ok) {
@@ -317,6 +358,14 @@ function PackagesTab() {
       {showGenForm && (
         <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4 mb-4 space-y-3">
           <SectionLabel>Generate with AI</SectionLabel>
+          <ExecutionTierPicker
+            value={executionTier}
+            onChange={setExecutionTier}
+            options={{
+              core: "Strong pricing tiers and clear package separation.",
+              elite: "Sharper premium positioning, better value ladders, stronger close logic.",
+            }}
+          />
           <InputField placeholder="Your niche (e.g. marketing agency, life coach)" value={genNiche} onChange={setGenNiche} />
           <InputField placeholder="Business type (e.g. solo consultant, boutique agency)" value={genBusinessType} onChange={setGenBusinessType} />
           <InputField placeholder="Target client (e.g. B2B SaaS founders)" value={genTargetClient} onChange={setGenTargetClient} />
@@ -407,6 +456,7 @@ function PackagesTab() {
 // ---------------------------------------------------------------------------
 
 function ProposalsTab() {
+  const [executionTier, setExecutionTier] = useState<"core" | "elite">("elite");
   const [proposals, setProposals] = useState<Proposal[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -436,7 +486,12 @@ function ProposalsTab() {
       const res = await fetch("/api/consult/proposals/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ businessName: bizName, niche, budget: budget || undefined }),
+        body: JSON.stringify({
+          businessName: bizName,
+          niche,
+          budget: budget || undefined,
+          executionTier,
+        }),
       });
       const data = await res.json() as { ok: boolean; error?: string };
       if (data.ok) {
@@ -465,6 +520,14 @@ function ProposalsTab() {
       {showForm && (
         <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4 mb-4 space-y-3">
           <SectionLabel>New Proposal</SectionLabel>
+          <ExecutionTierPicker
+            value={executionTier}
+            onChange={setExecutionTier}
+            options={{
+              core: "Strong proposal structure and clear offer framing.",
+              elite: "Sharper diagnosis, premium positioning, and stronger close-rate logic.",
+            }}
+          />
           <InputField placeholder="Business name" value={bizName} onChange={setBizName} />
           <InputField placeholder="Niche / industry" value={niche} onChange={setNiche} />
           <InputField placeholder="Budget (optional, e.g. $3,000/mo)" value={budget} onChange={setBudget} />
@@ -523,6 +586,7 @@ function ProposalsTab() {
 // ---------------------------------------------------------------------------
 
 function AuditsTab() {
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
   const [reports, setReports] = useState<Proposal[]>([]);
   const [loading, setLoading] = useState(true);
   const [showForm, setShowForm] = useState(false);
@@ -556,7 +620,12 @@ function AuditsTab() {
       const res = await fetch("/api/consult/audit-report/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ businessName: bizName, niche, score: score ? parseInt(score) : undefined }),
+        body: JSON.stringify({
+          businessName: bizName,
+          niche,
+          score: score ? parseInt(score) : undefined,
+          executionTier,
+        }),
       });
       const data = await res.json() as { ok: boolean; error?: string };
       if (data.ok) {
@@ -585,6 +654,14 @@ function AuditsTab() {
       {showForm && (
         <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4 mb-4 space-y-3">
           <SectionLabel>New Audit Report</SectionLabel>
+          <ExecutionTierPicker
+            value={executionTier}
+            onChange={setExecutionTier}
+            options={{
+              core: "Strong audit structure with clear gaps, wins, and next steps.",
+              elite: "Sharper diagnosis, stronger value framing, and more premium consultant positioning.",
+            }}
+          />
           <InputField placeholder="Business name" value={bizName} onChange={setBizName} />
           <InputField placeholder="Niche / industry" value={niche} onChange={setNiche} />
           <InputField placeholder="Overall score 0-100 (optional)" value={score} onChange={setScore} type="number" />
@@ -634,6 +711,7 @@ function AuditsTab() {
 // ---------------------------------------------------------------------------
 
 function GenerateTab({ setActiveTab }: { setActiveTab: (t: string) => void }) {
+  const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
   const [showOnboarding, setShowOnboarding] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [onbNiche, setOnbNiche] = useState("");
@@ -649,12 +727,31 @@ function GenerateTab({ setActiveTab }: { setActiveTab: (t: string) => void }) {
       const res = await fetch("/api/consult/onboarding/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ niche: onbNiche, clientName: onbClientName, businessType: onbBizType }),
+        body: JSON.stringify({
+          niche: onbNiche,
+          clientName: onbClientName,
+          businessType: onbBizType,
+          executionTier,
+        }),
       });
-      const data = await res.json() as { ok: boolean; sections: OnboardingSection[]; error?: string };
+      const data = await res.json() as {
+        ok: boolean;
+        questionnaire?: {
+          sections?: Array<{
+            title: string;
+            questions: Array<{ question: string }>;
+          }>;
+        };
+        error?: string;
+      };
       if (data.ok) {
         toast.success("Onboarding questionnaire generated");
-        setOnboardingSections(data.sections ?? []);
+        setOnboardingSections(
+          (data.questionnaire?.sections ?? []).map((section) => ({
+            section: section.title,
+            questions: section.questions.map((q) => q.question),
+          }))
+        );
         setOpenSection(0);
       } else {
         toast.error(data.error ?? "Generation failed");
@@ -720,6 +817,14 @@ function GenerateTab({ setActiveTab }: { setActiveTab: (t: string) => void }) {
       {showOnboarding && (
         <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5 space-y-3">
           <SectionLabel>Client Onboarding Questionnaire</SectionLabel>
+          <ExecutionTierPicker
+            value={executionTier}
+            onChange={setExecutionTier}
+            options={{
+              core: "Strong discovery questions that cover goals, blockers, and scope clearly.",
+              elite: "Deeper consultant-grade discovery with stronger diagnostic and strategic questions.",
+            }}
+          />
           <InputField placeholder="Your niche (e.g. social media marketing)" value={onbNiche} onChange={setOnbNiche} />
           <InputField placeholder="Client name or company" value={onbClientName} onChange={setOnbClientName} />
           <InputField placeholder="Client business type (e.g. e-commerce brand)" value={onbBizType} onChange={setOnbBizType} />

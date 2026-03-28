@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
+import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -34,6 +35,7 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json();
     const { productId } = body;
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
 
     if (!productId) {
       return NextResponse.json({ ok: false, error: "productId is required" }, { status: 400 });
@@ -55,6 +57,10 @@ Niche: ${product.niche}
 ${product.category ? `Category: ${product.category}` : ""}
 ${product.suggestedPrice ? `Price: $${product.suggestedPrice}` : ""}
 ${product.shippingTime ? `Shipping time: ${product.shippingTime}` : ""}
+Execution Tier: ${executionTier}
+${executionTier === "elite"
+  ? "Elite mode: write this like a top 1% Shopify conversion page. Push harder on benefit framing, proof, objections, buying confidence, and AOV-minded persuasion."
+  : "Core mode: write strong practical PDP copy with clear benefits, FAQ, and conversion-friendly structure."}
 ${productContext}
 
 Write copy that converts like a top 1% Shopify store. Use power words, social proof triggers, and emotional hooks.
@@ -81,7 +87,7 @@ Return this exact JSON structure:
       data: { storeJson: result as object },
     });
 
-    return NextResponse.json({ ok: true, storeContent: result, product: updated });
+    return NextResponse.json({ ok: true, storeContent: result, product: updated, executionTier });
   } catch (err) {
     console.error("Store content error:", err);
     return NextResponse.json({ ok: false, error: "Failed to generate store content" }, { status: 500 });

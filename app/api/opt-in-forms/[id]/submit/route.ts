@@ -2,6 +2,12 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { fireWebhook } from "@/lib/webhooks";
 
+const EXECUTION_TIER_PREFIX = "__execution_tier:";
+
+function visibleTags(tags: string[] | undefined) {
+  return (tags ?? []).filter((tag) => !tag.startsWith(EXECUTION_TIER_PREFIX));
+}
+
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -43,7 +49,7 @@ export async function POST(
         email: body.email.toLowerCase().trim(),
         firstName: body.firstName || null,
         lastName: body.lastName || null,
-        tags: form.tags,
+        tags: visibleTags(form.tags),
         source: "form",
         status: "subscribed",
       },
@@ -63,7 +69,7 @@ export async function POST(
         email: body.email.toLowerCase().trim(),
         firstName: body.firstName ?? null,
         lastName: body.lastName ?? null,
-        tags: form.tags,
+        tags: visibleTags(form.tags),
         formId: id,
         formName: form.name,
       },

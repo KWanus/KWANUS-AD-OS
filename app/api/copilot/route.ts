@@ -6,6 +6,7 @@ import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
 import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
 import { ARCHETYPES, type BusinessType, type SystemSlug } from "@/lib/archetypes";
+import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -239,7 +240,12 @@ RECOMMENDATION FRESHNESS: ${recommendationAgeMs == null ? "never refreshed" : re
 
 // ─── System prompt ─────────────────────────────────────────────────────────────
 
-function buildSystemPrompt(workspaceContext: string, businessContext: string, osContext: string): string {
+function buildSystemPrompt(
+  workspaceContext: string,
+  businessContext: string,
+  osContext: string,
+  executionTier: ExecutionTier
+): string {
   return `You are the Himalaya Agency OS AI Copilot — the most advanced business-building AI assistant ever created.
 
 You have full context about the user's active business across every vertical:
@@ -252,6 +258,11 @@ You have full context about the user's active business across every vertical:
 ${workspaceContext}
 ${businessContext}
 ${osContext}
+=== EXECUTION LANE ===
+ACTIVE EXECUTION TIER: ${executionTier.toUpperCase()}
+${executionTier === "elite"
+  ? "Respond like a top-agency operator: sharper positioning, stronger proof logic, clearer objections, and higher-conviction next moves."
+  : "Respond with strong operator-ready clarity: practical, direct, structured, and immediately usable."}
 
 Your capabilities:
 - Analyze any business, product, or offer
@@ -315,6 +326,9 @@ Rules:
 - Reference the user's actual workspace data when relevant (use the workspace context above)
 - Use the Business OS verdict when prioritizing advice. If the OS says "Needs Repair", lead with repair/sync actions before net-new expansion.
 - Before any recommendation, think about what the TOP 1% in that niche does
+- Match the requested execution lane. ` + (executionTier === "elite"
+    ? "Elite means premium, high-conviction, top-operator execution."
+    : "Core means strong, pragmatic, operator-ready execution without unnecessary flourish.") + `
 - Keep responses focused and direct
 - If asked to generate something, produce actual content (not instructions)
 - Return structured markdown with headers when listing multiple items
@@ -337,7 +351,9 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json() as {
       messages: { role: "user" | "assistant"; content: string }[];
+      executionTier?: ExecutionTier;
     };
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
 
     if (!body.messages?.length) {
       return NextResponse.json({ ok: false, error: "No messages" }, { status: 400 });
@@ -377,7 +393,8 @@ export async function POST(req: NextRequest) {
     let systemPrompt = buildSystemPrompt(
       workspaceContext + quickActionsContext,
       businessContext,
-      osContext
+      osContext,
+      executionTier
     );
 
     // Inject URL scan data if present

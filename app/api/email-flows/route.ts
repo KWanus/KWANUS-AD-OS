@@ -33,10 +33,11 @@ export async function POST(req: NextRequest) {
     const body = await req.json() as {
       name: string;
       trigger: string;
-      triggerConfig?: object;
+      triggerConfig?: Record<string, unknown>;
       nodes?: object[];
       edges?: object[];
       tags?: string[];
+      executionTier?: "core" | "elite";
     };
 
     if (!body.name?.trim()) {
@@ -45,13 +46,17 @@ export async function POST(req: NextRequest) {
     if (!body.trigger?.trim()) {
       return NextResponse.json({ ok: false, error: "Trigger type is required" }, { status: 400 });
     }
+    const executionTier = body.executionTier === "core" ? "core" : "elite";
 
     const flow = await prisma.emailFlow.create({
       data: {
         userId: user.id,
         name: body.name,
         trigger: body.trigger,
-        triggerConfig: body.triggerConfig,
+        triggerConfig: {
+          ...(body.triggerConfig ?? {}),
+          executionTier,
+        },
         nodes: body.nodes ?? [],
         edges: body.edges ?? [],
         tags: body.tags ?? [],

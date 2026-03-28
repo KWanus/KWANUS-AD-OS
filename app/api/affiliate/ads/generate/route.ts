@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
+import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -33,7 +34,8 @@ export async function POST(req: NextRequest) {
     const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } });
     if (!user) return NextResponse.json({ ok: false, error: "User not found" }, { status: 404 });
 
-    const body = await req.json() as { offerId: string };
+    const body = await req.json() as { offerId: string; executionTier?: ExecutionTier };
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
     if (!body.offerId) return NextResponse.json({ ok: false, error: "offerId is required" }, { status: 400 });
 
     const offer = await prisma.affiliateOffer.findFirst({
@@ -53,7 +55,11 @@ Offer:
 - Niche: ${offer.niche}
 - URL: ${offer.url}
 ${offer.commission != null ? `- Commission: ${offer.commission}%` : ""}
-${offer.notes ? `- Notes: ${offer.notes}` : ""}${analysisContext}
+${offer.notes ? `- Notes: ${offer.notes}` : ""}
+Execution Tier: ${executionTier}
+${executionTier === "elite"
+  ? "Elite mode: write these like a super-affiliate buying serious traffic. Push for more dangerous hooks, stronger angle variation, better platform-native formatting, and clearer visual direction."
+  : "Core mode: write strong launch-ready affiliate ads with practical hooks, copy, and creative ideas."}${analysisContext}
 
 Return this exact JSON structure:
 {
@@ -137,7 +143,7 @@ Return this exact JSON structure:
       data: { adHooksJson: ads as object },
     });
 
-    return NextResponse.json({ ok: true, ads, offerId: offer.id });
+    return NextResponse.json({ ok: true, ads, offerId: offer.id, executionTier });
   } catch (err) {
     console.error("Ads generate error:", err);
     return NextResponse.json({ ok: false, error: "Ad generation failed" }, { status: 500 });

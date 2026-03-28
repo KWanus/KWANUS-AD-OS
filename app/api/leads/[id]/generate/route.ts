@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
 import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
+import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -38,7 +39,7 @@ async function callSkill(prompt: string): Promise<unknown> {
 }
 
 export async function POST(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
@@ -52,6 +53,12 @@ export async function POST(
 
     const lead = await prisma.lead.findFirst({ where: { id, userId: user.id } });
     if (!lead) return NextResponse.json({ ok: false, error: "Lead not found" }, { status: 404 });
+    const body = await req.json().catch(() => ({})) as { executionTier?: ExecutionTier };
+    const storedExecutionTier =
+      ((lead.analyzerJson as { executionTier?: ExecutionTier } | null | undefined)?.executionTier === "core"
+        ? "core"
+        : "elite") as ExecutionTier;
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : storedExecutionTier;
     const businessContext = await getBusinessContext(user.id);
 
     await prisma.lead.update({ where: { id }, data: { status: "generating" } });
@@ -81,6 +88,10 @@ Input:
 - niche: ${lead.niche}
 - location: ${lead.location}
 - website_url: ${lead.website ?? "none"}
+- execution_tier: ${executionTier}
+- ${executionTier === "elite"
+        ? "Use top-operator specificity, stronger conversion criticism, and higher-conviction recommendations."
+        : "Keep the output clear, useful, and launch-ready without overreaching."}
 - known_score: ${lead.score ?? "N/A"}/100
 - known_summary: ${lead.summary ?? "No website analysis available"}
 - known_gaps: ${gaps.join(", ") || "none"}
@@ -137,6 +148,10 @@ Input:
 - business_name: ${lead.name}
 - niche: ${lead.niche}
 - location: ${lead.location}
+- execution_tier: ${executionTier}
+- ${executionTier === "elite"
+        ? "Position this business like a premium operator in its niche, with sharper messaging and stronger proof logic."
+        : "Build a clear, practical conversion profile the business can act on quickly."}
 - analysis_summary: ${analyzer.summary ?? lead.summary ?? ""}
 - issues: ${analyzer.issues?.map((i) => i.title).join(", ") ?? gaps.join(", ")}
 - strengths: ${(analyzer.strengths ?? strengths).join(", ")}
@@ -179,6 +194,10 @@ Input:
 - business_name: ${lead.name}
 - niche: ${lead.niche}
 - location: ${lead.location}
+- execution_tier: ${executionTier}
+- ${executionTier === "elite"
+        ? "Write like a premium conversion strategist. More specific proof, tighter objection handling, stronger CTA rhythm."
+        : "Keep the structure strong, practical, and easy for a small business to ship."}
 - audience: ${profile.audience?.primary_audience ?? lead.audience ?? ""}
 - brand_direction: tone=${profile.brand_direction?.recommended_tone ?? ""}, angle=${profile.brand_direction?.offer_angle ?? lead.angle ?? ""}
 - primary_cta: ${profile.conversion_strategy?.primary_cta ?? "Call Now"}
@@ -221,6 +240,10 @@ Input:
 - business_name: ${lead.name}
 - niche: ${lead.niche}
 - location: ${lead.location}
+- execution_tier: ${executionTier}
+- ${executionTier === "elite"
+        ? "Write ads with sharper hooks, stronger niche specificity, and more expensive-feeling offers."
+        : "Write ads that are clear, practical, and conversion-oriented."}
 - audience: ${profile.audience?.primary_audience ?? lead.audience ?? ""}
 - customer_pains: ${profile.audience?.customer_pains?.join(", ") ?? lead.painPoints ?? ""}
 ${businessContext}
@@ -255,6 +278,10 @@ Input:
 - business_name: ${lead.name}
 - niche: ${lead.niche}
 - location: ${lead.location}
+- execution_tier: ${executionTier}
+- ${executionTier === "elite"
+        ? "Write like a top-performing outreach operator: higher personalization, better value framing, and stronger reply-driving CTAs."
+        : "Write clear, concise outreach that feels relevant and useful."}
 - analysis_summary: ${analyzer.summary ?? lead.summary ?? "Business has weak online presence"}
 - key_issues: ${gaps.slice(0, 3).join(", ") || "No website or poor design"}
 - website_preview_link: [preview site built in Himalaya]
@@ -274,10 +301,16 @@ Input:
       data: {
         status: "ready",
         analyzerJson: analyzerJson as object,
-        profileJson: profileJson as object,
+        profileJson: {
+          ...(profileJson as object),
+          executionTier,
+        } as object,
         websiteJson: websiteJson as object,
         adsJson: adsJson as object,
-        emailsJson: emailsJson as object,
+        emailsJson: {
+          ...(emailsJson as object),
+          executionTier,
+        } as object,
         // Keep legacy fields populated for backwards compat
         outreachEmail: {
           subject: emails.outreach_email?.subject ?? "",
@@ -289,7 +322,7 @@ Input:
       },
     });
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, executionTier });
   } catch (err) {
     console.error("Lead generate error:", err);
     await prisma.lead.update({ where: { id }, data: { status: "analyzed" } }).catch(() => null);

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
+import { getOrCreateUser } from "@/lib/auth";
 
 export async function GET(
   _req: NextRequest,
@@ -9,10 +10,12 @@ export async function GET(
   try {
     const { userId: clerkId } = await auth();
     if (!clerkId) return NextResponse.json({ ok: false, message: "Unauthorized" }, { status: 401 });
+    const user = await getOrCreateUser();
+    if (!user) return NextResponse.json({ ok: false, message: "Unauthorized" }, { status: 401 });
 
     const { id } = await params;
-    const project = await prisma.campaign.findUnique({
-      where: { id },
+    const project = await prisma.campaign.findFirst({
+      where: { id, userId: user.id },
       include: {
         analysisRun: {
           include: {
@@ -40,9 +43,16 @@ export async function PATCH(
   try {
     const { userId: clerkId } = await auth();
     if (!clerkId) return NextResponse.json({ ok: false, message: "Unauthorized" }, { status: 401 });
+    const user = await getOrCreateUser();
+    if (!user) return NextResponse.json({ ok: false, message: "Unauthorized" }, { status: 401 });
 
     const { id } = await params;
     const updates = await req.json() as Record<string, unknown>;
+    const existing = await prisma.campaign.findFirst({
+      where: { id, userId: user.id },
+      select: { id: true },
+    });
+    if (!existing) return NextResponse.json({ ok: false, message: "Project not found" }, { status: 404 });
     const project = await prisma.campaign.update({
       where: { id },
       data: updates,

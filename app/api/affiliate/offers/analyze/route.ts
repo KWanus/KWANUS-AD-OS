@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
+import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -41,7 +42,9 @@ export async function POST(req: NextRequest) {
       url?: string;
       commission?: number;
       gravity?: number;
+      executionTier?: ExecutionTier;
     };
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
 
     let offerId: string | null = null;
     let offerData: {
@@ -93,6 +96,11 @@ Offer Details:
 - URL: ${offerData.url}
 ${offerData.commission != null ? `- Commission: ${offerData.commission}%` : ""}
 ${offerData.gravity != null ? `- Gravity: ${offerData.gravity}` : ""}
+Execution Tier: ${executionTier}
+
+${executionTier === "elite"
+  ? "Elite mode: analyze this like a serious affiliate operator deciding where to place budget and attention. Be sharper on EPC realism, angle durability, traffic fit, and buyer psychology."
+  : "Core mode: produce a strong practical offer analysis with clear verdict logic and usable launch guidance."}
 
 Return this exact JSON structure:
 {
@@ -132,7 +140,7 @@ Return this exact JSON structure:
       });
     }
 
-    return NextResponse.json({ ok: true, analysis, offerId });
+    return NextResponse.json({ ok: true, analysis, offerId, executionTier });
   } catch (err) {
     console.error("Affiliate offer analyze error:", err);
     return NextResponse.json({ ok: false, error: "Analysis failed" }, { status: 500 });

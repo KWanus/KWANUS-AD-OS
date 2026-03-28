@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import type { Prisma } from "@prisma/client";
 
 export async function POST(req: NextRequest) {
     try {
@@ -11,7 +12,7 @@ export async function POST(req: NextRequest) {
             name: string;
             type: "image" | "video";
             campaignId?: string;
-            state: any;
+            state: Record<string, unknown>;
             outputUrl?: string;
         };
 
@@ -21,7 +22,7 @@ export async function POST(req: NextRequest) {
                 type: body.type,
                 userId: user.id,
                 campaignId: body.campaignId || null,
-                state: body.state,
+                state: body.state as Prisma.InputJsonValue,
                 outputUrl: body.outputUrl || null,
             },
         });

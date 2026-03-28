@@ -13,9 +13,10 @@ import { classifyOpportunity } from "@/src/logic/ad-os/classifyOpportunity";
 import { detectOpportunityGaps } from "@/src/logic/ad-os/detectOpportunityGaps";
 import { recommendOpportunityPath } from "@/src/logic/ad-os/recommendOpportunityPath";
 import { buildOpportunityPacket } from "@/src/logic/ad-os/buildOpportunityPacket";
+import type { ExecutionTier } from "@/lib/sites/conversionEngine";
 
 export async function POST(
-  _req: NextRequest,
+  req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
@@ -29,6 +30,8 @@ export async function POST(
 
     const lead = await prisma.lead.findFirst({ where: { id, userId: user.id } });
     if (!lead) return NextResponse.json({ ok: false, error: "Lead not found" }, { status: 404 });
+    const body = await req.json().catch(() => ({})) as { executionTier?: ExecutionTier };
+    const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : "elite";
 
     await prisma.lead.update({ where: { id }, data: { status: "analyzing" } });
 
@@ -47,6 +50,7 @@ export async function POST(
           topGaps: ["No website", "No online booking", "No lead capture form", "No social proof"],
           topStrengths: ["Established local business", "Existing phone/address listing"],
           weaknesses: ["Zero digital presence", "Not showing up in searches"],
+          analyzerJson: { executionTier } as object,
         },
       });
       return NextResponse.json({ ok: true, noWebsite: true });
@@ -75,6 +79,7 @@ export async function POST(
           topGaps: ["Broken/slow site", "Poor technical performance", "Possible no mobile version"],
           topStrengths: [],
           weaknesses: ["Site unreachable or very slow"],
+          analyzerJson: { executionTier } as object,
         },
       });
       return NextResponse.json({ ok: true });
@@ -105,10 +110,16 @@ export async function POST(
         topGaps: opportunityPacket.topGaps ?? [],
         topStrengths: opportunityPacket.topStrengths ?? [],
         weaknesses: packet.weaknesses ?? [],
+        analyzerJson: {
+          executionTier,
+          scanProfile: executionTier === "elite"
+            ? "Sharper operator-grade diagnosis for trust, clarity, and conversion."
+            : "Strong launch-ready diagnosis for trust, clarity, and conversion.",
+        } as object,
       },
     });
 
-    return NextResponse.json({ ok: true, score: scoreResult.total, verdict: scoreResult.verdict });
+    return NextResponse.json({ ok: true, score: scoreResult.total, verdict: scoreResult.verdict, executionTier });
   } catch (err) {
     console.error("Lead analyze error:", err);
     await prisma.lead.update({ where: { id }, data: { status: "new" } }).catch(() => null);

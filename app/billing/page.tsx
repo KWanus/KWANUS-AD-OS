@@ -141,6 +141,7 @@ const SUBSCRIPTION_TIERS = [
 function BillingContent() {
   const searchParams = useSearchParams();
   const [credits, setCredits] = useState<number | null>(null);
+  const [currentPlan, setCurrentPlan] = useState<string>("free");
   const [loading, setLoading] = useState<BundleKey | null>(null);
   const success = searchParams.get("success") === "1";
   const cancelled = searchParams.get("cancelled") === "1";
@@ -148,8 +149,13 @@ function BillingContent() {
 
   useEffect(() => {
     fetch("/api/user/credits")
-      .then(r => r.json() as Promise<{ ok: boolean; credits: number }>)
-      .then(d => { if (d.ok) setCredits(d.credits); });
+      .then(r => r.json() as Promise<{ ok: boolean; credits: number; plan?: string }>)
+      .then(d => {
+        if (d.ok) {
+          setCredits(d.credits);
+          setCurrentPlan(d.plan ?? "free");
+        }
+      });
   }, []);
 
   async function handlePurchase(bundle: BundleKey) {
@@ -277,8 +283,68 @@ function BillingContent() {
                   className={`w-full py-3 rounded-xl text-sm font-black uppercase tracking-widest transition flex items-center justify-center gap-2 ${tier.buttonClass} disabled:cursor-default`}
                 >
                   {tier.key === "elite" && <Crown className="w-3.5 h-3.5" />}
-                  {tier.buttonLabel}
+                  {currentPlan === tier.key ? "Current Plan" : tier.buttonLabel}
                 </button>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-8 mb-10">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between mb-6">
+            <div>
+              <h3 className="text-sm font-black uppercase tracking-widest text-white/30">Execution Quality</h3>
+              <p className="text-sm text-white/40 mt-2 max-w-2xl">
+                The real upgrade path is output quality. Core is strong and launch-ready. Elite is where the platform pushes for sharper positioning, stronger objection handling, tighter conversion structure, and more premium execution across tools.
+              </p>
+            </div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
+              <span className="text-[11px] font-black uppercase tracking-[0.2em] text-cyan-300">
+                Current plan: {currentPlan}
+              </span>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {[
+              {
+                label: "Core Lane",
+                badge: "Included",
+                border: "border-white/[0.08]",
+                badgeClass: "border-white/10 bg-white/5 text-white/45",
+                bullets: [
+                  "Strong practical generation that ships fast",
+                  "Clean conversion structure and usable defaults",
+                  "Best for speed, validation, and standard client work",
+                ],
+              },
+              {
+                label: "Elite Lane",
+                badge: "Premium",
+                border: "border-cyan-500/30",
+                badgeClass: "border-cyan-500/30 bg-cyan-500/10 text-cyan-300",
+                bullets: [
+                  "Sharper positioning, proof framing, and objection handling",
+                  "Higher-end page, email, campaign, and research execution",
+                  "Built for top-operator outputs and higher-ticket delivery",
+                ],
+              },
+            ].map((lane) => (
+              <div key={lane.label} className={`rounded-2xl border ${lane.border} bg-black/20 p-5`}>
+                <div className="flex items-center justify-between gap-3">
+                  <p className="text-base font-black text-white">{lane.label}</p>
+                  <span className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.2em] ${lane.badgeClass}`}>
+                    {lane.badge}
+                  </span>
+                </div>
+                <div className="mt-4 space-y-2">
+                  {lane.bullets.map((bullet) => (
+                    <div key={bullet} className="flex items-start gap-2">
+                      <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cyan-300" />
+                      <span className="text-sm text-white/55">{bullet}</span>
+                    </div>
+                  ))}
+                </div>
               </div>
             ))}
           </div>

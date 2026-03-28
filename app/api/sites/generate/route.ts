@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
       businessName?: string;
       niche?: string;
       location?: string;
+      executionTier?: "core" | "elite";
       tone?: string;
       notes?: string;
     };
@@ -34,6 +35,7 @@ export async function POST(req: NextRequest) {
       businessName: body.businessName ?? profile?.businessName ?? user.workspaceName ?? "",
       niche: body.niche ?? profile?.niche ?? user.businessType ?? "",
       location: body.location ?? profile?.location ?? "",
+      executionTier: body.executionTier ?? "elite",
       tone: body.tone,
       notes: [body.notes, profile?.mainOffer ? `Main offer: ${profile.mainOffer}` : null, profile?.targetAudience ? `Target audience: ${profile.targetAudience}` : null]
         .filter(Boolean)
@@ -43,6 +45,7 @@ export async function POST(req: NextRequest) {
     const generated = await generateConversionSiteBlueprint(siteInput);
     const generationMetadata: SiteGenerationMetadata = {
       sourceMode: "from_scratch",
+      executionTier: siteInput.executionTier,
       businessName: siteInput.businessName,
       niche: siteInput.niche,
       location: siteInput.location,

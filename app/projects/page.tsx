@@ -25,6 +25,9 @@ type Project = {
   sourceType: string | null;
   currentPhase: number;
   updatedAt: string;
+  workflowState?: {
+    executionTier?: "core" | "elite";
+  } | null;
   _count: {
     creatives: number;
     adVariations: number;
@@ -223,6 +226,7 @@ export default function ProjectsPage() {
             {filteredProjects.map((project) => {
               const phase = PHASE_META[project.currentPhase] ?? PHASE_META[1];
               const PhaseIcon = phase.icon;
+              const executionTier = project.workflowState?.executionTier === "core" ? "core" : "elite";
 
               return (
                 <button
@@ -240,6 +244,15 @@ export default function ProjectsPage() {
                         <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-white/45">
                           {project.mode}
                         </span>
+                        <span
+                          className={`rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] ${
+                            executionTier === "elite"
+                              ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-300"
+                              : "border-white/10 bg-white/5 text-white/45"
+                          }`}
+                        >
+                          {executionTier}
+                        </span>
                         <span className="text-[11px] text-white/25">
                           Updated {formatRelativeDate(project.updatedAt)}
                         </span>
@@ -250,6 +263,11 @@ export default function ProjectsPage() {
                       </h2>
                       <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-white/35">
                         {project.sourceUrl ?? "No source URL yet. This project was created from a guided workflow."}
+                      </p>
+                      <p className="mt-2 text-[11px] text-white/28">
+                        {executionTier === "elite"
+                          ? "Elite mission lane with sharper strategy and heavier proof depth."
+                          : "Core mission lane with strong operator-ready execution."}
                       </p>
                     </div>
 
