@@ -3,6 +3,7 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
 import type { ExecutionTier } from "@/lib/sites/conversionEngine";
+import { AI_MODELS } from "@/lib/ai/models";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -141,7 +142,7 @@ Return ONLY this JSON:
 }`;
 
     const response = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
+      model: AI_MODELS.CLAUDE_PRIMARY,
       max_tokens: 4096,
       system: GLOBAL_RULE,
       messages: [{ role: "user", content: prompt }],

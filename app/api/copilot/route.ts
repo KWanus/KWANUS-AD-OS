@@ -7,6 +7,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
 import { ARCHETYPES, type BusinessType, type SystemSlug } from "@/lib/archetypes";
 import type { ExecutionTier } from "@/lib/sites/conversionEngine";
+import { AI_MODELS } from "@/lib/ai/models";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -421,7 +422,7 @@ ${scanContext}
       async start(controller) {
         try {
           const response = await anthropic.messages.create({
-            model: "claude-sonnet-4-6",
+            model: AI_MODELS.CLAUDE_PRIMARY,
             max_tokens: 1024,
             system: systemPrompt,
             messages: body.messages.slice(-20),

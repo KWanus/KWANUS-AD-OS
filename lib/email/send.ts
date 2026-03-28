@@ -12,8 +12,18 @@ interface SendEmailOptions {
   apiKey?: string;
 }
 
+function escapeHtml(str: string): string {
+  return str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#x27;");
+}
+
 function markdownToHtml(md: string): string {
-  return md
+  // Escape HTML entities first so user input can never inject raw HTML tags
+  return escapeHtml(md)
     .replace(/\n\n/g, "</p><p>")
     .replace(/\n/g, "<br>")
     .replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>")

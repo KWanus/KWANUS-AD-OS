@@ -4,6 +4,10 @@ import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { getBusinessContext } from "@/lib/archetypes/getBusinessContext";
 import type { ExecutionTier } from "@/lib/sites/conversionEngine";
+import { AI_MODELS } from "@/lib/ai/models";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/rateLimit";
+
+const BODY_SIZE_LIMIT = 32 * 1024; // 32 KB
 
 const TRIGGER_PROMPTS: Record<string, string> = {
   signup: "a welcome email for a new subscriber who just joined the list",
@@ -21,6 +25,21 @@ export async function POST(req: NextRequest) {
     if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
     const user = await getOrCreateUser();
     if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    // Rate limiting: 20 generation calls per minute per user
+    const rl = checkRateLimit(`${user.id}:generate-email`, RATE_LIMITS.AI_GENERATION);
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { ok: false, error: "Too many requests — please wait before trying again" },
+        { status: 429, headers: { "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } }
+      );
+    }
+
+    // Body size guard
+    const contentLength = parseInt(req.headers.get("content-length") ?? "0", 10);
+    if (contentLength > BODY_SIZE_LIMIT) {
+      return NextResponse.json({ ok: false, error: "Request body too large" }, { status: 413 });
+    }
 
     const body = await req.json() as {
       trigger?: string;
@@ -71,7 +90,7 @@ Respond ONLY with valid JSON in this exact format:
         Authorization: `Bearer ${openaiKey}`,
       },
       body: JSON.stringify({
-        model: "gpt-4o-mini",
+        model: AI_MODELS.OPENAI_FAST,
         messages: [{ role: "user", content: prompt }],
         temperature: 0.8,
         max_tokens: 600,

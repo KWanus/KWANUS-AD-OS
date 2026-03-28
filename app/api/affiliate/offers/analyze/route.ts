@@ -3,6 +3,8 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import Anthropic from "@anthropic-ai/sdk";
 import type { ExecutionTier } from "@/lib/sites/conversionEngine";
+import { checkRateLimit, RATE_LIMITS } from "@/lib/rateLimit";
+import { AI_MODELS } from "@/lib/ai/models";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -14,7 +16,7 @@ Then produce outputs that BEAT those benchmarks.`;
 
 async function callClaude(system: string, prompt: string) {
   const r = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
+    model: AI_MODELS.CLAUDE_PRIMARY,
     max_tokens: 4096,
     system,
     messages: [{ role: "user", content: prompt }],
@@ -25,6 +27,8 @@ async function callClaude(system: string, prompt: string) {
   return JSON.parse(match[0]);
 }
 
+const BODY_SIZE_LIMIT = 64 * 1024; // 64 KB
+
 // POST /api/affiliate/offers/analyze
 export async function POST(req: NextRequest) {
   try {
@@ -33,6 +37,21 @@ export async function POST(req: NextRequest) {
 
     const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } });
     if (!user) return NextResponse.json({ ok: false, error: "User not found" }, { status: 404 });
+
+    // Rate limiting: 10 AI analysis calls per minute per user
+    const rl = checkRateLimit(`${user.id}:affiliate-analyze`, RATE_LIMITS.AI_ANALYSIS);
+    if (!rl.allowed) {
+      return NextResponse.json(
+        { ok: false, error: "Too many requests — please wait before trying again" },
+        { status: 429, headers: { "Retry-After": String(Math.ceil((rl.resetAt - Date.now()) / 1000)) } }
+      );
+    }
+
+    // Body size guard
+    const contentLength = parseInt(req.headers.get("content-length") ?? "0", 10);
+    if (contentLength > BODY_SIZE_LIMIT) {
+      return NextResponse.json({ ok: false, error: "Request body too large" }, { status: 413 });
+    }
 
     const body = await req.json() as {
       offerId?: string;

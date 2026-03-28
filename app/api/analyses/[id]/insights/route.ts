@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
+import { AI_MODELS } from "@/lib/ai/models";
 
 export async function POST(
   _req: NextRequest,
@@ -103,7 +104,7 @@ Be specific to THIS offer — no generic advice. Reference actual signals from t
           "anthropic-version": "2023-06-01",
         },
         body: JSON.stringify({
-          model: "claude-sonnet-4-6",
+          model: AI_MODELS.CLAUDE_PRIMARY,
           max_tokens: 1200,
           messages: [{ role: "user", content: prompt }],
         }),
@@ -129,7 +130,7 @@ Be specific to THIS offer — no generic advice. Reference actual signals from t
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${openaiKey}` },
         body: JSON.stringify({
-          model: "gpt-4o-mini",
+          model: AI_MODELS.OPENAI_FAST,
           messages: [{ role: "user", content: prompt }],
           max_tokens: 1200,
           temperature: 0.7,

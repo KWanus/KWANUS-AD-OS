@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { fetchPage } from "@/src/logic/ad-os/fetchPage";
 import Anthropic from "@anthropic-ai/sdk";
 import type { ExecutionTier } from "@/lib/sites/conversionEngine";
+import { AI_MODELS } from "@/lib/ai/models";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -87,7 +88,7 @@ export async function POST(req: NextRequest) {
     const pageText = page ? `Title: ${page.title}\nDescription: ${page.metaDescription}\nBody: ${page.bodyText?.slice(0, 2000)}` : `URL: ${url}`;
 
     const response = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
+      model: AI_MODELS.CLAUDE_PRIMARY,
       max_tokens: 1024,
       messages: [{
         role: "user",

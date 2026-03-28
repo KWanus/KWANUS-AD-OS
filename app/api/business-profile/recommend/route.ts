@@ -6,6 +6,7 @@ import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ARCHETYPES, type BusinessType } from "@/lib/archetypes";
 import { buildFallbackRecommendation, type Recommendation } from "@/lib/archetypes/recommendation";
+import { AI_MODELS } from "@/lib/ai/models";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -87,7 +88,7 @@ Return as JSON:
 }`;
 
         const response = await anthropic.messages.create({
-          model: "claude-sonnet-4-6",
+          model: AI_MODELS.CLAUDE_PRIMARY,
           max_tokens: 1400,
           messages: [{ role: "user", content: prompt }],
         });

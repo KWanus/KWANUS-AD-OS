@@ -39,50 +39,40 @@ export async function POST(req: NextRequest) {
             const { siteId, productId } = session.metadata || {};
 
             if (siteId && productId) {
-                // Record the order for the store
                 const customerEmail = session.customer_details?.email || "unknown@example.com";
-                const customerName = session.customer_details?.name || "Unknown Customer";
+                const customerName  = session.customer_details?.name  || "Unknown Customer";
+                const [firstName, ...rest] = customerName.split(" ");
+                const lastName = rest.join(" ");
 
-                await prisma.siteOrder.create({
-                    data: {
-                        siteId,
-                        productId,
-                        customerEmail,
-                        customerName,
-                        amountCents: session.amount_total || 0,
-                        currency: session.currency || "usd",
-                        status: "paid",
-                        stripePaymentId: session.payment_intent as string,
-                    },
-                });
-
-                const product = await prisma.siteProduct.findUnique({
-                    where: { id: productId },
-                    include: { site: true }
-                });
-
-                // Save customer to Email Contacts for the automations engine
-                // IMPORTANT: The unified email CRM
-                if (product && product.site?.userId) {
-                    await prisma.emailContact.upsert({
-                        where: { userId_email: { userId: product.site.userId, email: customerEmail } },
-                        update: {
-                            firstName: customerName.split(" ")[0],
-                            lastName: customerName.split(" ").slice(1).join(" "),
-                            status: "subscribed"
+                // Wrap all DB writes in a transaction so partial failures don't corrupt state
+                await prisma.$transaction(async (tx) => {
+                    await tx.siteOrder.create({
+                        data: {
+                            siteId,
+                            productId,
+                            customerEmail,
+                            customerName,
+                            amountCents: session.amount_total || 0,
+                            currency: session.currency || "usd",
+                            status: "paid",
+                            stripePaymentId: session.payment_intent as string,
                         },
-                        create: {
-                            userId: product.site.userId,
-                            email: customerEmail,
-                            firstName: customerName.split(" ")[0],
-                            lastName: customerName.split(" ").slice(1).join(" "),
-                            status: "subscribed",
-                            source: "purchase"
-                        }
                     });
 
-                    // Eventually: Trigger EmailFlows containing 'purchase' triggers here!
-                }
+                    const product = await tx.siteProduct.findUnique({
+                        where: { id: productId },
+                        include: { site: true },
+                    });
+
+                    // Save customer to Email Contacts for the automations engine
+                    if (product?.site?.userId) {
+                        await tx.emailContact.upsert({
+                            where: { userId_email: { userId: product.site.userId, email: customerEmail } },
+                            update:  { firstName, lastName, status: "subscribed" },
+                            create:  { userId: product.site.userId, email: customerEmail, firstName, lastName, status: "subscribed", source: "purchase" },
+                        });
+                    }
+                });
             }
         }
 

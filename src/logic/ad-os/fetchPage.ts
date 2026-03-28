@@ -9,6 +9,32 @@ export type FetchedPage = {
   error?: string;
 };
 
+const MAX_IMAGES = 8;
+
+/**
+ * Block requests to private/internal IP ranges (SSRF protection).
+ * Covers loopback, RFC-1918 private ranges, link-local, and cloud metadata endpoints.
+ */
+function isPrivateHostname(hostname: string): boolean {
+  // Reject bare IP literals in private ranges
+  const ipv4 = hostname.match(/^(\d{1,3})\.(\d{1,3})\.(\d{1,3})\.(\d{1,3})$/);
+  if (ipv4) {
+    const [, a, b] = ipv4.map(Number);
+    if (a === 10) return true;                                   // 10.0.0.0/8
+    if (a === 172 && b >= 16 && b <= 31) return true;          // 172.16.0.0/12
+    if (a === 192 && b === 168) return true;                    // 192.168.0.0/16
+    if (a === 127) return true;                                  // 127.0.0.0/8 loopback
+    if (a === 169 && b === 254) return true;                    // 169.254.0.0/16 link-local / AWS metadata
+    if (a === 0) return true;                                    // 0.0.0.0/8
+    if (a === 100 && b >= 64 && b <= 127) return true;         // 100.64.0.0/10 CGNAT
+    return false;
+  }
+  const lower = hostname.toLowerCase();
+  if (lower === "localhost" || lower.endsWith(".localhost")) return true;
+  if (lower === "metadata.google.internal") return true;
+  return false;
+}
+
 function extractBetweenTags(html: string, tag: string): string[] {
   const results: string[] = [];
   const pattern = new RegExp(`<${tag}[^>]*>([^<]+)<\\/${tag}>`, "gi");
@@ -68,7 +94,7 @@ function extractImages(html: string, baseUrl: string): string[] {
     if (resolved && !resolved.startsWith("data:")) {
       results.add(resolved);
     }
-    if (results.size >= 8) break;
+    if (results.size >= MAX_IMAGES) break;
   }
 
   return [...results].slice(0, 6);
@@ -124,6 +150,24 @@ async function tryFetch(url: string, ua: string): Promise<{ html: string; status
 }
 
 export async function fetchPage(url: string): Promise<FetchedPage> {
+  // SSRF guard: reject requests to private/internal addresses
+  try {
+    const parsed = new URL(url);
+    if (isPrivateHostname(parsed.hostname)) {
+      return {
+        ok: false,
+        title: "", metaDescription: "", headings: [], bodyText: "", ctas: [], images: [],
+        error: "URL points to a private or reserved address",
+      };
+    }
+  } catch {
+    return {
+      ok: false,
+      title: "", metaDescription: "", headings: [], bodyText: "", ctas: [], images: [],
+      error: "Invalid URL",
+    };
+  }
+
   // Try with each UA in rotation
   let html = "";
   let lastStatus = 0;

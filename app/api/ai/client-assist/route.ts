@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { AI_MODELS } from "@/lib/ai/models";
 
 type ExecutionTier = "core" | "elite";
 
@@ -113,7 +114,7 @@ Explain in 2–3 sentences: why this score, what risks it implies, what would im
           "anthropic-version": "2023-06-01",
         },
         body: JSON.stringify({
-          model: "claude-sonnet-4-6",
+          model: AI_MODELS.CLAUDE_PRIMARY,
           max_tokens: 500,
           messages: [{ role: "user", content: prompt }],
         }),
@@ -131,7 +132,7 @@ Explain in 2–3 sentences: why this score, what risks it implies, what would im
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: `Bearer ${openaiKey}` },
         body: JSON.stringify({
-          model: "gpt-4o-mini",
+          model: AI_MODELS.OPENAI_FAST,
           messages: [{ role: "user", content: prompt }],
           max_tokens: 400,
           temperature: 0.7,
