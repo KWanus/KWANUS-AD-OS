@@ -460,11 +460,19 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
               {analysis.summary && (
                 <p className="text-sm text-white/50 leading-relaxed max-w-2xl">{analysis.summary}</p>
               )}
-              <div className="flex items-center gap-4 mt-3 text-[11px] text-white/25">
+              <div className="flex items-center gap-4 mt-3 text-[11px] text-white/25 flex-wrap">
                 <span>Mode: <span className="text-white/40 font-semibold">{analysis.mode}</span></span>
                 <span>Confidence: <span className="text-white/40 font-semibold">{analysis.confidence ?? "—"}</span></span>
                 <span>Type: <span className="text-white/40 font-semibold">{analysis.linkType ?? "—"}</span></span>
                 <span>{format(new Date(analysis.createdAt), "MMM d, yyyy 'at' h:mm a")}</span>
+                {Date.now() - new Date(analysis.createdAt).getTime() > 7 * 24 * 60 * 60 * 1000 && (
+                  <Link
+                    href={`/scan?prefill=${encodeURIComponent(analysis.inputUrl)}`}
+                    className="flex items-center gap-1 px-2 py-0.5 rounded-md bg-amber-500/10 border border-amber-500/20 text-amber-400 text-[10px] font-bold hover:bg-amber-500/20 transition"
+                  >
+                    <AlertTriangle className="w-2.5 h-2.5" /> Stale — rescan recommended
+                  </Link>
+                )}
               </div>
             </div>
           </div>
