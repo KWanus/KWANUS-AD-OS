@@ -7,6 +7,7 @@ const isPublicRoute = createRouteMatcher([
   "/s/(.*)",                    // Published site pages
   "/api/webhooks(.*)",          // Stripe + N8N webhooks
   "/api/opt-in-forms/(.*)/submit", // Public form submissions
+  "/api/health",                // Health check (monitoring)
 ]);
 
 export default clerkMiddleware(async (auth, req) => {
