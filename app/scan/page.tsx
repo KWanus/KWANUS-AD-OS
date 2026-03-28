@@ -187,6 +187,42 @@ function ScoreGauge({ score }: { score: number }) {
   );
 }
 
+function ScanConvertButton({ label, endpoint, successMessage }: { label: string; endpoint: string; successMessage: string }) {
+  const [loading, setLoading] = useState(false);
+  const [done, setDone] = useState(false);
+  const [error, setError] = useState("");
+
+  if (done) return (
+    <span className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-xs font-bold">
+      <CheckCircle className="w-3 h-3" /> {successMessage}
+    </span>
+  );
+
+  return (
+    <button
+      onClick={async () => {
+        setLoading(true);
+        setError("");
+        try {
+          const res = await fetch(endpoint, { method: "POST", headers: { "Content-Type": "application/json" }, body: "{}" });
+          const data = await res.json() as { ok: boolean; error?: string; duplicate?: boolean };
+          if (data.ok) {
+            setDone(true);
+          } else {
+            setError(data.duplicate ? "Already exists" : data.error ?? "Failed");
+          }
+        } catch { setError("Failed"); } finally { setLoading(false); }
+      }}
+      disabled={loading}
+      className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-white/[0.04] border border-white/[0.08] text-white/50 text-xs font-bold hover:text-white hover:border-white/[0.15] transition disabled:opacity-40"
+    >
+      {loading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Zap className="w-3 h-3" />}
+      {label}
+      {error && <span className="text-red-400 text-[10px] ml-1">{error}</span>}
+    </button>
+  );
+}
+
 function BatchScanPanel({ mode }: { mode: string }) {
   const [open, setOpen] = useState(false);
   const [urls, setUrls] = useState("");
@@ -796,6 +832,22 @@ function ScanPageInner() {
                 ))}
               </div>
             </div>
+
+            {/* Quick conversion buttons */}
+            {analysis.id && (
+              <div className="flex gap-2">
+                <ScanConvertButton
+                  label="Save as Client"
+                  endpoint={`/api/analyses/${analysis.id}/create-client`}
+                  successMessage="Client created from scan"
+                />
+                <ScanConvertButton
+                  label="Create Campaign"
+                  endpoint={`/api/analyses/${analysis.id}/create-campaign`}
+                  successMessage="Campaign created from scan"
+                />
+              </div>
+            )}
 
             {/* Actions row */}
             <div className="flex items-center justify-between pt-2 flex-wrap gap-3">
