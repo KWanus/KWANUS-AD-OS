@@ -60,19 +60,13 @@ export async function PATCH(
       if (key in body) data[key] = body[key];
     }
 
-    // findFirst + userId ensures the user owns this project
-    const existing = await prisma.campaign.findFirst({
+    const result = await prisma.campaign.updateMany({
       where: { id, userId: user.id },
-      select: { id: true },
-    });
-    if (!existing) return NextResponse.json({ ok: false, message: "Project not found" }, { status: 404 });
-
-    const project = await prisma.campaign.update({
-      where: { id },
       data,
     });
+    if (result.count === 0) return NextResponse.json({ ok: false, message: "Project not found" }, { status: 404 });
 
-    return NextResponse.json({ ok: true, project });
+    return NextResponse.json({ ok: true });
   } catch (error) {
     console.error("Project PATCH error:", error);
     return NextResponse.json({ ok: false, message: "Failed to update project" }, { status: 500 });

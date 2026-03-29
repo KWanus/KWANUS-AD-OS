@@ -13,6 +13,7 @@ export async function GET(_req: NextRequest) {
     const flows = await prisma.emailFlow.findMany({
       where: { userId: user.id },
       orderBy: { updatedAt: "desc" },
+      take: 500,
     });
     return NextResponse.json({ ok: true, flows });
   } catch (err) {

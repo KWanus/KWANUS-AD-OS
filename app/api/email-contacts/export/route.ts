@@ -17,6 +17,7 @@ export async function GET() {
     const contacts = await prisma.emailContact.findMany({
       where: { userId: user.id },
       orderBy: { createdAt: "desc" },
+      take: 100_000,
     });
 
     const headers = ["Email", "First Name", "Last Name", "Tags", "Status", "Source", "Created"];

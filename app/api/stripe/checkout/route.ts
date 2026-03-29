@@ -30,7 +30,11 @@ export async function POST(req: NextRequest) {
   }
 
   const stripe = new Stripe(stripeKey);
-  const origin = req.headers.get("origin") ?? "http://localhost:3000";
+
+  // Use the configured app URL as the canonical origin for Stripe callbacks.
+  // Never use the request's Origin header — it is caller-controlled and could
+  // redirect post-payment flows to an attacker-controlled domain.
+  const appOrigin = config.appUrl?.replace(/\/$/, "") || "http://localhost:3000";
 
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
@@ -53,8 +57,8 @@ export async function POST(req: NextRequest) {
       credits: String(bundle.credits),
       bundle: body.bundle,
     },
-    success_url: `${origin}/billing?success=1&bundle=${body.bundle}`,
-    cancel_url: `${origin}/billing?cancelled=1`,
+    success_url: `${appOrigin}/billing?success=1&bundle=${body.bundle}`,
+    cancel_url: `${appOrigin}/billing?cancelled=1`,
     customer_email: user.email,
   });
 
