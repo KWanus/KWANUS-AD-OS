@@ -20,6 +20,10 @@ export async function GET(req: NextRequest) {
       orderBy: { updatedAt: "desc" },
       take: limit + 1,
       ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+      select: {
+        id: true, name: true, status: true, trigger: true,
+        tags: true, createdAt: true, updatedAt: true,
+      },
     });
 
     const hasMore = flows.length > limit;

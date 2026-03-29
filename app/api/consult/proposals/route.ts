@@ -21,6 +21,11 @@ export async function GET(req: NextRequest) {
       },
       orderBy: { createdAt: "desc" },
       take: 100,
+      select: {
+        id: true, title: true, status: true, totalValue: true,
+        viewCount: true, viewedAt: true, sentAt: true, expiresAt: true,
+        respondedAt: true, createdAt: true, updatedAt: true,
+      },
     });
 
     return NextResponse.json({ ok: true, proposals });

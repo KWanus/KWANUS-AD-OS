@@ -6,6 +6,7 @@ const isPublicRoute = createRouteMatcher([
   "/sign-up(.*)",
   "/s/(.*)",                    // Published site pages
   "/api/webhooks(.*)",          // Stripe + N8N webhooks
+  "/api/stripe/webhook",        // Stripe webhook (alt path)
   "/api/opt-in-forms/(.*)/submit", // Public form submissions
   "/api/email-contacts/unsubscribe", // Email unsubscribe (public)
   "/api/health",                // Health check (monitoring)

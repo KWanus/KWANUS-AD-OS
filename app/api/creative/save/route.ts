@@ -57,6 +57,10 @@ export async function GET(req: NextRequest) {
             },
             orderBy: { createdAt: "desc" },
             take: 100,
+            select: {
+                id: true, name: true, type: true, campaignId: true,
+                outputUrl: true, createdAt: true, updatedAt: true,
+            },
         });
 
         return NextResponse.json({ ok: true, creatives });
