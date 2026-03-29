@@ -13,6 +13,8 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const niche = searchParams.get("niche") ?? undefined;
     const status = searchParams.get("status") ?? undefined;
+    const cursor = searchParams.get("cursor") ?? undefined;
+    const limit = Math.min(parseInt(searchParams.get("limit") ?? "50", 10) || 50, 100);
 
     const products = await prisma.dropshipProduct.findMany({
       where: {
@@ -24,9 +26,15 @@ export async function GET(req: NextRequest) {
         { winnerScore: "desc" },
         { createdAt: "desc" },
       ],
+      take: limit + 1,
+      ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
     });
 
-    return NextResponse.json({ ok: true, products });
+    const hasMore = products.length > limit;
+    if (hasMore) products.pop();
+    const nextCursor = hasMore ? products[products.length - 1]?.id : undefined;
+
+    return NextResponse.json({ ok: true, products, nextCursor });
   } catch (err) {
     console.error("DropshipProducts GET error:", err);
     return NextResponse.json({ ok: false, error: "Failed to fetch products" }, { status: 500 });
@@ -51,8 +59,8 @@ export async function POST(req: NextRequest) {
     const product = await prisma.dropshipProduct.create({
       data: {
         userId: user.id,
-        name,
-        niche,
+        name: name.trim(),
+        niche: niche.trim(),
         status: "researching",
         ...(supplierUrl ? { supplierUrl } : {}),
         ...(supplierPrice != null ? { supplierPrice: Number(supplierPrice) } : {}),

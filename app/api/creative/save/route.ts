@@ -16,9 +16,16 @@ export async function POST(req: NextRequest) {
             outputUrl?: string;
         };
 
+        if (!body.name?.trim()) {
+            return NextResponse.json({ ok: false, error: "name is required" }, { status: 400 });
+        }
+        if (!["image", "video"].includes(body.type)) {
+            return NextResponse.json({ ok: false, error: "type must be 'image' or 'video'" }, { status: 400 });
+        }
+
         const creative = await prisma.creativeWork.create({
             data: {
-                name: body.name,
+                name: body.name.trim(),
                 type: body.type,
                 userId: user.id,
                 campaignId: body.campaignId || null,
@@ -30,7 +37,8 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ ok: true, id: creative.id });
     } catch (err) {
         console.error("Save creative error:", err);
-        return NextResponse.json({ ok: false, error: String(err) }, { status: 500 });
+        console.error("Creative error:", err);
+        return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });
     }
 }
 
@@ -48,10 +56,12 @@ export async function GET(req: NextRequest) {
                 ...(campaignId ? { campaignId } : {}),
             },
             orderBy: { createdAt: "desc" },
+            take: 100,
         });
 
         return NextResponse.json({ ok: true, creatives });
     } catch (err) {
-        return NextResponse.json({ ok: false, error: String(err) }, { status: 500 });
+        console.error("Creative error:", err);
+        return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });
     }
 }

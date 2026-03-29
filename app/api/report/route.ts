@@ -27,6 +27,34 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Validate file uploads
+    const MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB per file
+    const MAX_FILES = 5;
+    const ALLOWED_EXTENSIONS = new Set(["pdf", "csv", "xlsx", "xls", "doc", "docx", "png", "jpg", "jpeg"]);
+
+    if (files.length > MAX_FILES) {
+      return NextResponse.json(
+        { success: false, error: `Maximum ${MAX_FILES} files allowed` },
+        { status: 400 }
+      );
+    }
+
+    for (const file of files) {
+      if (file.size > MAX_FILE_SIZE) {
+        return NextResponse.json(
+          { success: false, error: `File "${file.name}" exceeds 10MB limit` },
+          { status: 400 }
+        );
+      }
+      const ext = file.name.split(".").pop()?.toLowerCase() ?? "";
+      if (!ALLOWED_EXTENSIONS.has(ext)) {
+        return NextResponse.json(
+          { success: false, error: `File type ".${ext}" not allowed` },
+          { status: 400 }
+        );
+      }
+    }
+
     // Phase 1: store filename as placeholder (no cloud storage yet)
     const fileUrl =
       files.length > 0
@@ -34,7 +62,6 @@ export async function POST(req: NextRequest) {
         : null;
 
     try {
-      const user = await getOrCreateUser().catch(() => null);
       const normalizedNotes = typeof notes === "string" && notes.trim() ? notes.trim() : null;
       await prisma.reportIntake.create({
         data: {

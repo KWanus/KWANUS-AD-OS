@@ -13,6 +13,7 @@ export async function GET() {
     const clients = await prisma.client.findMany({
       where: { userId: user.id },
       orderBy: { updatedAt: "desc" },
+      take: 10000,
       include: { _count: { select: { activities: true } } },
     });
 

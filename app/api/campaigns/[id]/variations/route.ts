@@ -26,13 +26,17 @@ export async function POST(
       platform?: string;
     };
 
+    if (!body.name?.trim() || !body.type?.trim()) {
+      return NextResponse.json({ ok: false, error: "name and type are required" }, { status: 400 });
+    }
+
     const count = await prisma.adVariation.count({ where: { campaignId: id } });
 
     const variation = await prisma.adVariation.create({
       data: {
         campaignId: id,
-        name: body.name,
-        type: body.type,
+        name: body.name.trim(),
+        type: body.type.trim(),
         content: body.content,
         platform: body.platform,
         status: "draft",

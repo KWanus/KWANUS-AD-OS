@@ -62,7 +62,7 @@ export async function PATCH(
     }
 
     const product = await prisma.siteProduct.update({
-      where: { id },
+      where: { id, siteId: body.siteId },
       data: {
         ...(body.name !== undefined && { name: body.name }),
         ...(body.description !== undefined && { description: body.description || null }),
@@ -116,6 +116,10 @@ export async function DELETE(
 
     const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } });
     if (!user) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
+
+    const existing = await prisma.product.findFirst({ where: { id, userId: user.id }, select: { id: true } });
+    if (!existing) return NextResponse.json({ ok: false, error: "Product not found" }, { status: 404 });
+
     await prisma.product.update({ where: { id }, data: { status: "archived" } });
     return NextResponse.json({ ok: true });
   } catch (err) {

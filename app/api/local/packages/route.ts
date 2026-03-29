@@ -24,6 +24,7 @@ export async function GET(req: NextRequest) {
         ...(active !== undefined ? { active } : {}),
       },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+      take: 100,
     });
 
     return NextResponse.json({ ok: true, packages });
@@ -66,9 +67,17 @@ export async function POST(req: NextRequest) {
       sortOrder?: number;
     };
 
-    if (!name || !tier || price === undefined) {
+    if (!name?.trim() || !tier || price === undefined) {
       return NextResponse.json(
         { ok: false, error: "name, tier, and price are required" },
+        { status: 400 }
+      );
+    }
+
+    const numPrice = Number(price);
+    if (isNaN(numPrice) || numPrice < 0) {
+      return NextResponse.json(
+        { ok: false, error: "price must be a non-negative number" },
         { status: 400 }
       );
     }
@@ -84,9 +93,9 @@ export async function POST(req: NextRequest) {
     const pkg = await prisma.servicePackage.create({
       data: {
         userId: user.id,
-        name,
+        name: name.trim(),
         tier,
-        price,
+        price: numPrice,
         billingCycle: billingCycle ?? "monthly",
         deliverables: deliverables ?? ([] as string[]),
         targetNiche: targetNiche ?? null,

@@ -52,12 +52,16 @@ export async function PATCH(
 
     const body = await req.json();
 
-    // Prevent changing ownership
-    const { userId: _uid, id: _id, ...safeFields } = body;
+    // Whitelist allowed fields
+    const ALLOWED = new Set(["name", "niche", "status", "supplierUrl", "supplierPrice", "shippingCost", "sellingPrice", "margin", "notes", "winnerScore", "adAngle", "targetAudience"]);
+    const data: Record<string, unknown> = {};
+    for (const key of Object.keys(body)) {
+      if (ALLOWED.has(key)) data[key] = body[key];
+    }
 
     const updated = await prisma.dropshipProduct.update({
-      where: { id },
-      data: safeFields,
+      where: { id, userId: user.id },
+      data,
     });
 
     return NextResponse.json({ ok: true, product: updated });
@@ -86,7 +90,7 @@ export async function DELETE(
     if (!existing) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
 
     const updated = await prisma.dropshipProduct.update({
-      where: { id },
+      where: { id, userId: user.id },
       data: { status: "dead" },
     });
 

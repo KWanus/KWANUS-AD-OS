@@ -24,6 +24,7 @@ export async function GET() {
     const sites = await prisma.site.findMany({
       where: { userId: user.id },
       orderBy: { updatedAt: "desc" },
+      take: 50,
       select: {
         id: true,
         name: true,

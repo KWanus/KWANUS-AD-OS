@@ -124,14 +124,14 @@ export async function PATCH(
     });
 
     const client = await prisma.client.update({
-      where: { id },
+      where: { id, userId: user.id },
       data: {
-        ...(body.name !== undefined && { name: body.name }),
-        ...(body.email !== undefined && { email: body.email || null }),
-        ...(body.phone !== undefined && { phone: body.phone || null }),
-        ...(body.company !== undefined && { company: body.company || null }),
-        ...(body.website !== undefined && { website: body.website || null }),
-        ...(body.niche !== undefined && { niche: body.niche || null }),
+        ...(body.name !== undefined && { name: body.name?.trim() }),
+        ...(body.email !== undefined && { email: body.email?.trim() || null }),
+        ...(body.phone !== undefined && { phone: body.phone?.trim() || null }),
+        ...(body.company !== undefined && { company: body.company?.trim() || null }),
+        ...(body.website !== undefined && { website: body.website?.trim() || null }),
+        ...(body.niche !== undefined && { niche: body.niche?.trim() || null }),
         ...(body.tags !== undefined && { tags: body.tags }),
         ...(body.pipelineStage !== undefined && { pipelineStage: body.pipelineStage }),
         ...(body.dealValue !== undefined && { dealValue: body.dealValue }),

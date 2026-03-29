@@ -27,6 +27,7 @@ export async function GET(req: NextRequest) {
       const products = await prisma.siteProduct.findMany({
         where: { siteId },
         orderBy: { createdAt: "desc" },
+        take: 200,
       });
       return NextResponse.json({ ok: true, products });
     }
@@ -37,6 +38,7 @@ export async function GET(req: NextRequest) {
     const products = await prisma.product.findMany({
       where: { userId: user.id, status: "active" },
       orderBy: { createdAt: "desc" },
+      take: 200,
     });
     return NextResponse.json({ ok: true, products });
   } catch (err) {

@@ -23,6 +23,7 @@ export async function GET(req: NextRequest) {
     const automations = await prisma.automation.findMany({
       where,
       orderBy: { updatedAt: "desc" },
+      take: 100,
     });
 
     return NextResponse.json({ ok: true, automations });

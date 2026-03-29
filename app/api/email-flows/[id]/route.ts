@@ -78,9 +78,9 @@ export async function PATCH(
           }
         : undefined;
     const flow = await prisma.emailFlow.update({
-      where: { id },
+      where: { id, userId: user.id },
       data: {
-        ...(body.name !== undefined && { name: body.name }),
+        ...(body.name !== undefined && { name: body.name.trim() }),
         ...(body.trigger !== undefined && { trigger: body.trigger }),
         ...(triggerConfig !== undefined && { triggerConfig }),
         ...(body.nodes !== undefined && { nodes: body.nodes }),

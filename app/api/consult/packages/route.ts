@@ -13,6 +13,7 @@ export async function GET(_req: NextRequest) {
     const packages = await prisma.consultPackage.findMany({
       where: { userId: user.id, active: true },
       orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }],
+      take: 100,
     });
 
     return NextResponse.json({ ok: true, packages });

@@ -20,6 +20,7 @@ export async function GET(req: NextRequest) {
         NOT: { status: "deleted" },
       },
       orderBy: { createdAt: "desc" },
+      take: 100,
     });
 
     return NextResponse.json({ ok: true, proposals });

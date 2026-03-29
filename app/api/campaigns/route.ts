@@ -15,6 +15,7 @@ export async function GET() {
     const campaigns = await prisma.campaign.findMany({
       where: { userId: user.id },
       orderBy: { createdAt: "desc" },
+      take: 100,
       include: {
         _count: {
           select: {

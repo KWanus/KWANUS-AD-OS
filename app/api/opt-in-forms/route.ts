@@ -33,6 +33,7 @@ export async function GET() {
     const forms = await prisma.optInForm.findMany({
       where: { userId: user.id },
       orderBy: { updatedAt: "desc" },
+      take: 100,
     });
     return NextResponse.json({
       ok: true,
