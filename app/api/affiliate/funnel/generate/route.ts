@@ -9,6 +9,11 @@ import { config } from "@/lib/config";
 
 const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 
+function sanitize(value: unknown, max = 300): string {
+  if (value === null || value === undefined) return "";
+  return String(value).replace(/\x00/g, "").replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "").trim().slice(0, max);
+}
+
 const GLOBAL_RULE = `You are the world's best affiliate marketing strategist inside Himalaya Agency OS.
 Return valid JSON only. No markdown. No commentary outside JSON.
 Before generating any output, analyze what the TOP 1% 7-figure affiliate marketers do in this niche.
@@ -54,13 +59,13 @@ export async function POST(req: NextRequest) {
     const prompt = `Generate a complete affiliate funnel for this offer.
 
 Offer:
-- Name: ${offer.name}
-- Platform: ${offer.platform}
-- Niche: ${offer.niche}
-- URL: ${offer.url}
-${offer.commission != null ? `- Commission: ${offer.commission}%` : ""}
-${offer.gravity != null ? `- Gravity/Score: ${offer.gravity}` : ""}
-${offer.notes ? `- Notes: ${offer.notes}` : ""}${analysisContext}
+- Name: ${sanitize(offer.name)}
+- Platform: ${sanitize(offer.platform)}
+- Niche: ${sanitize(offer.niche)}
+- URL: ${sanitize(offer.url)}
+${offer.commission != null ? `- Commission: ${sanitize(offer.commission)}%` : ""}
+${offer.gravity != null ? `- Gravity/Score: ${sanitize(offer.gravity)}` : ""}
+${offer.notes ? `- Notes: ${sanitize(offer.notes)}` : ""}${analysisContext}
 ${businessContext}
 Execution Tier: ${executionTier}
 
@@ -109,8 +114,8 @@ The emailSequence should have at least 5 emails (days 0, 1, 2, 4, 7).`;
 
     const funnel = await callClaude(GLOBAL_RULE, prompt);
 
-    await prisma.affiliateOffer.update({
-      where: { id: offer.id },
+    await prisma.affiliateOffer.updateMany({
+      where: { id: offer.id, userId: user.id },
       data: { funnelJson: funnel as object },
     });
 

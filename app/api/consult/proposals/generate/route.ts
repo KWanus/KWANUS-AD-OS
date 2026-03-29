@@ -9,6 +9,11 @@ import { config } from "@/lib/config";
 
 const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 
+function sanitize(value: unknown, max = 300): string {
+  if (value === null || value === undefined) return "";
+  return String(value).replace(/\x00/g, "").replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "").trim().slice(0, max);
+}
+
 const GLOBAL_RULE = `You are the world's best business consultant and proposal writer inside Himalaya Agency OS.
 Return valid JSON only. No markdown. No commentary outside JSON.
 Before generating any output, research what the TOP 1% of consultants and coaches in this exact niche charge, deliver, and say.
@@ -52,24 +57,24 @@ export async function POST(req: NextRequest) {
       if (lead) {
         leadContext = `
 Lead Intelligence Data:
-- Rating: ${lead.rating ?? "N/A"} stars (${lead.reviewCount ?? 0} reviews)
+- Rating: ${sanitize(lead.rating ?? "N/A")} stars (${lead.reviewCount ?? 0} reviews)
 - Current Score: ${lead.score ?? "N/A"}/100
-- Verdict: ${lead.verdict ?? "N/A"}
-- Key Pain Points: ${lead.painPoints ?? "Unknown"}
-- Top Gaps: ${JSON.stringify(lead.topGaps ?? [])}
-- Top Strengths: ${JSON.stringify(lead.topStrengths ?? [])}
-- AI Summary: ${lead.summary ?? "N/A"}`;
+- Verdict: ${sanitize(lead.verdict ?? "N/A")}
+- Key Pain Points: ${sanitize(lead.painPoints ?? "Unknown")}
+- Top Gaps: ${sanitize(JSON.stringify(lead.topGaps ?? []))}
+- Top Strengths: ${sanitize(JSON.stringify(lead.topStrengths ?? []))}
+- AI Summary: ${sanitize(lead.summary ?? "N/A")}`;
       }
     }
 
     const prompt = `Create a high-converting sales proposal for:
 
-Business: ${businessName}
-Niche: ${niche}
-Website: ${businessUrl ?? "Not provided"}
-Location: ${location ?? "Not specified"}
-Stated Problem: ${problem ?? "Not specified"}
-Budget Signal: ${budget ?? "Not specified"}
+Business: ${sanitize(businessName)}
+Niche: ${sanitize(niche)}
+Website: ${sanitize(businessUrl ?? "Not provided")}
+Location: ${sanitize(location ?? "Not specified")}
+Stated Problem: ${sanitize(problem ?? "Not specified")}
+Budget Signal: ${sanitize(budget ?? "Not specified")}
 Execution tier: ${executionTier}
 ${executionTier === "elite"
   ? "Write like a top-closing consultant. Sharper diagnosis, more premium positioning, stronger package logic, and a CTA that feels expensive and inevitable."

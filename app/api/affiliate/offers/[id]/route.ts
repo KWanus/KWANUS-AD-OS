@@ -75,12 +75,14 @@ export async function PATCH(
       return NextResponse.json({ ok: false, error: "No valid fields to update" }, { status: 400 });
     }
 
-    const offer = await prisma.affiliateOffer.update({
-      where: { id },
+    const result = await prisma.affiliateOffer.updateMany({
+      where: { id, userId: user.id },
       data,
     });
 
-    return NextResponse.json({ ok: true, offer });
+    if (result.count === 0) return NextResponse.json({ ok: false, error: "Offer not found" }, { status: 404 });
+
+    return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Affiliate offer PATCH error:", err);
     return NextResponse.json({ ok: false, error: "Failed to update offer" }, { status: 500 });
@@ -106,12 +108,14 @@ export async function DELETE(
     });
     if (!existing) return NextResponse.json({ ok: false, error: "Offer not found" }, { status: 404 });
 
-    const offer = await prisma.affiliateOffer.update({
-      where: { id },
+    const result = await prisma.affiliateOffer.updateMany({
+      where: { id, userId: user.id },
       data: { status: "dropped" },
     });
 
-    return NextResponse.json({ ok: true, offer });
+    if (result.count === 0) return NextResponse.json({ ok: false, error: "Offer not found" }, { status: 404 });
+
+    return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Affiliate offer DELETE error:", err);
     return NextResponse.json({ ok: false, error: "Failed to drop offer" }, { status: 500 });

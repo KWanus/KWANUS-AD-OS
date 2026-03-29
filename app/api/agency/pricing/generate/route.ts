@@ -8,6 +8,11 @@ import { config } from "@/lib/config";
 
 const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 
+function sanitize(value: unknown, max = 300): string {
+  if (value === null || value === undefined) return "";
+  return String(value).replace(/\x00/g, "").replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "").trim().slice(0, max);
+}
+
 const GLOBAL_RULE = `You are the world's best digital marketing agency consultant inside Himalaya Agency OS.
 Return valid JSON only. No markdown. No commentary outside JSON.
 Before generating any output, analyze what TOP 1% agencies charge, deliver, and promise for this business type and niche.
@@ -53,10 +58,10 @@ export async function POST(req: NextRequest) {
 
     const prompt = `Generate a recommended agency pricing strategy for offering services in this market.
 
-Niche: ${niche}
-Business Type of clients: ${businessType}
-${competitorUrls ? `Competitor URLs to research: ${Array.isArray(competitorUrls) ? competitorUrls.join(", ") : competitorUrls}` : ""}
-${targetRevenue ? `Agency target monthly revenue: $${targetRevenue}` : ""}
+Niche: ${sanitize(niche)}
+Business Type of clients: ${sanitize(businessType)}
+${competitorUrls ? `Competitor URLs to research: ${Array.isArray(competitorUrls) ? competitorUrls.map((u: unknown) => sanitize(u, 100)).join(", ") : sanitize(competitorUrls, 500)}` : ""}
+${targetRevenue ? `Agency target monthly revenue: $${sanitize(targetRevenue, 20)}` : ""}
 Execution Tier: ${executionTier}
 
 ${executionTier === "elite"
@@ -89,8 +94,8 @@ Return this exact JSON structure:
 
     // If tied to an audit, persist pricingJson
     if (audit) {
-      await prisma.agencyAudit.update({
-        where: { id: auditId },
+      await prisma.agencyAudit.updateMany({
+        where: { id: auditId, userId: user.id },
         data: { pricingJson: result as object },
       });
     }

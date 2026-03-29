@@ -8,6 +8,11 @@ import { config } from "@/lib/config";
 
 const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 
+function sanitize(value: unknown, max = 300): string {
+  if (value === null || value === undefined) return "";
+  return String(value).replace(/\x00/g, "").replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "").trim().slice(0, max);
+}
+
 const GLOBAL_RULE = `You are the world's best affiliate marketing strategist inside Himalaya Agency OS.
 Return valid JSON only. No markdown. No commentary outside JSON.
 Before generating any output, analyze what the TOP 1% 7-figure affiliate marketers do in this niche.
@@ -56,13 +61,13 @@ export async function POST(req: NextRequest) {
     const prompt = `Generate a complete bridge/presell page for this affiliate offer. This page sits between the traffic source and the vendor's sales page. It warms up the prospect and pre-sells them before they click through.
 
 Offer:
-- Name: ${offer.name}
-- Platform: ${offer.platform}
-- Niche: ${offer.niche}
-- Vendor URL: ${offer.url}
-${offer.affiliateUrl ? `- Affiliate Link: ${offer.affiliateUrl}` : ""}
-${offer.commission != null ? `- Commission: ${offer.commission}%` : ""}
-${offer.notes ? `- Notes: ${offer.notes}` : ""}
+- Name: ${sanitize(offer.name)}
+- Platform: ${sanitize(offer.platform)}
+- Niche: ${sanitize(offer.niche)}
+- Vendor URL: ${sanitize(offer.url)}
+${offer.affiliateUrl ? `- Affiliate Link: ${sanitize(offer.affiliateUrl)}` : ""}
+${offer.commission != null ? `- Commission: ${sanitize(offer.commission)}%` : ""}
+${offer.notes ? `- Notes: ${sanitize(offer.notes)}` : ""}
 Execution Tier: ${executionTier}
 ${executionTier === "elite"
   ? "Elite mode: write this like a top bridge-page operator. Push for a stronger emotional hook, better belief-shifting story, more credible proof, and tighter click-through psychology."
@@ -92,8 +97,8 @@ The story section should use the PAS (Problem-Agitate-Solution) or Hero's Journe
 
     const landing = await callClaude(GLOBAL_RULE, prompt);
 
-    await prisma.affiliateOffer.update({
-      where: { id: offer.id },
+    await prisma.affiliateOffer.updateMany({
+      where: { id: offer.id, userId: user.id },
       data: { landingJson: landing as object },
     });
 

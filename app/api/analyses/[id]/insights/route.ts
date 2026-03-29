@@ -5,6 +5,11 @@ import { getOrCreateUser } from "@/lib/auth";
 import { AI_MODELS } from "@/lib/ai/models";
 import { config } from "@/lib/config";
 
+function sanitize(value: unknown, max = 500): string {
+  if (value === null || value === undefined) return "";
+  return String(value).replace(/\x00/g, "").replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "").trim().slice(0, max);
+}
+
 export async function POST(
   _req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -35,20 +40,20 @@ export async function POST(
     const prompt = `You are an expert digital marketing strategist and business analyst. Analyze this opportunity and provide deep, actionable insights.
 
 ## Scan Data
-URL: ${analysis.inputUrl}
-Mode: ${analysis.mode}
+URL: ${sanitize(analysis.inputUrl)}
+Mode: ${sanitize(analysis.mode)}
 Score: ${analysis.score ?? 0}/100
-Verdict: ${analysis.verdict ?? "Unknown"}
-Confidence: ${analysis.confidence ?? "Unknown"}
-Summary: ${analysis.summary ?? "No summary"}
+Verdict: ${sanitize(analysis.verdict ?? "Unknown")}
+Confidence: ${sanitize(analysis.confidence ?? "Unknown")}
+Summary: ${sanitize(analysis.summary ?? "No summary")}
 
 ## Decision Packet
-Audience: ${packet?.audience ?? "Unknown"}
-Pain/Desire: ${packet?.painDesire ?? "Unknown"}
-Angle: ${packet?.angle ?? "Unknown"}
-Strengths: ${JSON.stringify(packet?.strengths ?? [])}
-Weaknesses: ${JSON.stringify(packet?.weaknesses ?? [])}
-Risks: ${JSON.stringify(packet?.risks ?? [])}
+Audience: ${sanitize(packet?.audience ?? "Unknown")}
+Pain/Desire: ${sanitize(packet?.painDesire ?? "Unknown")}
+Angle: ${sanitize(packet?.angle ?? "Unknown")}
+Strengths: ${sanitize(JSON.stringify(packet?.strengths ?? []))}
+Weaknesses: ${sanitize(JSON.stringify(packet?.weaknesses ?? []))}
+Risks: ${sanitize(JSON.stringify(packet?.risks ?? []))}
 
 ## Opportunity Assessment
 Status: ${opp?.status ?? "Unknown"}

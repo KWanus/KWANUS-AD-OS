@@ -8,6 +8,11 @@ import { config } from "@/lib/config";
 
 const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 
+function sanitize(value: unknown, max = 300): string {
+  if (value === null || value === undefined) return "";
+  return String(value).replace(/\x00/g, "").replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "").trim().slice(0, max);
+}
+
 const GLOBAL_RULE = `You are the world's best business consultant and proposal writer inside Himalaya Agency OS.
 Return valid JSON only. No markdown. No commentary outside JSON.
 Before generating any output, research what the TOP 1% of consultants and coaches in this exact niche charge, deliver, and say.
@@ -33,9 +38,9 @@ export async function POST(req: NextRequest) {
     }
 
     const prompt = `Create a comprehensive client onboarding questionnaire for:
-Niche: ${niche}
-Business Type: ${businessType}
-Client Name: ${clientName ?? "New Client"}
+Niche: ${sanitize(niche)}
+Business Type: ${sanitize(businessType)}
+Client Name: ${sanitize(clientName ?? "New Client")}
 Execution Tier: ${executionTier}
 
 ${executionTier === "elite"
@@ -109,7 +114,7 @@ Requirements:
 - Types: text | select | multiselect | number | textarea | date
 - Include placeholder for text/textarea types
 - Include options array for select/multiselect types
-- Tailor all questions specifically to the "${niche}" niche and "${businessType}" business type
+- Tailor all questions specifically to the "${sanitize(niche)}" niche and "${sanitize(businessType)}" business type
 - Include niche-specific terminology and metrics`;
 
     const response = await anthropic.messages.create({

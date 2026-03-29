@@ -9,6 +9,11 @@ import { config } from "@/lib/config";
 
 const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 
+function sanitize(value: unknown, max = 300): string {
+  if (value === null || value === undefined) return "";
+  return String(value).replace(/\x00/g, "").replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "").trim().slice(0, max);
+}
+
 const GLOBAL_RULE = `You are a structured business-generation engine inside Himalaya Agency OS.
 Your job is to analyze businesses in any niche and generate useful, conversion-focused outputs.
 Rules:
@@ -63,7 +68,7 @@ export async function POST(
     const executionTier: ExecutionTier = body.executionTier === "core" ? "core" : storedExecutionTier;
     const businessContext = await getBusinessContext(user.id);
 
-    await prisma.lead.update({ where: { id }, data: { status: "generating" } });
+    await prisma.lead.updateMany({ where: { id, userId: user.id }, data: { status: "generating" } });
 
     const gaps = (lead.topGaps as string[] | null) ?? [];
     const strengths = (lead.topStrengths as string[] | null) ?? [];
@@ -86,19 +91,19 @@ Analyze this business and return JSON with this exact structure:
 }
 
 Input:
-- business_name: ${lead.name}
-- niche: ${lead.niche}
-- location: ${lead.location}
-- website_url: ${lead.website ?? "none"}
+- business_name: ${sanitize(lead.name)}
+- niche: ${sanitize(lead.niche)}
+- location: ${sanitize(lead.location)}
+- website_url: ${sanitize(lead.website ?? "none")}
 - execution_tier: ${executionTier}
 - ${executionTier === "elite"
         ? "Use top-operator specificity, stronger conversion criticism, and higher-conviction recommendations."
         : "Keep the output clear, useful, and launch-ready without overreaching."}
 - known_score: ${lead.score ?? "N/A"}/100
-- known_summary: ${lead.summary ?? "No website analysis available"}
-- known_gaps: ${gaps.join(", ") || "none"}
-- known_weaknesses: ${weaknesses.join(", ") || "none"}
-- known_strengths: ${strengths.join(", ") || "none"}
+- known_summary: ${sanitize(lead.summary ?? "No website analysis available")}
+- known_gaps: ${gaps.map((g: unknown) => sanitize(g, 100)).join(", ") || "none"}
+- known_weaknesses: ${weaknesses.map((w: unknown) => sanitize(w, 100)).join(", ") || "none"}
+- known_strengths: ${strengths.map((s: unknown) => sanitize(s, 100)).join(", ") || "none"}
 ${businessContext}`;
 
     const analyzerJson = await callSkill(analyzerPrompt);
@@ -113,7 +118,7 @@ ${businessContext}`;
 
     const profilePrompt = `You are the profile-builder skill for Himalaya Agency OS.
 Turn business info and analysis into a usable conversion profile.
-IMPORTANT: Before building this profile, mentally model the top-performing businesses in the ${lead.niche} niche. What audience messaging, brand positioning, and conversion strategies make the BEST ones win? Use those insights to craft a profile that positions this business to compete at the highest level.
+IMPORTANT: Before building this profile, mentally model the top-performing businesses in the ${sanitize(lead.niche)} niche. What audience messaging, brand positioning, and conversion strategies make the BEST ones win? Use those insights to craft a profile that positions this business to compete at the highest level.
 Return JSON with this exact structure:
 {
   "business_name": "",
@@ -298,8 +303,8 @@ Input:
       sms?: { message: string };
     };
 
-    await prisma.lead.update({
-      where: { id },
+    await prisma.lead.updateMany({
+      where: { id, userId: user.id },
       data: {
         status: "ready",
         analyzerJson: analyzerJson as object,
@@ -327,7 +332,7 @@ Input:
     return NextResponse.json({ ok: true, executionTier });
   } catch (err) {
     console.error("Lead generate error:", err);
-    await prisma.lead.update({ where: { id }, data: { status: "analyzed" } }).catch(() => null);
-    return NextResponse.json({ ok: false, error: String(err) }, { status: 500 });
+    await prisma.lead.updateMany({ where: { id, userId: user.id }, data: { status: "analyzed" } }).catch(() => null);
+    return NextResponse.json({ ok: false, error: "Lead generation failed" }, { status: 500 });
   }
 }

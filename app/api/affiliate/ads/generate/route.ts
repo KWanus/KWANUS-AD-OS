@@ -8,6 +8,11 @@ import { config } from "@/lib/config";
 
 const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 
+function sanitize(value: unknown, max = 300): string {
+  if (value === null || value === undefined) return "";
+  return String(value).replace(/\x00/g, "").replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "").trim().slice(0, max);
+}
+
 const GLOBAL_RULE = `You are the world's best affiliate marketing strategist inside Himalaya Agency OS.
 Return valid JSON only. No markdown. No commentary outside JSON.
 Before generating any output, analyze what the TOP 1% 7-figure affiliate marketers do in this niche.
@@ -52,12 +57,12 @@ export async function POST(req: NextRequest) {
     const prompt = `Generate complete ad creative for Facebook/Instagram, TikTok, and Google for this affiliate offer.
 
 Offer:
-- Name: ${offer.name}
-- Platform: ${offer.platform}
-- Niche: ${offer.niche}
-- URL: ${offer.url}
-${offer.commission != null ? `- Commission: ${offer.commission}%` : ""}
-${offer.notes ? `- Notes: ${offer.notes}` : ""}
+- Name: ${sanitize(offer.name)}
+- Platform: ${sanitize(offer.platform)}
+- Niche: ${sanitize(offer.niche)}
+- URL: ${sanitize(offer.url)}
+${offer.commission != null ? `- Commission: ${sanitize(offer.commission)}%` : ""}
+${offer.notes ? `- Notes: ${sanitize(offer.notes)}` : ""}
 Execution Tier: ${executionTier}
 ${executionTier === "elite"
   ? "Elite mode: write these like a super-affiliate buying serious traffic. Push for more dangerous hooks, stronger angle variation, better platform-native formatting, and clearer visual direction."
@@ -140,8 +145,8 @@ Return this exact JSON structure:
 
     const ads = await callClaude(GLOBAL_RULE, prompt);
 
-    await prisma.affiliateOffer.update({
-      where: { id: offer.id },
+    await prisma.affiliateOffer.updateMany({
+      where: { id: offer.id, userId: user.id },
       data: { adHooksJson: ads as object },
     });
 

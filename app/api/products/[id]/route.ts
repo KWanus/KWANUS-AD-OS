@@ -3,6 +3,21 @@ import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { getOrCreateUser } from "@/lib/auth";
 
+// price/compareAt stored as integer cents; inventory is a non-negative count
+function safePrice(value: unknown): number | null {
+  if (value === null || value === undefined || value === "") return null;
+  const n = parseInt(String(value), 10);
+  if (isNaN(n) || n < 0 || n > 100_000_000) return null; // max $1,000,000.00
+  return n;
+}
+
+function safeInventory(value: unknown): number | null {
+  if (value === null || value === undefined || value === "") return null;
+  const n = parseInt(String(value), 10);
+  if (isNaN(n) || n < 0 || n > 1_000_000) return null;
+  return n;
+}
+
 export async function PATCH(
   req: NextRequest,
   { params }: { params: Promise<{ id: string }> }
@@ -30,6 +45,19 @@ export async function PATCH(
       return NextResponse.json({ ok: false, error: "siteId is required" }, { status: 400 });
     }
 
+    if (body.price !== undefined) {
+      const p = safePrice(body.price);
+      if (p === null) return NextResponse.json({ ok: false, error: "Invalid price" }, { status: 400 });
+    }
+    if (body.compareAt !== undefined && body.compareAt !== null && body.compareAt !== "") {
+      const c = safePrice(body.compareAt);
+      if (c === null) return NextResponse.json({ ok: false, error: "Invalid compareAt" }, { status: 400 });
+    }
+    if (body.inventory !== undefined && body.inventory !== null && body.inventory !== "") {
+      const inv = safeInventory(body.inventory);
+      if (inv === null) return NextResponse.json({ ok: false, error: "Invalid inventory" }, { status: 400 });
+    }
+
     const existing = await prisma.siteProduct.findFirst({
       where: {
         id,
@@ -47,12 +75,12 @@ export async function PATCH(
       data: {
         ...(body.name !== undefined && { name: body.name }),
         ...(body.description !== undefined && { description: body.description || null }),
-        ...(body.price !== undefined && { price: parseInt(String(body.price), 10) }),
+        ...(body.price !== undefined && { price: safePrice(body.price) }),
         ...(body.compareAt !== undefined && {
-          compareAt: body.compareAt === null || body.compareAt === "" ? null : parseInt(String(body.compareAt), 10),
+          compareAt: body.compareAt === null || body.compareAt === "" ? null : safePrice(body.compareAt),
         }),
         ...(body.inventory !== undefined && {
-          inventory: body.inventory === null || body.inventory === "" ? null : parseInt(String(body.inventory), 10),
+          inventory: body.inventory === null || body.inventory === "" ? null : safeInventory(body.inventory),
         }),
         ...(body.images !== undefined && { images: body.images }),
         ...(body.status !== undefined && { status: body.status }),
@@ -61,7 +89,7 @@ export async function PATCH(
 
     return NextResponse.json({ ok: true, product });
   } catch (err) {
-    console.error(err);
+    console.error("Product PATCH:", err);
     return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });
   }
 }
@@ -98,17 +126,15 @@ export async function DELETE(
     const user = await getOrCreateUser();
     if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 
-    // Verify ownership before archiving
-    const product = await prisma.product.findFirst({
+    const result = await prisma.product.updateMany({
       where: { id, userId: user.id },
-      select: { id: true },
+      data: { status: "archived" },
     });
-    if (!product) return NextResponse.json({ ok: false, error: "Product not found" }, { status: 404 });
+    if (result.count === 0) return NextResponse.json({ ok: false, error: "Product not found" }, { status: 404 });
 
-    await prisma.product.update({ where: { id }, data: { status: "archived" } });
     return NextResponse.json({ ok: true });
   } catch (err) {
-    console.error(err);
+    console.error("Product DELETE:", err);
     return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });
   }
 }

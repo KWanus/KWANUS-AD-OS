@@ -8,6 +8,11 @@ import { config } from "@/lib/config";
 
 const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 
+function sanitize(value: unknown, max = 300): string {
+  if (value === null || value === undefined) return "";
+  return String(value).replace(/\x00/g, "").replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "").trim().slice(0, max);
+}
+
 const GLOBAL_RULE = `You are the world's best business consultant and proposal writer inside Himalaya Agency OS.
 Return valid JSON only. No markdown. No commentary outside JSON.
 Before generating any output, research what the TOP 1% of consultants and coaches in this exact niche charge, deliver, and say.
@@ -41,25 +46,25 @@ export async function POST(req: NextRequest) {
       if (lead) {
         leadContext = `
 Lead Data:
-- Rating: ${lead.rating ?? "N/A"} (${lead.reviewCount ?? 0} reviews)
+- Rating: ${sanitize(lead.rating ?? "N/A")} (${lead.reviewCount ?? 0} reviews)
 - AI Score: ${lead.score ?? score ?? "N/A"}/100
-- Pain Points: ${lead.painPoints ?? "N/A"}
-- Top Gaps: ${JSON.stringify(lead.topGaps ?? gaps ?? [])}
-- Top Strengths: ${JSON.stringify(lead.topStrengths ?? strengths ?? [])}
-- Weaknesses: ${JSON.stringify(lead.weaknesses ?? [])}
-- Website: ${lead.website ?? website ?? "N/A"}`;
+- Pain Points: ${sanitize(lead.painPoints ?? "N/A")}
+- Top Gaps: ${sanitize(JSON.stringify(lead.topGaps ?? gaps ?? []))}
+- Top Strengths: ${sanitize(JSON.stringify(lead.topStrengths ?? strengths ?? []))}
+- Weaknesses: ${sanitize(JSON.stringify(lead.weaknesses ?? []))}
+- Website: ${sanitize(lead.website ?? website ?? "N/A")}`;
       }
     }
 
     const prompt = `Generate a detailed consultant audit report for this business prospect:
 
-Business: ${businessName}
-Niche: ${niche}
-Location: ${location ?? "Not specified"}
-Website: ${website ?? "Not provided"}
-Overall Score: ${score ?? "Unknown"}/100
-Known Gaps: ${JSON.stringify(gaps ?? [])}
-Known Strengths: ${JSON.stringify(strengths ?? [])}
+Business: ${sanitize(businessName)}
+Niche: ${sanitize(niche)}
+Location: ${sanitize(location ?? "Not specified")}
+Website: ${sanitize(website ?? "Not provided")}
+Overall Score: ${sanitize(score ?? "Unknown")}/100
+Known Gaps: ${sanitize(JSON.stringify(gaps ?? []))}
+Known Strengths: ${sanitize(JSON.stringify(strengths ?? []))}
 ${leadContext}
 Execution Tier: ${executionTier}
 
