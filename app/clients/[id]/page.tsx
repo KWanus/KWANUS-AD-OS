@@ -159,6 +159,41 @@ function ActivityItem({ activity }: { activity: Activity }) {
 // AI Assist Panel
 // ---------------------------------------------------------------------------
 
+function TagAdder({ onAdd }: { onAdd: (tag: string) => void }) {
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState("");
+
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        className="text-[10px] font-bold text-white/20 bg-white/[0.03] border border-dashed border-white/[0.1] px-2 py-0.5 rounded-md hover:text-white/40 hover:border-white/20 transition"
+      >
+        + tag
+      </button>
+    );
+  }
+
+  return (
+    <input
+      autoFocus
+      value={value}
+      onChange={e => setValue(e.target.value)}
+      onKeyDown={e => {
+        if (e.key === "Enter" && value.trim()) {
+          onAdd(value.trim().toLowerCase());
+          setValue("");
+          setOpen(false);
+        }
+        if (e.key === "Escape") { setValue(""); setOpen(false); }
+      }}
+      onBlur={() => { if (!value.trim()) setOpen(false); }}
+      placeholder="tag name"
+      className="text-[10px] font-bold text-cyan-400 bg-cyan-500/10 border border-cyan-500/30 px-2 py-0.5 rounded-md outline-none w-20 placeholder-cyan-400/30"
+    />
+  );
+}
+
 function AIAssistPanel({ client }: { client: Client }) {
   const [action, setAction] = useState<"draft_followup" | "summarize" | "next_action" | "score_explain">("next_action");
   const [executionTier, setExecutionTier] = useState<ExecutionTier>(client.executionTier === "core" ? "core" : "elite");
@@ -572,15 +607,29 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
             </div>
 
             {/* Tags */}
-            {client.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1.5 mt-3">
-                {client.tags.map((tag) => (
-                  <span key={tag} className="text-[10px] font-bold text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 rounded-md">
-                    {tag}
-                  </span>
-                ))}
-              </div>
-            )}
+            {/* Tags — inline add/remove */}
+            <div className="flex flex-wrap gap-1.5 mt-3 items-center">
+              {client.tags.map((tag) => (
+                <button
+                  key={tag}
+                  onClick={() => {
+                    const newTags = client.tags.filter(t => t !== tag);
+                    void patchClient("tags", newTags);
+                  }}
+                  className="text-[10px] font-bold text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 rounded-md hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20 transition group"
+                  title="Click to remove"
+                >
+                  {tag} <span className="opacity-0 group-hover:opacity-100 ml-0.5">×</span>
+                </button>
+              ))}
+              <TagAdder
+                onAdd={(tag) => {
+                  if (!client.tags.includes(tag)) {
+                    void patchClient("tags", [...client.tags, tag]);
+                  }
+                }}
+              />
+            </div>
           </div>
 
           {/* Log activity */}

@@ -88,6 +88,7 @@ type Campaign = {
   emailDrafts: EmailDraft[];
   checklistItems: ChecklistItem[];
   analysisRun: AnalysisRun | null;
+  currentPhase?: number;
   workflowState?: {
     executionTier?: ExecutionTier;
   } | null;
@@ -592,6 +593,32 @@ export default function CampaignWorkspace() {
           {campaign.productName && (
             <p className="text-[10px] text-white/30 mt-1.5 truncate">{campaign.productName}</p>
           )}
+
+          {/* Phase progress */}
+          <div className="mt-3">
+            <div className="flex items-center justify-between mb-1">
+              <p className="text-[9px] font-black uppercase tracking-widest text-white/20">Phase</p>
+              <p className="text-[9px] text-white/30">{campaign.currentPhase ?? 1}/5</p>
+            </div>
+            <div className="flex gap-1">
+              {["Source", "Audit", "Strategy", "Produce", "Deploy"].map((phase, i) => (
+                <div
+                  key={phase}
+                  className={`flex-1 h-1.5 rounded-full transition-all ${
+                    i < (campaign.currentPhase ?? 1)
+                      ? "bg-cyan-500"
+                      : i === (campaign.currentPhase ?? 1) - 1
+                      ? "bg-cyan-500/50"
+                      : "bg-white/[0.06]"
+                  }`}
+                  title={phase}
+                />
+              ))}
+            </div>
+            <p className="text-[9px] text-cyan-400/50 mt-1 font-bold">
+              {["Source", "Audit", "Strategy", "Produce", "Deploy"][(campaign.currentPhase ?? 1) - 1]}
+            </p>
+          </div>
         </div>
 
         {/* Nav */}
