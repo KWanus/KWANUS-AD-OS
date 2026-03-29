@@ -175,10 +175,25 @@ function CopilotPageContent() {
   const router = useRouter();
   const fromOnboarding = searchParams.get("onboarding") === "1";
   const prefill = searchParams.get("prefill") ?? "";
-  const [messages, setMessages] = useState<Message[]>([
-    fromOnboarding ? ONBOARDING_INTRO_MESSAGE : INTRO_MESSAGE,
-  ]);
+  const [messages, setMessages] = useState<Message[]>(() => {
+    // Restore from localStorage if available
+    try {
+      const saved = localStorage.getItem("copilot-messages");
+      if (saved) {
+        const parsed = JSON.parse(saved) as Message[];
+        if (parsed.length > 1) return parsed;
+      }
+    } catch { /* ignore */ }
+    return [fromOnboarding ? ONBOARDING_INTRO_MESSAGE : INTRO_MESSAGE];
+  });
   const [input, setInput] = useState(prefill);
+
+  // Persist messages to localStorage
+  useEffect(() => {
+    if (messages.length > 1) {
+      try { localStorage.setItem("copilot-messages", JSON.stringify(messages.slice(-20))); } catch { /* ignore */ }
+    }
+  }, [messages]);
   const [streaming, setStreaming] = useState(false);
   const [scanning, setScanning] = useState(false);
   const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
@@ -299,6 +314,17 @@ function CopilotPageContent() {
                 <Zap className="w-3 h-3 text-white" />
               </div>
               <h1 className="text-lg font-black text-white">Himalaya Copilot</h1>
+              {messages.length > 1 && (
+                <button
+                  onClick={() => {
+                    setMessages([INTRO_MESSAGE]);
+                    try { localStorage.removeItem("copilot-messages"); } catch { /* ignore */ }
+                  }}
+                  className="ml-auto text-[10px] font-bold text-white/20 hover:text-white/50 transition"
+                >
+                  New chat
+                </button>
+              )}
             </div>
             <p className="text-xs text-white/35">
               {fromOnboarding
