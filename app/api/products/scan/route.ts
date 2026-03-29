@@ -2,11 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
 import { fetchPage } from "@/src/logic/ad-os/fetchPage";
-import Anthropic from "@anthropic-ai/sdk";
 import { rateLimit, RATE_LIMITS } from "@/lib/rateLimit";
+import { callClaude, extractJson } from "@/lib/ai/claude";
 import type { ExecutionTier } from "@/lib/sites/conversionEngine";
-
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 type Platform = "clickbank" | "amazon" | "aliexpress" | "jvzoo" | "warriorplus" | "cj" | "custom" | "dropship";
 
@@ -90,12 +88,7 @@ export async function POST(req: NextRequest) {
     // Use Claude to extract product data
     const pageText = page ? `Title: ${page.title}\nDescription: ${page.metaDescription}\nBody: ${page.bodyText?.slice(0, 2000)}` : `URL: ${url}`;
 
-    const response = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
-      max_tokens: 1024,
-      messages: [{
-        role: "user",
-        content: `Extract product info from this page and return ONLY valid JSON (no markdown):
+    const prompt = `Extract product info from this page and return ONLY valid JSON:
 {
   "name": "product name",
   "description": "1-2 sentence description",
@@ -117,18 +110,25 @@ ${executionTier === "elite"
   : "Keep the extraction clean, accurate, and launch-ready."}
 
 Page data:
-${pageText}`
-      }],
-    });
+${pageText}`;
 
-    const raw = response.content[0].type === "text" ? response.content[0].text : "{}";
-    const match = raw.match(/\{[\s\S]+\}/);
-    const productData = match ? JSON.parse(match[0]) as {
+    const raw = await callClaude(
+      "You are a product intelligence extractor. Analyze product pages and return structured data as valid JSON only.",
+      prompt
+    );
+
+    type ProductData = {
       name?: string; description?: string; price?: string; commission?: string;
       niche?: string; category?: string; gravity?: number | null;
       imageUrl?: string | null; hooks?: string[]; targetAudience?: string;
       painPoint?: string; topBenefit?: string;
-    } : {};
+    };
+    let productData: ProductData = {};
+    try {
+      productData = extractJson<ProductData>(raw as string);
+    } catch {
+      // Fall through with empty data
+    }
 
     return NextResponse.json({
       ok: true,

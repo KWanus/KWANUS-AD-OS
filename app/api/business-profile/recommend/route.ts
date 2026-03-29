@@ -1,14 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
-import Anthropic from "@anthropic-ai/sdk";
 import type { Prisma } from "@prisma/client";
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { ARCHETYPES, type BusinessType } from "@/lib/archetypes";
 import { buildFallbackRecommendation, type Recommendation } from "@/lib/archetypes/recommendation";
 import { rateLimit, RATE_LIMITS } from "@/lib/rateLimit";
-
-const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+import { callClaude, extractJson } from "@/lib/ai/claude";
 
 type RecommendBody = {
   businessType?: BusinessType;
@@ -16,16 +14,6 @@ type RecommendBody = {
   goal?: string;
   stage?: string;
 };
-
-function parseJsonObject<T>(text: string): T | null {
-  const match = text.match(/\{[\s\S]*\}/);
-  if (!match) return null;
-  try {
-    return JSON.parse(match[0]) as T;
-  } catch {
-    return null;
-  }
-}
 
 export async function POST(req: NextRequest) {
   try {
@@ -66,7 +54,7 @@ export async function POST(req: NextRequest) {
 
     if (process.env.ANTHROPIC_API_KEY) {
       try {
-        const prompt = `You are a world-class business strategist. Based on this business profile:
+        const prompt = `Based on this business profile:
 - Business Type: ${businessType} - ${archetype.label}
 - Niche: ${niche || "not specified"}
 - Goal: ${goal}
@@ -90,14 +78,11 @@ Return as JSON:
   ]
 }`;
 
-        const response = await anthropic.messages.create({
-          model: "claude-sonnet-4-6",
-          max_tokens: 1400,
-          messages: [{ role: "user", content: prompt }],
-        });
-
-        const text = response.content.find((item) => item.type === "text");
-        const parsed = text && text.type === "text" ? parseJsonObject<Recommendation>(text.text) : null;
+        const raw = await callClaude(
+          "You are a world-class business strategist. Analyze business profiles and recommend the optimal system configuration. Return only valid JSON.",
+          prompt
+        );
+        const parsed = extractJson<Recommendation>(raw as string);
         if (parsed?.strategicSummary && Array.isArray(parsed.prioritizedSystems)) {
           recommendation = parsed;
         }
