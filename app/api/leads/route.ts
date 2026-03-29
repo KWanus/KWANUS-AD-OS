@@ -28,6 +28,14 @@ export async function GET(req: NextRequest) {
       orderBy: { createdAt: "desc" },
       take: limit + 1,
       ...(cursor ? { cursor: { id: cursor }, skip: 1 } : {}),
+      select: {
+        id: true, name: true, niche: true, location: true,
+        website: true, phone: true, email: true,
+        score: true, verdict: true, status: true,
+        emailOpened: true, emailReplied: true,
+        outreachSentAt: true, clientId: true,
+        createdAt: true, updatedAt: true,
+      },
     });
 
     const hasMore = leads.length > limit;
