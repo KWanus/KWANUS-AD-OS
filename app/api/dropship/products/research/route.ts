@@ -8,6 +8,11 @@ import { config } from "@/lib/config";
 
 const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 
+function sanitize(value: unknown, max = 300): string {
+  if (value === null || value === undefined) return "";
+  return String(value).replace(/\x00/g, "").replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "").trim().slice(0, max);
+}
+
 const GLOBAL_RULE = `You are the world's best e-commerce and dropshipping strategist inside Himalaya Agency OS.
 Return valid JSON only. No markdown. No commentary outside JSON.
 Before generating any output, research what the TOP 1% Shopify stores and dropshippers do in this niche.
@@ -48,9 +53,9 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "niche is required" }, { status: 400 });
     }
 
-    const prompt = `Perform deep product opportunity research for the dropshipping niche: "${niche}".
-${budget ? `Budget constraint: ${budget}` : ""}
-${targetMarket ? `Target market: ${targetMarket}` : ""}
+    const prompt = `Perform deep product opportunity research for the dropshipping niche: "${sanitize(niche)}".
+${budget ? `Budget constraint: ${sanitize(budget, 100)}` : ""}
+${targetMarket ? `Target market: ${sanitize(targetMarket, 200)}` : ""}
 Execution tier: ${executionTier}
 ${executionTier === "elite"
   ? "Think like a top 1% e-commerce operator allocating real budget. Prioritize product economics, angle durability, creative potential, supplier reliability, and where crowded markets still leave room for differentiated execution."

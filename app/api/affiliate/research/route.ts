@@ -8,6 +8,11 @@ import { config } from "@/lib/config";
 
 const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 
+function sanitize(value: unknown, max = 300): string {
+  if (value === null || value === undefined) return "";
+  return String(value).replace(/\x00/g, "").replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "").trim().slice(0, max);
+}
+
 const GLOBAL_RULE = `You are the world's best affiliate marketing strategist inside Himalaya Agency OS.
 Return valid JSON only. No markdown. No commentary outside JSON.
 Before generating any output, analyze what the TOP 1% 7-figure affiliate marketers do in this niche.
@@ -50,9 +55,9 @@ export async function POST(req: NextRequest) {
 
     const prompt = `Research the affiliate marketing landscape for this niche and provide actionable intelligence.
 
-Niche: ${body.niche}
-${body.budget ? `Budget: ${body.budget}` : ""}
-${body.trafficSource ? `Primary Traffic Source: ${body.trafficSource}` : ""}
+Niche: ${sanitize(body.niche)}
+${body.budget ? `Budget: ${sanitize(body.budget, 50)}` : ""}
+${body.trafficSource ? `Primary Traffic Source: ${sanitize(body.trafficSource, 100)}` : ""}
 Execution tier: ${executionTier}
 ${executionTier === "elite"
   ? "Go beyond generic niche research. Think like a top 1% affiliate operator choosing a niche worth serious capital and attention. Be sharper about buyer psychology, EPC realism, traffic-angle fit, and where beginners usually lose money."

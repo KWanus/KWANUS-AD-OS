@@ -61,8 +61,8 @@ export async function POST(
     workflowState[`phase${currentPhase}_completedAt`] = new Date().toISOString();
     workflowState[`phase${nextPhase}_startedAt`] = new Date().toISOString();
 
-    const updated = await prisma.campaign.update({
-      where: { id },
+    const result = await prisma.campaign.updateMany({
+      where: { id, userId: user.id },
       data: {
         currentPhase: nextPhase,
         status: newStatus,
@@ -70,10 +70,14 @@ export async function POST(
       },
     });
 
+    if (result.count === 0) {
+      return NextResponse.json({ ok: false, error: "Campaign not found" }, { status: 404 });
+    }
+
     return NextResponse.json({
       ok: true,
       campaign: {
-        id: updated.id,
+        id,
         currentPhase: nextPhase,
         phaseName: PHASE_NAMES[nextPhase],
         status: newStatus,

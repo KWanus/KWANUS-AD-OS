@@ -7,6 +7,11 @@ import { config } from "@/lib/config";
 
 type ExecutionTier = "core" | "elite";
 
+function sanitize(value: unknown, max = 300): string {
+  if (value === null || value === undefined) return "";
+  return String(value).replace(/\x00/g, "").replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "").trim().slice(0, max);
+}
+
 export async function POST(req: NextRequest) {
   try {
     const { userId: clerkId } = await auth();
@@ -42,12 +47,12 @@ ${executionTier === "elite"
 
 Draft a concise, warm follow-up email for this client.
 
-Client: ${client.name}${client.company ? ` at ${client.company}` : ""}
-Niche: ${client.niche ?? "unknown"}
-Pipeline Stage: ${client.pipelineStage}
+Client: ${sanitize(client.name)}${client.company ? ` at ${sanitize(client.company)}` : ""}
+Niche: ${sanitize(client.niche ?? "unknown")}
+Pipeline Stage: ${sanitize(client.pipelineStage)}
 Deal Value: ${client.dealValue ? `$${client.dealValue.toLocaleString()}` : "not set"}
 Recent Activity:
-${activitySummary || "No recent activity logged."}
+${sanitize(activitySummary || "No recent activity logged.", 1000)}
 
 Write a 3–4 sentence follow-up email that:
 1. References their specific situation naturally
@@ -63,11 +68,11 @@ ${executionTier === "elite"
 
 Summarize this client relationship in 2–3 sentences for a busy agency owner.
 
-Client: ${client.name}${client.company ? ` at ${client.company}` : ""}
-Stage: ${client.pipelineStage} | Health: ${client.healthScore}/100
+Client: ${sanitize(client.name)}${client.company ? ` at ${sanitize(client.company)}` : ""}
+Stage: ${sanitize(client.pipelineStage)} | Health: ${client.healthScore}/100
 Last Contact: ${client.lastContactAt ? new Date(client.lastContactAt).toLocaleDateString() : "Never"}
 Recent Activity:
-${activitySummary || "No recent activity."}
+${sanitize(activitySummary || "No recent activity.", 1000)}
 
 Be direct and actionable. Highlight risks.`,
 
@@ -78,11 +83,11 @@ ${executionTier === "elite"
 
 What is the single most important next action for this client?
 
-Client: ${client.name} | Stage: ${client.pipelineStage} | Health: ${client.healthScore}/100
+Client: ${sanitize(client.name)} | Stage: ${sanitize(client.pipelineStage)} | Health: ${client.healthScore}/100
 Last Contact: ${client.lastContactAt ? new Date(client.lastContactAt).toLocaleDateString() : "Never"}
 Deal Value: ${client.dealValue ? `$${client.dealValue.toLocaleString()}` : "not set"}
 Recent Activity:
-${activitySummary || "No activity."}
+${sanitize(activitySummary || "No activity.", 1000)}
 
 Respond with ONE specific, actionable recommendation in 1–2 sentences. Start with a verb.`,
 
@@ -93,8 +98,8 @@ ${executionTier === "elite"
 
 Explain this client's health score in plain English.
 
-Client: ${client.name} | Score: ${client.healthScore}/100 (${client.healthStatus})
-Stage: ${client.pipelineStage}
+Client: ${sanitize(client.name)} | Score: ${client.healthScore}/100 (${sanitize(client.healthStatus)})
+Stage: ${sanitize(client.pipelineStage)}
 Last Contact: ${client.lastContactAt ? new Date(client.lastContactAt).toLocaleDateString() : "Never"}
 
 Explain in 2–3 sentences: why this score, what risks it implies, what would improve it.`,

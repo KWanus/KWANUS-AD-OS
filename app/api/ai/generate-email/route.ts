@@ -65,7 +65,7 @@ Requirements:
 - Execution tier: ${executionTier}
 - ${executionTier === "elite"
     ? "Write like a top 1% lifecycle marketer: stronger specificity, clearer stakes, more believable proof framing, tighter objection handling, and a CTA that feels premium and decisive."
-    : "Keep it strong, clear, and launch-ready without overcomplicating the message."}${body.brandVoice ? `\n- Brand voice: ${body.brandVoice}` : ""}${body.existingSubject ? `\n- Existing subject for context (improve upon it): ${body.existingSubject}` : ""}
+    : "Keep it strong, clear, and launch-ready without overcomplicating the message."}${body.brandVoice ? `\n- Brand voice: ${String(body.brandVoice).replace(/\x00/g, "").replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "").trim().slice(0, 200)}` : ""}${body.existingSubject ? `\n- Existing subject for context (improve upon it): ${String(body.existingSubject).replace(/\x00/g, "").replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "").trim().slice(0, 100)}` : ""}
 - Use the business profile below to keep the copy niche-aware and audience-aware when relevant.
 
 ${businessContext}

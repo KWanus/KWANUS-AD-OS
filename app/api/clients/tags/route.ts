@@ -18,6 +18,7 @@ export async function GET() {
     const clients = await prisma.client.findMany({
       where: { userId: user.id },
       select: { tags: true },
+      take: 5000,
     });
 
     const tagCounts: Record<string, number> = {};
