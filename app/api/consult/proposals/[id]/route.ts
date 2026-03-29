@@ -25,7 +25,7 @@ export async function GET(_req: NextRequest, { params }: RouteContext) {
 
     // Increment view count
     await prisma.proposal.update({
-      where: { id },
+      where: { id, userId: user.id },
       data: {
         viewCount: { increment: 1 },
         viewedAt: proposal.viewedAt ?? new Date(),
@@ -106,7 +106,7 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
     };
 
     const updated = await prisma.proposal.update({
-      where: { id },
+      where: { id, userId: user.id },
       data: {
         ...(title !== undefined && { title: String(title).slice(0, 500) }),
         ...(problemStatement !== undefined && { problemStatement }),
@@ -150,7 +150,7 @@ export async function DELETE(_req: NextRequest, { params }: RouteContext) {
     }
 
     await prisma.proposal.update({
-      where: { id },
+      where: { id, userId: user.id },
       data: { status: "deleted" },
     });
 

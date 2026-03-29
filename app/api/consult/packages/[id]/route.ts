@@ -61,10 +61,23 @@ export async function PATCH(req: NextRequest, { params }: RouteContext) {
       sortOrder,
     } = body;
 
+    // Validate price if provided
+    if (price !== undefined) {
+      const p = Number(price);
+      if (isNaN(p) || p < 0) {
+        return NextResponse.json({ ok: false, error: "price must be a non-negative number" }, { status: 400 });
+      }
+    }
+
+    // Validate name not empty
+    if (name !== undefined && !String(name).trim()) {
+      return NextResponse.json({ ok: false, error: "Package name cannot be empty" }, { status: 400 });
+    }
+
     const updated = await prisma.consultPackage.update({
-      where: { id },
+      where: { id, userId: user.id },
       data: {
-        ...(name !== undefined && { name }),
+        ...(name !== undefined && { name: String(name).trim() }),
         ...(type !== undefined && { type }),
         ...(price !== undefined && { price: Number(price) }),
         ...(billingCycle !== undefined && { billingCycle }),
@@ -103,7 +116,7 @@ export async function DELETE(_req: NextRequest, { params }: RouteContext) {
     }
 
     await prisma.consultPackage.update({
-      where: { id },
+      where: { id, userId: user.id },
       data: { active: false },
     });
 

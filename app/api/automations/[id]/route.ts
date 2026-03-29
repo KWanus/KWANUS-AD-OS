@@ -53,10 +53,21 @@ export async function PATCH(
       edges?: unknown[];
     };
 
+    // Validate name not empty
+    if (body.name !== undefined && !body.name.trim()) {
+      return NextResponse.json({ ok: false, error: "Name cannot be empty" }, { status: 400 });
+    }
+
+    // Validate status
+    const VALID_STATUSES = ["draft", "active", "paused", "archived"];
+    if (body.status && !VALID_STATUSES.includes(body.status)) {
+      return NextResponse.json({ ok: false, error: `status must be one of: ${VALID_STATUSES.join(", ")}` }, { status: 400 });
+    }
+
     const automation = await prisma.automation.update({
-      where: { id },
+      where: { id, userId: user.id },
       data: {
-        ...(body.name !== undefined && { name: body.name }),
+        ...(body.name !== undefined && { name: body.name.trim() }),
         ...(body.description !== undefined && { description: body.description || null }),
         ...(body.trigger !== undefined && { trigger: body.trigger }),
         ...(body.triggerConfig !== undefined && { triggerConfig: body.triggerConfig as object }),
