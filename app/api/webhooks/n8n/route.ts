@@ -49,18 +49,31 @@ async function handleLeadIntake(body: unknown): Promise<NextResponse> {
     return NextResponse.json({ success: false, error: "Missing required fields" }, { status: 400 });
   }
 
-  const businessIds: string[] = [];
+  // Filter valid businesses
+  const validBiz = data.businesses.filter(b => b.name?.trim());
+  if (validBiz.length === 0) {
+    return NextResponse.json({ success: true, count: 0, business_ids: [] });
+  }
 
-  for (const biz of data.businesses) {
-    if (!biz.name) continue;
+  // Batch check for existing leads (instead of N individual queries)
+  const existingLeads = await prisma.lead.findMany({
+    where: {
+      userId: data.userId,
+      location: data.location,
+      name: { in: validBiz.map(b => b.name) },
+    },
+    select: { name: true },
+  });
+  const existingNames = new Set(existingLeads.map(l => l.name));
 
-    const existing = await prisma.lead.findFirst({
-      where: { userId: data.userId, name: biz.name, location: data.location },
-      select: { id: true },
-    });
+  // Filter out duplicates and batch create
+  const toCreate = validBiz.filter(b => !existingNames.has(b.name));
 
-    if (!existing) {
-      const lead = await prisma.lead.create({
+  let businessIds: string[] = [];
+  if (toCreate.length > 0) {
+    // Use transaction for batch creates to get back IDs
+    const created = await prisma.$transaction(
+      toCreate.map(biz => prisma.lead.create({
         data: {
           userId: data.userId,
           name: biz.name,
@@ -75,9 +88,10 @@ async function handleLeadIntake(body: unknown): Promise<NextResponse> {
           googlePlaceId: biz.googlePlaceId ?? null,
           status: "new",
         },
-      });
-      businessIds.push(lead.id);
-    }
+        select: { id: true },
+      }))
+    );
+    businessIds = created.map(c => c.id);
   }
 
   return NextResponse.json({
