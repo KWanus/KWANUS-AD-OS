@@ -43,8 +43,15 @@ export async function POST(
       return NextResponse.json({ ok: false, error: "Instruction is required" }, { status: 400 });
     }
 
+    // Sanitize instruction to prevent prompt injection
+    const safeInstruction = body.instruction
+      .replace(/\x00/g, "")
+      .replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "")
+      .trim()
+      .slice(0, 2000);
+
     const { updatedBlocks, report } = await runWebsiteCopilot({
-      instruction: body.instruction.trim(),
+      instruction: safeInstruction,
       siteName: body.siteName || site.name,
       pageTitle: body.pageTitle || page.title,
       blocks: body.blocks ?? ((page.blocks as unknown as Block[]) ?? []),

@@ -8,6 +8,11 @@ import { config } from "@/lib/config";
 
 const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 
+function sanitize(value: unknown, max = 300): string {
+  if (value === null || value === undefined) return "";
+  return String(value).replace(/\x00/g, "").replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "").trim().slice(0, max);
+}
+
 const GLOBAL_RULE = `You are the world's best local SEO and digital marketing expert inside Himalaya Agency OS.
 Return valid JSON only. No markdown. No commentary outside JSON.
 Before generating any output, analyze what the TOP 1% local marketing agencies charge and deliver for this niche/location.
@@ -65,9 +70,9 @@ export async function POST(req: NextRequest) {
     }
 
     const prompt = `Generate high-converting review request templates for:
-Business Name: ${businessName}
-Niche: ${niche}
-Review Platform: ${platform}
+Business Name: ${sanitize(businessName)}
+Niche: ${sanitize(niche)}
+Review Platform: ${sanitize(platform, 20)}
 Execution Tier: ${executionTier}
 
 ${executionTier === "elite"
@@ -94,15 +99,15 @@ Return this exact JSON structure:
     { "timing": "3_days", "subject": "...", "body": "..." }
   ],
   "qrCodeUrl": null,
-  "notes": "best practices and specific tips for ${niche} businesses requesting reviews on ${platform}"
+  "notes": "best practices and specific tips for ${sanitize(niche)} businesses requesting reviews on ${sanitize(platform, 20)}"
 }`;
 
     const result = await callClaude(GLOBAL_RULE, prompt);
 
     // If auditId provided, store reviewTemplates on the LocalAudit
     if (auditId) {
-      await prisma.localAudit.update({
-        where: { id: auditId },
+      await prisma.localAudit.updateMany({
+        where: { id: auditId, userId: user.id },
         data: { reviewTemplates: result as object },
       });
     }

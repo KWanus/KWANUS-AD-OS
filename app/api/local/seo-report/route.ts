@@ -8,6 +8,11 @@ import { config } from "@/lib/config";
 const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 type ExecutionTier = "core" | "elite";
 
+function sanitize(value: unknown, max = 300): string {
+  if (value === null || value === undefined) return "";
+  return String(value).replace(/\x00/g, "").replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "").trim().slice(0, max);
+}
+
 const GLOBAL_RULE = `You are the world's best local SEO and digital marketing expert inside Himalaya Agency OS.
 Return valid JSON only. No markdown. No commentary outside JSON.
 Before generating any output, analyze what the TOP 1% local marketing agencies charge and deliver for this niche/location.
@@ -74,10 +79,10 @@ export async function POST(req: NextRequest) {
 
     const prompt = `Generate a polished, client-facing local SEO audit report based on this audit data:
 
-Business: ${audit.businessName}
-${audit.businessUrl ? `Website: ${audit.businessUrl}` : ""}
-Niche: ${audit.niche ?? "Local Business"}
-Location: ${audit.location ?? ""}
+Business: ${sanitize(audit.businessName)}
+${audit.businessUrl ? `Website: ${sanitize(audit.businessUrl)}` : ""}
+Niche: ${sanitize(audit.niche ?? "Local Business")}
+Location: ${sanitize(audit.location ?? "")}
 Audit Date: ${today}
 
 Score Summary:
@@ -105,7 +110,7 @@ Create a professional report that:
 
 Return this exact JSON structure:
 {
-  "reportTitle": "Local SEO Audit Report — ${audit.businessName} — ${today}",
+  "reportTitle": "Local SEO Audit Report — ${sanitize(audit.businessName)} — ${today}",
   "executiveSummary": "2-3 paragraph executive summary for the business owner",
   "scoreCard": [
     {
@@ -130,10 +135,11 @@ Return this exact JSON structure:
 
     const result = await callClaude(GLOBAL_RULE, prompt);
 
-    const updated = await prisma.localAudit.update({
-      where: { id: auditId },
+    await prisma.localAudit.updateMany({
+      where: { id: auditId, userId: user.id },
       data: { reportJson: result as object },
     });
+    const updated = audit;
 
     return NextResponse.json({ ok: true, report: result, audit: updated, executionTier });
   } catch (err) {

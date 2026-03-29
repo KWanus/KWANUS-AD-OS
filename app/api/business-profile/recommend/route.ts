@@ -11,6 +11,11 @@ import { config } from "@/lib/config";
 
 const anthropic = new Anthropic({ apiKey: config.anthropicApiKey });
 
+function sanitize(value: unknown, max = 300): string {
+  if (value === null || value === undefined) return "";
+  return String(value).replace(/\x00/g, "").replace(/[\x01-\x08\x0b\x0c\x0e-\x1f\x7f]/g, "").trim().slice(0, max);
+}
+
 type RecommendBody = {
   businessType?: BusinessType;
   niche?: string;
@@ -65,11 +70,11 @@ export async function POST(req: NextRequest) {
     if (config.anthropicApiKey) {
       try {
         const prompt = `You are a world-class business strategist. Based on this business profile:
-- Business Type: ${businessType} - ${archetype.label}
-- Niche: ${niche || "not specified"}
-- Goal: ${goal}
-- Stage: ${stage}
-- Archetype: ${JSON.stringify(archetypeSummary)}
+- Business Type: ${sanitize(businessType)} - ${sanitize(archetype.label)}
+- Niche: ${sanitize(niche || "not specified")}
+- Goal: ${sanitize(goal)}
+- Stage: ${sanitize(stage)}
+- Archetype: ${sanitize(JSON.stringify(archetypeSummary), 1000)}
 
 Generate a personalized recommended system that includes:
 1. A one-sentence strategic summary specific to their exact situation

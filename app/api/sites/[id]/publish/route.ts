@@ -30,10 +30,10 @@ export async function POST(
     const body = await req.json().catch(() => ({})) as { published?: boolean };
     const newStatus = body.published !== undefined ? body.published : !site.published;
 
-    // Update site and all its pages
+    // Update site and all its pages atomically
     await prisma.$transaction([
-      prisma.site.update({
-        where: { id },
+      prisma.site.updateMany({
+        where: { id, userId: user.id },
         data: { published: newStatus },
       }),
       prisma.sitePage.updateMany({

@@ -18,6 +18,7 @@ export async function GET(req: NextRequest) {
     const limit = Math.min(parseInt(req.nextUrl.searchParams.get("limit") ?? "50", 10) || 50, 100);
 
     const where = {
+      userId: user.id,
       ...(source && { source }),
       ...(status && { status }),
     };

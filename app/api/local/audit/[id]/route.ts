@@ -69,19 +69,19 @@ export async function PATCH(
       );
     }
 
-    const audit = await prisma.localAudit.update({
-      where: { id },
+    const result = await prisma.localAudit.updateMany({
+      where: { id, userId: user.id },
       data: {
         ...(status ? { status } : {}),
-        // notes is not a schema field — stored implicitly via auditJson if needed
-        // Only patch fields that exist on the model
       },
     });
 
     // Suppress unused variable warning — notes is intentionally accepted but not yet persisted
     void notes;
 
-    return NextResponse.json({ ok: true, audit });
+    if (result.count === 0) return NextResponse.json({ ok: false, error: "Audit not found" }, { status: 404 });
+
+    return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Local audit PATCH error:", err);
     return NextResponse.json({ ok: false, error: "Failed to update audit" }, { status: 500 });
