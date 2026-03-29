@@ -17,6 +17,7 @@ export async function GET() {
     const clients = await prisma.client.findMany({
       where: { userId: user.id },
       select: { pipelineStage: true, dealValue: true, healthScore: true, healthStatus: true, createdAt: true },
+      take: 5000,
     });
 
     const stages = ["lead", "qualified", "proposal", "active", "won", "churned"];

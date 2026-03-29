@@ -24,6 +24,7 @@ export async function GET(req: NextRequest) {
     const offers = await prisma.affiliateOffer.findMany({
       where,
       orderBy: { createdAt: "desc" },
+      take: 500,
     });
 
     return NextResponse.json({ ok: true, offers });

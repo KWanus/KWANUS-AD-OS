@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ ok: true, id: creative.id });
     } catch (err) {
         console.error("Save creative error:", err);
-        return NextResponse.json({ ok: false, error: String(err) }, { status: 500 });
+        return NextResponse.json({ ok: false, error: "Failed to save creative" }, { status: 500 });
     }
 }
 
@@ -52,6 +52,7 @@ export async function GET(req: NextRequest) {
 
         return NextResponse.json({ ok: true, creatives });
     } catch (err) {
-        return NextResponse.json({ ok: false, error: String(err) }, { status: 500 });
+        console.error("Get creatives error:", err);
+        return NextResponse.json({ ok: false, error: "Failed to save creative" }, { status: 500 });
     }
 }
