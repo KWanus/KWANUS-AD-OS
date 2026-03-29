@@ -67,6 +67,7 @@ model User {
   sites           Site[]
   leads           Lead[]
   automations     Automation[]
+  automationRuns  AutomationRun[]
   businessProfile BusinessProfile?
 
   createdAt DateTime @default(now())
@@ -911,8 +912,52 @@ model Automation {
   runsSuccess Int      @default(0)
   runsFailed  Int      @default(0)
   lastRunAt   DateTime?
+  runs        AutomationRun[]
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
 
   @@index([userId, status])
+}
+
+model AutomationRun {
+  id             String              @id @default(cuid())
+  automationId   String
+  userId         String
+  status         String              @default("running") // running | completed | failed | paused
+  trigger        String              @default("manual")  // manual | scheduled | webhook | tag
+  contactsCount  Int                 @default(0)
+  emailsSent     Int                 @default(0)
+  errorCount     Int                 @default(0)
+  stoppedAtNode  String?
+  resumeAfter    DateTime?           // For delay nodes: when to resume
+  metadata       Json?
+  startedAt      DateTime            @default(now())
+  completedAt    DateTime?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  automation     Automation          @relation(fields: [automationId], references: [id], onDelete: Cascade)
+  user           User                @relation(fields: [userId], references: [id])
+  steps          AutomationRunStep[]
+
+  @@index([automationId])
+  @@index([userId])
+  @@index([status])
+  @@index([resumeAfter, status])
+}
+
+model AutomationRunStep {
+  id        String   @id @default(cuid())
+  runId     String
+  nodeId    String
+  nodeType  String
+  status    String   @default("pending") // pending | running | completed | failed | skipped
+  output    Json?
+  error     String?
+  startedAt DateTime?
+  endedAt   DateTime?
+  createdAt DateTime @default(now())
+  run       AutomationRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  @@index([runId])
+  @@index([runId, nodeId])
 }
