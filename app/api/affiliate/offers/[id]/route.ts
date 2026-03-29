@@ -76,7 +76,7 @@ export async function PATCH(
     }
 
     const offer = await prisma.affiliateOffer.update({
-      where: { id },
+      where: { id, userId: user.id },
       data,
     });
 
@@ -107,7 +107,7 @@ export async function DELETE(
     if (!existing) return NextResponse.json({ ok: false, error: "Offer not found" }, { status: 404 });
 
     const offer = await prisma.affiliateOffer.update({
-      where: { id },
+      where: { id, userId: user.id },
       data: { status: "dropped" },
     });
 

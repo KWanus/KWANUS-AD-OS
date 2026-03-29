@@ -39,6 +39,8 @@ export async function GET() {
       emailFlowCount,
       analysisCount,
       businessProfile,
+      highScoreLeads,
+      staleBroadcasts,
     ] = await Promise.all([
       prisma.client.findMany({
         where: { userId: user.id, healthStatus: "red" },
@@ -81,6 +83,20 @@ export async function GET() {
       prisma.businessProfile.findUnique({
         where: { userId: user.id },
         select: { businessType: true, setupCompleted: true },
+      }),
+      // High-scoring leads that were analyzed but not yet pursued
+      prisma.lead.findMany({
+        where: { userId: user.id, status: "analyzed", score: { gte: 70 } },
+        select: { id: true, name: true, score: true, niche: true },
+        orderBy: { score: "desc" },
+        take: 3,
+      }),
+      // Draft broadcasts that were started but never sent
+      prisma.emailBroadcast.findMany({
+        where: { userId: user.id, status: "draft" },
+        select: { id: true, name: true },
+        orderBy: { updatedAt: "desc" },
+        take: 2,
       }),
     ]);
 
@@ -177,6 +193,32 @@ export async function GET() {
         description: "This site is built but not live yet.",
         href: `/websites/${s.id}`,
         cta: "Open Editor",
+      });
+    }
+
+    // High-scoring leads ready for outreach
+    for (const l of highScoreLeads) {
+      actions.push({
+        id: `lead-high-score-${l.id}`,
+        priority: "high",
+        category: "scan",
+        title: `${l.name} scored ${l.score}/100 — start outreach`,
+        description: `This ${l.niche ?? "business"} has a high opportunity score. Generate content or create a campaign.`,
+        href: `/leads/${l.id}`,
+        cta: "View Lead",
+      });
+    }
+
+    // Stale draft broadcasts
+    for (const b of staleBroadcasts) {
+      actions.push({
+        id: `broadcast-draft-${b.id}`,
+        priority: "low",
+        category: "email",
+        title: `Send "${b.name}" broadcast`,
+        description: "This email broadcast is drafted but hasn't been sent yet.",
+        href: `/emails/broadcasts/${b.id}`,
+        cta: "Review & Send",
       });
     }
 

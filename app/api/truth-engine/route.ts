@@ -32,10 +32,34 @@ export async function POST(req: NextRequest) {
       profile?: string;
     };
 
+    // Validate profile
+    const profileKey = body.profile ?? "balanced";
+    if (!(profileKey in SCORING_PROFILES)) {
+      const valid = Object.keys(SCORING_PROFILES).join(", ");
+      return NextResponse.json({ ok: false, error: `Invalid profile. Must be one of: ${valid}` }, { status: 400 });
+    }
+
     let dimensions: DimensionScores;
 
     if (body.dimensions) {
-      // Direct dimensions provided
+      // Validate dimension bounds (0-100)
+      const DIMENSION_KEYS: (keyof DimensionScores)[] = [
+        "demandPotential", "offerStrength", "emotionalLeverage", "trustCredibility",
+        "conversionReadiness", "adViability", "emailLifecyclePotential", "seoPotential",
+        "differentiation", "risk",
+      ];
+      for (const key of DIMENSION_KEYS) {
+        const val = body.dimensions[key];
+        if (val !== undefined && val !== null) {
+          const num = Number(val);
+          if (isNaN(num) || num < 0 || num > 100) {
+            return NextResponse.json({ ok: false, error: `${key} must be 0-100` }, { status: 400 });
+          }
+          body.dimensions[key] = Math.round(num);
+        } else {
+          body.dimensions[key] = 0;
+        }
+      }
       dimensions = body.dimensions;
     } else if (body.analysisId) {
       // Load from saved analysis
@@ -69,7 +93,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "Provide analysisId or dimensions" }, { status: 400 });
     }
 
-    const result = runTruthEngine(dimensions, body.profile ?? "balanced");
+    const result = runTruthEngine(dimensions, profileKey);
 
     return NextResponse.json({ ok: true, result });
   } catch (err) {
