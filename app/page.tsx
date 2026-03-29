@@ -550,6 +550,37 @@ export default function Dashboard() {
         </section>
 
         <section className="mb-8">
+        {/* Getting Started Checklist — only for new users */}
+        {!loading && totalCampaigns + totalSites + totalClients + totalEmailFlows === 0 && (
+          <section className="mb-8">
+            <SectionLabel>Getting Started</SectionLabel>
+            <div className="rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.06] to-purple-600/[0.03] p-5">
+              <p className="text-sm text-white/50 mb-4">Complete these steps to set up your marketing OS:</p>
+              <div className="space-y-2">
+                {[
+                  { done: !!businessProfile, label: "Set up your business profile", href: "/setup", cta: "Set up" },
+                  { done: recentAnalyses.length > 0, label: "Run your first URL scan", href: "/scan", cta: "Scan now" },
+                  { done: totalCampaigns > 0, label: "Create your first campaign", href: "/campaigns", cta: "Create" },
+                  { done: totalSites > 0, label: "Build your first website", href: "/websites/new", cta: "Build" },
+                  { done: totalClients > 0, label: "Add your first CRM client", href: "/clients/new", cta: "Add" },
+                ].map((step, i) => (
+                  <div key={i} className="flex items-center gap-3 p-3 rounded-xl bg-black/20 border border-white/[0.06]">
+                    <div className={`w-5 h-5 rounded-full flex items-center justify-center shrink-0 ${step.done ? "bg-emerald-500" : "border-2 border-white/20"}`}>
+                      {step.done && <CheckCircle2 className="w-3 h-3 text-white" />}
+                    </div>
+                    <span className={`flex-1 text-xs font-semibold ${step.done ? "text-white/40 line-through" : "text-white/70"}`}>{step.label}</span>
+                    {!step.done && (
+                      <Link href={step.href} className="px-3 py-1 rounded-lg bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 text-[10px] font-bold hover:bg-cyan-500/30 transition">
+                        {step.cta}
+                      </Link>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+
           <SectionLabel>Continue Building</SectionLabel>
           <div className="grid gap-4 lg:grid-cols-3">
             {continueCards.map((card) => (
