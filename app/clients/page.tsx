@@ -132,10 +132,35 @@ function HealthBadge({ score, status }: { score: number; status: string }) {
 // Client Row
 // ---------------------------------------------------------------------------
 
-function ClientRow({ client, onDelete, selected, onToggle }: { client: Client; onDelete: (id: string) => void; selected?: boolean; onToggle?: () => void }) {
+function ClientRow({ client, onDelete, onUpdate, selected, onToggle }: { client: Client; onDelete: (id: string) => void; onUpdate?: (id: string, data: Partial<Client>) => void; selected?: boolean; onToggle?: () => void }) {
   const [deleting, setDeleting] = useState(false);
   const [confirmDelete, setConfirmDelete] = useState(false);
+  const [changingStage, setChangingStage] = useState(false);
   const stage = STAGES[client.pipelineStage] ?? STAGES.lead;
+
+  async function handleStageChange(e: React.ChangeEvent<HTMLSelectElement>) {
+    e.preventDefault();
+    e.stopPropagation();
+    const newStage = e.target.value;
+    if (newStage === client.pipelineStage) return;
+    setChangingStage(true);
+    try {
+      const res = await fetch(`/api/clients/${client.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ pipelineStage: newStage }),
+      });
+      const data = await res.json() as { ok: boolean; client?: Client };
+      if (data.ok && data.client && onUpdate) {
+        onUpdate(client.id, { pipelineStage: newStage, healthScore: data.client.healthScore, healthStatus: data.client.healthStatus });
+        toast.success(`Moved to ${newStage}`);
+      }
+    } catch {
+      toast.error("Failed to change stage");
+    } finally {
+      setChangingStage(false);
+    }
+  }
 
   async function handleDelete(e: React.MouseEvent) {
     e.preventDefault();
@@ -192,10 +217,18 @@ function ClientRow({ client, onDelete, selected, onToggle }: { client: Client; o
         </div>
       </div>
 
-      {/* Stage */}
-      <span className={`hidden sm:inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold border shrink-0 ${stage.border} ${stage.bg} ${stage.color}`}>
-        {stage.label}
-      </span>
+      {/* Stage — click to change */}
+      <select
+        value={client.pipelineStage}
+        onChange={handleStageChange}
+        onClick={e => { e.preventDefault(); e.stopPropagation(); }}
+        disabled={changingStage}
+        className={`hidden sm:inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold border shrink-0 cursor-pointer outline-none appearance-none bg-transparent ${stage.border} ${stage.bg} ${stage.color} ${changingStage ? "opacity-50" : ""}`}
+      >
+        {Object.entries(STAGES).map(([key, { label }]) => (
+          <option key={key} value={key} className="bg-[#0d1525] text-white">{label}</option>
+        ))}
+      </select>
 
       {/* Deal value */}
       <div className="hidden lg:block w-24 text-right shrink-0">
@@ -763,6 +796,7 @@ export default function ClientsPage() {
               selected={selectedIds.has(client.id)}
               onToggle={() => toggleSelect(client.id)}
               onDelete={(id) => setClients((prev) => prev.filter((c) => c.id !== id))}
+              onUpdate={(id, data) => setClients((prev) => prev.map(c => c.id === id ? { ...c, ...data } as Client : c))}
             />
           ))
         )}

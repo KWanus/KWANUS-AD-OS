@@ -133,3 +133,43 @@ export const COPILOT_SUGGESTIONS = [
   "How do I track my ad conversions?",
   "Help me build a landing page",
 ];
+
+// Context-aware suggestions based on current page
+export const PAGE_SUGGESTIONS: Record<string, string[]> = {
+  "/clients": [
+    "Which clients need follow-up?",
+    "How do I improve my pipeline conversion?",
+    "Draft a follow-up email for at-risk clients",
+    "How do I use the health scoring system?",
+  ],
+  "/scan": [
+    "What makes a good scan score?",
+    "How do I use the Truth Engine?",
+    "Scan this competitor and tell me what to build",
+    "What should I do with a Pursue verdict?",
+  ],
+  "/campaigns": [
+    "How do I create a winning ad campaign?",
+    "What's the best campaign workflow?",
+    "Help me write better ad hooks",
+    "How do I A/B test my variations?",
+  ],
+  "/emails": [
+    "What email sequence should I build first?",
+    "How do I improve my open rates?",
+    "Help me write a welcome sequence",
+    "When should I use flows vs broadcasts?",
+  ],
+  "/websites": [
+    "How do I optimize my site for conversions?",
+    "What blocks should every landing page have?",
+    "Help me improve my site's SEO",
+    "How do I add a checkout to my funnel?",
+  ],
+  "/analyses": [
+    "Compare my top two scans",
+    "Which of my scans should I pursue?",
+    "How do I use scan data to build a campaign?",
+    "What do the dimension scores mean?",
+  ],
+};
