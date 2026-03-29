@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { config } from "@/lib/config";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { normalizeInput } from "@/src/logic/ad-os/normalizeInput";
@@ -12,7 +13,7 @@ import {
 } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
+  apiKey: config.anthropicApiKey,
 });
 
 export type SiteScanMode = "clone" | "improve";
@@ -388,7 +389,7 @@ async function generateWebsiteJson(input: {
   bodyText: string;
   notes?: string;
 }) {
-  if (!process.env.ANTHROPIC_API_KEY) {
+  if (!config.anthropicApiKey) {
     return null;
   }
 
@@ -452,7 +453,7 @@ ${input.bodyText.slice(0, 2500)}`;
 }
 
 async function triggerN8nSiteScan(payload: Record<string, unknown>) {
-  const webhookUrl = process.env.N8N_SITE_SCAN_WEBHOOK_URL;
+  const webhookUrl = config.n8nSiteScanWebhookUrl;
   if (!webhookUrl) return;
 
   try {

@@ -33,6 +33,7 @@ export const config = {
   serpApiKey:            readEnv("SERPAPI_KEY"),
   webhookSecret:         readEnv("WEBHOOK_SECRET"),
   appUrl:                readEnv("NEXT_PUBLIC_APP_URL"),
+  n8nSiteScanWebhookUrl: readEnv("N8N_SITE_SCAN_WEBHOOK_URL"),
 } as const;
 
 // ─── Feature-gate helpers ─────────────────────────────────────────────────

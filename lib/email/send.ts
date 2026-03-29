@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { config } from "@/lib/config";
 
 interface SendEmailOptions {
   to: string | string[];
@@ -61,7 +62,7 @@ function wrapHtml(body: string, fromName?: string): string {
 }
 
 export async function sendEmail(opts: SendEmailOptions): Promise<{ ok: boolean; id?: string; error?: string }> {
-  const key = opts.apiKey ?? process.env.RESEND_API_KEY;
+  const key = opts.apiKey ?? config.resendApiKey;
 
   if (!key || key === "re_REPLACE_ME") {
     console.warn("[sendEmail] No Resend API key configured — email not sent");

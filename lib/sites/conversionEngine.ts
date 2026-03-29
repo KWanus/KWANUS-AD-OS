@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { config } from "@/lib/config";
 import { Prisma } from "@prisma/client";
 import { prisma } from "@/lib/prisma";
 import { normalizeInput } from "@/src/logic/ad-os/normalizeInput";
@@ -7,7 +8,7 @@ import { extractSignals } from "@/src/logic/ad-os/extractSignals";
 import type { Block } from "@/components/site-builder/BlockRenderer";
 
 const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
+  apiKey: config.anthropicApiKey,
 });
 
 export type GenerationEntryMode = "scan_improve" | "from_scratch";
@@ -722,7 +723,7 @@ function fallbackSection(section: TemplateSection, context: SectionContext): Sit
 }
 
 async function generateHero(context: SectionContext) {
-  if (!process.env.ANTHROPIC_API_KEY) return fallbackHero(context);
+  if (!config.anthropicApiKey) return fallbackHero(context);
 
   const prompt = `You are writing only the hero section for a conversion-first website.
 Business: ${context.input.businessName}
@@ -767,7 +768,7 @@ Return:
 }
 
 async function generateSection(section: TemplateSection, context: SectionContext): Promise<SiteBlueprintSection> {
-  if (!process.env.ANTHROPIC_API_KEY) return fallbackSection(section, context);
+  if (!config.anthropicApiKey) return fallbackSection(section, context);
 
   const sectionRules: Record<SectionType, string> = {
     problem: "Name the pain clearly, make it feel real, and connect it to the cost of not acting.",

@@ -1,4 +1,5 @@
 import Anthropic from "@anthropic-ai/sdk";
+import { config } from "@/lib/config";
 import type { Block, BlockType } from "@/components/site-builder/BlockRenderer";
 import {
   addCta,
@@ -18,7 +19,7 @@ import {
 } from "@/lib/sites/conversionEngine";
 
 const anthropic = new Anthropic({
-  apiKey: process.env.ANTHROPIC_API_KEY,
+  apiKey: config.anthropicApiKey,
 });
 
 type ExecutionTier = "core" | "elite";
@@ -190,7 +191,7 @@ async function aiRewriteTarget(input: {
   selectedBlock?: Block | null;
   executionTier: ExecutionTier;
 }) {
-  if (!process.env.ANTHROPIC_API_KEY) return null;
+  if (!config.anthropicApiKey) return null;
 
   const siteInput = inferSiteInputFromPageContext({
     siteName: input.siteName,
@@ -339,7 +340,7 @@ function applyTargetRewrite(
 }
 
 async function aiImproveHero(siteName: string, pageTitle: string, blocks: Block[]) {
-  if (!process.env.ANTHROPIC_API_KEY) return null;
+  if (!config.anthropicApiKey) return null;
 
   const hero = blocks.find((block) => block.type === "hero");
   const existingHeadline = (hero?.props.headline as string) ?? "";

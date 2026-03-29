@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { computeHealthScore } from "@/lib/clients/healthScore";
+import { config } from "@/lib/config";
 
 /**
  * POST /api/cron/health-recalc
@@ -17,7 +18,7 @@ function isPlaceholder(val: string) {
 }
 
 function verifyCronSecret(req: NextRequest): boolean {
-  const secret = process.env.CRON_SECRET;
+  const secret = config.cronSecret;
   // Fail closed: if secret is not configured or is a placeholder, deny all access
   if (!secret || isPlaceholder(secret)) return false;
 
