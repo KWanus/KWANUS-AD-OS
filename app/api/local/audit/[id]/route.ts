@@ -70,7 +70,7 @@ export async function PATCH(
     }
 
     const audit = await prisma.localAudit.update({
-      where: { id },
+      where: { id, userId: user.id },
       data: {
         ...(status ? { status } : {}),
         // notes is not a schema field — stored implicitly via auditJson if needed
@@ -85,5 +85,31 @@ export async function PATCH(
   } catch (err) {
     console.error("Local audit PATCH error:", err);
     return NextResponse.json({ ok: false, error: "Failed to update audit" }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { userId: clerkId } = await auth();
+    if (!clerkId)
+      return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } });
+    if (!user)
+      return NextResponse.json({ ok: false, error: "User not found" }, { status: 404 });
+
+    const { id } = await params;
+
+    const deleted = await prisma.localAudit.deleteMany({ where: { id, userId: user.id } });
+    if (deleted.count === 0)
+      return NextResponse.json({ ok: false, error: "Audit not found" }, { status: 404 });
+
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("Local audit DELETE error:", err);
+    return NextResponse.json({ ok: false, error: "Failed to delete audit" }, { status: 500 });
   }
 }

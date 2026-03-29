@@ -4,7 +4,7 @@ import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 
 type SearchResult = {
-  type: "client" | "campaign" | "site" | "analysis" | "lead" | "email_flow" | "affiliate" | "proposal";
+  type: "client" | "campaign" | "site" | "analysis" | "lead" | "email_flow" | "affiliate" | "proposal" | "dropship_product" | "email_contact";
   id: string;
   title: string;
   subtitle: string;
@@ -31,7 +31,7 @@ export async function GET(req: NextRequest) {
     const contains = { contains: q, mode: "insensitive" as const };
 
     // Search all entity types in parallel
-    const [clients, campaigns, sites, analyses, leads, flows, offers, proposals] = await Promise.all([
+    const [clients, campaigns, sites, analyses, leads, flows, offers, proposals, dropshipProducts, contacts] = await Promise.all([
       prisma.client.findMany({
         where: { userId: user.id, OR: [{ name: contains }, { email: contains }, { company: contains }] },
         select: { id: true, name: true, company: true, pipelineStage: true, healthScore: true },
@@ -70,6 +70,16 @@ export async function GET(req: NextRequest) {
       prisma.proposal.findMany({
         where: { userId: user.id, title: contains },
         select: { id: true, title: true, status: true, totalValue: true },
+        take: 5,
+      }),
+      prisma.dropshipProduct.findMany({
+        where: { userId: user.id, OR: [{ name: contains }, { niche: contains }] },
+        select: { id: true, name: true, niche: true, status: true, winnerScore: true },
+        take: 5,
+      }),
+      prisma.emailContact.findMany({
+        where: { userId: user.id, OR: [{ email: contains }, { firstName: contains }, { lastName: contains }] },
+        select: { id: true, email: true, firstName: true, lastName: true, status: true },
         take: 5,
       }),
     ]);
@@ -147,6 +157,25 @@ export async function GET(req: NextRequest) {
         title: p.title,
         subtitle: [p.status, p.totalValue ? `$${p.totalValue}` : null].filter(Boolean).join(" · "),
         href: `/consult/proposals/${p.id}`,
+      });
+    }
+
+    for (const d of dropshipProducts) {
+      results.push({
+        type: "dropship_product", id: d.id,
+        title: d.name,
+        subtitle: [d.niche, d.status, d.winnerScore ? `score:${d.winnerScore}` : null].filter(Boolean).join(" · "),
+        href: `/dropship/products/${d.id}`,
+        score: d.winnerScore ?? undefined,
+      });
+    }
+
+    for (const c of contacts) {
+      results.push({
+        type: "email_contact", id: c.id,
+        title: [c.firstName, c.lastName].filter(Boolean).join(" ") || c.email,
+        subtitle: `${c.email} · ${c.status}`,
+        href: `/emails/contacts`,
       });
     }
 

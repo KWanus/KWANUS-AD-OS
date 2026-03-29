@@ -60,7 +60,7 @@ export async function PATCH(
     }
 
     const updated = await prisma.agencyAudit.update({
-      where: { id },
+      where: { id, userId: user.id },
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       data: updateData as any,
     });
@@ -69,5 +69,28 @@ export async function PATCH(
   } catch (err) {
     console.error("AgencyAudit PATCH error:", err);
     return NextResponse.json({ ok: false, error: "Failed to update audit" }, { status: 500 });
+  }
+}
+
+export async function DELETE(
+  _req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const { userId: clerkId } = await auth();
+    if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+
+    const user = await prisma.user.findUnique({ where: { clerkId }, select: { id: true } });
+    if (!user) return NextResponse.json({ ok: false, error: "User not found" }, { status: 404 });
+
+    const { id } = await params;
+
+    const deleted = await prisma.agencyAudit.deleteMany({ where: { id, userId: user.id } });
+    if (deleted.count === 0) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
+
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("AgencyAudit DELETE error:", err);
+    return NextResponse.json({ ok: false, error: "Failed to delete audit" }, { status: 500 });
   }
 }

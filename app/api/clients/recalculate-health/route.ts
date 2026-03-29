@@ -29,7 +29,8 @@ export async function POST() {
       },
     });
 
-    let updated = 0;
+    // Compute new scores and batch-update changed ones
+    const updates: { id: string; score: number; status: string }[] = [];
     for (const client of clients) {
       const { score, status } = computeHealthScore({
         lastContactAt: client.lastContactAt,
@@ -37,15 +38,22 @@ export async function POST() {
         dealValue: client.dealValue,
         createdAt: client.createdAt,
       });
-
-      // Only update if score or status changed
       if (score !== client.healthScore || status !== client.healthStatus) {
-        await prisma.client.update({
-          where: { id: client.id },
-          data: { healthScore: score, healthStatus: status },
-        });
-        updated++;
+        updates.push({ id: client.id, score, status });
       }
+    }
+
+    // Batch updates in transaction (50 per batch to avoid timeouts)
+    let updated = 0;
+    for (let i = 0; i < updates.length; i += 50) {
+      const batch = updates.slice(i, i + 50);
+      await prisma.$transaction(
+        batch.map(u => prisma.client.update({
+          where: { id: u.id },
+          data: { healthScore: u.score, healthStatus: u.status },
+        }))
+      );
+      updated += batch.length;
     }
 
     return NextResponse.json({

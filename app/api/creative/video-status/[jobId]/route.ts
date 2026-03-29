@@ -47,6 +47,7 @@ export async function GET(
       progress: data.progress ?? 0,
     });
   } catch (err) {
-    return NextResponse.json({ ok: false, error: String(err) }, { status: 500 });
+    console.error("Video status error:", err);
+    return NextResponse.json({ ok: false, error: "Failed to check video status" }, { status: 500 });
   }
 }

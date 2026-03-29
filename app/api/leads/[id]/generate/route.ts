@@ -301,6 +301,6 @@ Input:
   } catch (err) {
     console.error("Lead generate error:", err);
     await prisma.lead.update({ where: { id }, data: { status: "analyzed" } }).catch(() => null);
-    return NextResponse.json({ ok: false, error: String(err) }, { status: 500 });
+    return NextResponse.json({ ok: false, error: "Generation failed" }, { status: 500 });
   }
 }
