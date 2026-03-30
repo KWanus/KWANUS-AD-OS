@@ -110,7 +110,7 @@ ${raw}`;
   for (let attempt = 0; attempt < 3; attempt += 1) {
     try {
       const response = await clients.anthropic.messages.create({
-        model: "claude-sonnet-4-6",
+        model: "claude-sonnet-4-6-20250514",
         max_tokens: 1200,
         messages: [{ role: "user", content: repairPrompt }],
       });
@@ -127,7 +127,7 @@ ${raw}`;
 async function callSkill(clients, prompt) {
   if (clients.anthropic) {
     const response = await clients.anthropic.messages.create({
-      model: "claude-sonnet-4-6",
+      model: "claude-sonnet-4-6-20250514",
       max_tokens: 1200,
       system: GLOBAL_RULE,
       messages: [{ role: "user", content: prompt }],

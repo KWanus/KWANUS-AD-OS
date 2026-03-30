@@ -135,7 +135,6 @@ export async function GET(_req: NextRequest) {
       clientCount,
       atRiskClientCount,
       analysisCount,
-      businessProfile,
     ] = await Promise.all([
       prisma.campaign.count({ where: { userId: user.id } }),
       prisma.adVariation.count({ where: { campaign: { userId: user.id } } }),
@@ -149,7 +148,11 @@ export async function GET(_req: NextRequest) {
       prisma.client.count({ where: { userId: user.id } }),
       prisma.client.count({ where: { userId: user.id, healthStatus: "red" } }),
       prisma.analysisRun.count({ where: { userId: user.id } }),
-      prisma.businessProfile.findUnique({
+    ]);
+
+    let businessProfile: any = null;
+    try {
+      businessProfile = await prisma.businessProfile.findUnique({
         where: { userId: user.id },
         select: {
           businessType: true,
@@ -161,11 +164,13 @@ export async function GET(_req: NextRequest) {
           recommendedAt: true,
           recommendedSystems: true,
         },
-      }),
-    ]);
+      });
+    } catch (e) {
+      console.error("Non-fatal: Could not fetch business profile for stats:", e);
+    }
 
     const activeSystems = Array.isArray(businessProfile?.activeSystems)
-      ? businessProfile.activeSystems.filter((item): item is string => typeof item === "string")
+      ? businessProfile.activeSystems.filter((item: any): item is string => typeof item === "string")
       : [];
     const liveSystems = detectLiveSystems({
       campaigns: campaignCount,

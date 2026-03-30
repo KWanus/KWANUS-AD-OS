@@ -20,7 +20,6 @@ import {
   ArrowUpDown,
   Trash2,
 } from "lucide-react";
-import AppNav from "@/components/AppNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 
 type BusinessProfileSummary = {
@@ -489,8 +488,6 @@ export default function ClientsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
-      <AppNav />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
       {businessProfile && (
         <>
@@ -828,6 +825,5 @@ export default function ClientsPage() {
         </div>
       )}
     </main>
-    </div>
   );
 }

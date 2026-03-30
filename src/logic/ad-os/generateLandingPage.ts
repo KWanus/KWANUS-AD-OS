@@ -12,6 +12,7 @@ export type LandingPageStructure = {
   faqItems: { question: string; answer: string }[];
   ctaCopy: string;
   urgencyLine: string;
+  sections: { type: string; data: any }[];
 };
 
 function clean(text: string): string {
@@ -227,5 +228,14 @@ export function generateLandingPage(
     faqItems,
     ctaCopy,
     urgencyLine,
+    sections: [
+      { type: "hero", data: { headline, subheadline } },
+      { type: "trust-bar", data: { items: trustBar } },
+      { type: "benefits", data: { items: benefitBullets } },
+      { type: "social-proof", data: { guidance: socialProofGuidance } },
+      { type: "guarantee", data: { text: guaranteeText } },
+      { type: "faq", data: { items: faqItems } },
+      { type: "cta", data: { copy: ctaCopy, urgency: urgencyLine } },
+    ],
   };
 }

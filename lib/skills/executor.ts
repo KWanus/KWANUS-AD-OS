@@ -72,12 +72,23 @@ Provide:
 Format clearly with numbered lists for each section.`;
 
     case "landing-page":
-      return `You are a conversion copywriter. Write complete copy for an 8-block landing page.
+      return `You are a world-class conversion strategist and copywriter. Write complete, high-converting copy for an 8-block landing page.
 
 OFFER: ${input.offer}
 AUDIENCE: ${input.audience}
 BRAND: ${input.business_name}
 TONE: ${input.tone ?? "Professional & clean"}
+EXECUTION TIER: ${input.executionTier ?? "core"}
+
+${input.executionTier === "elite"
+          ? `ELITE DIRECTIVES:
+- Move from "description" to "transformation".
+- Use harder objection handling in the copy itself.
+- Create a sense of "Authority-First" expertise.
+- Use specific, punchy headers that name the pain or the outcome uniquely.
+- Testimonials should sound like high-value case studies.`
+          : "CORE DIRECTIVES: Keep it clean, structured, and focused on clarity and core benefits."
+        }
 
 Return a JSON object with this exact structure:
 {
@@ -225,8 +236,8 @@ Script structure with timestamps:
 }
 
 function buildSkillSystemPrompt(skillName: string, businessContext: string, executionTier: "core" | "elite"): string {
-  return `You are the elite execution engine for Himalaya Marketing OS.
-You are generating output for the "${skillName}" skill.
+  return `You are the elite execution engine for Himalaya Marketing OS. 
+You are generating output for the "${skillName}" skill at the ${executionTier.toUpperCase()} level.
 
 CORE DIRECTIVE:
 - Use the user's saved business profile as grounding context whenever it is relevant.
@@ -234,10 +245,19 @@ CORE DIRECTIVE:
 - Prefer sharp, specific, conversion-focused outputs over generic best practices.
 - When inputs are incomplete, infer intelligently from the business context instead of staying vague.
 - Return in the exact format requested by the skill prompt.
-- Execution tier: ${executionTier}
-- ${executionTier === "elite"
-    ? "Elite means top-operator output: tighter specificity, better proof logic, stronger angles, and higher-conviction execution."
-    : "Core means strong launch-ready output: clear, structured, useful, and conversion-focused without overextending."}
+
+${executionTier === "elite"
+      ? `ELITE EXECUTION MODE:
+- IDENTITY: You are an elite direct-response consultant or high-ticket operator.
+- TONE: Authoritative, high-conviction, and results-obsessed.
+- SPECIFICITY: Avoid generic "best practices" language. Use niche-specific jargon, real-world proof logic, and aggressive objection handling.
+- DEPTH: Provide deeper insight and more nuanced angles than a standard AI output.`
+      : `CORE EXECUTION MODE:
+- IDENTITY: You are a professional marketing assistant.
+- TONE: Clear, helpful, and structure-focused.
+- SPECIFICITY: Practical, proven best practices.
+- DEPTH: Clean, usable drafts that are launch-ready without being overly complex.`
+    }
 
 ${businessContext}`;
 }
@@ -388,7 +408,7 @@ export async function runSkill(
     const system = buildSkillSystemPrompt(skill.name, businessContext, executionTier);
 
     const message = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
+      model: "claude-sonnet-4-6-20250514",
       max_tokens: 2048,
       system,
       messages: [{ role: "user", content: prompt }],

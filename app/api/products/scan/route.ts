@@ -87,7 +87,7 @@ export async function POST(req: NextRequest) {
     const pageText = page ? `Title: ${page.title}\nDescription: ${page.metaDescription}\nBody: ${page.bodyText?.slice(0, 2000)}` : `URL: ${url}`;
 
     const response = await anthropic.messages.create({
-      model: "claude-sonnet-4-6",
+      model: "claude-sonnet-4-6-20250514",
       max_tokens: 1024,
       messages: [{
         role: "user",

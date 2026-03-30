@@ -1,6 +1,3 @@
-// Prisma Schema
-// KWANUS AD OS - Production Infrastructure
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,109 +7,95 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid())
-  clerkId   String   @unique
-  email     String   @unique
-  name      String?
-  credits   Int      @default(10) // Welcome credits
-
-  // Subscription
-  plan             String  @default("free") // free | pro | elite
-  planExpiresAt    DateTime?
-  stripeCustomerId String?
-
-  // Workspace settings
-  workspaceName    String?
-  resendApiKey     String? // stored encrypted in prod; plaintext in dev
-  sendingFromName  String?
-  sendingFromEmail String?
-  sendingDomain    String?
-
-  // Ad & Analytics Pixels
-  metaPixelId       String?  // Facebook/Meta Pixel ID
-  googleAnalyticsId String?  // GA4 Measurement ID (G-XXXXXXXX)
-  tiktokPixelId     String?  // TikTok Pixel ID
-  googleAdsId       String?  // Google Ads conversion ID (AW-XXXXXXXXX)
-
-  // Automation & Webhooks
-  webhookUrl        String?  // N8N / Zapier / custom webhook endpoint
-  businessUrl       String?  // Their primary business URL
-  businessType      String?  // consultant | ecommerce | service | affiliate | dropship
-  onboardingCompleted Boolean @default(false)
-
-  // Affiliate Account IDs
-  clickbankNickname    String?
+  id                   String            @id @default(cuid())
+  clerkId              String            @unique
+  email                String            @unique
+  name                 String?
+  credits              Int               @default(10)
+  createdAt            DateTime          @default(now())
+  updatedAt            DateTime          @updatedAt
+  plan                 String            @default("free")
+  planExpiresAt        DateTime?
+  resendApiKey         String?
+  sendingDomain        String?
+  sendingFromEmail     String?
+  sendingFromName      String?
+  stripeCustomerId     String?
+  workspaceName        String?
+  businessType         String?
+  businessUrl          String?
+  googleAdsId          String?
+  googleAnalyticsId    String?
+  metaPixelId          String?
+  onboardingCompleted  Boolean           @default(false)
+  tiktokPixelId        String?
+  webhookUrl           String?
   amazonTrackingId     String?
+  clickbankNickname    String?
   jvzooAffiliateId     String?
-  warriorplusId        String?
   sharesaleAffiliateId String?
-
-  products             Product[]
-  consultPackages      ConsultPackage[]
-  proposals            Proposal[]
-  servicePackages      ServicePackage[]
-  localAudits          LocalAudit[]
+  warriorplusId        String?
   affiliateOffers      AffiliateOffer[]
-  dropshipProducts     DropshipProduct[]
   agencyAudits         AgencyAudit[]
-
-  campaigns    Campaign[]
-  creatives    CreativeWork[]
-  reports      ReportIntake[]
-  emailFlows      EmailFlow[]
-  emailContacts   EmailContact[]
-  emailBroadcasts EmailBroadcast[]
-  clients         Client[]
-  optInForms      OptInForm[]
-  sites           Site[]
-  leads           Lead[]
-  automations     Automation[]
-  automationRuns  AutomationRun[]
-  businessProfile BusinessProfile?
-
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  automations          Automation[]
+  automationRuns       AutomationRun[]
+  businessProfile      BusinessProfile?
+  campaigns            Campaign[]
+  clients              Client[]
+  consultPackages      ConsultPackage[]
+  creatives            CreativeWork[]
+  dropshipProducts     DropshipProduct[]
+  emailBroadcasts      EmailBroadcast[]
+  emailContacts        EmailContact[]
+  emailFlows           EmailFlow[]
+  leads                Lead[]
+  localAudits          LocalAudit[]
+  optInForms           OptInForm[]
+  products             Product[]
+  proposals            Proposal[]
+  reports              ReportIntake[]
+  servicePackages      ServicePackage[]
+  sites                Site[]
 }
 
 model OptInForm {
   id          String   @id @default(cuid())
   userId      String
-  user        User     @relation(fields: [userId], references: [id])
   name        String
   headline    String?
   subheadline String?
   buttonText  String   @default("Subscribe")
-  tags        String[] @default([])  // auto-tag contacts who submit
+  tags        String[] @default([])
   redirectUrl String?
   active      Boolean  @default(true)
-  // Stats
   views       Int      @default(0)
   submissions Int      @default(0)
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id])
 }
 
 model AnalysisRun {
-  id                    String                  @id @default(cuid())
-  userId                String?
-  mode                  String
-  inputUrl              String
-  linkType              String?
-  title                 String?
-  score                 Int?
-  verdict               String?
-  confidence            String?
-  summary               String?
-  rawSignals            Json?
-  decisionPacket        Json?
-  createdAt             DateTime                @default(now())
-  opportunityAssessments OpportunityAssessment[]
+  id                     String                  @id @default(cuid())
+  userId                 String?
+  mode                   String
+  inputUrl               String
+  linkType               String?
+  title                  String?
+  score                  Int?
+  verdict                String?
+  confidence             String?
+  summary                String?
+  rawSignals             Json?
+  decisionPacket         Json?
+  createdAt              DateTime                @default(now())
   assetPackages          AssetPackage[]
   campaigns              Campaign[]
+  opportunityAssessments OpportunityAssessment[]
 }
 
 model OpportunityAssessment {
-  id                      String   @id @default(cuid())
+  id                      String         @id @default(cuid())
   analysisRunId           String
   status                  String
   totalScore              Int?
@@ -130,96 +113,80 @@ model OpportunityAssessment {
   topStrengths            Json?
   recommendedPath         String?
   opportunityPacket       Json?
-  createdAt               DateTime @default(now())
-
-  analysisRun    AnalysisRun     @relation(fields: [analysisRunId], references: [id], onDelete: Cascade)
-  assetPackages  AssetPackage[]
+  createdAt               DateTime       @default(now())
+  assetPackages           AssetPackage[]
+  analysisRun             AnalysisRun    @relation(fields: [analysisRunId], references: [id], onDelete: Cascade)
 }
 
 model AssetPackage {
-  id                    String   @id @default(cuid())
-  analysisRunId         String
+  id                      String                 @id @default(cuid())
+  analysisRunId           String
   opportunityAssessmentId String?
-  mode                  String
-  adHooks               Json
-  adScripts             Json
-  adBriefs              Json?
-  landingPage           Json
-  emailSequences        Json
-  executionChecklist    Json
-  createdAt             DateTime @default(now())
-
-  analysisRun          AnalysisRun          @relation(fields: [analysisRunId], references: [id], onDelete: Cascade)
-  opportunityAssessment OpportunityAssessment? @relation(fields: [opportunityAssessmentId], references: [id])
+  mode                    String
+  adHooks                 Json
+  adScripts               Json
+  adBriefs                Json?
+  landingPage             Json
+  emailSequences          Json
+  executionChecklist      Json
+  createdAt               DateTime               @default(now())
+  analysisRun             AnalysisRun            @relation(fields: [analysisRunId], references: [id], onDelete: Cascade)
+  opportunityAssessment   OpportunityAssessment? @relation(fields: [opportunityAssessmentId], references: [id])
 }
 
-// ─── Campaign Workspace ───────────────────────────────────────────────────────
-
 model Campaign {
-  id            String   @id @default(cuid())
-  userId        String?
-  user          User?    @relation(fields: [userId], references: [id])
-  name          String
-  mode          String   // operator | consultant | saas
-  status        String   @default("draft") // draft | active | testing | scaling | dead
-  productName   String?
-  productUrl    String?
-  sourceUrl     String?
-  sourceType    String?   // winner | url | niche
-  
-  // Workflow Phase Tracking
-  currentPhase  Int      @default(1) // 1: SOURCE, 2: AUDIT, 3: STRATEGIZE, 4: PRODUCE, 5: DEPLOY
-  workflowState Json?    // Stores data for each phase { audit: {}, strategy: {}, etc. }
-  
-  analysisRunId String?
-  analysisRun   AnalysisRun? @relation(fields: [analysisRunId], references: [id])
-  
-  notes         String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-
+  id             String          @id @default(cuid())
+  userId         String?
+  name           String
+  mode           String
+  status         String          @default("draft")
+  productName    String?
+  productUrl     String?
+  analysisRunId  String?
+  notes          String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @updatedAt
+  currentPhase   Int             @default(1)
+  sourceType     String?
+  sourceUrl      String?
+  workflowState  Json?
   adVariations   AdVariation[]
-  landingDraft   LandingDraft?
-  emailDrafts    EmailDraft[]
+  analysisRun    AnalysisRun?    @relation(fields: [analysisRunId], references: [id])
+  user           User?           @relation(fields: [userId], references: [id])
   checklistItems ChecklistItem[]
   creatives      CreativeWork[]
+  emailDrafts    EmailDraft[]
+  landingDraft   LandingDraft?
 }
 
 model CreativeWork {
-  id          String   @id @default(cuid())
-  name        String
-  type        String   // image | video
-  
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  
-  campaignId  String?
-  campaign    Campaign? @relation(fields: [campaignId], references: [id])
-  
-  // Canvas or scene state
-  state       Json     // For images: KonvaCanvas state. For videos: scene params.
-  
-  outputUrl   String?  // Generated file URL
-  
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id         String    @id @default(cuid())
+  name       String
+  type       String
+  userId     String
+  campaignId String?
+  state      Json
+  outputUrl  String?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  campaign   Campaign? @relation(fields: [campaignId], references: [id])
+  user       User      @relation(fields: [userId], references: [id])
 }
 
 model AdVariation {
   id         String   @id @default(cuid())
   campaignId String
   name       String
-  type       String   // hook | script | brief
-  content    Json     // { format?, hook?, title?, sections?, platform? }
+  type       String
+  content    Json
   platform   String?
-  status     String   @default("draft") // draft | testing | live | winner | dead
+  status     String   @default("draft")
   notes      String?
-  metrics    Json?    // { impressions?, clicks?, ctr?, roas?, spend?, conversions? }
   sortOrder  Int      @default(0)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-
-  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  metrics    Json?
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 }
 
 model LandingDraft {
@@ -234,155 +201,153 @@ model LandingDraft {
   faqItems    Json?
   ctaCopy     String?
   urgencyLine String?
-  status      String   @default("draft") // draft | ready | live
+  status      String   @default("draft")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-
-  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  campaign    Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 }
 
 model EmailDraft {
   id         String   @id @default(cuid())
   campaignId String
-  sequence   String   // welcome | cart | post-purchase
+  sequence   String
   position   Int
   subject    String?
   preview    String?
   body       String?
   timing     String?
-  status     String   @default("draft") // draft | ready | live
+  status     String   @default("draft")
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-
-  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 }
 
 model ChecklistItem {
   id         String   @id @default(cuid())
   campaignId String
-  day        String   // day1 | day2 | day3 | week2 | scaling | kill
+  day        String
   position   Int
   text       String
   done       Boolean  @default(false)
   createdAt  DateTime @default(now())
-
-  campaign Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
 }
 
 model ReportIntake {
   id         String   @id @default(cuid())
-  userId     String?
-  user       User?    @relation(fields: [userId], references: [id])
   reportType String
   fileUrl    String?
   notes      String?
-  status     String   @default("submitted")
   createdAt  DateTime @default(now())
+  status     String   @default("submitted")
+  userId     String?
+  user       User?    @relation(fields: [userId], references: [id])
 }
 
-// ─── Email Marketing Workflows ───────────────────────────────────────────────
-
 model EmailFlow {
-  id          String   @id @default(cuid())
-  userId      String?
-  user        User?    @relation(fields: [userId], references: [id])
-  name        String
-  trigger     String   // signup | purchase | abandoned_cart | browse_abandon | custom | manual
-  triggerConfig Json?  // { event?, tag?, segment?, delay? }
-  status      String   @default("draft") // draft | active | paused | archived
-  nodes       Json     @default("[]")  // ReactFlow node array
-  edges       Json     @default("[]")  // ReactFlow edge array
-  tags        String[] @default([])
-  // Stats
-  enrolled    Int      @default(0)
-  sent        Int      @default(0)
-  opens       Int      @default(0)
-  clicks      Int      @default(0)
-  conversions Int      @default(0)
-  revenue     Float    @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String   @id @default(cuid())
+  userId        String?
+  name          String
+  trigger       String
+  triggerConfig Json?
+  status        String   @default("draft")
+  nodes         Json     @default("[]")
+  edges         Json     @default("[]")
+  tags          String[] @default([])
+  enrolled      Int      @default(0)
+  sent          Int      @default(0)
+  opens         Int      @default(0)
+  clicks        Int      @default(0)
+  conversions   Int      @default(0)
+  revenue       Float    @default(0)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  user          User?    @relation(fields: [userId], references: [id])
+  enrollments   EmailFlowEnrollment[]
+}
+
+model EmailFlowEnrollment {
+  id            String    @id @default(cuid())
+  flowId        String
+  contactEmail  String
+  userId        String
+  status        String    @default("active")  // active | paused | completed | failed
+  currentNodeId String?
+  resumeAfter   DateTime?
+  emailsSent    Int       @default(0)
+  errors        Json      @default("[]")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  flow          EmailFlow @relation(fields: [flowId], references: [id], onDelete: Cascade)
+
+  @@index([flowId])
+  @@index([status, resumeAfter])
+  @@unique([flowId, contactEmail])
 }
 
 model EmailContact {
   id         String   @id @default(cuid())
   userId     String?
-  user       User?    @relation(fields: [userId], references: [id])
   email      String
   firstName  String?
   lastName   String?
   tags       String[] @default([])
-  properties Json?    // custom key-value properties
-  status     String   @default("subscribed") // subscribed | unsubscribed | bounced
-  source     String?  // signup | import | manual
+  properties Json?
+  status     String   @default("subscribed")
+  source     String?
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
+  user       User?    @relation(fields: [userId], references: [id])
 
   @@unique([userId, email])
 }
 
 model EmailBroadcast {
-  id           String   @id @default(cuid())
+  id           String    @id @default(cuid())
   userId       String?
-  user         User?    @relation(fields: [userId], references: [id])
   name         String
   subject      String
   previewText  String?
-  body         String   @db.Text
+  body         String
   fromName     String?
   fromEmail    String?
-  status       String   @default("draft") // draft | scheduled | sending | sent | cancelled
-  segmentTags  String[] @default([]) // empty = all contacts
+  status       String    @default("draft")
+  segmentTags  String[]  @default([])
   scheduledAt  DateTime?
   sentAt       DateTime?
-  // Stats
-  recipients   Int      @default(0)
-  opens        Int      @default(0)
-  clicks       Int      @default(0)
-  bounces      Int      @default(0)
-  unsubscribes Int      @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  recipients   Int       @default(0)
+  opens        Int       @default(0)
+  clicks       Int       @default(0)
+  bounces      Int       @default(0)
+  unsubscribes Int       @default(0)
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  user         User?     @relation(fields: [userId], references: [id])
 }
 
-// ─── CRM Workspace ────────────────────────────────────────────────────────────
-
 model Client {
-  id            String   @id @default(cuid())
-  userId        String
-  user          User     @relation(fields: [userId], references: [id])
-
-  // Identity
-  name          String
-  email         String?
-  phone         String?
-  company       String?
-  website       String?
-  niche         String?
-  tags          String[] @default([])
-  customFields  Json?
-
-  // Pipeline
-  pipelineStage String   @default("lead") // lead | qualified | proposal | active | won | churned
-  dealValue     Float?
-  priority      String   @default("normal") // low | normal | high
-
-  // Health (computed + stored)
-  healthScore   Int      @default(50) // 0-100
-  healthStatus  String   @default("yellow") // green | yellow | red
-  lastContactAt DateTime?
-
-  // Notes
-  notes         String?  @db.Text
-
-  // Attribution
+  id               String           @id @default(cuid())
+  userId           String
+  name             String
+  email            String?
+  phone            String?
+  company          String?
+  website          String?
+  niche            String?
+  tags             String[]         @default([])
+  customFields     Json?
+  pipelineStage    String           @default("lead")
+  dealValue        Float?
+  priority         String           @default("normal")
+  healthScore      Int              @default(50)
+  healthStatus     String           @default("yellow")
+  lastContactAt    DateTime?
+  notes            String?
   sourceCampaignId String?
-
-  // Relations
-  activities    ClientActivity[]
-
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+  user             User             @relation(fields: [userId], references: [id])
+  activities       ClientActivity[]
 
   @@index([userId, pipelineStage])
   @@index([userId, healthScore])
@@ -391,34 +356,30 @@ model Client {
 model ClientActivity {
   id        String   @id @default(cuid())
   clientId  String
-  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
-  type      String   // email | call | note | stage_change | meeting | task
-  content   String?  @db.Text
-  metadata  Json?    // { from?, to? for stage_change, subject?, duration? }
+  type      String
+  content   String?
+  metadata  Json?
   createdBy String?
   createdAt DateTime @default(now())
+  client    Client   @relation(fields: [clientId], references: [id], onDelete: Cascade)
 }
 
-// ─── Website Builder ──────────────────────────────────────────────────────────
-
 model Site {
-  id           String   @id @default(cuid())
+  id           String        @id @default(cuid())
   userId       String
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   name         String
-  slug         String   @unique  // kwanus.co/s/[slug]
+  slug         String        @unique
   description  String?
-  faviconEmoji String?  @default("🚀")
-  theme        Json     @default("{\"primaryColor\":\"#06b6d4\",\"font\":\"inter\",\"mode\":\"dark\"}")
+  faviconEmoji String?       @default("🚀")
+  theme        Json          @default("{\"font\": \"inter\", \"mode\": \"dark\", \"primaryColor\": \"#06b6d4\"}")
   customDomain String?
-  published    Boolean  @default(false)
-  // Stats
-  totalViews   Int      @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
-
-  pages    SitePage[]
-  products SiteProduct[]
+  published    Boolean       @default(false)
+  totalViews   Int           @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  pages        SitePage[]
+  products     SiteProduct[]
 
   @@index([userId])
 }
@@ -426,10 +387,9 @@ model Site {
 model SitePage {
   id        String   @id @default(cuid())
   siteId    String
-  site      Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
   title     String
-  slug      String   @default("home")  // "home" = site root
-  blocks    Json     @default("[]")    // Block[]
+  slug      String   @default("home")
+  blocks    Json     @default("[]")
   seoTitle  String?
   seoDesc   String?
   published Boolean  @default(true)
@@ -437,6 +397,7 @@ model SitePage {
   views     Int      @default(0)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  site      Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
 
   @@unique([siteId, slug])
   @@index([siteId])
@@ -445,36 +406,36 @@ model SitePage {
 model SiteProduct {
   id          String   @id @default(cuid())
   siteId      String
-  site        Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
   name        String
-  description String?  @db.Text
-  price       Int      // cents
-  compareAt   Int?     // cents — for "was $X" display
+  description String?
+  price       Int
+  compareAt   Int?
   images      String[] @default([])
   slug        String
-  inventory   Int?     // null = unlimited
-  status      String   @default("active") // active | draft | archived
+  inventory   Int?
+  status      String   @default("active")
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
+  site        Site     @relation(fields: [siteId], references: [id], onDelete: Cascade)
 
   @@unique([siteId, slug])
   @@index([siteId])
 }
 
 model SiteOrder {
-  id           String   @id @default(cuid())
-  siteId       String
-  productId    String
-  customerEmail String
-  customerName  String?
-  amountCents  Int
-  currency     String   @default("usd")
-  status       String   @default("pending") // pending | paid | fulfilled | refunded
+  id              String   @id @default(cuid())
+  siteId          String
+  productId       String
+  customerEmail   String
+  customerName    String?
+  amountCents     Int
+  currency        String   @default("usd")
+  status          String   @default("pending")
   stripePaymentId String?
   shippingAddress Json?
-  notes        String?
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  notes           String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   @@index([siteId])
   @@index([siteId, status])
@@ -482,225 +443,187 @@ model SiteOrder {
 
 model ScanResult {
   id          String   @id @default(cuid())
-  mode        String   // product | business
+  mode        String
   title       String
   payloadJson Json
   createdAt   DateTime @default(now())
 }
 
-// ─── Webhook Event Log ───────────────────────────────────────────────────────
-
 model WebhookLog {
-  id        String   @id @default(cuid())
-  source    String   // n8n | stripe | clerk | custom
-  workflow  String?  // workflow name for n8n webhooks
-  status    String   @default("received") // received | processed | failed
-  payload   Json
-  response  Json?
-  error     String?
+  id         String   @id @default(cuid())
+  source     String
+  workflow   String?
+  status     String   @default("received")
+  payload    Json
+  response   Json?
+  error      String?
   durationMs Int?
-  createdAt DateTime @default(now())
+  createdAt  DateTime @default(now())
 
   @@index([source, createdAt])
 }
 
-// ─── Credit Usage Log ─────────────────────────────────────────────────────────
-
 model CreditLog {
   id        String   @id @default(cuid())
   userId    String
-  amount    Int      // positive = credit added, negative = credit used
-  balance   Int      // balance after this transaction
-  action    String   // skill_run | purchase | refund | admin | signup_bonus
-  detail    String?  // e.g. "ad-copy skill" or "Growth bundle ($29)"
+  amount    Int
+  balance   Int
+  action    String
+  detail    String?
   createdAt DateTime @default(now())
 
   @@index([userId, createdAt])
 }
 
-// ─── Agency Lead Engine ────────────────────────────────────────────────────────
-
 model Lead {
-  id           String   @id @default(cuid())
-  userId       String
-  user         User     @relation(fields: [userId], references: [id])
-
-  // Found business info (from search)
-  name         String
-  niche        String
-  location     String
-  website      String?
-  phone        String?
-  email        String?
-  address      String?
-  rating       Float?
-  reviewCount  Int?
-  googlePlaceId String?
-
-  // AI Analysis output
-  score        Int?
-  verdict      String?
-  summary      String?
-  audience     String?
-  painPoints   String?
-  angle        String?
-  topGaps      Json?        // string[]
-  topStrengths Json?        // string[]
-  weaknesses   Json?        // string[]
-
-  // Generated assets (raw AI outputs, stored as JSON)
-  adHooks       Json?       // legacy — use adsJson
-  outreachEmail Json?       // legacy — use emailsJson
-  landingPage   Json?       // legacy — use websiteJson
-
-  // Full skill outputs (exact shapes from Agency OS spec)
-  profileJson   Json?       // profile-builder output
-  websiteJson   Json?       // website-generator output
-  adsJson       Json?       // ad-generator output (platform-specific)
-  emailsJson    Json?       // email-generator output (outreach + follow-ups + SMS)
-  analyzerJson  Json?       // business-analyzer detailed output
-
-  // Status pipeline
-  status        String      @default("new")
-  // new | analyzing | analyzed | generating | ready | outreach_sent | replied | converted | rejected
-
-  // Outreach tracking
-  outreachSentAt  DateTime?
-  emailOpened     Boolean   @default(false)
-  emailReplied    Boolean   @default(false)
-
-  // CRM link if converted
-  clientId        String?
-
-  notes           String?   @db.Text
-
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  id             String    @id @default(cuid())
+  userId         String
+  name           String
+  niche          String
+  location       String
+  website        String?
+  phone          String?
+  email          String?
+  address        String?
+  rating         Float?
+  reviewCount    Int?
+  googlePlaceId  String?
+  score          Int?
+  verdict        String?
+  summary        String?
+  audience       String?
+  painPoints     String?
+  angle          String?
+  topGaps        Json?
+  topStrengths   Json?
+  weaknesses     Json?
+  adHooks        Json?
+  outreachEmail  Json?
+  landingPage    Json?
+  status         String    @default("new")
+  outreachSentAt DateTime?
+  emailOpened    Boolean   @default(false)
+  emailReplied   Boolean   @default(false)
+  clientId       String?
+  notes          String?
+  createdAt      DateTime  @default(now())
+  updatedAt      DateTime  @updatedAt
+  adsJson        Json?
+  analyzerJson   Json?
+  emailsJson     Json?
+  profileJson    Json?
+  websiteJson    Json?
+  user           User      @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([userId, status])
   @@index([userId, niche])
 }
 
-// ─── Product Library ───────────────────────────────────────────────────────────
-
 model Product {
   id            String   @id @default(cuid())
   userId        String
-  user          User     @relation(fields: [userId], references: [id])
-
   name          String
-  description   String?  @db.Text
+  description   String?
   price         String?
   originalPrice String?
-  platform      String   // clickbank | amazon | aliexpress | jvzoo | warriorplus | cj | teespring | shopify | custom | dropship
+  platform      String
   productUrl    String
-  affiliateUrl  String?  // constructed with user's affiliate ID
+  affiliateUrl  String?
   imageUrl      String?
   category      String?
   niche         String?
-  commission    String?  // "75%" or "$47/sale"
-  gravity       Float?   // ClickBank gravity
-  scanData      Json?    // full scan from analyze pipeline
-
-  status        String   @default("active") // active | archived
-
+  commission    String?
+  gravity       Float?
+  scanData      Json?
+  status        String   @default("active")
   createdAt     DateTime @default(now())
   updatedAt     DateTime @updatedAt
+  user          User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([userId, platform])
   @@index([userId, niche])
 }
 
-// ─── Consultant / Coach Vertical ──────────────────────────────────────────────
-
 model ConsultPackage {
   id           String   @id @default(cuid())
   userId       String
-  user         User     @relation(fields: [userId], references: [id])
   name         String
-  type         String   // hourly | retainer | project | productized | vip_day
+  type         String
   price        Float
   currency     String   @default("USD")
-  billingCycle String   @default("one_time") // one_time | monthly | quarterly | yearly
-  duration     String?  // "90 min", "30 days", "12 weeks"
-  deliverables Json     @default("[]") // string[]
+  billingCycle String   @default("one_time")
+  duration     String?
+  deliverables Json     @default("[]")
   isHighTicket Boolean  @default(false)
   targetNiche  String?
   active       Boolean  @default(true)
   sortOrder    Int      @default(0)
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
 }
 
 model Proposal {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  leadId      String?
-  clientId    String?
-  title       String
-  problemStatement String? @db.Text
-  solution         String? @db.Text
-  socialProof      String? @db.Text
+  id               String    @id @default(cuid())
+  userId           String
+  leadId           String?
+  clientId         String?
+  title            String
+  problemStatement String?
+  solution         String?
+  socialProof      String?
   guarantee        String?
   urgency          String?
-  // Package tiers embedded in the proposal
-  packages    Json     @default("[]")  // { name, price, deliverables[], bestFor }[]
-  totalValue  Float?
-  // Tracking
-  status      String   @default("draft") // draft | sent | viewed | accepted | rejected | expired
-  sentAt      DateTime?
-  viewedAt    DateTime?
-  respondedAt DateTime?
-  expiresAt   DateTime?
-  viewCount   Int      @default(0)
-  // Full AI-generated content
-  aiJson      Json?
-  notes       String?  @db.Text
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  packages         Json      @default("[]")
+  totalValue       Float?
+  status           String    @default("draft")
+  sentAt           DateTime?
+  viewedAt         DateTime?
+  respondedAt      DateTime?
+  expiresAt        DateTime?
+  viewCount        Int       @default(0)
+  aiJson           Json?
+  notes            String?
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  user             User      @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([userId, status])
 }
 
-// ─── Local Service Business Vertical ─────────────────────────────────────────
-
 model ServicePackage {
-  id           String   @id @default(cuid())
-  userId       String
-  user         User     @relation(fields: [userId], references: [id])
-  name         String
-  tier         String   // basic | pro | elite | custom
-  price        Float
-  billingCycle String   @default("monthly") // one_time | monthly | quarterly | yearly
-  deliverables Json     @default("[]") // string[]
-  targetNiche  String?
+  id             String   @id @default(cuid())
+  userId         String
+  name           String
+  tier           String
+  price          Float
+  billingCycle   String   @default("monthly")
+  deliverables   Json     @default("[]")
+  targetNiche    String?
   targetLocation String?
-  active       Boolean  @default(true)
-  sortOrder    Int      @default(0)
-  createdAt    DateTime @default(now())
-  updatedAt    DateTime @updatedAt
+  active         Boolean  @default(true)
+  sortOrder      Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
 }
 
 model LocalAudit {
-  id           String   @id @default(cuid())
-  userId       String
-  user         User     @relation(fields: [userId], references: [id])
-  leadId       String?
-  // Business info
-  businessName String
-  businessUrl  String?
-  niche        String?
-  location     String?
-  phone        String?
-  // Scores (0-100)
+  id              String   @id @default(cuid())
+  userId          String
+  leadId          String?
+  businessName    String
+  businessUrl     String?
+  niche           String?
+  location        String?
+  phone           String?
   overallScore    Int?
   gmbScore        Int?
   reviewScore     Int?
@@ -708,55 +631,51 @@ model LocalAudit {
   websiteScore    Int?
   seoScore        Int?
   competitorScore Int?
-  // Analysis output
-  auditJson       Json?  // full structured audit
-  reportJson      Json?  // formatted report for client delivery
-  packagesJson    Json?  // 3-tier recommended packages
-  reviewTemplates Json?  // SMS + email review request templates
-  gmbPostsJson    Json?  // 30 days of GMB posts
-  keywordsJson    Json?  // local keyword opportunities
-  status          String @default("pending") // pending | scanning | complete | error
+  auditJson       Json?
+  reportJson      Json?
+  packagesJson    Json?
+  reviewTemplates Json?
+  gmbPostsJson    Json?
+  keywordsJson    Json?
+  status          String   @default("pending")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([userId, niche])
 }
 
-// ─── Affiliate Marketing Vertical ─────────────────────────────────────────────
-
 model AffiliateOffer {
-  id            String   @id @default(cuid())
-  userId        String
-  user          User     @relation(fields: [userId], references: [id])
-  name          String
-  platform      String   // clickbank | jvzoo | warriorplus | cj | amazon | digistore24 | custom
-  niche         String
-  url           String
-  affiliateUrl  String?
-  vendorId      String?
-  commission    String?  // "75%" or "$47/sale"
-  recurringComm String?  // monthly recurring commission
-  epc           Float?   // estimated earnings per click
-  gravity       Float?   // ClickBank gravity score
-  convRate      Float?   // estimated conversion rate %
-  refundRate    Float?   // historical refund rate %
-  avgOrderValue Float?
-  cookieDuration String? // "60 days", "lifetime"
-  // AI Analysis
-  offerAnalysis Json?    // full deep-dive analysis
-  funnelJson    Json?    // recommended funnel structure
-  trafficAngles Json?    // best traffic sources + targeting
-  swipeJson     Json?    // email swipes (5 broadcasts + 7-day sequence)
-  adHooksJson   Json?    // FB/IG/TT hooks and scripts
-  landingJson   Json?    // bridge page / presell page content
-  keywordsJson  Json?    // SEO + PPC keyword research
-  competitorJson Json?   // top affiliate competitor analysis
-  // Status pipeline
-  status        String   @default("researching") // researching | approved | building | running | paused | dropped
-  notes         String?  @db.Text
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  id             String   @id @default(cuid())
+  userId         String
+  name           String
+  platform       String
+  niche          String
+  url            String
+  affiliateUrl   String?
+  vendorId       String?
+  commission     String?
+  recurringComm  String?
+  epc            Float?
+  gravity        Float?
+  convRate       Float?
+  refundRate     Float?
+  avgOrderValue  Float?
+  cookieDuration String?
+  offerAnalysis  Json?
+  funnelJson     Json?
+  trafficAngles  Json?
+  swipeJson      Json?
+  adHooksJson    Json?
+  landingJson    Json?
+  keywordsJson   Json?
+  competitorJson Json?
+  status         String   @default("researching")
+  notes          String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  user           User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([userId, platform])
@@ -764,46 +683,39 @@ model AffiliateOffer {
   @@index([userId, status])
 }
 
-// ─── Dropshipping Vertical ─────────────────────────────────────────────────────
-
 model DropshipProduct {
-  id            String   @id @default(cuid())
-  userId        String
-  user          User     @relation(fields: [userId], references: [id])
-  name          String
-  niche         String
-  category      String?
-  // Supplier info
-  supplierUrl   String?
-  supplierName  String?  // aliexpress | cjdropshipping | zendrop | spocket | private
-  supplierPrice Float?
-  shippingCost  Float?
-  shippingTime  String?  // "7-14 days"
-  moq           Int?     // minimum order quantity
-  // Pricing
-  suggestedPrice  Float?
-  suggestedMsrp   Float?
-  profitMargin    Float?  // percentage
-  profitPerUnit   Float?  // dollars
-  breakEvenRoas   Float?  // min ROAS to be profitable
-  // Research scores (0-100)
-  demandScore     Int?
+  id               String   @id @default(cuid())
+  userId           String
+  name             String
+  niche            String
+  category         String?
+  supplierUrl      String?
+  supplierName     String?
+  supplierPrice    Float?
+  shippingCost     Float?
+  shippingTime     String?
+  moq              Int?
+  suggestedPrice   Float?
+  suggestedMsrp    Float?
+  profitMargin     Float?
+  profitPerUnit    Float?
+  breakEvenRoas    Float?
+  demandScore      Int?
   competitionScore Int?
-  trendScore      Int?
-  marginScore     Int?
-  winnerScore     Int?   // composite
-  // Analysis outputs
-  productJson     Json?  // full product deep-dive
-  storeJson       Json?  // product page content: title, bullets, desc, FAQ
-  adAnglesJson    Json?  // FB/IG/TT hooks, scripts, thumbnails
-  emailsJson      Json?  // abandoned cart + post-purchase flows
-  supplierJson    Json?  // multi-supplier comparison
-  ugcBriefJson    Json?  // UGC creator brief for product
-  // Status
-  status          String @default("researching") // researching | testing | winning | scaling | dead
-  notes           String? @db.Text
-  createdAt       DateTime @default(now())
-  updatedAt       DateTime @updatedAt
+  trendScore       Int?
+  marginScore      Int?
+  winnerScore      Int?
+  productJson      Json?
+  storeJson        Json?
+  adAnglesJson     Json?
+  emailsJson       Json?
+  supplierJson     Json?
+  ugcBriefJson     Json?
+  status           String   @default("researching")
+  notes            String?
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+  user             User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([userId, niche])
@@ -811,133 +723,108 @@ model DropshipProduct {
   @@index([userId, winnerScore])
 }
 
-// ─── Agency / White-Label Vertical ────────────────────────────────────────────
-
 model AgencyAudit {
-  id           String   @id @default(cuid())
-  userId       String
-  user         User     @relation(fields: [userId], references: [id])
-  leadId       String?
-  clientId     String?
-  // Business context
-  businessName String
-  businessUrl  String?
-  niche        String
-  location     String?
-  businessType String   // consultant | local | ecommerce | saas | affiliate | agency
-  // Overall scoring
+  id              String   @id @default(cuid())
+  userId          String
+  leadId          String?
+  clientId        String?
+  businessName    String
+  businessUrl     String?
+  niche           String
+  location        String?
+  businessType    String
   overallScore    Int?
   trafficScore    Int?
   conversionScore Int?
   offerScore      Int?
   trustScore      Int?
   automationScore Int?
-  // Full outputs
-  auditJson       Json?  // 20-point audit with severity ratings
-  strategyJson    Json?  // 90-day growth roadmap
-  proposalJson    Json?  // white-label proposal to send to client
-  deliverableJson Json?  // what to deliver + timeline
-  pricingJson     Json?  // recommended agency pricing
-  status          String @default("pending") // pending | scanning | complete
+  auditJson       Json?
+  strategyJson    Json?
+  proposalJson    Json?
+  deliverableJson Json?
+  pricingJson     Json?
+  status          String   @default("pending")
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
   @@index([userId, businessType])
 }
 
 model BusinessProfile {
-  id                  String   @id @default(cuid())
-  userId              String   @unique
-  user                User     @relation(fields: [userId], references: [id])
-
-  // Core identity
-  businessType        String
-  businessName        String?
-  niche               String?
-  location            String?
-  website             String?
-
-  // Offer
-  mainOffer           String?
-  offerPrice          String?
-  offerType           String?
-
-  // Audience
-  targetAudience      String?
-  audienceAge         String?
-  audienceGender      String?
-  audiencePains       Json?
-  audienceDesires     Json?
-
-  // Business stage
-  stage               String   @default("starting")
-  monthlyRevenue      String?
-  mainGoal            String?
-
-  // Active systems
-  activeSystems       Json     @default("[]")
-
-  // System score
-  systemScore         Int      @default(0)
-
-  // Workflow state
-  setupCompleted      Boolean  @default(false)
-  setupStep           Int      @default(0)
-
-  // AI-generated recommendations
-  recommendedSystems  Json?
-  recommendedAt       DateTime?
-
-  createdAt           DateTime @default(now())
-  updatedAt           DateTime @updatedAt
+  id                 String    @id @default(cuid())
+  userId             String    @unique
+  businessType       String
+  businessName       String?
+  niche              String?
+  location           String?
+  website            String?
+  mainOffer          String?
+  offerPrice         String?
+  offerType          String?
+  targetAudience     String?
+  audienceAge        String?
+  audienceGender     String?
+  audiencePains      Json?
+  audienceDesires    Json?
+  stage              String    @default("starting")
+  monthlyRevenue     String?
+  mainGoal           String?
+  activeSystems      Json      @default("[]")
+  systemScore        Int       @default(0)
+  setupCompleted     Boolean   @default(false)
+  setupStep          Int       @default(0)
+  recommendedSystems Json?
+  recommendedAt      DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
+  user               User      @relation(fields: [userId], references: [id])
 }
 
-// ─── Campaign Automations ─────────────────────────────────────────────────────
-
 model Automation {
-  id          String   @id @default(cuid())
-  userId      String
-  user        User     @relation(fields: [userId], references: [id])
-  campaignId  String?
-  name        String
-  description String?
-  trigger     String   @default("manual") // manual | form_submit | stage_change | schedule | webhook
-  triggerConfig Json?  // { event, schedule, webhookUrl, etc. }
-  status      String   @default("draft") // draft | active | paused | archived
-  nodes       Json     @default("[]")    // ReactFlow node array
-  edges       Json     @default("[]")    // ReactFlow edge array
-  // Stats
-  runsTotal   Int      @default(0)
-  runsSuccess Int      @default(0)
-  runsFailed  Int      @default(0)
-  lastRunAt   DateTime?
-  runs        AutomationRun[]
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id            String          @id @default(cuid())
+  userId        String
+  campaignId    String?
+  name          String
+  description   String?
+  trigger       String          @default("manual")
+  triggerConfig Json?
+  status        String          @default("draft")
+  nodes         Json            @default("[]")
+  edges         Json            @default("[]")
+  runsTotal     Int             @default(0)
+  runsSuccess   Int             @default(0)
+  runsFailed    Int             @default(0)
+  lastRunAt     DateTime?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+  user          User            @relation(fields: [userId], references: [id])
+  runs          AutomationRun[]
 
   @@index([userId, status])
 }
 
 model AutomationRun {
-  id             String              @id @default(cuid())
-  automationId   String
-  userId         String
-  status         String              @default("running") // running | completed | failed | paused
-  trigger        String              @default("manual")  // manual | scheduled | webhook | tag
-  contactsCount  Int                 @default(0)
-  emailsSent     Int                 @default(0)
-  errorCount     Int                 @default(0)
-  stoppedAtNode  String?
-  resumeAfter    DateTime?           // For delay nodes: when to resume
-  metadata       Json?
-  startedAt      DateTime            @default(now())
-  completedAt    DateTime?
-  createdAt      DateTime            @default(now())
-  updatedAt      DateTime            @updatedAt
-  automation     Automation          @relation(fields: [automationId], references: [id], onDelete: Cascade)
-  user           User                @relation(fields: [userId], references: [id])
-  steps          AutomationRunStep[]
+  id            String              @id @default(cuid())
+  automationId  String
+  userId        String
+  status        String              @default("running")
+  trigger       String              @default("manual")
+  contactsCount Int                 @default(0)
+  emailsSent    Int                 @default(0)
+  errorCount    Int                 @default(0)
+  stoppedAtNode String?
+  resumeAfter   DateTime?
+  metadata      Json?
+  startedAt     DateTime            @default(now())
+  completedAt   DateTime?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+  automation    Automation          @relation(fields: [automationId], references: [id], onDelete: Cascade)
+  user          User                @relation(fields: [userId], references: [id])
+  steps         AutomationRunStep[]
 
   @@index([automationId])
   @@index([userId])
@@ -946,16 +833,16 @@ model AutomationRun {
 }
 
 model AutomationRunStep {
-  id        String   @id @default(cuid())
+  id        String        @id @default(cuid())
   runId     String
   nodeId    String
   nodeType  String
-  status    String   @default("pending") // pending | running | completed | failed | skipped
+  status    String        @default("pending")
   output    Json?
   error     String?
   startedAt DateTime?
   endedAt   DateTime?
-  createdAt DateTime @default(now())
+  createdAt DateTime      @default(now())
   run       AutomationRun @relation(fields: [runId], references: [id], onDelete: Cascade)
 
   @@index([runId])

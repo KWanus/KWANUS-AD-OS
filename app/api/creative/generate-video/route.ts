@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { deductCredits, getOrCreateUser } from "@/lib/auth";
 import { auth } from "@clerk/nextjs/server";
 
-// Runway Gen-3 Alpha Turbo via REST API
+// Runway Gen-4 Turbo via REST API
 // Docs: https://docs.dev.runwayml.com/
 
 function buildVideoPrompt(prompt: string, executionTier: "core" | "elite") {
@@ -46,17 +46,24 @@ export async function POST(req: NextRequest) {
     }
 
     const payload: Record<string, unknown> = {
-      model: "gen3a_turbo",
+      model: "gen4_turbo",
       promptText: buildVideoPrompt(body.prompt, executionTier),
       duration: body.duration ?? 5,
-      ratio: body.ratio ?? "768:1344", // 9:16
+      ratio: body.ratio === "768:1344" ? "9:16" : (body.ratio ?? "9:16"),
     };
 
     if (body.imageUrl) {
       payload.promptImage = body.imageUrl;
     }
 
-    const res = await fetch("https://api.dev.runwayml.com/v1/image_to_video", {
+    // Use image_to_video when an image is provided, otherwise text_to_video
+    const endpoint = body.imageUrl
+      ? "https://api.dev.runwayml.com/v1/image_to_video"
+      : "https://api.dev.runwayml.com/v1/text_to_video";
+
+    console.log("Runway Request Payload:", JSON.stringify(payload, null, 2));
+
+    const res = await fetch(endpoint, {
       method: "POST",
       headers: {
         "Authorization": `Bearer ${apiKey}`,
@@ -68,8 +75,12 @@ export async function POST(req: NextRequest) {
 
     if (!res.ok) {
       const errText = await res.text();
-      console.error("Runway API error:", errText);
-      return NextResponse.json({ ok: false, error: `Runway API error: ${res.status}` }, { status: 500 });
+      console.error("Runway API Error Response (" + res.status + "):", errText);
+      return NextResponse.json({
+        ok: false,
+        error: `Runway API error: ${res.status}`,
+        message: errText
+      }, { status: 500 });
     }
 
     const data = await res.json() as { id: string; status: string };

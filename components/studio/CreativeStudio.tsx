@@ -92,7 +92,7 @@ const TIKTOK_CAPTION_STYLE = {
 };
 
 const PROMPT_TOOLS = [
-  { id: "runway", label: "Runway Gen-3", color: "#7c3aed", link: "https://runwayml.com" },
+  { id: "runway", label: "Runway Gen-4", color: "#7c3aed", link: "https://runwayml.com" },
   { id: "pika", label: "Pika 2.0", color: "#ec4899", link: "https://pika.art" },
   { id: "midjourney", label: "Midjourney v6", color: "#2563eb", link: "https://midjourney.com" },
   { id: "dalle", label: "DALL·E 3", color: "#10b981", link: "https://platform.openai.com" },
@@ -619,17 +619,16 @@ function ImageStudio({ brief, theme, executionTier }: { brief: StudioBrief; them
               className="flex-1 py-1.5 rounded-lg border border-white/[0.07] text-[10px] text-white/35 hover:text-white/55 transition">
               {showPromptEdit ? "Hide prompt" : "Edit prompt"}
             </button>
-            <div className={`px-3 py-1.5 rounded-lg border text-[10px] font-black uppercase tracking-[0.18em] ${
-              executionTier === "elite"
-                ? "border-cyan-400/30 bg-cyan-500/10 text-cyan-300"
-                : "border-white/[0.07] bg-white/[0.04] text-white/45"
-            }`}>
+            <div className={`px-3 py-1.5 rounded-lg border text-[10px] font-black uppercase tracking-[0.18em] ${executionTier === "elite"
+              ? "border-cyan-400/30 bg-cyan-500/10 text-cyan-300"
+              : "border-white/[0.07] bg-white/[0.04] text-white/45"
+              }`}>
               {executionTier}
             </div>
           </div>
-          {genError && genError.includes("OPENAI_API_KEY") ? (
+          {genError && (genError.includes("OPENAI_API_KEY") || genError.includes("FAL_KEY")) ? (
             <div className="rounded-lg border border-yellow-500/20 bg-yellow-500/5 p-3 text-[10px] text-yellow-300/70 leading-relaxed">
-              Add <code className="font-mono text-yellow-300">OPENAI_API_KEY</code> to your .env file to enable AI generation.
+              Add <code className="font-mono text-yellow-300">{genError.includes("FAL_KEY") ? "FAL_KEY" : "OPENAI_API_KEY"}</code> to your .env file to enable {executionTier === "elite" && genError.includes("FAL_KEY") ? "Elite (Flux)" : "AI"} generation.
             </div>
           ) : genError ? (
             <p className="text-[10px] text-red-400 mb-2">{genError}</p>
@@ -849,7 +848,7 @@ function VideoLab({ brief, theme, executionTier }: { brief: StudioBrief; theme: 
         prompt: existing?.jobId ? existing.prompt : genPrompt(s, brief.productionKit, "runway", brief.platform, executionTier),
       };
     }));
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [brief, executionTier]);
 
   async function generateScene(i: number) {
@@ -901,7 +900,7 @@ function VideoLab({ brief, theme, executionTier }: { brief: StudioBrief; theme: 
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-lg font-black text-white">Video Lab</h2>
-              <p className="text-xs text-white/30 mt-0.5">Generate AI video clips for each scene. Powered by Runway Gen-3.</p>
+              <p className="text-xs text-white/30 mt-0.5">Generate AI video clips for each scene. Powered by Runway Gen-4.</p>
             </div>
             <div className="flex gap-2">
               <button className="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 flex items-center gap-1.5">
@@ -955,7 +954,14 @@ function VideoLab({ brief, theme, executionTier }: { brief: StudioBrief; theme: 
                         </div>
                       </div>
                     ) : job.status === "failed" ? (
-                      <p className="text-xs text-red-400">Generation failed. Check your Runway API key in .env</p>
+                      <div className="space-y-1">
+                        <p className="text-xs text-red-500 font-bold">Generation failed</p>
+                        <p className="text-[10px] text-red-400/70 leading-relaxed font-mono">
+                          {job.prompt.includes("[Error:")
+                            ? job.prompt.split("[Error:")[1].split("]")[0]
+                            : "Check your Runway API key and account credits in the developer portal."}
+                        </p>
+                      </div>
                     ) : null}
 
                     <button onClick={() => void generateScene(i)}

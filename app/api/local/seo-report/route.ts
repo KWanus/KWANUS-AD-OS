@@ -13,7 +13,7 @@ Then produce outputs that BEAT those benchmarks — more specific, higher ROI, b
 
 async function callClaude(system: string, prompt: string) {
   const r = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
+    model: "claude-sonnet-4-6-20250514",
     max_tokens: 4096,
     system,
     messages: [{ role: "user", content: prompt }],

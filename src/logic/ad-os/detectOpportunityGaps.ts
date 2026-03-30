@@ -4,11 +4,13 @@ import type { ExtractedSignals } from "./extractSignals";
 export type GapDetectionResult = {
   topGaps: string[];
   topStrengths: string[];
+  recommendedBlocks: string[];
 };
 
 type GapRule = {
   condition: (d: DimensionScores, s: ExtractedSignals) => boolean;
   gap: string;
+  blocks?: string[];
 };
 
 type StrengthRule = {
@@ -20,42 +22,42 @@ const GAP_RULES: GapRule[] = [
   {
     condition: (d) => d.trustCredibility < 40,
     gap: "No trust proof — reviews, guarantees, or social validation are missing",
+    blocks: ["trust_badges", "testimonials", "guarantee"],
   },
   {
     condition: (d) => d.emotionalLeverage < 40,
     gap: "Weak emotional connection — offer does not clearly speak to pain or desire",
+    blocks: ["before_after", "process"],
   },
   {
     condition: (d) => d.conversionReadiness < 50,
     gap: "Poor conversion structure — headline or CTA is unclear or missing",
+    blocks: ["urgency", "cta"],
   },
   {
     condition: (d) => d.differentiation < 40,
     gap: "Low differentiation — offer looks similar to generic competitors",
+    blocks: ["features", "stats"],
   },
   {
     condition: (d) => d.demandPotential < 40,
     gap: "Demand signals are weak — problem being solved is not clearly communicated",
-  },
-  {
-    condition: (d) => d.adViability < 40,
-    gap: "Low ad viability — product or page is not well-suited for paid traffic",
+    blocks: ["video", "faq"],
   },
   {
     condition: (d) => d.offerStrength < 40,
     gap: "Offer framing is weak — price, bonuses, or value stack not clearly visible",
-  },
-  {
-    condition: (_, s) => s.audienceHints.length === 0,
-    gap: "Audience is undefined — targeting this would be wasteful without a clear buyer",
-  },
-  {
-    condition: (d) => d.risk > 60,
-    gap: "High risk profile — multiple red flags detected (thin content, no trust, unclear offer)",
+    blocks: ["pricing", "checkout"],
   },
   {
     condition: (d) => d.emailLifecyclePotential < 35,
     gap: "Retention potential is low — not enough depth for a strong email flow",
+    blocks: ["form"],
+  },
+  {
+    condition: (d) => d.risk > 60,
+    gap: "High risk profile — multiple red flags detected (thin content, no trust, unclear offer)",
+    blocks: ["guarantee", "trust_badges"],
   },
 ];
 
@@ -108,8 +110,16 @@ export function detectOpportunityGaps(
     .map((r) => r.strength)
     .slice(0, 4);
 
+  const recommendedBlocksSet = new Set<string>();
+  GAP_RULES.forEach((r) => {
+    if (r.condition(dimensions, signals) && r.blocks) {
+      r.blocks.forEach((b) => recommendedBlocksSet.add(b));
+    }
+  });
+
   return {
     topGaps: topGaps.length > 0 ? topGaps : ["No critical gaps detected at current signal level"],
     topStrengths: topStrengths.length > 0 ? topStrengths : ["Insufficient signals to identify clear strengths"],
+    recommendedBlocks: Array.from(recommendedBlocksSet),
   };
 }

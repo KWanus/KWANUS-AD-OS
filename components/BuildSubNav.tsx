@@ -2,13 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { FolderOpen, Mail, Zap, Send, Users, BarChart2, Layers3 } from "lucide-react";
+import { FolderOpen, Mail, Zap, Send, Users, BarChart2, Layers3, FileText } from "lucide-react";
 
 const CAMPAIGN_TABS = [
   { href: "/campaigns", label: "Campaigns", icon: FolderOpen, match: (p: string) => p === "/campaigns" || (p.startsWith("/campaigns/") && !p.includes("/automations")) },
   { href: "/emails", label: "Flows", icon: Zap, match: (p: string) => p === "/emails" || p.startsWith("/emails/flows") },
   { href: "/emails/broadcasts", label: "Broadcasts", icon: Send, match: (p: string) => p.startsWith("/emails/broadcasts") },
   { href: "/emails/contacts", label: "Contacts", icon: Users, match: (p: string) => p.startsWith("/emails/contacts") },
+  { href: "/forms", label: "Forms", icon: FileText, match: (p: string) => p === "/forms" },
   { href: "/campaigns/automations", label: "Automations", icon: Layers3, match: (p: string) => p.startsWith("/campaigns/automations") },
   { href: "/emails/analytics", label: "Analytics", icon: BarChart2, match: (p: string) => p.startsWith("/emails/analytics") },
 ];
