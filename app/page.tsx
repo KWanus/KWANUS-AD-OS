@@ -199,6 +199,7 @@ export default function Dashboard() {
   const [atRiskClients, setAtRiskClients] = useState<ClientSummary[]>([]);
   const [totalClients, setTotalClients] = useState(0);
   const [activityFeed, setActivityFeed] = useState<{ id: string; type: string; title: string; subtitle: string; href: string; timestamp: string }[]>([]);
+  const [quickActions, setQuickActions] = useState<{ id: string; priority: string; category: string; title: string; description: string; href: string; cta: string }[]>([]);
   const [loading, setLoading] = useState(true);
   const [syncingSystem, setSyncingSystem] = useState(false);
   const [refreshingRecommendations, setRefreshingRecommendations] = useState(false);
@@ -213,7 +214,7 @@ export default function Dashboard() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const [settingsRes, leadsRes, campaignsRes, sitesRes, profileRes, emailFlowsRes, statsRes, analysesRes, clientsRes, feedRes] = await Promise.allSettled([
+      const [settingsRes, leadsRes, campaignsRes, sitesRes, profileRes, emailFlowsRes, statsRes, analysesRes, clientsRes, feedRes, quickActionsRes] = await Promise.allSettled([
         fetch("/api/settings").then((r) => r.json() as Promise<{ ok: boolean; settings?: SettingsState }>),
         fetch("/api/leads").then((r) => r.json() as Promise<{ ok: boolean; leads?: Lead[] }>),
         fetch("/api/campaigns").then((r) => r.json() as Promise<{ ok: boolean; campaigns?: Campaign[] }>),
@@ -224,6 +225,7 @@ export default function Dashboard() {
         fetch("/api/analyses?limit=5").then((r) => r.json() as Promise<{ ok: boolean; analyses?: RecentAnalysis[]; total?: number }>),
         fetch("/api/clients?sortBy=healthScore&limit=5").then((r) => r.json() as Promise<{ ok: boolean; clients?: ClientSummary[]; total?: number }>),
         fetch("/api/activity-feed?limit=8").then((r) => r.json() as Promise<{ ok: boolean; feed?: { id: string; type: string; title: string; subtitle: string; href: string; timestamp: string }[] }>),
+        fetch("/api/quick-actions").then((r) => r.json() as Promise<{ ok: boolean; actions?: { id: string; priority: string; category: string; title: string; description: string; href: string; cta: string }[] }>),
       ]);
 
       if (settingsRes.status === "fulfilled" && settingsRes.value.ok) {
@@ -260,6 +262,9 @@ export default function Dashboard() {
       }
       if (feedRes.status === "fulfilled" && feedRes.value.ok) {
         setActivityFeed(feedRes.value.feed ?? []);
+      }
+      if (quickActionsRes.status === "fulfilled" && quickActionsRes.value.ok) {
+        setQuickActions(quickActionsRes.value.actions ?? []);
       }
     } finally {
       setLoading(false);
@@ -826,70 +831,52 @@ export default function Dashboard() {
           </section>
 
           <section className="rounded-[28px] border border-white/[0.07] bg-white/[0.03] p-5">
-            <SectionLabel>Suggested Next Moves</SectionLabel>
-            <div className="space-y-3">
-              {!settings?.businessType && (
+            <SectionLabel>Quick Actions</SectionLabel>
+            {quickActions.length > 0 ? (
+              <div className="space-y-2">
+                {quickActions.slice(0, 6).map((action) => {
+                  const priorityStyle =
+                    action.priority === "critical" ? "border-red-500/20 bg-red-500/[0.06]" :
+                    action.priority === "high" ? "border-amber-500/20 bg-amber-500/[0.06]" :
+                    action.priority === "medium" ? "border-cyan-500/15 bg-cyan-500/[0.04]" :
+                    "border-white/[0.06] bg-black/20";
+                  const priorityDot =
+                    action.priority === "critical" ? "bg-red-400 animate-pulse" :
+                    action.priority === "high" ? "bg-amber-400" :
+                    action.priority === "medium" ? "bg-cyan-400" :
+                    "bg-white/20";
+                  return (
+                    <Link
+                      key={action.id}
+                      href={action.href}
+                      className={`block rounded-2xl border p-3.5 transition hover:scale-[1.01] hover:border-white/[0.15] group ${priorityStyle}`}
+                    >
+                      <div className="flex items-start gap-3">
+                        <div className={`w-2 h-2 rounded-full mt-1.5 shrink-0 ${priorityDot}`} />
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <h3 className="text-sm font-black text-white group-hover:text-cyan-100 transition truncate">{action.title}</h3>
+                            <span className="text-[9px] font-bold uppercase tracking-wider text-white/20 shrink-0">{action.category}</span>
+                          </div>
+                          <p className="text-xs text-white/40 leading-relaxed line-clamp-2">{action.description}</p>
+                        </div>
+                        <span className="text-[10px] font-bold text-cyan-400/60 group-hover:text-cyan-400 transition whitespace-nowrap shrink-0 mt-0.5">
+                          {action.cta} →
+                        </span>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            ) : (
+              <div className="space-y-3">
                 <SuggestionCard
-                  title="Set your business type"
-                  body="Tell the app whether you're running an agency, local business, affiliate offer, or product business so the OS can guide you better."
-                  href="/setup"
+                  title="Use Copilot as your project manager"
+                  body="The assistant now lives across the app. Ask it what to continue, what is blocked, or what should come next."
+                  href="/copilot"
                 />
-              )}
-              {businessProfile?.activeSystems?.includes("website") && totalSites === 0 && (
-                <SuggestionCard
-                  title="Your OS says the website should be live first"
-                  body="This business profile is pushing the website system as a core asset. Build the first conversion site before you spread attention thinner."
-                  href="/websites/new"
-                />
-              )}
-              {businessProfile?.activeSystems?.includes("email_sequence") && totalEmailFlows === 0 && (
-                <SuggestionCard
-                  title="Turn on your follow-up system"
-                  body="You have a business profile but no active nurture flow yet. Build the first automated email or SMS sequence so leads do not cool off."
-                  href="/emails"
-                />
-              )}
-              {(stats?.unsyncedSystems?.length ?? 0) > 0 && (
-                <SuggestionCard
-                  title={`Sync ${stats?.unsyncedSystems?.length} live system${stats?.unsyncedSystems?.length === 1 ? "" : "s"} into My System`}
-                  body="The workspace already has real systems running, but your Business OS has not marked them active yet. Sync them so your recommendations stay accurate."
-                  href="/my-system"
-                />
-              )}
-              {totalCampaigns === 0 && (
-                <SuggestionCard
-                  title="Generate your first campaign"
-                  body="Use Analyze or Skills to create the first real workspace with hooks, landing copy, and email drafts."
-                  href="/analyze"
-                />
-              )}
-              {totalSites === 0 && (
-                <SuggestionCard
-                  title="Create a site or funnel"
-                  body="You have the builders ready. Start a website so campaigns, products, and forms have somewhere to live."
-                  href="/websites/new"
-                />
-              )}
-              {totalLeads === 0 && (
-                <SuggestionCard
-                  title="Turn on the lead engine"
-                  body="If you want outbound growth, start a lead search and feed those companies into campaigns and sites."
-                  href="/leads"
-                />
-              )}
-              {prioritizedSystems.length > 0 && (
-                <SuggestionCard
-                  title={`Recommended system: ${formatSystemLabel(prioritizedSystems[0]?.slug)}`}
-                  body={prioritizedSystems[0]?.personalizedReason || "Your saved profile already knows which system should be installed next. Use that guidance instead of guessing."}
-                  href={systemHref(prioritizedSystems[0]?.slug)}
-                />
-              )}
-              <SuggestionCard
-                title="Use Copilot as your project manager"
-                body="The assistant now lives across the app. Ask it what to continue, what is blocked, or what should come next."
-                href="/copilot"
-              />
-            </div>
+              </div>
+            )}
           </section>
         </div>
       </WorkspaceShell>

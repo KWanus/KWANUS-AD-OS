@@ -52,33 +52,41 @@ export type FlowExecuteResult = {
   ok: boolean;
   emailsSent: number;
   errors: string[];
-  stoppedAt?: string; // node id where we stopped (delay/condition)
+  stoppedAt?: string; // node id where we stopped (delay)
+  resumeAfter?: Date;
+  enrollmentId?: string;
 };
 
 /**
- * Build an ordered list of nodes following the edge graph from a start node.
+ * Build edge adjacency: source -> { default, yes, no } targets.
  */
-function getOrderedNodes(nodes: FlowNode[], edges: FlowEdge[], startId: string): FlowNode[] {
-  const nodeMap = new Map(nodes.map((n) => [n.id, n]));
-  const edgeMap = new Map<string, string[]>();
+function buildEdgeMap(edges: FlowEdge[]) {
+  const map = new Map<string, { default?: string; yes?: string; no?: string }>();
   for (const e of edges) {
-    if (!edgeMap.has(e.source)) edgeMap.set(e.source, []);
-    edgeMap.get(e.source)!.push(e.target);
+    const entry = map.get(e.source) ?? {};
+    const handle = e.sourceHandle ?? "default";
+    if (handle === "yes") entry.yes = e.target;
+    else if (handle === "no") entry.no = e.target;
+    else entry.default = e.target;
+    map.set(e.source, entry);
   }
+  return map;
+}
 
-  const ordered: FlowNode[] = [];
-  const visited = new Set<string>();
-  let current = startId;
-
-  while (current && !visited.has(current)) {
-    visited.add(current);
-    const node = nodeMap.get(current);
-    if (node) ordered.push(node);
-    const next = edgeMap.get(current)?.[0]; // follow first edge
-    current = next ?? "";
+/**
+ * Evaluate a condition against a contact's tags.
+ * Supported: "has_tag:<tag>", "no_tag:<tag>", or fallback to yes.
+ */
+function evaluateCondition(condition: string | undefined, contactTags: string[]): boolean {
+  if (!condition) return true;
+  const lower = condition.toLowerCase().trim();
+  if (lower.startsWith("has_tag:")) {
+    return contactTags.some((t) => t.toLowerCase() === lower.slice(8).trim());
   }
-
-  return ordered;
+  if (lower.startsWith("no_tag:")) {
+    return !contactTags.some((t) => t.toLowerCase() === lower.slice(7).trim());
+  }
+  return true;
 }
 
 /**
@@ -93,13 +101,14 @@ function personalize(text: string, contact: FlowContact): string {
 
 /**
  * Execute a flow for a single contact.
- * Sends all email nodes in sequence until a delay or condition node is hit.
- * Returns when no more immediately-sendable nodes remain.
+ * Walks the node graph, sends emails, updates tags, evaluates conditions,
+ * and pauses at delay nodes. Returns when done or paused.
  */
 export async function executeFlowForContact(
   flowId: string,
   contact: FlowContact,
-  user: FlowUser
+  user: FlowUser,
+  opts?: { resumeFromNode?: string; enrollmentId?: string }
 ): Promise<FlowExecuteResult> {
   const flow = await prisma.emailFlow.findUnique({ where: { id: flowId } });
   if (!flow) return { ok: false, emailsSent: 0, errors: ["Flow not found"] };
@@ -107,21 +116,52 @@ export async function executeFlowForContact(
 
   const nodes = (flow.nodes as FlowNode[]) ?? [];
   const edges = (flow.edges as FlowEdge[]) ?? [];
+  const nodeMap = new Map(nodes.map((n) => [n.id, n]));
+  const edgeMap = buildEdgeMap(edges);
 
-  // Find trigger node(s)
   const triggerNode = nodes.find((n) => n.type === "trigger");
   if (!triggerNode) return { ok: false, emailsSent: 0, errors: ["No trigger node found in flow"] };
-
-  const ordered = getOrderedNodes(nodes, edges, triggerNode.id);
 
   let emailsSent = 0;
   const errors: string[] = [];
   let stoppedAt: string | undefined;
+  let resumeAfter: Date | undefined;
+  let enrollmentId = opts?.enrollmentId;
+  const visited = new Set<string>();
 
-  for (const node of ordered) {
+  // If resuming from a delay node, start at the next node after it
+  let currentId: string | undefined;
+  if (opts?.resumeFromNode) {
+    const next = edgeMap.get(opts.resumeFromNode);
+    currentId = next?.default;
+    if (!currentId) {
+      return { ok: true, emailsSent: 0, errors: [], stoppedAt: undefined };
+    }
+  } else {
+    currentId = triggerNode.id;
+  }
+
+  // Track contact tags in-memory so condition nodes see tag updates from earlier nodes
+  let contactTags: string[] = [];
+  if (flow.userId) {
+    const dbContact = await prisma.emailContact.findFirst({
+      where: { userId: flow.userId, email: contact.email },
+      select: { tags: true },
+    });
+    contactTags = dbContact?.tags ?? [];
+  }
+
+  while (currentId && !visited.has(currentId)) {
+    visited.add(currentId);
+    const node = nodeMap.get(currentId);
+    if (!node) break;
     const type = node.type;
 
-    if (type === "trigger") continue;
+    if (type === "trigger") {
+      const next = edgeMap.get(currentId);
+      currentId = next?.default;
+      continue;
+    }
 
     if (type === "email") {
       const subject = personalize(node.data?.subject ?? node.data?.label ?? "(no subject)", contact);
@@ -142,37 +182,131 @@ export async function executeFlowForContact(
       } else {
         errors.push(`Node ${node.id}: ${result.error ?? "send failed"}`);
       }
+
+      const next = edgeMap.get(currentId);
+      currentId = next?.default;
       continue;
     }
 
     if (type === "tag") {
-      // Tag operations are fire-and-forget in sync mode; no email action
+      const tag = node.data?.tag;
+      const action = node.data?.tagAction ?? "add";
+      if (tag && flow.userId) {
+        const existing = await prisma.emailContact.findFirst({
+          where: { userId: flow.userId, email: contact.email },
+          select: { id: true, tags: true },
+        });
+        if (existing) {
+          const newTags =
+            action === "add"
+              ? [...new Set([...existing.tags, tag])]
+              : existing.tags.filter((t) => t !== tag);
+          await prisma.emailContact.update({
+            where: { id: existing.id },
+            data: { tags: newTags },
+          });
+          contactTags = newTags;
+        }
+      }
+
+      const next = edgeMap.get(currentId);
+      currentId = next?.default;
+      continue;
+    }
+
+    if (type === "condition") {
+      const result = evaluateCondition(node.data?.condition, contactTags);
+      const next = edgeMap.get(currentId);
+      currentId = result ? (next?.yes ?? next?.default) : (next?.no ?? undefined);
       continue;
     }
 
     if (type === "delay") {
-      // Stop here — delay nodes require async scheduling
+      // Compute when to resume
+      const delayValue = node.data?.delayValue;
+      const delayUnit = node.data?.delayUnit;
+      let delayMs: number;
+
+      if (delayValue && delayUnit) {
+        const multiplier = delayUnit === "days" ? 86_400_000 : delayUnit === "hours" ? 3_600_000 : 60_000;
+        delayMs = delayValue * multiplier;
+      } else {
+        // Parse from label like "Wait 45 minutes"
+        const match = node.data?.label?.match(/(\d+)\s*(minute|hour|day)/i);
+        if (match) {
+          const unit = match[2].toLowerCase();
+          const multiplier = unit.startsWith("day") ? 86_400_000 : unit.startsWith("hour") ? 3_600_000 : 60_000;
+          delayMs = parseInt(match[1], 10) * multiplier;
+        } else {
+          delayMs = 3_600_000; // default 1 hour
+        }
+      }
+
+      resumeAfter = new Date(Date.now() + delayMs);
       stoppedAt = node.id;
+
+      // Upsert enrollment so the cron processor can resume this contact
+      if (flow.userId) {
+        const enrollment = await prisma.emailFlowEnrollment.upsert({
+          where: { flowId_contactEmail: { flowId, contactEmail: contact.email } },
+          create: {
+            flowId,
+            contactEmail: contact.email,
+            userId: flow.userId,
+            status: "paused",
+            currentNodeId: node.id,
+            resumeAfter,
+            emailsSent,
+          },
+          update: {
+            status: "paused",
+            currentNodeId: node.id,
+            resumeAfter,
+            emailsSent: { increment: emailsSent },
+          },
+        });
+        enrollmentId = enrollment.id;
+      }
+
       break;
     }
 
-    if (type === "condition") {
-      // Stop here — conditions require runtime evaluation
-      stoppedAt = node.id;
-      break;
-    }
+    // Unknown node type — skip
+    const next = edgeMap.get(currentId);
+    currentId = next?.default;
   }
 
   // Update flow stats
+  const isNewEnrollment = !opts?.resumeFromNode;
   await prisma.emailFlow.update({
     where: { id: flowId },
     data: {
-      enrolled: { increment: 1 },
+      ...(isNewEnrollment ? { enrolled: { increment: 1 } } : {}),
       sent: { increment: emailsSent },
     },
   });
 
-  return { ok: true, emailsSent, errors, stoppedAt };
+  // If we finished the graph without pausing, mark enrollment completed
+  if (!stoppedAt && flow.userId) {
+    await prisma.emailFlowEnrollment.upsert({
+      where: { flowId_contactEmail: { flowId, contactEmail: contact.email } },
+      create: {
+        flowId,
+        contactEmail: contact.email,
+        userId: flow.userId,
+        status: "completed",
+        emailsSent,
+      },
+      update: {
+        status: "completed",
+        currentNodeId: null,
+        resumeAfter: null,
+        emailsSent: { increment: emailsSent },
+      },
+    }).catch(() => {}); // non-critical
+  }
+
+  return { ok: true, emailsSent, errors, stoppedAt, resumeAfter, enrollmentId };
 }
 
 /**

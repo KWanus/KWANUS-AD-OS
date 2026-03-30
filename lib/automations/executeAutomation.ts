@@ -199,7 +199,10 @@ export async function executeAutomation(opts: {
         userId,
         trigger,
         contactsCount: contacts.length,
-        metadata: metadata as object ?? undefined,
+        metadata: {
+          ...(metadata as object ?? {}),
+          contactEmails: contacts.map((c) => c.email),
+        },
         status: "running",
       },
     });

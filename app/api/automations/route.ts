@@ -23,9 +23,20 @@ export async function GET(req: NextRequest) {
     const automations = await prisma.automation.findMany({
       where,
       orderBy: { updatedAt: "desc" },
+      include: {
+        _count: {
+          select: { runs: true },
+        },
+      },
     });
 
-    return NextResponse.json({ ok: true, automations });
+    // Flatten _count into the response for easier frontend consumption
+    const formatted = automations.map(({ _count, ...rest }) => ({
+      ...rest,
+      totalRuns: _count.runs,
+    }));
+
+    return NextResponse.json({ ok: true, automations: formatted });
   } catch (err) {
     console.error("Automations GET:", err);
     return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });

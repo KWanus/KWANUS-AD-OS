@@ -8,15 +8,15 @@ import { runWebsiteBuilderScout } from "@/lib/skills/websiteBuilderScout";
 import { runAdCampaignSkill } from "@/lib/skills/adCampaignSkill";
 import { runEmailCampaignSkill } from "@/lib/skills/emailCampaignSkill";
 
-// Slugs handled by the analysis-pipeline executor (not Claude AI executor)
-const PIPELINE_SKILLS = new Set(["website-builder-scout", "ad-campaign", "email-campaign"]);
+// Slugs handled by the analysis-pipeline or special executors
+const PIPELINE_SKILLS = new Set(["website-builder-scout", "ad-campaign", "email-campaign", "stripe-link", "payment-workflow"]);
 
 export async function POST(
   req: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
+  const { slug } = await params;
   try {
-    const { slug } = await params;
     const { userId: clerkId } = await auth();
     if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 
@@ -36,7 +36,13 @@ export async function POST(
 
     const input = await req.json() as Record<string, string>;
     const executionTier = input.executionTier === "core" ? "core" : "elite";
-    const profile = await prisma.businessProfile.findUnique({ where: { userId: user.id } });
+
+    let profile = null;
+    try {
+      profile = await prisma.businessProfile.findUnique({ where: { userId: user.id } });
+    } catch (e) {
+      console.error("Non-fatal: Could not fetch business profile:", e);
+    }
     const enrichedInput: Record<string, string> = {
       ...input,
       executionTier,
@@ -71,6 +77,21 @@ export async function POST(
         result = await runWebsiteBuilderScout({ url: enrichedInput.url, businessName: enrichedInput.businessName, niche: enrichedInput.niche, outreachGoal: enrichedInput.outreachGoal, userId: user.id });
       } else if (slug === "ad-campaign") {
         result = await runAdCampaignSkill({ url: enrichedInput.url, mode: enrichedInput.mode as "operator" | "consultant" | "saas" | undefined, platform: enrichedInput.platform, campaignName: enrichedInput.campaignName, userId: user.id });
+      } else if (slug === "stripe-link") {
+        const { runStripeLinkSkill } = await import("@/lib/skills/stripeSkills");
+        result = await runStripeLinkSkill(user.id, {
+          product_name: enrichedInput.product_name,
+          price: enrichedInput.price,
+          type: enrichedInput.type,
+          success_url: enrichedInput.success_url
+        });
+      } else if (slug === "payment-workflow") {
+        const { runPaymentWorkflowSkill } = await import("@/lib/skills/stripeSkills");
+        result = await runPaymentWorkflowSkill(user.id, {
+          offer: enrichedInput.offer,
+          price: enrichedInput.price,
+          business_name: enrichedInput.business_name
+        });
       } else {
         result = await runEmailCampaignSkill({ url: enrichedInput.url, flowType: enrichedInput.flowType, listGoal: enrichedInput.listGoal, tone: enrichedInput.tone, userId: user.id });
       }
@@ -88,7 +109,10 @@ export async function POST(
 
     return NextResponse.json(result);
   } catch (err) {
-    console.error("Skill run error:", err);
-    return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });
+    console.error(`Skill run error [${slug}]:`, err);
+    return NextResponse.json(
+      { ok: false, error: "Failed to execute skill. Check server logs." },
+      { status: 500 }
+    );
   }
 }

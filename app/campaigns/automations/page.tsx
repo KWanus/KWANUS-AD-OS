@@ -355,7 +355,7 @@ export default function AutomationsBuilder() {
                     </span>
                 </div>
 
-                <div className="flex flex-1 items-center justify-center">
+                <div className="flex flex-1 items-center justify-center gap-3">
                     {automationList.length > 0 && (
                         <select
                             onChange={(e) => { if (e.target.value) void loadAutomation(e.target.value); }}
@@ -366,6 +366,12 @@ export default function AutomationsBuilder() {
                                 <option key={a.id} value={a.id} className="bg-[#0d1525]">{a.name} ({a.status})</option>
                             ))}
                         </select>
+                    )}
+                    {automationId && (
+                        <a href={`/campaigns/automations/${automationId}`}
+                            className="flex items-center gap-1 px-3 py-1.5 rounded-lg border border-white/[0.08] text-[11px] font-bold text-white/40 hover:text-white/70 hover:border-white/15 transition">
+                            Runs & Stats
+                        </a>
                     )}
                 </div>
 

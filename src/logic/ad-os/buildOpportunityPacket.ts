@@ -13,6 +13,7 @@ export type OpportunityPacket = {
   priorityActions: string[];
   whyCouldWin: string;
   whyCouldFail: string;
+  recommendedBlocks: string[];
 };
 
 function buildWhyCouldWin(strengths: string[], dimensions: DimensionScores): string {
@@ -47,5 +48,6 @@ export function buildOpportunityPacket(
     priorityActions: recommendation.priorityActions,
     whyCouldWin: buildWhyCouldWin(gaps.topStrengths, dimensions),
     whyCouldFail: buildWhyCouldFail(gaps.topGaps, dimensions),
+    recommendedBlocks: gaps.recommendedBlocks,
   };
 }

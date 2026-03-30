@@ -437,7 +437,7 @@ Reference input:
 ${input.bodyText.slice(0, 2500)}`;
 
   const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
+    model: "claude-sonnet-4-6-20250514",
     max_tokens: 2200,
     temperature: 0.7,
     messages: [{ role: "user", content: prompt }],

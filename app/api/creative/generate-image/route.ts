@@ -51,8 +51,33 @@ export async function POST(req: NextRequest) {
     }
 
     const size = RATIO_TO_SIZE[body.aspectRatio ?? "1:1"] ?? "1024x1024";
-    const client = new OpenAI({ apiKey });
 
+    // Use fal.ai for Elite if key is present
+    const falKey = process.env.FAL_KEY;
+    if (executionTier === "elite" && falKey && falKey !== "REPLACE_WITH_YOUR_FAL_KEY") {
+      try {
+        const { fal } = await import("@fal-ai/client");
+        fal.config({ credentials: falKey });
+
+        const { data } = await fal.subscribe("fal-ai/flux-pro/v1.1-ultra", {
+          input: {
+            prompt: buildCreativePrompt(body.prompt, executionTier),
+            aspect_ratio: body.aspectRatio === "9:16" ? "9:16" : body.aspectRatio === "16:9" ? "16:9" : "1:1",
+            raw: true,
+          },
+          logs: true,
+        }) as any;
+
+        const falUrl = data.images?.[0]?.url;
+        if (falUrl) {
+          return NextResponse.json({ ok: true, url: falUrl, executionTier, engine: "fal.ai" });
+        }
+      } catch (fErr) {
+        console.error("fal.ai generation failed, falling back to OpenAI:", fErr);
+      }
+    }
+
+    const client = new OpenAI({ apiKey });
     const response = await client.images.generate({
       model: body.model ?? "dall-e-3",
       prompt: buildCreativePrompt(body.prompt, executionTier),
@@ -69,7 +94,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "No image returned" }, { status: 500 });
     }
 
-    return NextResponse.json({ ok: true, url, revisedPrompt, executionTier });
+    return NextResponse.json({ ok: true, url, revisedPrompt, executionTier, engine: "openai" });
   } catch (err) {
     const message = err instanceof Error ? err.message : "Generation failed";
     console.error("Image generation error:", err);

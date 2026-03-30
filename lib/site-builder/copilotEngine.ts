@@ -268,7 +268,7 @@ Return:
 ${shapeByTarget[target] ?? shapeByTarget.hero}`;
 
   const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
+    model: "claude-sonnet-4-6-20250514",
     max_tokens: 450,
     temperature: 0.6,
     messages: [{ role: "user", content: prompt }],
@@ -370,7 +370,7 @@ Return:
 }`;
 
   const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
+    model: "claude-sonnet-4-6-20250514",
     max_tokens: 250,
     temperature: 0.55,
     messages: [{ role: "user", content: prompt }],

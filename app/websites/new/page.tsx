@@ -197,21 +197,19 @@ export default function NewSitePage() {
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setMode("generate")}
-                className={`rounded-2xl border px-4 py-2.5 text-sm font-bold transition ${
-                  mode === "generate"
+                className={`rounded-2xl border px-4 py-2.5 text-sm font-bold transition ${mode === "generate"
                     ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-200"
                     : "border-white/[0.08] bg-white/[0.03] text-white/55"
-                }`}
+                  }`}
               >
                 AI Generate
               </button>
               <button
                 onClick={() => setMode("manual")}
-                className={`rounded-2xl border px-4 py-2.5 text-sm font-bold transition ${
-                  mode === "manual"
+                className={`rounded-2xl border px-4 py-2.5 text-sm font-bold transition ${mode === "manual"
                     ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-200"
                     : "border-white/[0.08] bg-white/[0.03] text-white/55"
-                }`}
+                  }`}
               >
                 Manual
               </button>
@@ -226,11 +224,10 @@ export default function NewSitePage() {
                   key={preset.id}
                   type="button"
                   onClick={() => applyPreset(preset)}
-                  className={`rounded-2xl border p-4 text-left transition ${
-                    active
+                  className={`rounded-2xl border p-4 text-left transition ${active
                       ? "border-cyan-500/25 bg-cyan-500/10 text-cyan-100"
                       : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
-                  }`}
+                    }`}
                 >
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-sm font-black">{preset.label}</p>
@@ -269,18 +266,17 @@ export default function NewSitePage() {
             </div>
             <div className="mt-4 grid gap-3 md:grid-cols-2">
               {([
-                ["core", "Core", "Strong conversion baseline with the right structure, proof, CTA flow, and cleaner execution."],
-                ["elite", "Elite", "Best-of-the-best execution with stronger trust, more objection handling, better section depth, and a harder conversion edge."],
+                ["core", "Core", "Strong, clean, conversion-ready execution."],
+                ["elite", "Elite", "Sharper, more specific, more top-operator output."],
               ] as const).map(([value, label, description]) => (
                 <button
                   key={value}
                   type="button"
                   onClick={() => setExecutionTier(value)}
-                  className={`rounded-2xl border px-4 py-4 text-left transition ${
-                    executionTier === value
+                  className={`rounded-2xl border px-4 py-4 text-left transition ${executionTier === value
                       ? "border-cyan-500/25 bg-cyan-500/10 text-cyan-100"
                       : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
-                  }`}
+                    }`}
                 >
                   <p className="text-sm font-black">{label}</p>
                   <p className="mt-2 text-xs leading-5 text-inherit/80">{description}</p>
@@ -421,13 +417,12 @@ export default function NewSitePage() {
                       key={value}
                       type="button"
                       onClick={() => setManualTemplate(value)}
-                      className={`rounded-2xl border px-4 py-3 text-left transition ${
-                        manualTemplate === value
+                      className={`rounded-2xl border px-4 py-3 text-left transition ${manualTemplate === value
                           ? "border-cyan-500/25 bg-cyan-500/10 text-cyan-100"
                           : "border-white/[0.08] bg-white/[0.03] text-white/55"
-                      }`}
+                        }`}
                     >
-                    <p className="text-sm font-black">{label}</p>
+                      <p className="text-sm font-black">{label}</p>
                       <p className="mt-1 text-xs leading-5 text-inherit/75">{description}</p>
                     </button>
                   ))}

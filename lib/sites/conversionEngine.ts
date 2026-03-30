@@ -386,9 +386,9 @@ export function inferSiteInputFromPageContext(input: {
         String(block.props.title ?? ""),
         ...(Array.isArray(block.props.items)
           ? block.props.items.flatMap((item) => [
-              String((item as { title?: string }).title ?? ""),
-              String((item as { body?: string }).body ?? ""),
-            ])
+            String((item as { title?: string }).title ?? ""),
+            String((item as { body?: string }).body ?? ""),
+          ])
           : []),
       ];
     }
@@ -397,9 +397,9 @@ export function inferSiteInputFromPageContext(input: {
         String(block.props.title ?? ""),
         ...(Array.isArray(block.props.items)
           ? block.props.items.flatMap((item) => [
-              String((item as { q?: string }).q ?? ""),
-              String((item as { a?: string }).a ?? ""),
-            ])
+            String((item as { q?: string }).q ?? ""),
+            String((item as { a?: string }).a ?? ""),
+          ])
           : []),
       ];
     }
@@ -408,9 +408,9 @@ export function inferSiteInputFromPageContext(input: {
         String(block.props.title ?? ""),
         ...(Array.isArray(block.props.items)
           ? block.props.items.flatMap((item) => [
-              String((item as { quote?: string }).quote ?? ""),
-              String((item as { role?: string }).role ?? ""),
-            ])
+            String((item as { quote?: string }).quote ?? ""),
+            String((item as { role?: string }).role ?? ""),
+          ])
           : []),
       ];
     }
@@ -753,10 +753,15 @@ Return:
   "subheadline": "",
   "primary_cta": "",
   "secondary_cta": ""
-}`;
+}
+
+ELITE MODE: ${context.input.executionTier === "elite"
+      ? "IDENTITY: High-ticket direct-response expert. OBJECTIVE: 0.5s clarity + 2s punch. Make the benefit visceral."
+      : "IDENTITY: Conversion assistant. OBJECTIVE: Clarity and structure."
+    }`;
 
   const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
+    model: "claude-sonnet-4-6-20250514",
     max_tokens: 280,
     temperature: 0.6,
     messages: [{ role: "user", content: prompt }],
@@ -815,10 +820,22 @@ Process:
 FAQ:
 { "headline": "", "items": [{ "question": "", "answer": "" }] }`;
 
+  const system = `You are a world-class conversion engineer generating one section of a high-performance landing page.
+Business: ${context.input.businessName} in ${context.input.location}.
+Tier: ${context.input.executionTier.toUpperCase()}.
+
+${context.input.executionTier === "elite"
+      ? "ELITE DIRECTIVE: Use razor-sharp specificity. Name the exact pain. Name the exact transformation. Avoid all corporate fluff. Think like a top 1% operator who knows their customers' deepest fears and desires. Make the copy sound expensive and authoritative."
+      : "CORE DIRECTIVE: Use proven best practices. Focus on clarity, structure, and a clear path to action. Ensure the copy is professional and launch-ready."
+    }
+
+Return ONLY valid JSON.`;
+
   const response = await anthropic.messages.create({
-    model: "claude-sonnet-4-6",
+    model: "claude-sonnet-4-6-20250514",
     max_tokens: 480,
     temperature: 0.65,
+    system,
     messages: [{ role: "user", content: prompt }],
   });
 
@@ -1370,11 +1387,11 @@ function buildFaqPageBlocks(blueprint: SiteBlueprint): RenderBlock[] {
       items: faqItems.length
         ? faqItems.map((item) => ({ q: item.question, a: item.answer }))
         : [
-            {
-              q: `How do I get started with ${blueprint.brand.business_name}?`,
-              a: "Use the call to action on this page and you will be guided into the best next step.",
-            },
-          ],
+          {
+            q: `How do I get started with ${blueprint.brand.business_name}?`,
+            a: "Use the call to action on this page and you will be guided into the best next step.",
+          },
+        ],
       bgColor: "#050a14",
     },
   });

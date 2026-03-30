@@ -37,12 +37,12 @@ function ExecutionTierPicker({
         {
           id: "core" as const,
           label: "Core",
-          description: "Strong fast diagnostic with practical next actions.",
+          description: "Strong, clean, conversion-ready execution.",
         },
         {
           id: "elite" as const,
           label: "Elite",
-          description: "Sharper premium positioning for the follow-up build and pitch flow.",
+          description: "Sharper, more specific, more top-operator output.",
         },
       ].map((tier) => {
         const active = value === tier.id;
@@ -51,11 +51,10 @@ function ExecutionTierPicker({
             key={tier.id}
             type="button"
             onClick={() => onChange(tier.id)}
-            className={`rounded-2xl border p-4 text-left transition-all ${
-              active
+            className={`rounded-2xl border p-4 text-left transition-all ${active
                 ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
                 : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
-            }`}
+              }`}
           >
             <div className="flex items-center justify-between gap-3">
               <span className={`text-sm font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>

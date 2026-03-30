@@ -216,6 +216,41 @@ export const SKILLS: SkillMeta[] = [
     ],
     outputs: ["Welcome sequence (3 emails)", "Cart recovery sequence (3 emails)", "Post-purchase retention (3 emails)", "Email flow automation (visual)", "Broadcast template + subject lines"],
   },
+
+  // ── Payments ──────────────────────────────────────────────────────────────────
+  {
+    slug: "stripe-link",
+    name: "Stripe Checkout Link",
+    tagline: "High-converting payment links in 30 seconds",
+    description:
+      "Generate a ready-to-use Stripe Checkout link for any product or service. Optimized for mobile and multi-channel sales (social, email, SMS).",
+    icon: "💳",
+    category: "payments",
+    credits: 3,
+    inputs: [
+      { key: "product_name", label: "Product / service name", type: "text", placeholder: "e.g. 1-on-1 Coaching Session", required: true },
+      { key: "price", label: "Price ($)", type: "text", placeholder: "e.g. 197", required: true },
+      { key: "type", label: "Payment type", type: "select", options: ["One-time payment", "Monthly subscription", "Yearly subscription"], required: true },
+      { key: "success_url", label: "Success redirect URL", type: "url", placeholder: "https://yoursite.com/thanks" },
+    ],
+    outputs: ["Live Stripe Checkout URL", "Product & Price created in Stripe", "Embeddable payment button code"],
+  },
+  {
+    slug: "payment-workflow",
+    name: "Payment & Success Flow",
+    tagline: "Checkout → Success Page → Welcome Email in one click",
+    description:
+      "A complete 'Power Skill' that builds your entire sales engine: a Stripe checkout link, a custom success page on your site, and a post-purchase automated email sequence.",
+    icon: "⚙️",
+    category: "payments",
+    credits: 5,
+    inputs: [
+      { key: "offer", label: "What is the offer?", type: "textarea", placeholder: "e.g. The 'Scale to $10k' mastermind package", required: true },
+      { key: "price", label: "Price / terms", type: "text", placeholder: "e.g. $497 / month", required: true },
+      { key: "business_name", label: "Business name", type: "text", placeholder: "Himalaya Digital" },
+    ],
+    outputs: ["Stripe Checkout Link", "Custom Success Page", "Post-purchase Email Flow", "Customer added to CRM automatically"],
+  },
 ] as SkillMeta[];
 
 export function getSkill(slug: string): SkillMeta | undefined {
@@ -223,8 +258,9 @@ export function getSkill(slug: string): SkillMeta | undefined {
 }
 
 export const SKILL_CATEGORIES = {
-  ads:     { label: "Ads & Creative", emoji: "📣", color: "cyan" },
-  website: { label: "Website & SEO",  emoji: "🌐", color: "purple" },
-  email:   { label: "Email",          emoji: "📧", color: "blue" },
-  leads:   { label: "Lead Gen",       emoji: "🧲", color: "green" },
+  ads: { label: "Ads & Creative", emoji: "📣", color: "cyan" },
+  website: { label: "Website & SEO", emoji: "🌐", color: "purple" },
+  email: { label: "Email", emoji: "📧", color: "blue" },
+  leads: { label: "Lead Gen", emoji: "🧲", color: "green" },
+  payments: { label: "Payments", emoji: "💳", color: "amber" },
 } as const;

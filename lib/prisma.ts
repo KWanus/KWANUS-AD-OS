@@ -5,6 +5,12 @@ const globalForPrisma = globalThis as unknown as { prisma: PrismaClient | undefi
 
 function createPrismaClient(): PrismaClient {
   const connectionString = process.env.DATABASE_URL ?? "postgresql://localhost:5432/kwanus_db";
+
+  if (process.env.NODE_ENV === "development") {
+    const masked = connectionString.replace(/:[^:@]+@/, ":****@");
+    console.log(`[Prisma] Initializing with: ${masked}`);
+  }
+
   const adapter = new PrismaPg({ connectionString });
   return new PrismaClient({
     adapter,
