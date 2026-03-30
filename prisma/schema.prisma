@@ -56,6 +56,7 @@ model User {
   reports              ReportIntake[]
   servicePackages      ServicePackage[]
   sites                Site[]
+  himalayaRuns         HimalayaRun[]
 }
 
 model OptInForm {
@@ -847,4 +848,23 @@ model AutomationRunStep {
 
   @@index([runId])
   @@index([runId, nodeId])
+}
+
+model HimalayaRun {
+  id         String   @id @default(cuid())
+  userId     String?
+  mode       String
+  input      Json
+  diagnosis  Json?
+  strategy   Json?
+  generation Json?
+  results    Json?
+  trace      Json?
+  status     String   @default("pending")
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User?    @relation(fields: [userId], references: [id])
+
+  @@index([userId])
+  @@index([userId, createdAt])
 }
