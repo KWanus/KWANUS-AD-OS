@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, Suspense } from "react";
 import { toast } from "sonner";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import AppNav from "@/components/AppNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import CampaignSubNav from "@/components/BuildSubNav";
@@ -709,7 +709,16 @@ function CreateFlowModal({
 // Page
 // ---------------------------------------------------------------------------
 
-export default function EmailsPage() {
+export default function EmailsPageWrapper() {
+  return (
+    <Suspense>
+      <EmailsPage />
+    </Suspense>
+  );
+}
+
+function EmailsPage() {
+  const searchParams = useSearchParams();
   const [flows, setFlows] = useState<EmailFlow[]>([]);
   const [businessProfile, setBusinessProfile] = useState<BusinessProfileSummary | null>(null);
   const [osStats, setOsStats] = useState<StatsSummary | null>(null);
@@ -717,6 +726,15 @@ export default function EmailsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [recommendedTemplateId, setRecommendedTemplateId] = useState<string | null>(null);
   const [syncingSystem, setSyncingSystem] = useState(false);
+
+  // Auto-open create modal when redirected from templates page
+  useEffect(() => {
+    if (searchParams.get("createFlow") === "1") {
+      setModalOpen(true);
+      const templateId = searchParams.get("templateId");
+      if (templateId) setRecommendedTemplateId(templateId);
+    }
+  }, [searchParams]);
   const [refreshingRecommendations, setRefreshingRecommendations] = useState(false);
 
   const fetchFlows = useCallback(async () => {
