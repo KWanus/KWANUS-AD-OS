@@ -43,6 +43,12 @@ export type {
   ResultsPayload,
   CreatedResources,
 
+  // Observability
+  StageStatus,
+  StageResult,
+  RunTrace,
+  StageTrace,
+
   // Handoffs
   SiteHandoff,
   SiteBlock,

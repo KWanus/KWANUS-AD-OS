@@ -66,13 +66,20 @@ export async function POST(req: NextRequest) {
         };
       }
 
-      const diagnosis: ScratchDiagnosis = {
-        mode: "scratch",
+      const warnings: string[] = [];
+      if (!body.businessType) warnings.push("Missing businessType");
+      if (!body.niche) warnings.push("Missing niche");
+      if (!body.goal) warnings.push("Missing goal");
+
+      const diagnosis = {
+        mode: "scratch" as const,
         businessType: body.businessType || null,
         niche: body.niche || null,
         goal: body.goal || null,
         archetype: snapshot,
         description: body.description || null,
+        status: warnings.length ? "partial" as const : "success" as const,
+        warnings,
       };
 
       return NextResponse.json({ ok: true, mode: "scratch", diagnosis, userId });
@@ -113,7 +120,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({
           ok: true,
           mode: "improve",
-          diagnosis: { ...baseDiagnosis, descriptionOnly: true },
+          diagnosis: { ...baseDiagnosis, descriptionOnly: true, status: "partial" as const, warnings: ["No URL provided — running in description-only mode"] },
           userId,
         });
       }
@@ -129,7 +136,7 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({
           ok: true,
           mode: "improve",
-          diagnosis: { ...baseDiagnosis, url: input.url, scanFailed: true },
+          diagnosis: { ...baseDiagnosis, url: input.url, scanFailed: true, status: "partial" as const, warnings: ["URL scan failed — could not fetch page"] },
           userId,
         });
       }
@@ -147,8 +154,8 @@ export async function POST(req: NextRequest) {
       const truthProfile = getProfileForMode("consultant");
       const truthResult = runTruthEngine(dimensions, truthProfile);
 
-      const diagnosis: ImproveDiagnosis = {
-        mode: "improve",
+      const diagnosis = {
+        mode: "improve" as const,
         businessType: null,
         niche: null,
         goal: null,
@@ -172,6 +179,8 @@ export async function POST(req: NextRequest) {
         },
         challenge: body.challenge || null,
         businessDescription: body.businessDescription || null,
+        status: "success" as const,
+        warnings: [] as string[],
       };
 
       return NextResponse.json({ ok: true, mode: "improve", diagnosis, userId });

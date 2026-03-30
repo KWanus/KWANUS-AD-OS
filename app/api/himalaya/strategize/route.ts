@@ -90,7 +90,8 @@ Decide what to fix first.`;
       });
     }
 
-    const strategy: StrategyPayload = JSON.parse(match[0]);
+    const parsed = JSON.parse(match[0]);
+    const strategy: StrategyPayload = { ...parsed, status: "success", warnings: [] };
 
     return NextResponse.json({ ok: true, mode: body.mode, strategy });
   } catch (err) {
@@ -102,6 +103,8 @@ Decide what to fix first.`;
 function fallbackStrategy(mode: "scratch" | "improve"): StrategyPayload {
   if (mode === "scratch") {
     return {
+      status: "fallback",
+      warnings: ["Used deterministic fallback strategy"],
       summary: "Build your business foundation: profile, site, and follow-up system.",
       actions: [
         { priority: 1, action: "Create business profile and positioning", why: "Foundation for everything else", impact: "high", engine: "profile" },
@@ -114,6 +117,8 @@ function fallbackStrategy(mode: "scratch" | "improve"): StrategyPayload {
   }
 
   return {
+    status: "fallback",
+    warnings: ["Used deterministic fallback strategy"],
     summary: "Fix the biggest conversion blockers first, then build growth systems.",
     actions: [
       { priority: 1, action: "Fix site conversion issues", why: "Your site is leaking potential customers", impact: "high", engine: "site" },

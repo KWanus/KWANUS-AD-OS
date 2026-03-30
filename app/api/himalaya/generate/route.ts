@@ -65,7 +65,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: "Generation failed." }, { status: 500 });
     }
 
-    const generated: GenerationPayload = JSON.parse(match[0]);
+    const parsed = JSON.parse(match[0]);
+    const genWarnings: string[] = [];
+    const hasHomepage = "homepage" in parsed && parsed.homepage?.headline;
+    const hasEmails = "emails" in parsed && parsed.emails?.sequence?.length;
+    if (!hasHomepage) genWarnings.push("No homepage generated");
+    if (!hasEmails) genWarnings.push("No email sequence generated");
+    const generated: GenerationPayload = {
+      ...parsed,
+      status: genWarnings.length ? "partial" : "success",
+      warnings: genWarnings,
+    };
 
     // Save to DB
     const created = await saveToDb(generated, userId);

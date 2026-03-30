@@ -8,6 +8,42 @@
  *   UserInput → DiagnosisPayload → StrategyPayload → GenerationPayload → ResultsPayload
  */
 
+// ─── Pipeline Status (every stage carries this) ─────────────────────────────
+
+export type StageStatus = "success" | "partial" | "fallback" | "failed";
+
+export interface StageResult {
+  status: StageStatus;
+  warnings: string[];
+}
+
+// ─── Run Trace (observability log for each pipeline execution) ───────────────
+
+export interface RunTrace {
+  runId: string;
+  userId: string | null;
+  mode: "scratch" | "improve";
+  startedAt: string;
+  completedAt: string | null;
+  stages: {
+    diagnosis: StageTrace;
+    strategy: StageTrace;
+    generation: StageTrace;
+    save: StageTrace;
+  };
+  createdResources: CreatedResources;
+}
+
+export interface StageTrace {
+  status: StageStatus;
+  startedAt: string;
+  completedAt: string | null;
+  durationMs: number | null;
+  fallbackUsed: boolean;
+  warnings: string[];
+  error: string | null;
+}
+
 // ─── User Input ──────────────────────────────────────────────────────────────
 
 export interface ScratchInput {
@@ -103,7 +139,7 @@ export interface DecisionPacket {
   nextActions: string[];
 }
 
-export type DiagnosisPayload = ScratchDiagnosis | ImproveDiagnosis;
+export type DiagnosisPayload = (ScratchDiagnosis | ImproveDiagnosis) & StageResult;
 
 // ─── Strategy Payload (output of Strategy Engine) ────────────────────────────
 
@@ -115,7 +151,7 @@ export interface StrategyAction {
   engine: "profile" | "site" | "email" | "ads" | "operations";
 }
 
-export interface StrategyPayload {
+export interface StrategyPayload extends StageResult {
   summary: string;
   actions: StrategyAction[];
   generateQueue: string[];
@@ -216,7 +252,7 @@ export interface Fix {
   impact: "high" | "medium" | "low";
 }
 
-export type GenerationPayload = ScratchGeneration | ImproveGeneration;
+export type GenerationPayload = (ScratchGeneration | ImproveGeneration) & StageResult;
 
 // ─── Results Payload (final output to UI) ────────────────────────────────────
 
@@ -226,6 +262,7 @@ export interface ResultsPayload {
   strategy: StrategyPayload;
   generated: GenerationPayload;
   created: CreatedResources;
+  trace: RunTrace;
 }
 
 export interface CreatedResources {

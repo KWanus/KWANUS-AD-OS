@@ -30,13 +30,99 @@ import type {
   ArchetypeSnapshot,
   StrategyPayload,
   GenerationPayload,
+  ScratchGeneration,
+  ImproveGeneration,
   ResultsPayload,
   CreatedResources,
   SiteBlock,
   HomepagePayload,
+  StageStatus,
+  StageTrace,
+  RunTrace,
 } from "./contracts";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
+
+// ─── Tracing Helpers ────────────────────────────────────────────────────────
+
+function newStageTrace(): StageTrace {
+  return {
+    status: "failed",
+    startedAt: new Date().toISOString(),
+    completedAt: null,
+    durationMs: null,
+    fallbackUsed: false,
+    warnings: [],
+    error: null,
+  };
+}
+
+function completeStage(trace: StageTrace, status: StageStatus): StageTrace {
+  const now = new Date();
+  trace.status = status;
+  trace.completedAt = now.toISOString();
+  trace.durationMs = now.getTime() - new Date(trace.startedAt).getTime();
+  return trace;
+}
+
+function generateRunId(): string {
+  return `hml_${Date.now()}_${Math.random().toString(36).slice(2, 8)}`;
+}
+
+// ─── Minimum Viable Output Validation ───────────────────────────────────────
+
+function validateDiagnosis(d: ScratchDiagnosis | ImproveDiagnosis): string[] {
+  const warnings: string[] = [];
+  if (!d.mode) warnings.push("Missing mode");
+  if (d.mode === "scratch") {
+    const s = d as ScratchDiagnosis;
+    if (!s.businessType) warnings.push("Missing businessType");
+    if (!s.niche) warnings.push("Missing niche");
+    if (!s.goal) warnings.push("Missing goal");
+  } else {
+    const imp = d as ImproveDiagnosis;
+    if (!imp.url && !imp.businessDescription) warnings.push("No URL or description provided");
+    if (imp.scanFailed) warnings.push("URL scan failed — running in description-only mode");
+  }
+  return warnings;
+}
+
+function validateStrategy(s: StrategyPayload): string[] {
+  const warnings: string[] = [];
+  if (!s.summary) warnings.push("Missing strategy summary");
+  if (!s.actions?.length) warnings.push("No strategic actions generated");
+  if (!s.generateQueue?.length) warnings.push("Empty generation queue");
+  return warnings;
+}
+
+function validateGeneration(g: ScratchGeneration | ImproveGeneration): string[] {
+  const warnings: string[] = [];
+  const hasHomepage = "homepage" in g && g.homepage?.headline;
+  const hasEmails = "emails" in g && g.emails?.sequence?.length;
+  const hasRoadmap = "roadmap" in g && g.roadmap?.thisWeek?.length;
+
+  if (!hasHomepage) warnings.push("No homepage generated");
+  if (!hasEmails) warnings.push("No email sequence generated");
+  if (!hasRoadmap) warnings.push("No roadmap generated");
+
+  if ("profile" in g) {
+    const profile = g.profile;
+    if (!profile?.businessName) warnings.push("Missing business name in profile");
+    if (!profile?.offer) warnings.push("Missing offer in profile");
+  }
+  if ("audit" in g) {
+    const audit = g.audit;
+    if (audit?.overallScore == null) warnings.push("Missing audit score");
+    if (!g.fixes?.length) warnings.push("No fixes generated");
+  }
+  return warnings;
+}
+
+function deriveStatus(warnings: string[], failed: boolean): StageStatus {
+  if (failed) return "failed";
+  if (warnings.length === 0) return "success";
+  return "partial";
+}
 
 // ─── Main Orchestrator ───────────────────────────────────────────────────────
 
@@ -44,29 +130,86 @@ export async function runHimalaya(
   input: HimalayaInput,
   userId: string | null
 ): Promise<ResultsPayload> {
+  const runId = generateRunId();
+  const startedAt = new Date().toISOString();
+
+  const traces = {
+    diagnosis: newStageTrace(),
+    strategy: newStageTrace(),
+    generation: newStageTrace(),
+    save: newStageTrace(),
+  };
+
   // Step 1: Diagnose
-  const diagnosis = await diagnose(input);
+  const diagnosisRaw = await diagnose(input);
+  const diagWarnings = validateDiagnosis(diagnosisRaw);
+  const diagStatus = deriveStatus(diagWarnings, false);
+  completeStage(traces.diagnosis, diagStatus);
+  traces.diagnosis.warnings = diagWarnings;
+  const diagnosis: DiagnosisPayload = { ...diagnosisRaw, status: diagStatus, warnings: diagWarnings };
 
   // Step 2: Strategize
-  const strategy = await strategize(diagnosis);
+  const { result: strategyRaw, fallbackUsed: strategyFallback } = await strategize(diagnosis);
+  const stratWarnings = validateStrategy(strategyRaw);
+  if (strategyFallback) stratWarnings.push("Used fallback strategy (AI unavailable)");
+  const stratStatus: StageStatus = strategyFallback ? "fallback" : deriveStatus(stratWarnings, false);
+  completeStage(traces.strategy, stratStatus);
+  traces.strategy.fallbackUsed = strategyFallback;
+  traces.strategy.warnings = stratWarnings;
+  const strategy: StrategyPayload = { ...strategyRaw, status: stratStatus, warnings: stratWarnings };
 
   // Step 3: Generate
-  const generated = await generate(diagnosis, strategy);
-
-  // Step 4: Save
-  const created = await save(generated, userId);
-
-  // Step 5: Save business profile for scratch users
-  if (userId && diagnosis.mode === "scratch" && "profile" in generated) {
-    await saveBusinessProfile(userId, diagnosis as ScratchDiagnosis, generated);
+  let generated: GenerationPayload;
+  try {
+    const genRaw = await generate(diagnosis, strategy);
+    const genWarnings = validateGeneration(genRaw);
+    const genStatus = deriveStatus(genWarnings, false);
+    completeStage(traces.generation, genStatus);
+    traces.generation.warnings = genWarnings;
+    generated = { ...genRaw, status: genStatus, warnings: genWarnings };
+  } catch (e) {
+    completeStage(traces.generation, "failed");
+    traces.generation.error = e instanceof Error ? e.message : "Generation failed";
+    throw e;
   }
 
-  return { mode: input.mode, diagnosis, strategy, generated, created };
+  // Step 4: Save
+  let created: CreatedResources;
+  try {
+    created = await save(generated, userId);
+
+    if (userId && diagnosis.mode === "scratch" && "profile" in generated) {
+      await saveBusinessProfile(userId, diagnosis as ScratchDiagnosis, generated);
+    }
+
+    const saveWarnings: string[] = [];
+    if (userId && !created.siteId) saveWarnings.push("Site save skipped or failed");
+    if (userId && !created.emailFlowId) saveWarnings.push("Email flow save skipped or failed");
+    const saveStatus = !userId ? "success" : deriveStatus(saveWarnings, false);
+    completeStage(traces.save, saveStatus);
+    traces.save.warnings = saveWarnings;
+  } catch (e) {
+    completeStage(traces.save, "failed");
+    traces.save.error = e instanceof Error ? e.message : "Save failed";
+    created = { siteId: null, emailFlowId: null };
+  }
+
+  const trace: RunTrace = {
+    runId,
+    userId,
+    mode: input.mode,
+    startedAt,
+    completedAt: new Date().toISOString(),
+    stages: traces,
+    createdResources: created,
+  };
+
+  return { mode: input.mode, diagnosis, strategy, generated, created, trace };
 }
 
 // ─── Step 1: Diagnosis ───────────────────────────────────────────────────────
 
-async function diagnose(input: HimalayaInput): Promise<DiagnosisPayload> {
+async function diagnose(input: HimalayaInput): Promise<ScratchDiagnosis | ImproveDiagnosis> {
   if (input.mode === "scratch") {
     return diagnoseScratch(input);
   }
@@ -186,9 +329,11 @@ async function diagnoseImprove(input: ImproveInput): Promise<ImproveDiagnosis> {
 
 // ─── Step 2: Strategy ────────────────────────────────────────────────────────
 
-async function strategize(diagnosis: DiagnosisPayload): Promise<StrategyPayload> {
+async function strategize(
+  diagnosis: DiagnosisPayload
+): Promise<{ result: StrategyPayload; fallbackUsed: boolean }> {
   if (!process.env.ANTHROPIC_API_KEY) {
-    return fallbackStrategy(diagnosis);
+    return { result: fallbackStrategy(diagnosis), fallbackUsed: true };
   }
 
   const systemPrompt = `You are Himalaya's Strategy Engine — a business consultant that decides what to build, in what order, and why.
@@ -215,8 +360,8 @@ Rules:
 BUSINESS TYPE: ${diagnosis.businessType}
 NICHE: ${diagnosis.niche}
 GOAL: ${diagnosis.goal}
-DESCRIPTION: ${diagnosis.description || "none"}
-ARCHETYPE: ${diagnosis.archetype ? JSON.stringify(diagnosis.archetype) : "none"}
+DESCRIPTION: ${(diagnosis as ScratchDiagnosis).description || "none"}
+ARCHETYPE: ${(diagnosis as ScratchDiagnosis).archetype ? JSON.stringify((diagnosis as ScratchDiagnosis).archetype) : "none"}
 
 Decide what to build first.`
     : `MODE: Improving existing business
@@ -240,17 +385,19 @@ Decide what to fix first.`;
 
     const raw = msg.content[0].type === "text" ? msg.content[0].text : "";
     const match = raw.match(/\{[\s\S]*\}/);
-    if (match) return JSON.parse(match[0]) as StrategyPayload;
+    if (match) return { result: JSON.parse(match[0]) as StrategyPayload, fallbackUsed: false };
   } catch (e) {
     console.error("Strategy AI failed:", e);
   }
 
-  return fallbackStrategy(diagnosis);
+  return { result: fallbackStrategy(diagnosis), fallbackUsed: true };
 }
 
 function fallbackStrategy(diagnosis: DiagnosisPayload): StrategyPayload {
   if (diagnosis.mode === "scratch") {
     return {
+      status: "fallback",
+      warnings: ["Used deterministic fallback strategy"],
       summary: "Build your business foundation: profile, site, and follow-up system.",
       actions: [
         { priority: 1, action: "Create business profile and positioning", why: "Foundation for everything else", impact: "high", engine: "profile" },
@@ -263,6 +410,8 @@ function fallbackStrategy(diagnosis: DiagnosisPayload): StrategyPayload {
   }
 
   return {
+    status: "fallback",
+    warnings: ["Used deterministic fallback strategy"],
     summary: "Fix the biggest conversion blockers first, then build growth systems.",
     actions: [
       { priority: 1, action: "Fix site conversion issues", why: "Your site is leaking potential customers", impact: "high", engine: "site" },
@@ -279,7 +428,7 @@ function fallbackStrategy(diagnosis: DiagnosisPayload): StrategyPayload {
 async function generate(
   diagnosis: DiagnosisPayload,
   strategy: StrategyPayload
-): Promise<GenerationPayload> {
+): Promise<ScratchGeneration | ImproveGeneration> {
   if (!process.env.ANTHROPIC_API_KEY) {
     throw new Error("AI not configured. Set ANTHROPIC_API_KEY.");
   }
@@ -306,7 +455,7 @@ async function generate(
 
   if (!match) throw new Error("Generation failed — no structured output returned.");
 
-  return JSON.parse(match[0]) as GenerationPayload;
+  return JSON.parse(match[0]) as ScratchGeneration | ImproveGeneration;
 }
 
 // ─── Step 4: Save to DB ─────────────────────────────────────────────────────
