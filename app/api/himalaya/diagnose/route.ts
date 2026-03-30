@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
+import { getArchetype, type BusinessType } from "@/lib/archetypes";
 import { normalizeInput } from "@/src/logic/ad-os/normalizeInput";
 import { fetchPage } from "@/src/logic/ad-os/fetchPage";
 import { classifyLink } from "@/src/logic/ad-os/classifyLink";
@@ -12,25 +13,21 @@ import { scoreOpportunityDimensions } from "@/src/logic/ad-os/scoreOpportunityDi
 import { classifyOpportunity } from "@/src/logic/ad-os/classifyOpportunity";
 import { detectOpportunityGaps } from "@/src/logic/ad-os/detectOpportunityGaps";
 import { runTruthEngine, getProfileForMode } from "@/rules/truthEngine";
-import { getArchetype, type BusinessType } from "@/lib/archetypes";
+import type { ScratchDiagnosis, ImproveDiagnosis, ArchetypeSnapshot } from "@/lib/himalaya/contracts";
 
 /**
  * Himalaya Diagnosis API — the glue layer.
  *
- * Two modes:
- * 1. "scratch" — user starting from zero. Diagnosis = viability + archetype intelligence.
- * 2. "improve" — user has a URL. Diagnosis = full scan + truth engine + gap detection.
+ * Returns typed DiagnosisPayload for both scratch and improve paths.
  */
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json() as {
       mode: "scratch" | "improve";
-      // scratch fields
       businessType?: string;
       niche?: string;
       goal?: string;
       description?: string;
-      // improve fields
       url?: string;
       businessDescription?: string;
       challenge?: string;
@@ -45,36 +42,43 @@ export async function POST(req: NextRequest) {
       }
     } catch { /* auth optional */ }
 
-    // ── Scratch path ──────────────────────────────────────────────────────────
+    // ── Scratch path ──────────────────────────────────────────────────────
     if (body.mode === "scratch") {
       const archetype = getArchetype(body.businessType as BusinessType);
-      const niche = body.niche || "general";
-      const goal = body.goal || "first_client";
+      let snapshot: ArchetypeSnapshot | null = null;
 
-      return NextResponse.json({
-        ok: true,
+      if (archetype) {
+        snapshot = {
+          label: archetype.label,
+          acquisitionModel: archetype.acquisitionModel,
+          salesProcess: archetype.salesProcess,
+          funnelType: archetype.funnelType,
+          conversionTriggers: archetype.conversionTriggers,
+          topObjections: archetype.topObjections,
+          winningAngles: archetype.winningAngles,
+          systems: archetype.systems.map((s) => ({
+            slug: s.slug,
+            name: s.name,
+            priority: s.priority,
+            estimatedImpact: s.estimatedImpact,
+            why: s.why,
+          })),
+        };
+      }
+
+      const diagnosis: ScratchDiagnosis = {
         mode: "scratch",
-        diagnosis: {
-          businessType: body.businessType,
-          niche,
-          goal,
-          archetype: archetype ? {
-            label: archetype.label,
-            acquisitionModel: archetype.acquisitionModel,
-            salesProcess: archetype.salesProcess,
-            funnelType: archetype.funnelType,
-            conversionTriggers: archetype.conversionTriggers,
-            topObjections: archetype.topObjections,
-            winningAngles: archetype.winningAngles,
-            systems: archetype.systems,
-          } : null,
-          description: body.description || null,
-        },
-        userId,
-      });
+        businessType: body.businessType || null,
+        niche: body.niche || null,
+        goal: body.goal || null,
+        archetype: snapshot,
+        description: body.description || null,
+      };
+
+      return NextResponse.json({ ok: true, mode: "scratch", diagnosis, userId });
     }
 
-    // ── Improve path ──────────────────────────────────────────────────────────
+    // ── Improve path ──────────────────────────────────────────────────────
     if (body.mode === "improve") {
       if (!body.url && !body.businessDescription) {
         return NextResponse.json(
@@ -83,84 +87,94 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      // If they gave a URL, run the full scan pipeline
-      if (body.url) {
-        const input = normalizeInput(body.url, "consultant");
-        if (!input.valid) {
-          return NextResponse.json({ ok: false, error: input.error }, { status: 400 });
-        }
+      const baseDiagnosis: ImproveDiagnosis = {
+        mode: "improve",
+        businessType: null,
+        niche: null,
+        goal: null,
+        url: body.url || null,
+        title: null,
+        score: null,
+        verdict: null,
+        confidence: null,
+        summary: null,
+        strengths: null,
+        weaknesses: null,
+        breakdown: [],
+        diagnostics: [],
+        gaps: [],
+        decisionPacket: null,
+        challenge: body.challenge || null,
+        businessDescription: body.businessDescription || null,
+      };
 
-        const page = await fetchPage(input.url);
-        if (!page.ok) {
-          return NextResponse.json({
-            ok: true,
-            mode: "improve",
-            diagnosis: {
-              url: input.url,
-              scanFailed: true,
-              error: `Could not fetch page. ${page.error || ""}`.trim(),
-              challenge: body.challenge || null,
-              businessDescription: body.businessDescription || null,
-            },
-            userId,
-          });
-        }
-
-        const linkType = classifyLink(input.url, page);
-        const signals = extractSignals(page);
-        const linkDiagnosis = diagnoseLink(signals, linkType);
-        const scoreResult = scoreOpportunity(signals, linkDiagnosis, page);
-        const packet = buildDecisionPacket(signals, linkDiagnosis, scoreResult, linkType, "consultant");
-
-        const dimensions = scoreOpportunityDimensions(signals, page);
-        const classified = classifyOpportunity(dimensions);
-        const gaps = detectOpportunityGaps(dimensions, signals);
-
-        const truthProfile = getProfileForMode("consultant");
-        const truthResult = runTruthEngine(dimensions, truthProfile);
-
+      // No URL — description only
+      if (!body.url) {
         return NextResponse.json({
           ok: true,
           mode: "improve",
-          diagnosis: {
-            url: input.url,
-            title: page.title || signals.productName || input.url,
-            score: truthResult.totalScore,
-            verdict: truthResult.verdict,
-            confidence: truthResult.confidence,
-            summary: packet.summary,
-            strengths: truthResult.strengthSummary,
-            weaknesses: truthResult.weaknessSummary,
-            breakdown: truthResult.breakdown,
-            diagnostics: truthResult.diagnostics,
-            gaps: gaps,
-            classified: classified.status,
-            decisionPacket: {
-              audience: packet.audience,
-              painDesire: packet.painDesire,
-              strengths: packet.strengths,
-              weaknesses: packet.weaknesses,
-              nextActions: packet.nextActions,
-            },
-            challenge: body.challenge || null,
-            businessDescription: body.businessDescription || null,
-          },
+          diagnosis: { ...baseDiagnosis, descriptionOnly: true },
           userId,
         });
       }
 
-      // No URL — description only path
-      return NextResponse.json({
-        ok: true,
+      // URL scan
+      const input = normalizeInput(body.url, "consultant");
+      if (!input.valid) {
+        return NextResponse.json({ ok: false, error: input.error }, { status: 400 });
+      }
+
+      const page = await fetchPage(input.url);
+      if (!page.ok) {
+        return NextResponse.json({
+          ok: true,
+          mode: "improve",
+          diagnosis: { ...baseDiagnosis, url: input.url, scanFailed: true },
+          userId,
+        });
+      }
+
+      const linkType = classifyLink(input.url, page);
+      const signals = extractSignals(page);
+      const linkDiag = diagnoseLink(signals, linkType);
+      const scoreResult = scoreOpportunity(signals, linkDiag, page);
+      const packet = buildDecisionPacket(signals, linkDiag, scoreResult, linkType, "consultant");
+
+      const dimensions = scoreOpportunityDimensions(signals, page);
+      classifyOpportunity(dimensions);
+      const gaps = detectOpportunityGaps(dimensions, signals);
+
+      const truthProfile = getProfileForMode("consultant");
+      const truthResult = runTruthEngine(dimensions, truthProfile);
+
+      const diagnosis: ImproveDiagnosis = {
         mode: "improve",
-        diagnosis: {
-          url: null,
-          descriptionOnly: true,
-          businessDescription: body.businessDescription,
-          challenge: body.challenge || null,
+        businessType: null,
+        niche: null,
+        goal: null,
+        url: input.url,
+        title: page.title || signals.productName || input.url,
+        score: truthResult.totalScore,
+        verdict: truthResult.verdict,
+        confidence: truthResult.confidence,
+        summary: packet.summary,
+        strengths: truthResult.strengthSummary,
+        weaknesses: truthResult.weaknessSummary,
+        breakdown: truthResult.breakdown,
+        diagnostics: truthResult.diagnostics,
+        gaps: Array.isArray(gaps) ? gaps : [],
+        decisionPacket: {
+          audience: packet.audience,
+          painDesire: packet.painDesire,
+          strengths: packet.strengths,
+          weaknesses: packet.weaknesses,
+          nextActions: packet.nextActions,
         },
-        userId,
-      });
+        challenge: body.challenge || null,
+        businessDescription: body.businessDescription || null,
+      };
+
+      return NextResponse.json({ ok: true, mode: "improve", diagnosis, userId });
     }
 
     return NextResponse.json({ ok: false, error: "Invalid mode." }, { status: 400 });

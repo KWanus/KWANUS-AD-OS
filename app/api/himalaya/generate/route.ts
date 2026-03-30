@@ -3,20 +3,23 @@ import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 import Anthropic from "@anthropic-ai/sdk";
 import { prisma } from "@/lib/prisma";
+import type {
+  DiagnosisPayload,
+  ScratchDiagnosis,
+  ImproveDiagnosis,
+  StrategyPayload,
+  GenerationPayload,
+  HomepagePayload,
+  CreatedResources,
+  SiteBlock,
+} from "@/lib/himalaya/contracts";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 /**
- * Himalaya Generation API — creates assets based on strategy + diagnosis.
+ * Himalaya Generation API — creates assets from DiagnosisPayload + StrategyPayload.
  *
- * Takes the diagnosis context and generates:
- * - Business profile + positioning
- * - Offer direction
- * - Website blueprint + homepage copy
- * - Email starter sequence
- * - Action roadmap
- *
- * For "improve" mode, generates fixes instead of new assets.
+ * Returns typed GenerationPayload + CreatedResources (saved site/email IDs).
  */
 export async function POST(req: NextRequest) {
   try {
@@ -26,8 +29,8 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json() as {
       mode: "scratch" | "improve";
-      diagnosis: Record<string, unknown>;
-      strategy: Record<string, unknown>;
+      diagnosis: DiagnosisPayload;
+      strategy: StrategyPayload;
     };
 
     let userId: string | null = null;
@@ -39,142 +42,217 @@ export async function POST(req: NextRequest) {
       }
     } catch { /* auth optional */ }
 
-    const systemPrompt = buildGenerationSystemPrompt(body.mode);
-    const userPrompt = buildGenerationUserPrompt(body.mode, body.diagnosis, body.strategy);
+    // Generate
+    const systemPrompt = body.mode === "scratch"
+      ? SCRATCH_GENERATION_SYSTEM
+      : IMPROVE_GENERATION_SYSTEM;
 
-    const message = await anthropic.messages.create({
+    const userPrompt = body.mode === "scratch"
+      ? buildScratchPrompt(body.diagnosis as ScratchDiagnosis, body.strategy)
+      : buildImprovePrompt(body.diagnosis as ImproveDiagnosis, body.strategy);
+
+    const msg = await anthropic.messages.create({
       model: "claude-sonnet-4-6-20250514",
       max_tokens: 4096,
       system: systemPrompt,
       messages: [{ role: "user", content: userPrompt }],
     });
 
-    const raw = message.content[0].type === "text" ? message.content[0].text : "";
-    const jsonMatch = raw.match(/\{[\s\S]*\}/);
+    const raw = msg.content[0].type === "text" ? msg.content[0].text : "";
+    const match = raw.match(/\{[\s\S]*\}/);
 
-    if (!jsonMatch) {
+    if (!match) {
       return NextResponse.json({ ok: false, error: "Generation failed." }, { status: 500 });
     }
 
-    const generated = JSON.parse(jsonMatch[0]);
+    const generated: GenerationPayload = JSON.parse(match[0]);
 
-    // Persist site if homepage copy was generated
-    let siteId: string | null = null;
-    if (userId && generated.homepage) {
-      try {
-        const blocks = buildSiteBlocks(generated.homepage);
-        const site = await prisma.site.create({
-          data: {
-            userId,
-            name: generated.profile?.businessName || "Himalaya Site",
-            slug: `himalaya-${Date.now()}`,
-            published: false,
-            theme: { primaryColor: "#06b6d4", font: "inter", mode: "dark" },
-            pages: {
-              create: {
-                title: "Home",
-                slug: "home",
-                published: true,
-                blocks: blocks as never,
-                seoTitle: generated.homepage.seoTitle ?? null,
-                seoDesc: generated.homepage.seoDesc ?? null,
-              },
-            },
-          },
-        });
-        siteId = site.id;
-      } catch (e) {
-        console.error("Site creation failed:", e);
-      }
+    // Save to DB
+    const created = await saveToDb(generated, userId);
+
+    // Save business profile for scratch users
+    if (userId && body.mode === "scratch" && "profile" in generated) {
+      await saveBusinessProfile(userId, body.diagnosis as ScratchDiagnosis, generated);
     }
 
-    // Persist email flow if generated
-    let emailFlowId: string | null = null;
-    if (userId && generated.emails?.sequence?.length) {
-      try {
-        const flow = await prisma.emailFlow.create({
-          data: {
-            userId,
-            name: "Himalaya Starter Sequence",
-            status: "draft",
-            trigger: "manual",
-            nodes: generated.emails.sequence as never,
-          },
-        });
-        emailFlowId = flow.id;
-      } catch (e) {
-        console.error("Email flow creation failed:", e);
-      }
-    }
-
-    // Save business profile if scratch mode
-    if (userId && body.mode === "scratch" && generated.profile) {
-      try {
-        await prisma.businessProfile.upsert({
-          where: { userId },
-          create: {
-            userId,
-            businessType: String(body.diagnosis.businessType || ""),
-            businessName: generated.profile.businessName || null,
-            niche: String(body.diagnosis.niche || ""),
-            mainOffer: generated.profile.offer || null,
-            targetAudience: generated.profile.targetAudience || null,
-            stage: "starting",
-          },
-          update: {
-            businessName: generated.profile.businessName || undefined,
-            mainOffer: generated.profile.offer || undefined,
-            targetAudience: generated.profile.targetAudience || undefined,
-          },
-        });
-      } catch (e) {
-        console.error("Business profile save failed:", e);
-      }
-    }
-
-    return NextResponse.json({
-      ok: true,
-      mode: body.mode,
-      generated,
-      created: {
-        siteId,
-        emailFlowId,
-      },
-    });
+    return NextResponse.json({ ok: true, mode: body.mode, generated, created });
   } catch (err) {
     console.error("Himalaya generate error:", err);
     return NextResponse.json({ ok: false, error: "Generation failed." }, { status: 500 });
   }
 }
 
-// ── Prompt builders ─────────────────────────────────────────────────────────
+// ─── Prompt builders ─────────────────────────────────────────────────────────
 
-function buildGenerationSystemPrompt(mode: "scratch" | "improve"): string {
-  if (mode === "scratch") {
-    return `You are Himalaya's Generation Engine — a world-class business strategist and copywriter.
+function buildScratchPrompt(diagnosis: ScratchDiagnosis, strategy: StrategyPayload): string {
+  return `BUSINESS TYPE: ${diagnosis.businessType}
+NICHE: ${diagnosis.niche}
+GOAL: ${diagnosis.goal}
+DESCRIPTION: ${diagnosis.description || "none"}
+ARCHETYPE: ${diagnosis.archetype ? JSON.stringify(diagnosis.archetype) : "none"}
 
-You create complete business foundations from scratch. Your output must feel custom, specific, and immediately actionable — not generic template filler.
+STRATEGY:
+${JSON.stringify(strategy, null, 2)}
 
-Return a single JSON object (no markdown fences) with this structure:
+Generate everything. Be specific to the niche. Write copy that converts.`;
+}
+
+function buildImprovePrompt(diagnosis: ImproveDiagnosis, strategy: StrategyPayload): string {
+  return `DIAGNOSIS:
+${JSON.stringify(diagnosis, null, 2)}
+
+STRATEGY:
+${JSON.stringify(strategy, null, 2)}
+
+Fix the biggest weaknesses. Rewrite homepage. Create follow-up emails. Generate ad angles. Build action roadmap.`;
+}
+
+// ─── DB Save ─────────────────────────────────────────────────────────────────
+
+async function saveToDb(
+  generated: GenerationPayload,
+  userId: string | null
+): Promise<CreatedResources> {
+  const result: CreatedResources = { siteId: null, emailFlowId: null };
+  if (!userId) return result;
+
+  // Save site
+  const homepage = "homepage" in generated ? generated.homepage : null;
+  if (homepage) {
+    try {
+      const blocks = buildSiteBlocks(homepage);
+      const name = "profile" in generated ? (generated.profile?.businessName || "Himalaya Site") : "Himalaya Site";
+
+      const site = await prisma.site.create({
+        data: {
+          userId,
+          name,
+          slug: `himalaya-${Date.now()}`,
+          published: false,
+          theme: { primaryColor: "#06b6d4", font: "inter", mode: "dark" },
+          pages: {
+            create: {
+              title: "Home",
+              slug: "home",
+              published: true,
+              blocks: blocks as never,
+              seoTitle: homepage.seoTitle ?? null,
+              seoDesc: homepage.seoDesc ?? null,
+            },
+          },
+        },
+      });
+      result.siteId = site.id;
+    } catch (e) {
+      console.error("Site save failed:", e);
+    }
+  }
+
+  // Save email flow
+  const emails = "emails" in generated ? generated.emails : null;
+  if (emails?.sequence?.length) {
+    try {
+      const flow = await prisma.emailFlow.create({
+        data: {
+          userId,
+          name: "Himalaya Starter Sequence",
+          status: "draft",
+          trigger: "manual",
+          nodes: emails.sequence as never,
+        },
+      });
+      result.emailFlowId = flow.id;
+    } catch (e) {
+      console.error("Email flow save failed:", e);
+    }
+  }
+
+  return result;
+}
+
+async function saveBusinessProfile(
+  userId: string,
+  diagnosis: ScratchDiagnosis,
+  generated: GenerationPayload
+): Promise<void> {
+  if (!("profile" in generated)) return;
+  const profile = generated.profile;
+  try {
+    await prisma.businessProfile.upsert({
+      where: { userId },
+      create: {
+        userId,
+        businessType: diagnosis.businessType || "",
+        businessName: profile.businessName || null,
+        niche: diagnosis.niche || "",
+        mainOffer: profile.offer || null,
+        targetAudience: profile.targetAudience || null,
+        stage: "starting",
+      },
+      update: {
+        businessName: profile.businessName || undefined,
+        mainOffer: profile.offer || undefined,
+        targetAudience: profile.targetAudience || undefined,
+      },
+    });
+  } catch (e) {
+    console.error("Business profile save failed:", e);
+  }
+}
+
+// ─── Helpers ─────────────────────────────────────────────────────────────────
+
+function buildSiteBlocks(homepage: HomepagePayload): SiteBlock[] {
+  const now = Date.now();
+  const blocks: SiteBlock[] = [];
+
+  blocks.push({
+    id: `hero-${now}`,
+    type: "hero",
+    props: {
+      headline: homepage.headline,
+      subheadline: homepage.subheadline,
+      buttonText: homepage.heroButtonText || "Get Started",
+    },
+  });
+
+  if (homepage.sections) {
+    for (const section of homepage.sections) {
+      blocks.push({
+        id: `${section.type}-${now}-${Math.random().toString(36).slice(2, 6)}`,
+        type: section.type,
+        props: { ...section },
+      });
+    }
+  }
+
+  return blocks;
+}
+
+// ─── Prompt Constants ────────────────────────────────────────────────────────
+
+const SCRATCH_GENERATION_SYSTEM = `You are Himalaya's Generation Engine — a world-class business strategist and copywriter.
+
+Return a single JSON object (no markdown fences) with this exact structure:
 {
   "profile": {
-    "businessName": "suggested name",
-    "positioning": "one-line positioning statement",
-    "targetAudience": "specific audience description",
-    "offer": "core offer description",
+    "businessName": "...",
+    "positioning": "one-line positioning",
+    "targetAudience": "specific audience",
+    "offer": "core offer",
     "differentiator": "what makes this different",
-    "priceRange": "suggested price range"
+    "priceRange": "suggested range"
   },
   "idealCustomer": {
     "demographics": "who they are",
-    "painPoints": ["pain 1", "pain 2", "pain 3"],
-    "desires": ["desire 1", "desire 2", "desire 3"],
-    "buyingTriggers": ["trigger 1", "trigger 2"]
+    "painPoints": ["...", "...", "..."],
+    "desires": ["...", "...", "..."],
+    "buyingTriggers": ["...", "..."]
   },
   "homepage": {
-    "headline": "main headline",
-    "subheadline": "supporting line",
-    "heroButtonText": "CTA text",
+    "headline": "...",
+    "subheadline": "...",
+    "heroButtonText": "...",
     "sections": [
       { "type": "features", "title": "...", "items": [{"title":"...","body":"..."}] },
       { "type": "testimonials", "title": "...", "items": [{"name":"...","quote":"..."}] },
@@ -185,48 +263,39 @@ Return a single JSON object (no markdown fences) with this structure:
     "seoDesc": "..."
   },
   "marketingAngles": [
-    { "angle": "short name", "hook": "the hook line", "platform": "best platform for this" }
+    { "angle": "name", "hook": "the hook line", "platform": "best platform" }
   ],
   "emails": {
     "sequence": [
-      { "name": "email name", "subject": "subject line", "preview": "preview text", "body": "full email body", "delayDays": 0 }
+      { "name": "...", "subject": "...", "preview": "...", "body": "...", "delayDays": 0 }
     ]
   },
   "roadmap": {
-    "thisWeek": ["action 1", "action 2"],
-    "thisMonth": ["action 1", "action 2"],
-    "thisQuarter": ["action 1", "action 2"]
+    "thisWeek": ["...", "..."],
+    "thisMonth": ["...", "..."],
+    "thisQuarter": ["...", "..."]
   }
 }
 
-Be specific. Use the niche and business type to make everything feel tailored. Write copy that converts, not copy that fills space.`;
-  }
+Be specific. Use the niche and business type. Write copy that converts, not filler.`;
 
-  return `You are Himalaya's Generation Engine — a world-class business optimizer.
+const IMPROVE_GENERATION_SYSTEM = `You are Himalaya's Generation Engine — a world-class business optimizer.
 
-You take diagnosis results and generate specific fixes and improvements. Every output must directly address a weakness found in the diagnosis.
-
-Return a single JSON object (no markdown fences) with this structure:
+Return a single JSON object (no markdown fences) with this exact structure:
 {
   "audit": {
     "overallScore": 0-100,
     "summary": "1-2 sentence assessment",
-    "strengths": ["what's working"],
-    "weaknesses": ["what's broken, ranked by impact"]
+    "strengths": ["..."],
+    "weaknesses": ["ranked by impact"]
   },
   "fixes": [
-    {
-      "priority": 1,
-      "area": "site | offer | trust | conversion | followup | brand",
-      "problem": "what's wrong",
-      "fix": "what to do",
-      "impact": "high | medium | low"
-    }
+    { "priority": 1, "area": "site|offer|trust|conversion|followup|brand", "problem": "...", "fix": "...", "impact": "high|medium|low" }
   ],
   "homepage": {
-    "headline": "improved headline",
-    "subheadline": "improved subheadline",
-    "heroButtonText": "improved CTA",
+    "headline": "...",
+    "subheadline": "...",
+    "heroButtonText": "...",
     "sections": [...],
     "seoTitle": "...",
     "seoDesc": "..."
@@ -240,76 +309,10 @@ Return a single JSON object (no markdown fences) with this structure:
     ]
   },
   "roadmap": {
-    "thisWeek": ["fix 1", "fix 2"],
-    "thisMonth": ["fix 1", "fix 2"],
-    "thisQuarter": ["fix 1", "fix 2"]
+    "thisWeek": ["...", "..."],
+    "thisMonth": ["...", "..."],
+    "thisQuarter": ["...", "..."]
   }
 }
 
-Every fix must tie back to the diagnosis. Be specific about what's broken and how to fix it. Don't suggest generic improvements — address the actual weaknesses.`;
-}
-
-function buildGenerationUserPrompt(
-  mode: "scratch" | "improve",
-  diagnosis: Record<string, unknown>,
-  strategy: Record<string, unknown>
-): string {
-  if (mode === "scratch") {
-    return `Generate a complete business foundation.
-
-BUSINESS TYPE: ${diagnosis.businessType || "not specified"}
-NICHE: ${diagnosis.niche || "not specified"}
-GOAL: ${diagnosis.goal || "not specified"}
-DESCRIPTION: ${diagnosis.description || "none"}
-
-ARCHETYPE INTELLIGENCE:
-${diagnosis.archetype ? JSON.stringify(diagnosis.archetype, null, 2) : "none"}
-
-STRATEGY DECISION:
-${JSON.stringify(strategy, null, 2)}
-
-Generate everything this person needs to get started. Make it specific to their niche and business type. The copy should be ready to use, not placeholder text.`;
-  }
-
-  return `Generate fixes and improvements based on this diagnosis.
-
-DIAGNOSIS:
-${JSON.stringify(diagnosis, null, 2)}
-
-STRATEGY DECISION:
-${JSON.stringify(strategy, null, 2)}
-
-Fix the biggest weaknesses first. Rewrite the homepage copy to address conversion issues. Create email follow-up to address retention gaps. Generate ad angles based on the audience and pain points found in diagnosis.`;
-}
-
-// ── Site block builder ──────────────────────────────────────────────────────
-
-function buildSiteBlocks(homepage: Record<string, unknown>): Array<Record<string, unknown>> {
-  const blocks: Array<Record<string, unknown>> = [];
-  const now = Date.now();
-
-  // Hero block
-  blocks.push({
-    id: `hero-${now}`,
-    type: "hero",
-    props: {
-      headline: homepage.headline,
-      subheadline: homepage.subheadline,
-      buttonText: homepage.heroButtonText || "Get Started",
-    },
-  });
-
-  // Section blocks
-  const sections = homepage.sections as Array<Record<string, unknown>> | undefined;
-  if (sections) {
-    for (const section of sections) {
-      blocks.push({
-        id: `${section.type}-${now}-${Math.random().toString(36).slice(2, 6)}`,
-        type: String(section.type),
-        props: section,
-      });
-    }
-  }
-
-  return blocks;
-}
+Every fix must tie back to the diagnosis. Be specific about what's broken and how to fix it.`;
