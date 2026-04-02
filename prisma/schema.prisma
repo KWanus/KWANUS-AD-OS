@@ -88,6 +88,9 @@ model AnalysisRun {
   summary                String?
   rawSignals             Json?
   decisionPacket         Json?
+  pinned                 Boolean                 @default(false)
+  executionState         Json?
+  outcome                Json?
   createdAt              DateTime                @default(now())
   assetPackages          AssetPackage[]
   campaigns              Campaign[]
@@ -847,4 +850,86 @@ model AutomationRunStep {
 
   @@index([runId])
   @@index([runId, nodeId])
+}
+
+// ---------------------------------------------------------------------------
+// Himalaya: Templates, Presets, Memory
+// ---------------------------------------------------------------------------
+
+model HimalayaPipelineLog {
+  id              String   @id @default(cuid())
+  userId          String
+  analysisRunId   String?
+  mode            String
+  overallStatus   String   // success, partial, fallback, failed
+  stages          Json     // PipelineStage[]
+  totalDurationMs Int
+  savedEntityIds  Json?    // { analysisRunId, assetPackageId, profileId }
+  warnings        Json?    // string[]
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+  @@index([analysisRunId])
+}
+
+model HimalayaProfile {
+  id              String   @id @default(cuid())
+  userId          String
+  budget          String
+  timeAvailable   String
+  skills          Json     // string[]
+  riskTolerance   String
+  primaryGoal     String
+  businessStage   String
+  existingUrl     String?
+  niche           String?
+  description     String?
+  recommendedPath String?
+  decisionResult  Json?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model HimalayaTemplate {
+  id            String   @id @default(cuid())
+  userId        String
+  name          String
+  assetType     String   // adHooks, adScripts, landingPage, emailSequences, executionChecklist, adBriefs
+  mode          String   // operator, consultant
+  content       Json
+  sourceRunId   String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId])
+  @@index([userId, assetType])
+}
+
+model HimalayaPreset {
+  id            String   @id @default(cuid())
+  userId        String
+  name          String
+  config        Json     // { tone, density, homepageStyle, emailTone, roadmapDepth, businessType }
+  isDefault     Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model HimalayaMemory {
+  id            String   @id @default(cuid())
+  userId        String   @unique
+  lastNiche     String?
+  lastMode      String?
+  lastInputUrl  String?
+  lastPresetId  String?
+  preferredExport String? // markdown, docx, json
+  regenCounts   Json?    // { adHooks: 3, emails: 5, ... }
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId])
 }

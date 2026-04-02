@@ -10,7 +10,7 @@ import {
   LayoutDashboard, Globe, Mail, Users, Settings, Zap,
   ScanSearch, Sparkles, FolderOpen, ChevronDown, Search,
   Briefcase, MapPin, TrendingUp, ShoppingCart, Building,
-  Package, BotMessageSquare, Building2,
+  Package, BotMessageSquare, Building2, Mountain,
 } from "lucide-react";
 
 const CreditsDisplay = dynamic(() => import("@/components/CreditsDisplay"), { ssr: false });
@@ -19,6 +19,7 @@ const CreditsDisplay = dynamic(() => import("@/components/CreditsDisplay"), { ss
 
 const MAIN_NAV = [
   { href: "/",           label: "Home",      icon: LayoutDashboard, match: (p: string) => p === "/" },
+  { href: "/himalaya",   label: "Himalaya",  icon: Mountain,        match: (p: string) => p.startsWith("/himalaya") },
   { href: "/scan",       label: "Scan",      icon: ScanSearch,      match: (p: string) => p.startsWith("/scan") || p.startsWith("/analyses") },
   { href: "/campaigns",  label: "Campaigns", icon: FolderOpen,      match: (p: string) => p.startsWith("/campaigns") || p.startsWith("/projects") || p.startsWith("/emails") },
   { href: "/websites",   label: "Sites",     icon: Globe,           match: (p: string) => p.startsWith("/websites") },

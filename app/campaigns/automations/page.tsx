@@ -277,6 +277,14 @@ export default function AutomationsBuilder() {
         await handleSave("active");
     }
 
+    async function handlePause() {
+        await handleSave("paused");
+    }
+
+    async function handleDeactivate() {
+        await handleSave("draft");
+    }
+
     async function handleAutoGenerate() {
         if (!selectedCampaignId) return;
         setLoading(true);
@@ -384,12 +392,30 @@ export default function AutomationsBuilder() {
                         {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Save className="w-3.5 h-3.5" />}
                         Save
                     </button>
+                    {automationStatus === "active" && (
+                        <button
+                            onClick={() => void handlePause()}
+                            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold border border-amber-500/30 bg-amber-500/10 text-amber-400 hover:bg-amber-500/20 transition"
+                        >
+                            <Pause className="w-3.5 h-3.5" />
+                            Pause
+                        </button>
+                    )}
+                    {automationStatus === "paused" && (
+                        <button
+                            onClick={() => void handleDeactivate()}
+                            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold border border-white/[0.08] bg-white/[0.05] text-white/50 hover:text-white hover:bg-white/10 transition"
+                        >
+                            Deactivate
+                        </button>
+                    )}
                     <button
                         onClick={() => void handlePublish()}
-                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:opacity-90 transition"
+                        disabled={automationStatus === "active"}
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:opacity-90 transition disabled:opacity-40"
                     >
                         <Play className="w-3.5 h-3.5" />
-                        {automationStatus === "active" ? "Published" : "Save & Publish"}
+                        {automationStatus === "active" ? "Live" : automationStatus === "paused" ? "Resume" : "Save & Publish"}
                     </button>
                 </div>
             </header>

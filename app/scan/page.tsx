@@ -294,6 +294,55 @@ function BatchScanPanel({ mode }: { mode: string }) {
   );
 }
 
+const SCAN_STAGES = [
+  { label: "Connecting to site", delay: 0 },
+  { label: "Extracting page signals", delay: 800 },
+  { label: "Analyzing market position", delay: 2200 },
+  { label: "Scoring opportunity dimensions", delay: 4000 },
+  { label: "Generating strategic assets", delay: 6000 },
+  { label: "Finalizing results", delay: 8500 },
+];
+
+function ScanProgress() {
+  const [stage, setStage] = useState(0);
+
+  useEffect(() => {
+    const timers: NodeJS.Timeout[] = [];
+    for (let i = 1; i < SCAN_STAGES.length; i++) {
+      timers.push(setTimeout(() => setStage(i), SCAN_STAGES[i].delay));
+    }
+    return () => timers.forEach(clearTimeout);
+  }, []);
+
+  return (
+    <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-6 mb-6">
+      <div className="space-y-2.5">
+        {SCAN_STAGES.map((s, i) => (
+          <div
+            key={i}
+            className={`flex items-center gap-3 transition-all duration-500 ${
+              i <= stage ? "opacity-100" : "opacity-0 h-0 overflow-hidden"
+            }`}
+          >
+            {i < stage ? (
+              <CheckCircle className="w-3.5 h-3.5 text-emerald-400/60 shrink-0" />
+            ) : i === stage ? (
+              <Loader2 className="w-3.5 h-3.5 text-cyan-400 animate-spin shrink-0" />
+            ) : (
+              <div className="w-3.5 h-3.5 shrink-0" />
+            )}
+            <p className={`text-xs transition-colors duration-300 ${
+              i < stage ? "text-white/30" : i === stage ? "text-white/60" : "text-white/15"
+            }`}>
+              {s.label}
+            </p>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 function ScanPageInner() {
   const searchParams = useSearchParams();
   const [mode, setMode] = useState<ScanMode>("consultant");
@@ -304,8 +353,11 @@ function ScanPageInner() {
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState<ScanResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [resultsReady, setResultsReady] = useState(false);
   const [syncingSystem, setSyncingSystem] = useState(false);
   const [refreshingRecommendations, setRefreshingRecommendations] = useState(false);
+
+  const [memoryLoaded, setMemoryLoaded] = useState(false);
 
   useEffect(() => {
     const initialUrl = searchParams.get("url");
@@ -315,6 +367,20 @@ function ScanPageInner() {
     if (initialUrl) setUrl(initialUrl);
     if (initialMode === "consultant" || initialMode === "operator") setMode(initialMode);
     if (initialTier === "core" || initialTier === "elite") setExecutionTier(initialTier);
+
+    // Smart defaults from memory (only if no search params override)
+    if (!initialUrl && !initialMode) {
+      fetch("/api/himalaya/memory")
+        .then((r) => r.json() as Promise<{ ok: boolean; memory?: { lastInputUrl?: string; lastMode?: string } | null }>)
+        .then((data) => {
+          if (data.ok && data.memory) {
+            if (data.memory.lastInputUrl && !url) setUrl(data.memory.lastInputUrl);
+            if (data.memory.lastMode === "consultant" || data.memory.lastMode === "operator") setMode(data.memory.lastMode);
+            setMemoryLoaded(true);
+          }
+        })
+        .catch(() => {});
+    }
   }, [searchParams]);
 
   useEffect(() => {
@@ -358,7 +424,18 @@ function ScanPageInner() {
       if (!data.ok) {
         setError(data.error ?? "Scan failed. Check the URL and try again.");
       } else {
-        setResult(data);
+        // Brief "results ready" confirmation
+        setResultsReady(true);
+        setTimeout(() => {
+          setResultsReady(false);
+          setResult(data);
+        }, 800);
+        // Update memory (fire-and-forget)
+        fetch("/api/himalaya/memory", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ lastInputUrl: trimmed, lastMode: mode }),
+        }).catch(() => {});
       }
     } catch {
       setError("Could not reach the analysis server. Try again.");
@@ -573,8 +650,8 @@ function ScanPageInner() {
         {/* Mode context */}
         <p className="text-xs text-white/30 mb-5 -mt-1 pl-1">
           {mode === "consultant"
-            ? "Found a business with a bad site? Scan it, see exactly what's broken, and use Himalaya to build them a better one — then offer it as your service."
-            : "Found a dropship product, affiliate offer, or competitor? Scan it and we'll build you a better funnel for the same market."}
+            ? "Scan any business site. The system identifies what is broken, prioritizes the highest-impact fixes, and generates improved assets you can use or deliver."
+            : "Scan any product or competitor page. The system extracts market signals, scores the opportunity, and builds you a complete campaign system."}
         </p>
 
         <div className="mb-5 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
@@ -602,25 +679,35 @@ function ScanPageInner() {
         </div>
 
         {/* URL input */}
-        <div className="flex gap-2 mb-6">
-          <div className="flex-1 relative">
-            <input
-              type="url"
-              value={url}
-              onChange={(e) => setUrl(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && void runScan()}
-              placeholder={mode === "consultant" ? "https://localbusiness.com" : "https://amazon.com/dp/B0..."}
-              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/25 focus:outline-none focus:border-cyan-500/40 transition"
-            />
+        <div className="mb-6">
+          <div className="flex gap-2">
+            <div className="flex-1 relative">
+              <input
+                type="url"
+                value={url}
+                onChange={(e) => setUrl(e.target.value)}
+                onKeyDown={(e) => e.key === "Enter" && void runScan()}
+                placeholder={mode === "consultant" ? "https://localbusiness.com" : "https://amazon.com/dp/B0..."}
+                className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/25 focus:outline-none focus:border-cyan-500/40 transition"
+              />
+            </div>
+            <button
+              onClick={() => void runScan()}
+              disabled={!url.trim() || loading}
+              className="px-5 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed transition flex items-center gap-2"
+            >
+              {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
+              {loading ? "Scanning…" : "Scan"}
+            </button>
           </div>
-          <button
-            onClick={() => void runScan()}
-            disabled={!url.trim() || loading}
-            className="px-5 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed transition flex items-center gap-2"
-          >
-            {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
-            {loading ? "Scanning…" : "Scan"}
-          </button>
+          <p className="text-[10px] text-white/20 mt-1.5 pl-1">
+            {mode === "consultant"
+              ? "Paste their main landing page or homepage. Be specific — subpages work too."
+              : "Paste the product listing, landing page, or sales page URL."}
+          </p>
+          {memoryLoaded && url && (
+            <p className="text-[10px] text-purple-400/40 mt-1 pl-1">Loaded from your last session</p>
+          )}
         </div>
 
         {/* Batch scan */}
@@ -628,19 +715,14 @@ function ScanPageInner() {
           <BatchScanPanel mode={mode} />
         )}
 
-        {/* Scanning animation */}
-        {loading && (
-          <div className="bg-white/[0.03] border border-white/[0.07] rounded-2xl p-6 mb-6 flex flex-col items-center gap-3 text-center">
-            <div className="flex gap-1 items-center">
-              {[0, 150, 300, 450, 600].map((d) => (
-                <div
-                  key={d}
-                  className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-bounce"
-                  style={{ animationDelay: `${d}ms` }}
-                />
-              ))}
-            </div>
-            <p className="text-sm text-white/50">Scanning site… extracting signals, scoring opportunities</p>
+        {/* Scanning animation with staged progress */}
+        {loading && <ScanProgress />}
+
+        {/* Results ready confirmation */}
+        {resultsReady && !loading && (
+          <div className="bg-emerald-500/5 border border-emerald-500/15 rounded-2xl p-6 mb-6 flex flex-col items-center gap-2 text-center animate-in fade-in duration-300">
+            <CheckCircle className="w-6 h-6 text-emerald-400" />
+            <p className="text-sm font-bold text-emerald-300">Your results are ready</p>
           </div>
         )}
 

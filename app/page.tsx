@@ -435,6 +435,28 @@ export default function Dashboard() {
           ]}
         />
 
+        {/* Himalaya CTA */}
+        <section className="mb-8 rounded-[28px] border border-cyan-500/15 bg-gradient-to-br from-cyan-500/[0.06] to-purple-500/[0.04] p-6">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/60">Himalaya</p>
+              <h2 className="mt-1 text-lg font-black text-white">Start or improve a business in minutes</h2>
+              <p className="mt-1 max-w-xl text-sm leading-6 text-white/40">
+                Answer 7 questions. The system decides your best path, builds your foundation, and gives you everything to launch.
+              </p>
+            </div>
+            <div className="flex gap-3 shrink-0">
+              <Link
+                href="/himalaya"
+                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 px-5 py-3 text-sm font-black text-white shadow-[0_0_24px_rgba(6,182,212,0.2)]"
+              >
+                <Sparkles className="h-4 w-4" />
+                Launch Himalaya
+              </Link>
+            </div>
+          </div>
+        </section>
+
         {stats?.databaseUnavailable && (
           <section className="mb-8 rounded-[28px] border border-amber-500/20 bg-amber-500/10 p-5">
             <p className="text-[10px] font-black uppercase tracking-[0.24em] text-amber-200/80">Production Notice</p>
