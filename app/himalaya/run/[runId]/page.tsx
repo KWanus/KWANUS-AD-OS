@@ -20,6 +20,7 @@ import ExecutionBanner from "@/components/himalaya/ExecutionBanner";
 import DeployActions from "@/components/himalaya/DeployActions";
 import OutcomePrompt from "@/components/himalaya/OutcomePrompt";
 import AdaptiveInsights from "@/components/himalaya/AdaptiveInsights";
+import CompetitorCards from "@/components/himalaya/CompetitorCards";
 import { formatResults } from "@/lib/himalaya/formatResults";
 import type { RawAnalysis, HimalayaResultsViewModel } from "@/lib/himalaya/types";
 
@@ -113,6 +114,11 @@ export default function HimalayaRunPage({ params }: { params: Promise<{ runId: s
         {/* Adaptive Insights (from past outcomes) */}
         <div className="mb-6 print:hidden">
           <AdaptiveInsights mode={vm.mode} />
+        </div>
+
+        {/* A3. Competitor Intelligence */}
+        <div className="mb-6">
+          <CompetitorCards vm={vm} />
         </div>
 
         {/* B. Executive Summary */}

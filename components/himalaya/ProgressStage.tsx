@@ -7,16 +7,16 @@ export type UiStageState = "waiting" | "active" | "complete" | "partial" | "fall
 
 const STAGE_LABELS: Record<UiRunStage, { title: string; description: string }> = {
   diagnosis: {
-    title: "Diagnosis",
-    description: "Analyzing your business inputs and identifying the strongest path forward.",
+    title: "Researching Your Market",
+    description: "Finding competitors, scanning their sites, analyzing the competitive landscape.",
   },
   strategy: {
-    title: "Strategy",
-    description: "Determining what matters most and what should be built first.",
+    title: "Building Your Strategy",
+    description: "Analyzing competitor weaknesses and positioning you to win.",
   },
   generation: {
-    title: "Generation",
-    description: "Creating structured assets based on your diagnosis and strategy.",
+    title: "Creating Your Assets",
+    description: "Generating business profile, website, marketing, and email assets tailored to beat your competition.",
   },
   save: {
     title: "Save",

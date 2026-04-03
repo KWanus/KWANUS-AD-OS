@@ -397,15 +397,28 @@ export async function runHimalaya(
 
         const normalized = normalizeImprovePayload(raw as unknown as RawAnalysis);
         title = raw.title ?? `Improve: ${input.url}`;
-        return { payload: normalized, analysisId: scanResult.analysisId };
+
+        // Run niche intelligence on the same market to find competitors
+        let improveIntel = null;
+        try {
+          const niche = input.niche || normalized.niche || raw.title || "";
+          const bizType = raw.linkType || "business";
+          if (niche) {
+            improveIntel = await runNicheIntelligence(niche, bizType);
+          }
+        } catch {
+          // intel is optional for improve path
+        }
+
+        return { payload: normalized, analysisId: scanResult.analysisId, intel: improveIntel };
       },
-      { payload: null as HimalayaPayload | null, analysisId: null as string | null },
+      { payload: null as HimalayaPayload | null, analysisId: null as string | null, intel: null as unknown },
       "Scan failed — could not analyze the URL",
     );
 
     payload = diagResult.data.payload;
-    // If scan already created the AnalysisRun, use that ID
     if (diagResult.data.analysisId) runId = diagResult.data.analysisId;
+    if (diagResult.data.intel) intelData = diagResult.data.intel;
     allWarnings.push(...diagResult.warnings);
 
     // ── STAGE 2: STRATEGIZE ───────────────────────────────────────────────
@@ -427,7 +440,7 @@ export async function runHimalaya(
           const signals = (existing?.rawSignals as Record<string, unknown>) ?? {};
           await prisma.analysisRun.update({
             where: { id: runId },
-            data: { rawSignals: { ...signals, himalayaPayload: payload, himalayaStrategy: strategy } as object },
+            data: { rawSignals: { ...signals, nicheIntelligence: intelData, himalayaPayload: payload, himalayaStrategy: strategy } as object },
           });
         } catch {
           // non-blocking
