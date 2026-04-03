@@ -856,6 +856,23 @@ model AutomationRunStep {
 // Himalaya: Templates, Presets, Memory
 // ---------------------------------------------------------------------------
 
+model HimalayaDeployment {
+  id              String   @id @default(cuid())
+  userId          String
+  analysisRunId   String
+  siteId          String?
+  campaignId      String?
+  emailFlowId     String?
+  version         Int      @default(1)
+  qaScore         Int?
+  qaReport        Json?
+  sections        Json?    // snapshot of what was deployed
+  createdAt       DateTime @default(now())
+
+  @@index([userId])
+  @@index([analysisRunId])
+}
+
 model HimalayaPipelineLog {
   id              String   @id @default(cuid())
   userId          String

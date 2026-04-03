@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
+import { runDeploymentQA } from "@/lib/himalaya/deploymentQA";
 
 type DeployTarget = "campaign" | "site" | "emails" | "all";
 
@@ -258,7 +259,43 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    return NextResponse.json({ ok: true, deployed: results });
+    // ── RUN QA ON DEPLOYED SITE ────────────────────────────────────
+    let qaReport = null;
+    if (results.site) {
+      try {
+        const sitePages = await prisma.sitePage.findMany({ where: { siteId: results.site.id }, orderBy: { order: "asc" } });
+        const homeBlocks = (sitePages[0]?.blocks ?? []) as { type: string; data: Record<string, unknown> }[];
+        qaReport = runDeploymentQA(run.title ?? "Site", results.site.id, homeBlocks);
+      } catch {
+        // QA is non-blocking
+      }
+    }
+
+    // ── SAVE DEPLOYMENT RECORD ──────────────────────────────────────
+    try {
+      // Count existing deployments for versioning
+      const existingCount = await prisma.himalayaDeployment.count({
+        where: { analysisRunId: body.runId, userId: user.id },
+      });
+
+      await prisma.himalayaDeployment.create({
+        data: {
+          userId: user.id,
+          analysisRunId: body.runId,
+          siteId: results.site?.id ?? null,
+          campaignId: results.campaign?.id ?? null,
+          emailFlowId: results.emails?.id ?? null,
+          version: existingCount + 1,
+          qaScore: qaReport?.score ?? null,
+          qaReport: qaReport ? JSON.parse(JSON.stringify(qaReport)) : undefined,
+          sections: results.site ? { blocks: "saved" } : undefined,
+        },
+      });
+    } catch {
+      // deployment record is non-blocking
+    }
+
+    return NextResponse.json({ ok: true, deployed: results, qa: qaReport });
   } catch (err) {
     console.error("Deploy error:", err);
     return NextResponse.json({ ok: false, error: "Deploy failed" }, { status: 500 });
