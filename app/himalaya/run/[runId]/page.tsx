@@ -21,6 +21,7 @@ import DeployActions from "@/components/himalaya/DeployActions";
 import OutcomePrompt from "@/components/himalaya/OutcomePrompt";
 import AdaptiveInsights from "@/components/himalaya/AdaptiveInsights";
 import CompetitorCards from "@/components/himalaya/CompetitorCards";
+import UpgradeNudge from "@/components/himalaya/UpgradeNudge";
 import { formatResults } from "@/lib/himalaya/formatResults";
 import type { RawAnalysis, HimalayaResultsViewModel } from "@/lib/himalaya/types";
 
@@ -144,6 +145,11 @@ export default function HimalayaRunPage({ params }: { params: Promise<{ runId: s
         {/* D2. Deploy (hidden in print) */}
         <div className="mb-6 print:hidden">
           <DeployActions vm={vm} />
+        </div>
+
+        {/* Upgrade nudge after results */}
+        <div className="mb-6 print:hidden">
+          <UpgradeNudge context="after_results" />
         </div>
 
         {/* E. Warnings */}

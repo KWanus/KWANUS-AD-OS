@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { ArrowLeft, Check, Zap, Mountain, Loader2 } from "lucide-react";
+import { ArrowLeft, Check, Zap, Mountain, Loader2, Target, Rocket, BarChart2, TrendingUp, RefreshCw } from "lucide-react";
 import AppNav from "@/components/AppNav";
 import HimalayaNav from "@/components/himalaya/HimalayaNav";
 
@@ -14,20 +14,20 @@ type Access = {
 const PLANS = [
   {
     id: "free",
-    name: "Free",
+    name: "Explorer",
     price: "$0",
     period: "forever",
-    description: "Try Himalaya with limited access",
+    headline: "See what Himalaya can do",
     features: [
       "2 business runs",
       "1 deployment",
-      "Basic strategy + partial assets",
+      "Basic strategy + preview assets",
       "Run history",
     ],
     notIncluded: [
       "Competitive intelligence",
       "Full asset generation",
-      "Edit & regenerate",
+      "Edit & regenerate with AI",
       "Execution tracking",
       "Outcome learning",
       "Templates & presets",
@@ -39,48 +39,56 @@ const PLANS = [
   },
   {
     id: "pro",
-    name: "Pro",
+    name: "Builder",
     price: "$29",
     period: "/month",
-    description: "Full Himalaya system for serious builders",
+    headline: "Build, launch, and improve until you win",
     features: [
-      "50 runs per month",
-      "20 deployments per month",
-      "Competitive intelligence scanning",
-      "Claude-powered generation",
-      "Full asset packages",
-      "Deploy websites, campaigns, emails",
-      "Edit & regenerate with AI",
-      "Execution tracking + outcome learning",
+      "50 runs with competitive intelligence",
+      "20 site + campaign deployments",
+      "AI-powered niche research",
+      "Full asset packages that beat competitors",
+      "One-click deploy to site, campaigns, email",
+      "Edit & regenerate with Claude AI",
+      "Execution tracking with tool links",
+      "Outcome learning — system gets smarter",
       "Adaptive insights from your data",
       "Templates, presets, memory",
       "Export (Markdown, DOCX, JSON, PDF)",
-      "Run comparison",
+      "Side-by-side run comparison",
     ],
     notIncluded: [],
-    cta: "Upgrade to Pro",
+    cta: "Start Building",
     color: "cyan",
     popular: true,
   },
   {
     id: "business",
-    name: "Business",
+    name: "Operator",
     price: "$79",
     period: "/month",
-    description: "For agencies and operators running multiple businesses",
+    headline: "Scale across multiple businesses",
     features: [
-      "Everything in Pro",
-      "Unlimited runs",
-      "Unlimited deployments",
-      "Priority support",
+      "Everything in Builder",
+      "Unlimited runs & deployments",
+      "Priority AI generation",
       "Team access (coming soon)",
       "Advanced analytics (coming soon)",
+      "White-label exports (coming soon)",
     ],
     notIncluded: [],
-    cta: "Go Business",
+    cta: "Go Operator",
     color: "purple",
     popular: false,
   },
+];
+
+const LOOP_STEPS = [
+  { icon: Target, label: "Research", description: "Scan competitors in your niche" },
+  { icon: Rocket, label: "Build", description: "Generate assets that beat them" },
+  { icon: Zap, label: "Deploy", description: "Launch site, campaigns, emails" },
+  { icon: BarChart2, label: "Track", description: "Execute and report outcomes" },
+  { icon: TrendingUp, label: "Improve", description: "System learns, next run is better" },
 ];
 
 export default function HimalayaUpgradePage() {
@@ -97,9 +105,6 @@ export default function HimalayaUpgradePage() {
   async function handleUpgrade(planId: string) {
     if (planId === "free") return;
     setUpgrading(planId);
-
-    // For now, direct upgrade (no Stripe yet)
-    // In production, this would redirect to Stripe Checkout
     try {
       const res = await fetch("/api/himalaya/access", {
         method: "POST",
@@ -107,14 +112,8 @@ export default function HimalayaUpgradePage() {
         body: JSON.stringify({ tier: planId }),
       });
       const data = (await res.json()) as { ok: boolean };
-      if (data.ok) {
-        window.location.reload();
-      }
-    } catch {
-      // non-fatal
-    } finally {
-      setUpgrading(null);
-    }
+      if (data.ok) window.location.reload();
+    } catch {} finally { setUpgrading(null); }
   }
 
   return (
@@ -122,25 +121,46 @@ export default function HimalayaUpgradePage() {
       <AppNav />
       <HimalayaNav />
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
-        <Link href="/himalaya" className="inline-flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition mb-6">
+        <Link href="/himalaya" className="inline-flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition mb-8">
           <ArrowLeft className="w-3.5 h-3.5" /> Back to Himalaya
         </Link>
 
+        {/* Hero */}
         <div className="text-center mb-10">
-          <Mountain className="w-10 h-10 text-cyan-400 mx-auto mb-3" />
-          <h1 className="text-2xl font-black text-white mb-2">Upgrade Himalaya</h1>
+          <Mountain className="w-12 h-12 text-cyan-400 mx-auto mb-4" />
+          <h1 className="text-2xl sm:text-3xl font-black text-white mb-3">
+            Turn your ideas into results — <br className="hidden sm:block" />then improve them until they win
+          </h1>
           <p className="text-sm text-white/35 max-w-lg mx-auto">
-            Himalaya builds your business, deploys your assets, and learns from your results to improve over time. Unlock the full system.
+            Himalaya researches your market, builds your assets, deploys everything, and learns from your outcomes to make each run better than the last.
           </p>
-          {access && (
-            <p className="text-xs text-white/20 mt-3">
-              Current plan: <span className="text-white/40 font-bold capitalize">{access.tier}</span> ·
-              {access.usage.runsUsed} runs · {access.usage.deploysUsed} deploys
-            </p>
-          )}
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {/* The Loop — visual proof */}
+        <div className="mb-12">
+          <div className="flex items-center justify-center gap-1 sm:gap-2 flex-wrap">
+            {LOOP_STEPS.map((step, i) => (
+              <div key={i} className="flex items-center gap-1 sm:gap-2">
+                <div className="flex flex-col items-center gap-1">
+                  <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
+                    <step.icon className="w-4 h-4 text-cyan-400/60" />
+                  </div>
+                  <p className="text-[9px] font-bold text-white/30 text-center">{step.label}</p>
+                </div>
+                {i < LOOP_STEPS.length - 1 && (
+                  <div className="text-white/10 text-xs font-bold mt-[-12px]">→</div>
+                )}
+              </div>
+            ))}
+            <div className="text-cyan-400/30 text-xs font-bold mt-[-12px] ml-1">↻</div>
+          </div>
+          <p className="text-center text-[10px] text-white/20 mt-3">
+            Each cycle makes your business stronger. That's the real product.
+          </p>
+        </div>
+
+        {/* Plans */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
           {PLANS.map((plan) => {
             const isCurrent = access?.tier === plan.id;
             return (
@@ -153,17 +173,17 @@ export default function HimalayaUpgradePage() {
                 }`}
               >
                 {plan.popular && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-cyan-500 text-[10px] font-black text-white uppercase tracking-wider">
-                    Most Popular
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 text-[9px] font-black text-white uppercase tracking-wider">
+                    Most Chosen
                   </span>
                 )}
 
-                <h3 className="text-lg font-black text-white mb-1">{plan.name}</h3>
-                <div className="flex items-baseline gap-1 mb-2">
-                  <span className="text-2xl font-black text-white">{plan.price}</span>
-                  <span className="text-xs text-white/30">{plan.period}</span>
+                <h3 className="text-lg font-black text-white mb-0.5">{plan.name}</h3>
+                <p className="text-xs text-white/30 mb-3">{plan.headline}</p>
+                <div className="flex items-baseline gap-1 mb-4">
+                  <span className="text-3xl font-black text-white">{plan.price}</span>
+                  <span className="text-xs text-white/25">{plan.period}</span>
                 </div>
-                <p className="text-xs text-white/35 mb-4">{plan.description}</p>
 
                 <ul className="space-y-2 mb-6">
                   {plan.features.map((f, i) => (
@@ -173,7 +193,7 @@ export default function HimalayaUpgradePage() {
                     </li>
                   ))}
                   {plan.notIncluded.map((f, i) => (
-                    <li key={`no-${i}`} className="flex items-start gap-2 text-xs text-white/20 line-through">
+                    <li key={`no-${i}`} className="flex items-start gap-2 text-xs text-white/15 line-through">
                       <span className="w-3.5 h-3.5 shrink-0" />
                       {f}
                     </li>
@@ -183,7 +203,7 @@ export default function HimalayaUpgradePage() {
                 <button
                   onClick={() => void handleUpgrade(plan.id)}
                   disabled={isCurrent || upgrading === plan.id}
-                  className={`w-full py-2.5 rounded-xl text-xs font-bold transition ${
+                  className={`w-full py-3 rounded-xl text-sm font-bold transition ${
                     isCurrent
                       ? "bg-white/[0.04] border border-white/[0.08] text-white/30 cursor-default"
                       : plan.popular
@@ -192,7 +212,7 @@ export default function HimalayaUpgradePage() {
                   } disabled:opacity-40`}
                 >
                   {upgrading === plan.id ? (
-                    <Loader2 className="w-3.5 h-3.5 animate-spin mx-auto" />
+                    <Loader2 className="w-4 h-4 animate-spin mx-auto" />
                   ) : isCurrent ? (
                     "Current Plan"
                   ) : (
@@ -204,9 +224,26 @@ export default function HimalayaUpgradePage() {
           })}
         </div>
 
-        <p className="text-center text-[10px] text-white/15 mt-8">
-          All plans include the core Himalaya system. Upgrade or downgrade anytime.
-        </p>
+        {/* Social proof / urgency */}
+        <div className="text-center space-y-2">
+          <p className="text-xs text-white/25">Most users upgrade after their first run sees results.</p>
+          <p className="text-[10px] text-white/15">
+            Cancel anytime. No contracts. Your data stays yours.
+          </p>
+        </div>
+
+        {/* Usage stats */}
+        {access && (
+          <div className="mt-8 pt-6 border-t border-white/[0.05] text-center">
+            <p className="text-[10px] text-white/15 mb-2">Your usage so far</p>
+            <div className="flex justify-center gap-6 text-[11px] text-white/25">
+              <span><span className="text-white/40 font-bold">{access.usage.runsUsed}</span> runs</span>
+              <span><span className="text-white/40 font-bold">{access.usage.deploysUsed}</span> deploys</span>
+              <span><span className="text-white/40 font-bold">{access.usage.executionsUsed}</span> executions</span>
+              <span><span className="text-white/40 font-bold">{access.usage.outcomesLogged}</span> outcomes</span>
+            </div>
+          </div>
+        )}
       </main>
     </div>
   );

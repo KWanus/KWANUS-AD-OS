@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { CheckCircle, MinusCircle, TrendingDown, Clock, Loader2, MessageSquare } from "lucide-react";
+import UpgradeNudge from "./UpgradeNudge";
 
 type OutcomeResult = "improved" | "no_change" | "worse" | "not_done";
 type OutcomeData = { result: OutcomeResult; note?: string; timestamp: string };
@@ -58,18 +59,21 @@ export default function OutcomePrompt({ runId }: { runId: string }) {
     const config = OUTCOMES.find((o) => o.value === outcome.result);
     const Icon = config?.icon ?? CheckCircle;
     return (
-      <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4">
-        <div className="flex items-center gap-3">
-          <Icon className={`w-4 h-4 ${
-            outcome.result === "improved" ? "text-emerald-400" :
-            outcome.result === "worse" ? "text-red-400" :
-            outcome.result === "no_change" ? "text-amber-400" : "text-white/30"
-          }`} />
-          <div>
-            <p className="text-xs font-bold text-white/50">Outcome reported: {config?.label}</p>
-            {outcome.note && <p className="text-[10px] text-white/25 mt-0.5">{outcome.note}</p>}
+      <div className="space-y-3">
+        <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4">
+          <div className="flex items-center gap-3">
+            <Icon className={`w-4 h-4 ${
+              outcome.result === "improved" ? "text-emerald-400" :
+              outcome.result === "worse" ? "text-red-400" :
+              outcome.result === "no_change" ? "text-amber-400" : "text-white/30"
+            }`} />
+            <div>
+              <p className="text-xs font-bold text-white/50">Outcome reported: {config?.label}</p>
+              {outcome.note && <p className="text-[10px] text-white/25 mt-0.5">{outcome.note}</p>}
+            </div>
           </div>
         </div>
+        <UpgradeNudge context="after_outcome" />
       </div>
     );
   }

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { TrendingUp, Lightbulb } from "lucide-react";
+import Link from "next/link";
+import { TrendingUp, Lightbulb, Zap } from "lucide-react";
 
 type OutcomePatterns = Record<string, number>;
 
@@ -82,6 +83,12 @@ export default function AdaptiveInsights({ mode }: Props) {
           </li>
         ))}
       </ul>
+      <Link
+        href="/himalaya/upgrade"
+        className="inline-flex items-center gap-1.5 mt-3 text-[10px] font-semibold text-purple-400/40 hover:text-purple-400/70 transition"
+      >
+        <Zap className="w-2.5 h-2.5" /> These insights get sharper with more data — upgrade for full tracking
+      </Link>
     </div>
   );
 }
