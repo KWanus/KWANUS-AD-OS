@@ -106,6 +106,21 @@ export default function HimalayaUpgradePage() {
     if (planId === "free") return;
     setUpgrading(planId);
     try {
+      // Try Stripe checkout first
+      const checkoutRes = await fetch("/api/himalaya/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ plan: planId }),
+      });
+      const checkoutData = (await checkoutRes.json()) as { ok: boolean; url?: string; error?: string };
+
+      if (checkoutData.ok && checkoutData.url) {
+        // Redirect to Stripe
+        window.location.href = checkoutData.url;
+        return;
+      }
+
+      // Fallback: direct upgrade (dev mode / no Stripe)
       const res = await fetch("/api/himalaya/access", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

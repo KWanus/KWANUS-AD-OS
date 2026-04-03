@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
+import { incrementUsage } from "@/lib/himalaya/access";
 
 export async function GET(
   _req: NextRequest,
@@ -47,10 +48,18 @@ export async function PATCH(
 
     if (!analysis) return NextResponse.json({ ok: false, error: "Not found" }, { status: 404 });
 
+    // Check if this is the first execution save (no prior state)
+    const hadExecution = !!analysis.executionState;
+
     await prisma.analysisRun.update({
       where: { id },
       data: { executionState: body.executionState as object },
     });
+
+    // Track first execution start
+    if (!hadExecution) {
+      await incrementUsage(user.id, "executionsUsed").catch(() => {});
+    }
 
     return NextResponse.json({ ok: true });
   } catch (err) {

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
+import { incrementUsage } from "@/lib/himalaya/access";
 
 export type OutcomeData = {
   result: "improved" | "no_change" | "worse" | "not_done";
@@ -65,6 +66,9 @@ export async function POST(
       where: { id },
       data: { outcome: outcome as object },
     });
+
+    // Track usage
+    await incrementUsage(user.id, "outcomesLogged").catch(() => {});
 
     // Feed outcome into memory patterns
     try {

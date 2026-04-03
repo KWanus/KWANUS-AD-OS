@@ -149,12 +149,19 @@ export default function HimalayaEntryPage() {
 
   const [showProfiler, setShowProfiler] = useState(false);
   const [hasHistory, setHasHistory] = useState(false);
+  const [runsRemaining, setRunsRemaining] = useState<number | null>(null);
+  const [tier, setTier] = useState<string | null>(null);
 
   useEffect(() => {
     // Check if user has prior runs
     fetch("/api/analyses?limit=1")
       .then((r) => r.json() as Promise<{ ok: boolean; analyses?: unknown[] }>)
       .then((data) => { if (data.ok && data.analyses && data.analyses.length > 0) setHasHistory(true); })
+      .catch(() => {});
+    // Load access info
+    fetch("/api/himalaya/access")
+      .then((r) => r.json() as Promise<{ ok: boolean; access?: { tier: string; runsRemaining: number } }>)
+      .then((data) => { if (data.ok && data.access) { setRunsRemaining(data.access.runsRemaining); setTier(data.access.tier); } })
       .catch(() => {});
   }, []);
 
@@ -178,6 +185,20 @@ export default function HimalayaEntryPage() {
             <p className="text-xs text-white/30">Build, improve, and grow — guided by real competitive intelligence</p>
           </div>
         </div>
+
+        {/* Run counter */}
+        {tier === "free" && runsRemaining !== null && (
+          <div className="flex items-center gap-2 mt-3 mb-1">
+            <div className="flex-1 h-1 bg-white/[0.05] rounded-full overflow-hidden">
+              <div className="h-full bg-cyan-500/40 rounded-full" style={{ width: `${Math.max(((2 - runsRemaining) / 2) * 100, 5)}%` }} />
+            </div>
+            <span className="text-[10px] text-white/25 shrink-0">
+              {runsRemaining > 0 ? `${runsRemaining} free run${runsRemaining > 1 ? "s" : ""} remaining` : (
+                <Link href="/himalaya/upgrade" className="text-cyan-400/60 hover:text-cyan-400 transition">Upgrade to continue →</Link>
+              )}
+            </span>
+          </div>
+        )}
 
         {/* Check-in banner for returning users */}
         <CheckInBanner />
