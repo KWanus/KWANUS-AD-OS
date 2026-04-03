@@ -58,9 +58,10 @@ export default function HimalayaImprovePage() {
   const [error, setError] = useState<string | null>(null);
 
   const hasInput = url.trim() || description.trim();
+  const urlValid = !url.trim() || /^https?:\/\/.+\..+/.test(url.trim());
 
   async function handleSubmit() {
-    if (!hasInput) return;
+    if (!hasInput || !urlValid) return;
     setRunning(true);
     setError(null);
 
@@ -197,6 +198,7 @@ export default function HimalayaImprovePage() {
                   value={url}
                   onChange={(e) => setUrl(e.target.value)}
                   placeholder="https://yourbusiness.com"
+                  autoFocus
                   className="w-full bg-white/[0.04] border border-cyan-500/15 rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/30"
                 />
                 <p className="text-[10px] text-white/20 mt-1 pl-1">Paste your main page. The system scans it, finds weak points, and builds fixes.</p>
@@ -260,15 +262,14 @@ export default function HimalayaImprovePage() {
               {/* Submit */}
               <button
                 onClick={() => void handleSubmit()}
-                disabled={!hasInput}
+                disabled={!hasInput || !urlValid}
                 className="w-full py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-orange-600 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-30 disabled:cursor-not-allowed"
               >
                 Analyze My Business
               </button>
 
-              {!hasInput && (
-                <p className="text-[10px] text-white/15 text-center">Enter a URL or describe your business to continue</p>
-              )}
+              {!hasInput && <p className="text-[10px] text-white/15 text-center">Enter a URL or describe your business to continue</p>}
+              {url.trim() && !urlValid && <p className="text-[10px] text-red-400/60 text-center">Enter a valid URL starting with https://</p>}
             </div>
           </>
         )}

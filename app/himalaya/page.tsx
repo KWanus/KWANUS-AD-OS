@@ -193,7 +193,7 @@ export default function HimalayaEntryPage() {
               <div className="h-full bg-cyan-500/40 rounded-full" style={{ width: `${Math.max(((2 - runsRemaining) / 2) * 100, 5)}%` }} />
             </div>
             <span className="text-[10px] text-white/25 shrink-0">
-              {runsRemaining > 0 ? `${runsRemaining} free run${runsRemaining > 1 ? "s" : ""} remaining` : (
+              {runsRemaining > 0 ? `${runsRemaining} free run${runsRemaining > 1 ? "s" : ""} left (total, not monthly)` : (
                 <Link href="/himalaya/upgrade" className="text-cyan-400/60 hover:text-cyan-400 transition">Upgrade to continue →</Link>
               )}
             </span>

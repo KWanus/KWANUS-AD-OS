@@ -51,6 +51,7 @@ export default function ProgressStage({
 }) {
   return (
     <div className="max-w-md mx-auto py-12">
+      <p className="text-[10px] text-white/20 text-center mb-4">Usually takes 30-90 seconds depending on niche research</p>
       <div className="space-y-3">
         {STAGE_ORDER.map((key) => {
           const state = stages[key];

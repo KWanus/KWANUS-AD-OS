@@ -142,24 +142,23 @@ export default function HimalayaRunPage({ params }: { params: Promise<{ runId: s
           <ResultsAssets vm={vm} onRegenerated={loadRun} />
         </div>
 
-        {/* D2. Deploy (hidden in print) */}
+        {/* Upgrade nudge right after assets (highest conversion moment) */}
+        <div className="mb-6 print:hidden">
+          <UpgradeNudge context="after_results" />
+        </div>
+
+        {/* D2. Deploy + Execute (hidden in print) */}
         <div className="mb-6 print:hidden">
           <DeployActions vm={vm} />
         </div>
 
-        {/* Upgrade nudge after results */}
         <div className="mb-6 print:hidden">
-          <UpgradeNudge context="after_results" />
+          <ExecutionBanner runId={runId} />
         </div>
 
         {/* E. Warnings */}
         <div className="mb-6">
           <ResultsWarnings vm={vm} />
-        </div>
-
-        {/* E2. Execution Banner (hidden in print) */}
-        <div className="mb-6 print:hidden">
-          <ExecutionBanner runId={runId} />
         </div>
 
         {/* E3. Outcome (hidden in print) */}
@@ -172,20 +171,17 @@ export default function HimalayaRunPage({ params }: { params: Promise<{ runId: s
           <ResultsNextActions vm={vm} />
         </div>
 
-        {/* G. Export (hidden in print) */}
-        <div className="mb-6 print:hidden">
-          <ExportMenu vm={vm} />
-        </div>
-
-        {/* H. Operator Tools (hidden in print) */}
-        <div className="mb-6 print:hidden">
-          <ResultOperatorTools vm={vm} />
-        </div>
-
-        {/* I. Trace Details (hidden in print) */}
-        <div className="mb-6 print:hidden">
-          <ResultsTraceDetails vm={vm} />
-        </div>
+        {/* G. Export + Tools (collapsed, hidden in print) */}
+        <details className="mb-6 print:hidden">
+          <summary className="text-[10px] font-bold text-white/20 uppercase tracking-widest cursor-pointer hover:text-white/40 transition py-2">
+            Export & Tools
+          </summary>
+          <div className="space-y-4 mt-2">
+            <ExportMenu vm={vm} />
+            <ResultOperatorTools vm={vm} />
+            <ResultsTraceDetails vm={vm} />
+          </div>
+        </details>
       </main>
     </div>
   );

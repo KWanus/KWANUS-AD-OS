@@ -71,10 +71,10 @@ export default function RunHistoryList() {
           <Inbox className="w-10 h-10 text-white/10" />
           <p className="text-sm text-white/30">No runs yet</p>
           <Link
-            href="/scan"
+            href="/himalaya"
             className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs font-bold text-cyan-400 hover:bg-cyan-500/20 transition"
           >
-            Start Your First Run
+            Build Your First Foundation
           </Link>
         </div>
       ) : (
