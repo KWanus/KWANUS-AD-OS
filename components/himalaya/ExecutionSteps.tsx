@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { Loader2, Trophy, ArrowLeft } from "lucide-react";
+import { Loader2, Trophy, ArrowLeft, TrendingUp, Rocket, Target, BarChart2, RefreshCw } from "lucide-react";
 import Link from "next/link";
+import OutcomePrompt from "./OutcomePrompt";
 import ExecutionStepCard from "./ExecutionStepCard";
 import { buildExecutionSteps, mergeExecutionState } from "@/lib/himalaya/buildExecutionSteps";
 import type { ExecutionState } from "@/lib/himalaya/buildExecutionSteps";
@@ -12,6 +13,30 @@ type Props = {
   vm: HimalayaResultsViewModel;
   runId: string;
 };
+
+const GROWTH_COLORS: Record<string, string> = {
+  cyan: "bg-cyan-500/5 border-cyan-500/10",
+  purple: "bg-purple-500/5 border-purple-500/10",
+  amber: "bg-amber-500/5 border-amber-500/10",
+  emerald: "bg-emerald-500/5 border-emerald-500/10",
+};
+
+const GROWTH_ICON_COLORS: Record<string, string> = {
+  cyan: "text-cyan-400/60",
+  purple: "text-purple-400/60",
+  amber: "text-amber-400/60",
+  emerald: "text-emerald-400/60",
+};
+
+function GrowthCard({ icon: Icon, title, description, color }: { icon: React.ElementType; title: string; description: string; color: string }) {
+  return (
+    <div className={`rounded-xl border p-4 ${GROWTH_COLORS[color] ?? GROWTH_COLORS.cyan}`}>
+      <Icon className={`w-4 h-4 mb-2 ${GROWTH_ICON_COLORS[color] ?? GROWTH_ICON_COLORS.cyan}`} />
+      <h4 className="text-xs font-bold text-white/60 mb-1">{title}</h4>
+      <p className="text-[11px] text-white/35 leading-relaxed">{description}</p>
+    </div>
+  );
+}
 
 export default function ExecutionSteps({ vm, runId }: Props) {
   const [state, setState] = useState<ExecutionState | null>(null);
@@ -109,20 +134,102 @@ export default function ExecutionSteps({ vm, runId }: Props) {
         </div>
       </div>
 
-      {/* Completion */}
+      {/* Post-Execution Flow */}
       {allDone && (
-        <div className="bg-emerald-500/5 border border-emerald-500/15 rounded-2xl p-6 mb-6 flex flex-col items-center gap-3 text-center">
-          <Trophy className="w-8 h-8 text-emerald-400" />
-          <h2 className="text-lg font-black text-emerald-300">Execution Complete</h2>
-          <p className="text-xs text-white/40 max-w-md">
-            All steps are done. Your {vm.mode === "consultant" ? "improvement plan" : "business foundation"} has been fully executed.
-          </p>
-          <div className="flex flex-wrap justify-center gap-3 mt-3">
+        <div className="space-y-4 mb-6">
+          {/* Celebration */}
+          <div className="bg-emerald-500/5 border border-emerald-500/15 rounded-2xl p-6 text-center">
+            <Trophy className="w-10 h-10 text-emerald-400 mx-auto mb-3" />
+            <h2 className="text-lg font-black text-emerald-300 mb-1">Execution Complete</h2>
+            <p className="text-sm text-white/40 max-w-md mx-auto">
+              {vm.mode === "consultant"
+                ? "Your improvements are live. Now track the impact and keep optimizing."
+                : "Your business foundation is launched. Now it's about getting your first traction."}
+            </p>
+          </div>
+
+          {/* Outcome prompt */}
+          <OutcomePrompt runId={runId} />
+
+          {/* What's next — growth path */}
+          <div className="bg-white/[0.02] border border-white/[0.07] rounded-2xl p-5">
+            <div className="flex items-center gap-2 mb-4">
+              <TrendingUp className="w-4 h-4 text-cyan-400/50" />
+              <h3 className="text-[10px] font-black uppercase tracking-widest text-white/30">What to Do Next</h3>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {vm.mode === "operator" ? (
+                <>
+                  <GrowthCard
+                    icon={Target}
+                    title="Get Your First Customer"
+                    description="Share your site, run your first ads, reach out to 10 potential clients this week."
+                    color="cyan"
+                  />
+                  <GrowthCard
+                    icon={BarChart2}
+                    title="Track What Works"
+                    description="Watch which marketing angles get clicks. Double down on winners, kill losers after 48 hours."
+                    color="purple"
+                  />
+                  <GrowthCard
+                    icon={RefreshCw}
+                    title="Improve Your Assets"
+                    description="Come back and regenerate sections based on real feedback. The system gets smarter with your input."
+                    color="amber"
+                  />
+                  <GrowthCard
+                    icon={Rocket}
+                    title="Scale What's Working"
+                    description="Once you have traction, run Himalaya again to build your next growth layer — funnels, automations, expansion."
+                    color="emerald"
+                  />
+                </>
+              ) : (
+                <>
+                  <GrowthCard
+                    icon={BarChart2}
+                    title="Measure the Impact"
+                    description="Compare your metrics before and after the changes. Report the outcome so the system can learn."
+                    color="cyan"
+                  />
+                  <GrowthCard
+                    icon={Target}
+                    title="Fix the Next Weak Point"
+                    description="Run Himalaya again on the same URL to find the next improvement opportunity."
+                    color="purple"
+                  />
+                  <GrowthCard
+                    icon={RefreshCw}
+                    title="Iterate on What Changed"
+                    description="Regenerate specific sections with fresh competitive intelligence to keep your edge."
+                    color="amber"
+                  />
+                  <GrowthCard
+                    icon={Rocket}
+                    title="Add Systems"
+                    description="Once conversions improve, add automations, email sequences, and scaling infrastructure."
+                    color="emerald"
+                  />
+                </>
+              )}
+            </div>
+          </div>
+
+          {/* Action buttons */}
+          <div className="flex flex-wrap justify-center gap-3">
             <Link
               href={`/himalaya/run/${runId}`}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.04] border border-white/[0.08] text-xs font-semibold text-white/50 hover:text-white/80 transition"
             >
               <ArrowLeft className="w-3 h-3" /> Back to Results
+            </Link>
+            <Link
+              href={vm.mode === "consultant" ? `/himalaya/improve?fromRun=${runId}` : `/himalaya/scratch?fromRun=${runId}`}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.04] border border-white/[0.08] text-xs font-semibold text-white/50 hover:text-white/80 transition"
+            >
+              <RefreshCw className="w-3 h-3" /> Run Again (Improved)
             </Link>
             <Link
               href="/himalaya"
