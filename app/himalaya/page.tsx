@@ -203,9 +203,28 @@ export default function HimalayaEntryPage() {
         {/* Check-in banner for returning users */}
         <CheckInBanner />
 
+        {/* First-time welcome */}
+        {!showProfiler && !hasHistory && (
+          <div className="mt-6 mb-6 bg-gradient-to-br from-cyan-500/[0.04] to-purple-500/[0.03] border border-white/[0.06] rounded-2xl p-6 text-center">
+            <h2 className="text-base font-black text-white mb-2">Here's how Himalaya works</h2>
+            <div className="flex items-center justify-center gap-3 mb-3 text-[10px] text-white/30 font-bold">
+              <span>Pick a path</span>
+              <span className="text-white/10">→</span>
+              <span>We research your market</span>
+              <span className="text-white/10">→</span>
+              <span>Get a complete business foundation</span>
+              <span className="text-white/10">→</span>
+              <span>Deploy and execute</span>
+            </div>
+            <p className="text-xs text-white/25 max-w-md mx-auto">
+              Himalaya scans real competitors in your niche, builds assets that beat them, and learns from your results to improve over time. Your first 2 runs are free.
+            </p>
+          </div>
+        )}
+
         {/* Main path selection */}
         {!showProfiler && (
-          <div className="mt-8 mb-8">
+          <div className={`${hasHistory ? "mt-8" : ""} mb-8`}>
             <h2 className="text-lg font-black text-white text-center mb-2">What do you need help with?</h2>
             <p className="text-sm text-white/30 text-center mb-6">Start from scratch or improve what you already have.</p>
 

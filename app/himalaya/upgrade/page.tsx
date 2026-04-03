@@ -265,6 +265,22 @@ export default function HimalayaUpgradePage() {
           })}
         </div>
 
+        {/* Manage billing for paid users */}
+        {access && access.tier !== "free" && (
+          <div className="text-center mb-6">
+            <button
+              onClick={async () => {
+                const res = await fetch("/api/himalaya/billing", { method: "POST" });
+                const data = (await res.json()) as { ok: boolean; url?: string };
+                if (data.ok && data.url) window.location.href = data.url;
+              }}
+              className="text-xs text-white/25 hover:text-white/50 transition underline"
+            >
+              Manage billing, cancel, or change plan
+            </button>
+          </div>
+        )}
+
         {/* Social proof / urgency */}
         <div className="text-center space-y-2">
           <p className="text-xs text-white/25">Most users upgrade after their first run sees results.</p>
