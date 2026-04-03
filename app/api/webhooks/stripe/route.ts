@@ -84,6 +84,56 @@ export async function POST(req: NextRequest) {
                     // Eventually: Trigger EmailFlows containing 'purchase' triggers here!
                 }
             }
+
+            // Handle Himalaya subscription checkout
+            const { userId: himalayaUserId, himalayaPlan } = session.metadata || {};
+            if (himalayaUserId && himalayaPlan) {
+                const tierLimits: Record<string, { runsLimit: number; deploysLimit: number }> = {
+                    pro: { runsLimit: 50, deploysLimit: 20 },
+                    business: { runsLimit: 999, deploysLimit: 999 },
+                };
+                const limits = tierLimits[himalayaPlan] ?? tierLimits.pro;
+
+                await prisma.himalayaSubscription.upsert({
+                    where: { userId: himalayaUserId },
+                    create: {
+                        userId: himalayaUserId,
+                        tier: himalayaPlan,
+                        runsLimit: limits.runsLimit,
+                        deploysLimit: limits.deploysLimit,
+                        stripeCustomerId: session.customer as string ?? null,
+                        stripeSubId: session.subscription as string ?? null,
+                    },
+                    update: {
+                        tier: himalayaPlan,
+                        runsLimit: limits.runsLimit,
+                        deploysLimit: limits.deploysLimit,
+                        stripeCustomerId: session.customer as string ?? undefined,
+                        stripeSubId: session.subscription as string ?? undefined,
+                    },
+                });
+            }
+        }
+
+        // Handle subscription cancellation
+        if (event.type === "customer.subscription.deleted") {
+            const sub = event.data.object as Stripe.Subscription;
+            const customerId = sub.customer as string;
+
+            // Find subscription by Stripe customer ID and downgrade to free
+            try {
+                const himalayaSub = await prisma.himalayaSubscription.findFirst({
+                    where: { stripeCustomerId: customerId },
+                });
+                if (himalayaSub) {
+                    await prisma.himalayaSubscription.update({
+                        where: { id: himalayaSub.id },
+                        data: { tier: "free", runsLimit: 2, deploysLimit: 1, stripeSubId: null },
+                    });
+                }
+            } catch {
+                // non-fatal
+            }
         }
 
         return NextResponse.json({ received: true });

@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeft, Check, Zap, Mountain, Loader2, Target, Rocket, BarChart2, TrendingUp, RefreshCw } from "lucide-react";
+import { ArrowLeft, Check, Zap, Mountain, Loader2, Target, Rocket, BarChart2, TrendingUp, RefreshCw, CheckCircle, XCircle } from "lucide-react";
 import AppNav from "@/components/AppNav";
 import HimalayaNav from "@/components/himalaya/HimalayaNav";
 
@@ -92,6 +93,9 @@ const LOOP_STEPS = [
 ];
 
 export default function HimalayaUpgradePage() {
+  const searchParams = useSearchParams();
+  const success = searchParams.get("success") === "true";
+  const canceled = searchParams.get("canceled") === "true";
   const [access, setAccess] = useState<Access | null>(null);
   const [upgrading, setUpgrading] = useState<string | null>(null);
 
@@ -150,6 +154,28 @@ export default function HimalayaUpgradePage() {
             Himalaya researches your market, builds your assets, deploys everything, and learns from your outcomes to make each run better than the last.
           </p>
         </div>
+
+        {/* Success/cancel banners */}
+        {success && (
+          <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-5 mb-8 flex items-center gap-4">
+            <CheckCircle className="w-6 h-6 text-emerald-400 shrink-0" />
+            <div>
+              <h3 className="text-sm font-bold text-emerald-300">You're upgraded!</h3>
+              <p className="text-xs text-white/40">Full access is now active. Go build something great.</p>
+            </div>
+            <Link href="/himalaya" className="ml-auto inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-500/20 text-xs font-bold text-emerald-300 hover:bg-emerald-500/30 transition shrink-0">
+              Start Building <Rocket className="w-3 h-3" />
+            </Link>
+          </div>
+        )}
+        {canceled && (
+          <div className="bg-amber-500/5 border border-amber-500/15 rounded-2xl p-5 mb-8 flex items-center gap-4">
+            <XCircle className="w-5 h-5 text-amber-400/60 shrink-0" />
+            <div>
+              <p className="text-xs text-white/40">Checkout was canceled. No charges were made. You can upgrade anytime.</p>
+            </div>
+          </div>
+        )}
 
         {/* The Loop — visual proof */}
         <div className="mb-12">
