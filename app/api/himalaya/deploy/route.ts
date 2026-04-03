@@ -117,10 +117,92 @@ export async function POST(req: NextRequest) {
         },
       });
 
-      // Create home page with content from assets
+      // Create home page with rich content from all generated assets
       const lp = (assets?.landingPage ?? {}) as Record<string, unknown>;
-      const headline = (lp.headline ?? lp.heroCtaText ?? run.title ?? "") as string;
+      const foundation = (run.rawSignals as Record<string, unknown> | null)?.foundation as Record<string, unknown> | undefined;
+      const headline = (lp.headline ?? run.title ?? "") as string;
       const subheadline = (lp.subheadline ?? run.summary ?? "") as string;
+      const offer = foundation?.offerDirection as Record<string, string> | undefined;
+      const icp = foundation?.idealCustomer as Record<string, string> | undefined;
+
+      const blocks: object[] = [
+        // Hero
+        {
+          type: "hero",
+          data: {
+            headline,
+            subheadline,
+            ctaText: (lp.ctaCopy ?? lp.ctaText ?? lp.heroCtaText ?? "Get Started") as string,
+            ctaUrl: "#contact",
+          },
+        },
+      ];
+
+      // Trust bar
+      if (Array.isArray(lp.trustElements) && (lp.trustElements as string[]).length > 0) {
+        blocks.push({ type: "trust", data: { items: lp.trustElements } });
+      }
+
+      // Problem section (from ICP pain)
+      if (icp?.who || icp?.buyingTrigger) {
+        blocks.push({
+          type: "text",
+          data: {
+            headline: "Who This Is For",
+            body: [icp.who, icp.psychographics, icp.buyingTrigger].filter(Boolean).join(". "),
+          },
+        });
+      }
+
+      // Offer section
+      if (offer?.coreOffer) {
+        blocks.push({
+          type: "text",
+          data: {
+            headline: "What You Get",
+            body: [
+              offer.coreOffer,
+              offer.deliverable ? `Deliverable: ${offer.deliverable}` : null,
+              offer.transformation ? `Result: ${offer.transformation}` : null,
+              offer.pricing ? `Investment: ${offer.pricing}` : null,
+            ].filter(Boolean).join("\n\n"),
+          },
+        });
+      }
+
+      // Features/sections
+      if (Array.isArray(lp.sections) && (lp.sections as string[]).length > 0) {
+        blocks.push({
+          type: "features",
+          data: { items: (lp.sections as string[]).map((s: string) => ({ title: s, description: "" })) },
+        });
+      }
+
+      // Guarantee
+      if (offer?.guarantee) {
+        blocks.push({
+          type: "text",
+          data: { headline: "Our Guarantee", body: offer.guarantee },
+        });
+      }
+
+      // Urgency + CTA
+      if (lp.urgencyLine) {
+        blocks.push({
+          type: "cta",
+          data: {
+            headline: lp.urgencyLine as string,
+            ctaText: (lp.ctaCopy ?? lp.ctaText ?? lp.heroCtaText ?? "Get Started Now") as string,
+            ctaUrl: "#contact",
+          },
+        });
+      }
+
+      // Contact form
+      blocks.push({
+        type: "form",
+        data: { headline: "Ready to Start?", fields: ["name", "email", "phone", "message"] },
+      });
 
       await prisma.sitePage.create({
         data: {
@@ -128,25 +210,7 @@ export async function POST(req: NextRequest) {
           title: "Home",
           slug: "home",
           order: 0,
-          blocks: [
-            {
-              type: "hero",
-              data: {
-                headline,
-                subheadline,
-                ctaText: (lp.ctaCopy ?? lp.ctaText ?? lp.heroCtaText ?? "Get Started") as string,
-                ctaUrl: "#",
-              },
-            },
-            ...(Array.isArray(lp.trustElements) ? [{
-              type: "trust",
-              data: { items: lp.trustElements },
-            }] : []),
-            ...(Array.isArray(lp.sections) ? [{
-              type: "features",
-              data: { items: (lp.sections as string[]).map((s: string) => ({ title: s, description: "" })) },
-            }] : []),
-          ],
+          blocks,
         },
       });
 

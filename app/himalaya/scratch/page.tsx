@@ -9,6 +9,17 @@ import HimalayaNav from "@/components/himalaya/HimalayaNav";
 import ProgressStage from "@/components/himalaya/ProgressStage";
 import type { UiRunStage, UiStageState } from "@/components/himalaya/ProgressStage";
 
+const NICHE_SUGGESTIONS: Record<string, string[]> = {
+  "Service Business": ["plumbers in Dallas", "house cleaning in Miami", "HVAC contractors", "landscaping companies", "auto detailing"],
+  "E-commerce Brand": ["sustainable fashion", "pet accessories", "home fitness equipment", "organic skincare", "phone accessories"],
+  "Agency": ["dental practices", "real estate agents", "restaurants", "law firms", "chiropractors"],
+  "Coaching / Consulting": ["executive leadership", "career transitions", "fitness for busy professionals", "dating for men 30+", "small business owners"],
+  "Personal Brand": ["tech content creator", "fitness influencer", "business educator", "lifestyle blogger", "motivational speaker"],
+  "Digital Product": ["Notion templates for freelancers", "Lightroom presets", "resume templates", "online courses for parents", "Excel dashboards"],
+  "SaaS": ["project management for agencies", "CRM for real estate", "scheduling for salons", "invoicing for freelancers", "email marketing for creators"],
+  "Other": ["local food delivery", "event planning", "tutoring services", "pet sitting", "mobile car wash"],
+};
+
 const BUSINESS_TYPES = [
   "Service Business",
   "E-commerce Brand",
@@ -58,6 +69,7 @@ export default function HimalayaScratchPage() {
   const [loadedFromRun, setLoadedFromRun] = useState(false);
   const [businessType, setBusinessType] = useState("");
   const [niche, setNiche] = useState("");
+  const [competitorUrl, setCompetitorUrl] = useState("");
   const [goal, setGoal] = useState("");
   const [dream, setDream] = useState("");
 
@@ -141,7 +153,8 @@ export default function HimalayaScratchPage() {
           skills: ["communication"],
           riskTolerance: "medium",
           niche: niche.trim(),
-          description: [businessType, goal, dream].filter(Boolean).join(". "),
+          description: [businessType, goal, dream, competitorUrl ? `Competitor: ${competitorUrl}` : ""].filter(Boolean).join(". "),
+          existingUrl: competitorUrl.trim() || undefined,
         }),
       });
 
@@ -260,7 +273,30 @@ export default function HimalayaScratchPage() {
                   placeholder="e.g. gym owners in Atlanta, busy moms, B2B SaaS founders"
                   className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/30"
                 />
+                {businessType && !niche && (
+                  <div className="flex flex-wrap gap-1.5 mt-2">
+                    {(NICHE_SUGGESTIONS[businessType] ?? []).map((s) => (
+                      <button key={s} type="button" onClick={() => setNiche(s)} className="px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06] text-[10px] text-white/30 hover:text-white/60 hover:border-white/[0.12] transition">
+                        {s}
+                      </button>
+                    ))}
+                  </div>
+                )}
                 <p className="text-[10px] text-white/15 mt-1 pl-1">Be specific. The more precise, the better your assets.</p>
+              </div>
+
+              {/* Competitor URL (optional) */}
+              <div>
+                <label className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-2 block">
+                  Know a competitor? <span className="text-white/10">(optional)</span>
+                </label>
+                <input
+                  value={competitorUrl}
+                  onChange={(e) => setCompetitorUrl(e.target.value)}
+                  placeholder="https://competitor-website.com"
+                  className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/15 focus:outline-none focus:border-cyan-500/20"
+                />
+                <p className="text-[10px] text-white/12 mt-1 pl-1">We'll scan them and position you to beat them.</p>
               </div>
 
               {/* Goal */}
