@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { runDeploymentQA } from "@/lib/himalaya/deploymentQA";
+import { getUserAccess, incrementUsage } from "@/lib/himalaya/access";
 
 type DeployTarget = "campaign" | "site" | "emails" | "all";
 
@@ -18,6 +19,12 @@ export async function POST(req: NextRequest) {
 
     const targets = body.targets ?? ["all"];
     const shouldDeploy = (t: DeployTarget) => targets.includes("all") || targets.includes(t);
+
+    // Check deploy access
+    const access = await getUserAccess(user.id).catch(() => null);
+    if (access && !access.canDeploy) {
+      return NextResponse.json({ ok: false, error: `Deploy limit reached (${access.usage.deploysUsed}/${access.limits.deploysLimit}). Upgrade to deploy more.` }, { status: 403 });
+    }
 
     // Load the analysis run with assets
     const run = await prisma.analysisRun.findFirst({
@@ -294,6 +301,9 @@ export async function POST(req: NextRequest) {
     } catch {
       // deployment record is non-blocking
     }
+
+    // Track usage
+    await incrementUsage(user.id, "deploysUsed").catch(() => {});
 
     return NextResponse.json({ ok: true, deployed: results, qa: qaReport });
   } catch (err) {

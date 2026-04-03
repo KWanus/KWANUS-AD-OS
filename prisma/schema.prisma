@@ -856,6 +856,25 @@ model AutomationRunStep {
 // Himalaya: Templates, Presets, Memory
 // ---------------------------------------------------------------------------
 
+model HimalayaSubscription {
+  id              String   @id @default(cuid())
+  userId          String   @unique
+  tier            String   @default("free") // free, pro, business
+  runsUsed        Int      @default(0)
+  runsLimit       Int      @default(2)
+  deploysUsed     Int      @default(0)
+  deploysLimit    Int      @default(1)
+  executionsUsed  Int      @default(0)
+  outcomesLogged  Int      @default(0)
+  stripeCustomerId String?
+  stripeSubId     String?
+  expiresAt       DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([userId])
+}
+
 model HimalayaDeployment {
   id              String   @id @default(cuid())
   userId          String

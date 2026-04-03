@@ -19,6 +19,7 @@ import { generateFoundation } from "./foundationGenerator";
 import { runNicheIntelligence } from "./nicheIntelligence";
 import { generateIntelligentFoundation } from "./intelligentFoundation";
 import { runScanPipeline } from "./scanAdapter";
+import { getUserAccess, incrementUsage } from "./access";
 
 // ---------------------------------------------------------------------------
 // STAGE RUNNER — runs a stage with timing, fallback, and status tracking
@@ -274,6 +275,17 @@ export async function runHimalaya(
   input: HimalayaUserInput,
   userId: string,
 ): Promise<HimalayaPipelineResult> {
+  // Check access before running
+  const access = await getUserAccess(userId).catch(() => null);
+  if (access && !access.canRun) {
+    const emptyTrace: PipelineTrace = { runId: "blocked", userId, mode: input.mode, stages: [], totalDurationMs: 0, overallStatus: "failed", savedEntityIds: {}, createdAt: new Date().toISOString() };
+    return {
+      success: false, runId: null, mode: input.mode, payload: null, strategy: null, generation: null,
+      siteHandoff: null, emailHandoff: null, trace: emptyTrace,
+      title: "Run limit reached", summary: `You've used all ${access.usage.runsUsed} runs on your ${access.tier} plan. Upgrade to continue.`,
+    };
+  }
+
   const pipelineStart = Date.now();
   const stages: PipelineStage[] = [];
   const allWarnings: string[] = [];
@@ -547,6 +559,9 @@ export async function runHimalaya(
 
     runId = saveResult.data.analysisRunId ?? null;
     allWarnings.push(...saveResult.warnings);
+
+    // Track usage
+    if (runId) await incrementUsage(userId, "runsUsed").catch(() => {});
   }
 
   // ── BUILD TRACE ───────────────────────────────────────────────────────

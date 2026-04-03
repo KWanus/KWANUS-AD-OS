@@ -175,7 +175,7 @@ export default function HimalayaEntryPage() {
           </div>
           <div>
             <h1 className="text-xl font-black text-white">Himalaya</h1>
-            <p className="text-xs text-white/30">Your shortest path to the right business</p>
+            <p className="text-xs text-white/30">Build, improve, and grow — guided by real competitive intelligence</p>
           </div>
         </div>
 
