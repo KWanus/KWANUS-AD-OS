@@ -101,6 +101,41 @@ function extractAssetGroups(
   rawSignals: Record<string, unknown> | null,
 ): AssetGroup[] {
   const groups: AssetGroup[] = [];
+
+  // Competitive Intelligence (from niche research)
+  const nicheIntel = rawSignals?.nicheIntelligence as Record<string, unknown> | undefined;
+  if (nicheIntel) {
+    const competitors = (nicheIntel.competitors ?? []) as { url: string; headline: string; weaknesses: string[] }[];
+    if (competitors.length > 0) {
+      groups.push({
+        title: "Competitive Intelligence",
+        type: "list",
+        content: competitors.map(c => `${c.url.replace(/^https?:\/\//, "").split("/")[0]}: "${c.headline || "No clear headline"}" — Weaknesses: ${c.weaknesses.slice(0, 2).join(", ") || "none detected"}`),
+      });
+    }
+
+    const insights = nicheIntel.marketInsights as Record<string, unknown> | undefined;
+    if (insights) {
+      const kvPairs: { label: string; value: string }[] = [];
+      if (insights.commonPricing) kvPairs.push({ label: "Market Pricing", value: insights.commonPricing as string });
+      if (Array.isArray(insights.commonWeaknesses) && (insights.commonWeaknesses as string[]).length > 0) {
+        kvPairs.push({ label: "Competitor Weaknesses", value: (insights.commonWeaknesses as string[]).join("; ") });
+      }
+      if (Array.isArray(insights.underservedAngles) && (insights.underservedAngles as string[]).length > 0) {
+        kvPairs.push({ label: "Underserved Angles", value: (insights.underservedAngles as string[]).join("; ") });
+      }
+      if (nicheIntel.recommendedPositioning) kvPairs.push({ label: "Recommended Positioning", value: nicheIntel.recommendedPositioning as string });
+      if (nicheIntel.recommendedPricing) kvPairs.push({ label: "Recommended Pricing", value: nicheIntel.recommendedPricing as string });
+      if (kvPairs.length > 0) {
+        groups.push({ title: "Market Analysis", type: "kv", content: kvPairs });
+      }
+    }
+
+    if (Array.isArray(nicheIntel.differentiators) && (nicheIntel.differentiators as string[]).length > 0) {
+      groups.push({ title: "Your Differentiators", type: "list", content: nicheIntel.differentiators as string[] });
+    }
+  }
+
   const foundation = rawSignals?.foundation as Record<string, unknown> | undefined;
   if (foundation) {
     // Business Profile

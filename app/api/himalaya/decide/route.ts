@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
         userId: user.id,
         budget: body.budget,
         timeAvailable: body.timeAvailable,
-        skills: body.skills as unknown as object,
+        skills: JSON.parse(JSON.stringify(body.skills)),
         riskTolerance: body.riskTolerance,
         primaryGoal: body.primaryGoal,
         businessStage: body.businessStage,
@@ -36,7 +36,7 @@ export async function POST(req: NextRequest) {
         niche: body.niche ?? null,
         description: body.description ?? null,
         recommendedPath: result.primary.path,
-        decisionResult: result as unknown as object,
+        decisionResult: JSON.parse(JSON.stringify(result)),
       },
     });
 
@@ -63,6 +63,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: true, profileId: profile.id, result });
   } catch (err) {
     console.error("Decide error:", err);
-    return NextResponse.json({ ok: false, error: "Decision failed" }, { status: 500 });
+    const message = err instanceof Error ? err.message : "Decision failed";
+    return NextResponse.json({ ok: false, error: message }, { status: 500 });
   }
 }

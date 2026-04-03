@@ -144,10 +144,18 @@ export default function HimalayaScratchPage() {
           description: [businessType, goal, dream].filter(Boolean).join(". "),
         }),
       });
-      const decideData = (await decideRes.json()) as { ok: boolean; profileId?: string; result?: { primary?: { path?: string } } };
+
+      // Debug: check what the API actually returned
+      const decideText = await decideRes.text();
+      let decideData: { ok: boolean; profileId?: string; error?: string; result?: { primary?: { path?: string } } };
+      try {
+        decideData = JSON.parse(decideText);
+      } catch {
+        throw new Error(`API returned non-JSON (status ${decideRes.status}): ${decideText.slice(0, 150)}`);
+      }
 
       if (!decideData.ok || !decideData.profileId) {
-        throw new Error("Failed to create profile");
+        throw new Error(`Decide failed (status ${decideRes.status}): ${decideData.error ?? decideText.slice(0, 150)}`);
       }
 
       // Map business type to best path

@@ -16,6 +16,8 @@ import type { BusinessFoundation } from "./foundationGenerator";
 import type { RawAnalysis } from "./types";
 import type { HimalayaProfileInput, BusinessPath } from "./profileTypes";
 import { generateFoundation } from "./foundationGenerator";
+import { runNicheIntelligence } from "./nicheIntelligence";
+import { generateIntelligentFoundation } from "./intelligentFoundation";
 import { runScanPipeline } from "./scanAdapter";
 
 // ---------------------------------------------------------------------------
@@ -283,6 +285,8 @@ export async function runHimalaya(
   let emailHandoff: EmailHandoff | null = null;
   let runId: string | null = null;
   let title = "";
+  let foundationData: BusinessFoundation | null = null;
+  let intelData: unknown = null;
   let summary = "";
 
   // ── STAGE 1: DIAGNOSE ─────────────────────────────────────────────────
@@ -311,17 +315,31 @@ export async function runHimalaya(
           description: profile.description ?? undefined,
         };
 
-        const foundation = generateFoundation(profileInput, input.path as BusinessPath);
+        // Run niche intelligence: find competitors, scan them, analyze market
+        let foundation: BusinessFoundation;
+        let intel = null;
+        try {
+          const niche = profile.niche || profile.description || input.path || "";
+          intel = await runNicheIntelligence(niche, input.path as string);
+          // Generate foundation using real competitive intelligence + Claude
+          foundation = await generateIntelligentFoundation(profileInput, input.path as BusinessPath, intel);
+        } catch (err) {
+          console.warn("[Orchestrator] Intelligent generation failed, using template fallback:", err);
+          foundation = generateFoundation(profileInput, input.path as BusinessPath);
+        }
+
         const normalized = normalizeScratchPayload(foundation, input.profileId!, profile.niche ?? "", profile.primaryGoal);
 
         title = `${foundation.pathLabel}: ${profile.niche || "New Business"}`;
-        return { payload: normalized, foundation };
+        return { payload: normalized, foundation, intel };
       },
-      { payload: null as HimalayaPayload | null, foundation: null as BusinessFoundation | null },
+      { payload: null as HimalayaPayload | null, foundation: null as BusinessFoundation | null, intel: null as unknown },
       "Diagnosis failed — using minimal fallback",
     );
 
     payload = diagResult.data.payload;
+    foundationData = diagResult.data.foundation;
+    intelData = diagResult.data.intel;
     allWarnings.push(...diagResult.warnings);
 
     // ── STAGE 2: STRATEGIZE ───────────────────────────────────────────────
@@ -488,6 +506,8 @@ export async function runHimalaya(
               nextActions: strategy!.priorities.map((p) => p.action),
             },
             rawSignals: {
+              foundation: foundationData,
+              nicheIntelligence: intelData,
               himalayaPayload: payload,
               himalayaStrategy: strategy,
             } as object,

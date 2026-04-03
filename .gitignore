@@ -47,3 +47,4 @@ next-env.d.ts
 
 # local Claude/Codex worktrees
 /.claude/worktrees/
+stripe

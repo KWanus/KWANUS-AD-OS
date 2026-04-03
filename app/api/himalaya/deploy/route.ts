@@ -100,7 +100,7 @@ export async function POST(req: NextRequest) {
     // ── DEPLOY SITE ───────────────────────────────────────────────
     if (shouldDeploy("site")) {
       const siteName = run.title ?? "Himalaya Site";
-      const slug = siteName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 50) + "-" + run.id.slice(0, 6);
+      const slug = siteName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 40) + "-" + Date.now().toString(36);
 
       const site = await prisma.site.create({
         data: {

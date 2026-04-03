@@ -1,12 +1,17 @@
-import type { HimalayaResultsViewModel } from "./types";
+import type { HimalayaResultsViewModel, AssetGroup } from "./types";
 
 export type ExecutionStep = {
   id: string;
   title: string;
   instruction: string;
-  assetRef?: string; // references an asset group title
-  actionUrl?: string; // link to relevant system tool
-  actionLabel?: string; // button label for the action
+  assetRef?: string;
+  actionUrl?: string;
+  actionLabel?: string;
+  deployTarget?: "site" | "campaign" | "emails";
+  content?: {
+    type: "text" | "list" | "kv" | "preview";
+    data: unknown;
+  };
   status: "not_started" | "in_progress" | "done";
 };
 
@@ -17,113 +22,152 @@ export type ExecutionState = {
 };
 
 /**
- * Generates execution steps from the results view model.
- * Converts priorities + asset groups + roadmap into actionable steps.
+ * Generates execution steps with inline content for immediate action.
+ * Each step should feel actionable, not like homework.
  */
 export function buildExecutionSteps(vm: HimalayaResultsViewModel): ExecutionStep[] {
   const steps: ExecutionStep[] = [];
   let idx = 0;
-
   const makeId = () => `step_${++idx}`;
 
-  // Step 1: Review priorities
-  if (vm.priorities.length > 0) {
+  // Find key asset groups
+  const findGroup = (match: string) => vm.assetGroups.find(g => g.title.toLowerCase().includes(match.toLowerCase()));
+
+  const businessProfile = findGroup("Business Profile");
+  const idealCustomer = findGroup("Ideal Customer");
+  const offerDirection = findGroup("Offer Direction");
+  const blueprint = findGroup("Website Blueprint") || findGroup("Homepage");
+  const angles = findGroup("Marketing Angles");
+  const emails = findGroup("Email");
+  const roadmap = findGroup("Roadmap");
+
+  // Step 1: Your business identity (combines profile + ICP)
+  if (businessProfile || idealCustomer) {
+    const preview: string[] = [];
+    if (businessProfile?.type === "kv") {
+      for (const item of businessProfile.content as { label: string; value: string }[]) {
+        preview.push(`${item.label}: ${item.value}`);
+      }
+    }
+    if (idealCustomer?.type === "kv") {
+      const icp = idealCustomer.content as { label: string; value: string }[];
+      const who = icp.find(i => i.label === "Who");
+      if (who) preview.push(`Target: ${who.value}`);
+    }
+
     steps.push({
       id: makeId(),
-      title: "Review top priorities",
-      instruction: `Read through your ${vm.priorities.length} priorities and decide which to tackle first. The system recommends starting with "${vm.priorities[0].label}".`,
+      title: "Lock in your business identity",
+      instruction: "This is who you are, who you serve, and why. Review it — everything else builds from this.",
+      content: { type: "list", data: preview.slice(0, 5) },
       status: "not_started",
     });
   }
 
-  // Steps from priorities → concrete actions
-  for (const p of vm.priorities) {
+  // Step 2: Your offer (the money part)
+  if (offerDirection) {
     steps.push({
       id: makeId(),
-      title: p.label,
-      instruction: p.nextStep,
+      title: "Finalize your offer",
+      instruction: "This is what you sell and how you position it. Get this right before building anything else.",
+      content: { type: "kv", data: offerDirection.content },
+      assetRef: offerDirection.title,
       status: "not_started",
     });
   }
 
-  // Steps from asset groups → use each generated asset
-  for (const group of vm.assetGroups) {
-    // Skip non-actionable groups (business profile, strengths, etc)
-    if (!group.regenerateTarget) continue;
-
-    const actionVerb = getActionVerb(group.regenerateTarget, vm.mode);
-    const action = getActionLink(group.regenerateTarget, vm);
+  // Step 3: Build your website
+  if (blueprint) {
+    const preview: string[] = [];
+    if (blueprint.type === "kv") {
+      for (const item of (blueprint.content as { label: string; value: string }[]).slice(0, 3)) {
+        preview.push(`${item.label}: ${item.value}`);
+      }
+    }
     steps.push({
       id: makeId(),
-      title: `${actionVerb} ${group.title.toLowerCase()}`,
-      instruction: getAssetInstruction(group.regenerateTarget, vm.mode),
-      assetRef: group.title,
-      actionUrl: action?.url,
-      actionLabel: action?.label,
+      title: "Build your website",
+      instruction: "Your homepage blueprint is ready. Deploy it to the site builder with one click, then customize.",
+      content: preview.length > 0 ? { type: "list", data: preview } : undefined,
+      assetRef: blueprint.title,
+      actionUrl: `/websites/new`,
+      actionLabel: "Open Site Builder",
+      deployTarget: "site",
       status: "not_started",
     });
   }
 
-  // Final step: review and refine
-  steps.push({
-    id: makeId(),
-    title: "Review and finalize",
-    instruction: vm.mode === "consultant"
-      ? "Review all implemented changes. Check that the highest-priority fixes are live and the improved assets are deployed."
-      : "Review all generated assets. Ensure your homepage, ads, and emails are live and tracking is in place.",
-    status: "not_started",
-  });
+  // Step 4: Launch your marketing
+  if (angles) {
+    const angleList = angles.type === "list" ? (angles.content as string[]).slice(0, 3) : [];
+    steps.push({
+      id: makeId(),
+      title: "Launch your first marketing",
+      instruction: "These hooks are ready to use. Pick your strongest 2-3 and test them on your primary platform.",
+      content: angleList.length > 0 ? { type: "list", data: angleList } : undefined,
+      assetRef: angles.title,
+      deployTarget: "campaign",
+      status: "not_started",
+    });
+  }
+
+  // Step 5: Set up email follow-up
+  if (emails) {
+    const emailList = emails.type === "list" ? (emails.content as string[]).slice(0, 3) : [];
+    steps.push({
+      id: makeId(),
+      title: "Set up email follow-up",
+      instruction: "Import this sequence into your email platform. Automate it so every lead gets nurtured without manual work.",
+      content: emailList.length > 0 ? { type: "list", data: emailList } : undefined,
+      assetRef: emails.title,
+      actionUrl: `/emails/templates`,
+      actionLabel: "Open Email Builder",
+      deployTarget: "emails",
+      status: "not_started",
+    });
+  }
+
+  // Step 6: Follow the roadmap
+  if (roadmap) {
+    const roadmapItems = roadmap.type === "list" ? (roadmap.content as string[]).slice(0, 5) : [];
+    steps.push({
+      id: makeId(),
+      title: "Execute the roadmap",
+      instruction: "This is your day-by-day plan. Follow it in order — the sequence is designed to build momentum.",
+      content: roadmapItems.length > 0 ? { type: "list", data: roadmapItems } : undefined,
+      assetRef: roadmap.title,
+      status: "not_started",
+    });
+  }
+
+  // If no specific groups found (improve path or minimal results), fall back to priority-based steps
+  if (steps.length === 0) {
+    for (const p of vm.priorities.slice(0, 3)) {
+      steps.push({
+        id: makeId(),
+        title: p.label,
+        instruction: p.nextStep,
+        status: "not_started",
+      });
+    }
+
+    // Add generic asset deploy step
+    if (vm.assetGroups.length > 0) {
+      steps.push({
+        id: makeId(),
+        title: "Deploy your improved assets",
+        instruction: "Push the generated improvements to your site, campaigns, and email system.",
+        deployTarget: "site",
+        status: "not_started",
+      });
+    }
+  }
 
   return steps;
 }
 
-function getActionLink(target: string, vm: HimalayaResultsViewModel): { url: string; label: string } | null {
-  const title = encodeURIComponent(vm.title || "");
-  const audience = encodeURIComponent(vm.decisionPacket?.audience || "");
-
-  switch (target) {
-    case "landingPage":
-      return { url: `/websites/new?prefill_name=${title}`, label: "Open Site Builder" };
-    case "emailSequences":
-      return { url: `/emails/templates?prefill_offer=${title}`, label: "Open Email Builder" };
-    case "adHooks":
-    case "adScripts":
-      return { url: `/skills?skill=ad-campaign&prefill_offer=${title}&prefill_audience=${audience}`, label: "Create Ad Campaign" };
-    case "executionChecklist":
-      return null; // roadmap is self-contained
-    default:
-      return null;
-  }
-}
-
-function getActionVerb(target: string, mode: string): string {
-  const verbs: Record<string, string> = {
-    adHooks: "Deploy",
-    adScripts: "Record or publish",
-    adBriefs: "Launch",
-    landingPage: mode === "consultant" ? "Rebuild" : "Build",
-    emailSequences: "Set up",
-    executionChecklist: "Follow",
-  };
-  return verbs[target] ?? "Apply";
-}
-
-function getAssetInstruction(target: string, mode: string): string {
-  const instructions: Record<string, string> = {
-    adHooks: "Copy the generated ad hooks into your ad platform. Test 3-5 hooks simultaneously and kill underperformers after 48 hours.",
-    adScripts: "Use the generated scripts to record short-form video content. Follow the timestamps and direction cues for each section.",
-    adBriefs: "Hand the generated briefs to your creative team or use them as a production guide for ad content.",
-    landingPage: mode === "consultant"
-      ? "Replace the weak sections of the existing homepage with the generated improvements. Focus on headline, CTA, and trust elements first."
-      : "Build your landing page using the generated blueprint. Start with the headline and hero section, then add benefits, proof, and CTA.",
-    emailSequences: "Import the generated email sequences into your email platform. Set up the timing triggers and verify all links before activating.",
-    executionChecklist: "Follow the action roadmap day by day. Complete each step in order — the sequence is designed to build momentum.",
-  };
-  return instructions[target] ?? "Apply the generated content to your business.";
-}
-
 /**
- * Merges saved execution state with fresh steps (handles re-generated content).
+ * Merges saved execution state with fresh steps.
  */
 export function mergeExecutionState(
   freshSteps: ExecutionStep[],
@@ -133,12 +177,8 @@ export function mergeExecutionState(
     return { steps: freshSteps, startedAt: null, completedAt: null };
   }
 
-  const completedIds = new Set(
-    saved.steps.filter((s) => s.status === "done").map((s) => s.id)
-  );
-  const inProgressIds = new Set(
-    saved.steps.filter((s) => s.status === "in_progress").map((s) => s.id)
-  );
+  const completedIds = new Set(saved.steps.filter((s) => s.status === "done").map((s) => s.id));
+  const inProgressIds = new Set(saved.steps.filter((s) => s.status === "in_progress").map((s) => s.id));
 
   const merged = freshSteps.map((step) => ({
     ...step,
