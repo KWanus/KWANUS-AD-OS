@@ -690,22 +690,25 @@ export default function WebsitesDashboard() {
                         <p className="text-sm text-white/40 max-w-sm mb-3 leading-relaxed">
                             Every new site is automatically built with a 10-block, high-converting funnel baseline — hero, testimonials, pricing, checkout, and more.
                         </p>
-                        <p className="text-xs text-white/25 max-w-xs mb-10 leading-relaxed">
-                            Run an AI scan first and your funnel copy will be auto-generated from the market research.
-                        </p>
+                        <div className="flex items-center justify-center gap-2 mb-6 text-[10px] text-white/20 font-bold">
+                            <span className="bg-white/[0.04] border border-white/[0.06] px-2 py-0.5 rounded">Run Himalaya</span>
+                            <span className="text-white/10">→</span>
+                            <span className="bg-white/[0.04] border border-white/[0.06] px-2 py-0.5 rounded">Deploy</span>
+                            <span className="text-white/10">→</span>
+                            <span className="bg-white/[0.04] border border-white/[0.06] px-2 py-0.5 rounded">Site auto-built</span>
+                        </div>
 
                         <div className="flex flex-wrap gap-3 justify-center">
+                            <Link href="/himalaya"
+                                className="flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black shadow-[0_0_30px_rgba(6,182,212,0.25)] hover:scale-[1.02] transition-all">
+                                <Sparkles className="w-4 h-4" />
+                                Build with Himalaya
+                            </Link>
                             <button
                                 onClick={() => router.push("/websites/new")}
-                                className="flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black shadow-[0_0_30px_rgba(6,182,212,0.25)] hover:scale-[1.02] transition-all"
-                            >
-                                <Sparkles className="w-4 h-4" />
-                                Build My First Funnel
-                            </button>
-                            <Link href="/analyze"
                                 className="flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-white/[0.04] border border-white/[0.08] text-white/70 hover:text-white text-sm font-black transition">
-                                Scan a Market First →
-                            </Link>
+                                Build Manually →
+                            </button>
                         </div>
                     </div>
                 )}

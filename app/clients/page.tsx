@@ -326,15 +326,23 @@ function EmptyState({ filtered }: { filtered: boolean }) {
       ) : (
         <>
           <h2 className="text-lg font-black text-white mb-2">No clients yet</h2>
-          <p className="text-sm text-white/35 max-w-xs mb-6 leading-relaxed">
-            Add your first client to start tracking relationships, pipeline stages, and health scores — all in one place.
+          <p className="text-sm text-white/35 max-w-xs mb-4 leading-relaxed">
+            Add clients manually or let Himalaya create them when you scan a business. Track pipeline, health scores, and relationships.
           </p>
-          <Link
-            href="/clients/new"
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition-opacity"
-          >
-            Add Your First Client
-          </Link>
+          <div className="flex flex-col sm:flex-row gap-3">
+            <Link
+              href="/clients/new"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition-opacity"
+            >
+              Add Client Manually
+            </Link>
+            <Link
+              href="/himalaya"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-white/[0.04] border border-white/[0.1] text-white/60 text-sm font-semibold hover:text-white hover:border-white/[0.2] transition"
+            >
+              Scan &amp; Create from Himalaya
+            </Link>
+          </div>
         </>
       )}
     </div>

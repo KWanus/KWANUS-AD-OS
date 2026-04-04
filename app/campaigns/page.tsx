@@ -416,13 +416,20 @@ export default function CampaignsPage() {
               <BarChart2 className="w-10 h-10 text-cyan-400/50" />
             </div>
             <h2 className="text-2xl font-black text-white mb-2">No campaigns yet</h2>
-            <p className="text-sm text-white/35 max-w-sm mb-10 leading-relaxed">
-              Paste a product or competitor URL into the Copilot. In seconds, you'll get a full ad package — hooks, briefs, scripts, landing page copy, and email sequences.
+            <p className="text-sm text-white/35 max-w-sm mb-4 leading-relaxed">
+              Campaigns are created automatically when you run Himalaya and deploy your assets. Start a run and your first campaign will appear here.
             </p>
-            <Link href="/analyze"
+            <div className="flex items-center justify-center gap-2 mb-6 text-[10px] text-white/20 font-bold">
+              <span className="bg-white/[0.04] border border-white/[0.06] px-2 py-0.5 rounded">Run Himalaya</span>
+              <span className="text-white/10">→</span>
+              <span className="bg-white/[0.04] border border-white/[0.06] px-2 py-0.5 rounded">Deploy</span>
+              <span className="text-white/10">→</span>
+              <span className="bg-white/[0.04] border border-white/[0.06] px-2 py-0.5 rounded">Campaign created</span>
+            </div>
+            <Link href="/himalaya"
               className="flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black shadow-[0_0_30px_rgba(6,182,212,0.25)] hover:scale-[1.02] transition-all">
               <Zap className="w-4 h-4" />
-              Analyze Your First Market →
+              Start with Himalaya →
             </Link>
           </div>
         )}

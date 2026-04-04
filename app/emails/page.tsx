@@ -384,9 +384,16 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
         </div>
       </div>
       <h2 className="text-xl font-black text-white mb-2">Build Your First Flow</h2>
-      <p className="text-sm text-white/40 max-w-sm mb-8 leading-relaxed">
-        Automate your email marketing with intelligent flows that trigger at exactly the right moment. Start from scratch or pick a proven template.
+      <p className="text-sm text-white/40 max-w-sm mb-4 leading-relaxed">
+        Automate your email marketing with flows that trigger at the right moment. Create one manually or let Himalaya build it for you.
       </p>
+      <div className="flex items-center justify-center gap-2 mb-6 text-[10px] text-white/20 font-bold">
+        <span className="bg-white/[0.04] border border-white/[0.06] px-2 py-0.5 rounded">Run Himalaya</span>
+        <span className="text-white/10">→</span>
+        <span className="bg-white/[0.04] border border-white/[0.06] px-2 py-0.5 rounded">Deploy</span>
+        <span className="text-white/10">→</span>
+        <span className="bg-white/[0.04] border border-white/[0.06] px-2 py-0.5 rounded">Email flow auto-created</span>
+      </div>
       <div className="flex flex-col sm:flex-row gap-3">
         <button
           onClick={onCreateClick}
