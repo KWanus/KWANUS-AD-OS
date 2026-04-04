@@ -22,6 +22,7 @@ import OutcomePrompt from "@/components/himalaya/OutcomePrompt";
 import AdaptiveInsights from "@/components/himalaya/AdaptiveInsights";
 import CompetitorCards from "@/components/himalaya/CompetitorCards";
 import UpgradeNudge from "@/components/himalaya/UpgradeNudge";
+import ExecutionDecisionBlock from "@/components/himalaya/ExecutionDecisionBlock";
 import { track } from "@/lib/himalaya/tracking";
 import { formatResults } from "@/lib/himalaya/formatResults";
 import type { RawAnalysis, HimalayaResultsViewModel } from "@/lib/himalaya/types";
@@ -164,6 +165,11 @@ export default function HimalayaRunPage({ params }: { params: Promise<{ runId: s
         {/* C. Priorities */}
         <div className="mb-6">
           <ResultsPriorities vm={vm} />
+        </div>
+
+        {/* Decision block — the conversion moment */}
+        <div className="mb-6">
+          <ExecutionDecisionBlock runId={runId} mode={vm.mode} />
         </div>
 
         {/* D. Generated Assets (with edit + regenerate) */}

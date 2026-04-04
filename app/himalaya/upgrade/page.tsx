@@ -145,10 +145,11 @@ export default function HimalayaUpgradePage() {
         <div className="text-center mb-10">
           <Mountain className="w-12 h-12 text-cyan-400 mx-auto mb-4" />
           <h1 className="text-2xl sm:text-3xl font-black text-white mb-3">
-            Turn your ideas into results — <br className="hidden sm:block" />then improve them until they win
+            Don't stop at ideas.<br className="hidden sm:block" />
+            Execute and improve until it works.
           </h1>
           <p className="text-sm text-white/35 max-w-lg mx-auto">
-            Himalaya researches your market, builds your assets, deploys everything, and learns from your outcomes to make each run better than the last.
+            Himalaya scans your competitors, builds assets that beat them, deploys everything, and learns from your results. Each run gets smarter.
           </p>
         </div>
 
@@ -279,8 +280,13 @@ export default function HimalayaUpgradePage() {
         )}
 
         {/* Social proof / urgency */}
-        <div className="text-center space-y-2">
-          <p className="text-xs text-white/25">Most users upgrade after their first run sees results.</p>
+        <div className="text-center space-y-3">
+          <div className="flex justify-center gap-6 text-[11px] text-white/25">
+            <span>Runs completing daily</span>
+            <span>Sites being deployed</span>
+            <span>Results improving</span>
+          </div>
+          <p className="text-xs text-white/30 font-semibold">Most users see their first result after executing one plan.</p>
           <p className="text-[10px] text-white/15">
             Cancel anytime. No contracts. Your data stays yours.
           </p>
