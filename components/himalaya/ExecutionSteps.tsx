@@ -28,6 +28,25 @@ const GROWTH_ICON_COLORS: Record<string, string> = {
   emerald: "text-emerald-400/60",
 };
 
+function DayAction({ day, title, actions }: { day: string; title: string; actions: string[] }) {
+  return (
+    <div className="bg-white/[0.015] border border-white/[0.05] rounded-xl p-4">
+      <div className="flex items-center gap-3 mb-2">
+        <span className="text-[10px] font-black text-cyan-400/60 bg-cyan-500/10 border border-cyan-500/15 px-2 py-0.5 rounded shrink-0">{day}</span>
+        <h4 className="text-xs font-bold text-white/60">{title}</h4>
+      </div>
+      <ul className="space-y-1.5 pl-1">
+        {actions.map((a, i) => (
+          <li key={i} className="flex items-start gap-2 text-[11px] text-white/40">
+            <span className="text-cyan-400/30 shrink-0 mt-0.5">→</span>
+            {a}
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
 function GrowthCard({ icon: Icon, title, description, color }: { icon: React.ElementType; title: string; description: string; color: string }) {
   return (
     <div className={`rounded-xl border p-4 ${GROWTH_COLORS[color] ?? GROWTH_COLORS.cyan}`}>
@@ -151,67 +170,60 @@ export default function ExecutionSteps({ vm, runId }: Props) {
           {/* Outcome prompt */}
           <OutcomePrompt runId={runId} />
 
-          {/* What's next — growth path */}
+          {/* Your Next 7 Days — concrete action plan */}
           <div className="bg-white/[0.02] border border-white/[0.07] rounded-2xl p-5">
-            <div className="flex items-center gap-2 mb-4">
-              <TrendingUp className="w-4 h-4 text-cyan-400/50" />
-              <h3 className="text-[10px] font-black uppercase tracking-widest text-white/30">What to Do Next</h3>
+            <div className="flex items-center gap-2 mb-2">
+              <Target className="w-4 h-4 text-cyan-400/50" />
+              <h3 className="text-sm font-bold text-white/60">Your Next 7 Days</h3>
             </div>
+            <p className="text-xs text-white/25 mb-4">This is exactly what to do with what you just built. Follow this order.</p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div className="space-y-3">
               {vm.mode === "operator" ? (
                 <>
-                  <GrowthCard
-                    icon={Target}
-                    title="Get Your First Customer"
-                    description="Share your site, run your first ads, reach out to 10 potential clients this week."
-                    color="cyan"
-                  />
-                  <GrowthCard
-                    icon={BarChart2}
-                    title="Track What Works"
-                    description="Watch which marketing angles get clicks. Double down on winners, kill losers after 48 hours."
-                    color="purple"
-                  />
-                  <GrowthCard
-                    icon={RefreshCw}
-                    title="Improve Your Assets"
-                    description="Come back and regenerate sections based on real feedback. The system gets smarter with your input."
-                    color="amber"
-                  />
-                  <GrowthCard
-                    icon={Rocket}
-                    title="Scale What's Working"
-                    description="Once you have traction, run Himalaya again to build your next growth layer — funnels, automations, expansion."
-                    color="emerald"
-                  />
+                  <DayAction day="Today" title="Go live" actions={[
+                    "Open your deployed site and make sure it loads correctly",
+                    "Share the link with 3 people you trust and ask: 'Would you buy this?'",
+                    "Post your best marketing angle on the platform it was built for",
+                  ]} />
+                  <DayAction day="Day 2-3" title="Start outreach" actions={[
+                    "Send your offer to 10 potential customers directly (DM, email, or call)",
+                    "Post 2 more marketing angles — test different hooks",
+                    "Set up your email sequence so leads get automatic follow-up",
+                  ]} />
+                  <DayAction day="Day 4-5" title="Read the signals" actions={[
+                    "Check which marketing angle got the most engagement",
+                    "Check if anyone replied to your outreach — what did they say?",
+                    "If something worked, do more of it. If nothing worked, change the angle.",
+                  ]} />
+                  <DayAction day="Day 6-7" title="Iterate or double down" actions={[
+                    "Come back to Himalaya and report your outcome (what happened?)",
+                    "Regenerate the assets that didn't work with fresh competitive data",
+                    "If you got a response or sale — that's your winning direction. Scale it.",
+                  ]} />
                 </>
               ) : (
                 <>
-                  <GrowthCard
-                    icon={BarChart2}
-                    title="Measure the Impact"
-                    description="Compare your metrics before and after the changes. Report the outcome so the system can learn."
-                    color="cyan"
-                  />
-                  <GrowthCard
-                    icon={Target}
-                    title="Fix the Next Weak Point"
-                    description="Run Himalaya again on the same URL to find the next improvement opportunity."
-                    color="purple"
-                  />
-                  <GrowthCard
-                    icon={RefreshCw}
-                    title="Iterate on What Changed"
-                    description="Regenerate specific sections with fresh competitive intelligence to keep your edge."
-                    color="amber"
-                  />
-                  <GrowthCard
-                    icon={Rocket}
-                    title="Add Systems"
-                    description="Once conversions improve, add automations, email sequences, and scaling infrastructure."
-                    color="emerald"
-                  />
+                  <DayAction day="Today" title="Apply the fixes" actions={[
+                    "Open your site and implement the #1 priority fix from your results",
+                    "Update your headline if the system flagged it as weak",
+                    "Make sure your CTA is visible above the fold",
+                  ]} />
+                  <DayAction day="Day 2-3" title="Deploy the improvements" actions={[
+                    "Replace your current email sequence with the generated one",
+                    "Test 2-3 of the new marketing angles on your best platform",
+                    "Add the trust elements the system identified as missing",
+                  ]} />
+                  <DayAction day="Day 4-5" title="Measure the change" actions={[
+                    "Compare your traffic and conversion numbers to last week",
+                    "Check if the new headline/CTA is getting more clicks",
+                    "Note which marketing angle performs best",
+                  ]} />
+                  <DayAction day="Day 6-7" title="Report and improve" actions={[
+                    "Come back to Himalaya and report your outcome",
+                    "Run another scan on your URL to see what improved",
+                    "The system will adjust recommendations based on your real results",
+                  ]} />
                 </>
               )}
             </div>
