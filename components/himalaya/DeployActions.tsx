@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Rocket, Loader2, CheckCircle, Globe, Mail, Megaphone, RotateCcw, Eye } from "lucide-react";
 import DeployQAReport from "./DeployQAReport";
@@ -22,11 +22,20 @@ type QAReport = {
   summary: string;
 };
 
-export default function DeployActions({ vm }: { vm: HimalayaResultsViewModel }) {
+export default function DeployActions({ vm, autoDeploy = false }: { vm: HimalayaResultsViewModel; autoDeploy?: boolean }) {
   const [deploying, setDeploying] = useState(false);
   const [deployed, setDeployed] = useState<DeployResult | null>(null);
   const [qaReport, setQaReport] = useState<QAReport | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [autoDeployAttempted, setAutoDeployAttempted] = useState(false);
+
+  // Auto-deploy on first load if enabled
+  useEffect(() => {
+    if (autoDeploy && !autoDeployAttempted && !deployed && !deploying && vm.assetGroups.length > 0) {
+      setAutoDeployAttempted(true);
+      void handleDeploy(["all"]);
+    }
+  }, [autoDeploy, autoDeployAttempted, deployed, deploying, vm.assetGroups.length]);
 
   async function handleDeploy(targets: string[]) {
     setDeploying(true);

@@ -133,76 +133,85 @@ export default function HimalayaRunPage({ params }: { params: Promise<{ runId: s
           <ArrowLeft className="w-3.5 h-3.5" /> Run History
         </Link>
 
-        {/* A. Header + Confidence */}
-        <div className="mb-6">
+        {/* ═══ ABOVE THE FOLD: what matters immediately ═══ */}
+
+        {/* Header */}
+        <div className="mb-4">
           <ResultsHeader vm={vm} />
         </div>
 
-        <div className="mb-6">
-          <ConfidenceBadge vm={vm} />
-        </div>
-
-        {/* Adaptive Insights (from past outcomes) */}
-        <div className="mb-6 print:hidden">
-          <AdaptiveInsights mode={vm.mode} />
-        </div>
-
-        {/* A3. Competitor Intelligence */}
-        <div className="mb-6">
-          <CompetitorCards vm={vm} />
-        </div>
-
-        {/* B. Executive Summary */}
-        <div className="mb-6">
+        {/* Summary + Deploy (the two things that matter) */}
+        <div className="mb-4">
           <ResultsSummary vm={vm} />
         </div>
 
-        {/* B2. Strategy Reasoning */}
-        <div className="mb-6">
-          <StrategyReasoning vm={vm} />
+        <div className="mb-4 print:hidden">
+          <DeployActions vm={vm} autoDeploy />
         </div>
 
-        {/* C. Priorities */}
-        <div className="mb-6">
-          <ResultsPriorities vm={vm} />
-        </div>
-
-        {/* Decision block — the conversion moment */}
-        <div className="mb-6">
-          <ExecutionDecisionBlock runId={runId} mode={vm.mode} />
-        </div>
-
-        {/* D. Generated Assets (with edit + regenerate) */}
-        <div className="mb-6">
-          <ResultsAssets vm={vm} onRegenerated={loadRun} />
-        </div>
-
-        {/* Upgrade nudge right after assets (highest conversion moment) */}
-        <div className="mb-6 print:hidden">
-          <UpgradeNudge context="after_results" />
-        </div>
-
-        {/* D2. Deploy + Execute (hidden in print) */}
-        <div className="mb-6 print:hidden">
-          <DeployActions vm={vm} />
-        </div>
-
-        <div className="mb-6 print:hidden">
+        <div className="mb-4 print:hidden">
           <ExecutionBanner runId={runId} />
         </div>
 
-        {/* E. Warnings */}
-        <div className="mb-6">
+        {/* Decision block for free users */}
+        <div className="mb-4">
+          <ExecutionDecisionBlock runId={runId} mode={vm.mode} />
+        </div>
+
+        {/* ═══ BELOW THE FOLD: details on demand ═══ */}
+
+        {/* Priorities + Strategy */}
+        <details open className="mb-4">
+          <summary className="text-[10px] font-black uppercase tracking-widest text-white/25 cursor-pointer hover:text-white/40 transition py-2">
+            Priorities & Strategy
+          </summary>
+          <div className="space-y-4 mt-2">
+            <ResultsPriorities vm={vm} />
+            <StrategyReasoning vm={vm} />
+            <ConfidenceBadge vm={vm} />
+          </div>
+        </details>
+
+        {/* Generated Assets */}
+        <details open className="mb-4">
+          <summary className="text-[10px] font-black uppercase tracking-widest text-white/25 cursor-pointer hover:text-white/40 transition py-2">
+            Generated Assets
+          </summary>
+          <div className="mt-2">
+            <ResultsAssets vm={vm} onRegenerated={loadRun} />
+          </div>
+        </details>
+
+        {/* Competitive Intelligence */}
+        <details className="mb-4">
+          <summary className="text-[10px] font-black uppercase tracking-widest text-white/25 cursor-pointer hover:text-white/40 transition py-2">
+            Competitive Intelligence
+          </summary>
+          <div className="mt-2">
+            <CompetitorCards vm={vm} />
+          </div>
+        </details>
+
+        {/* Upgrade nudge */}
+        <div className="mb-4 print:hidden">
+          <UpgradeNudge context="after_results" />
+        </div>
+
+        {/* Adaptive Insights */}
+        <div className="mb-4 print:hidden">
+          <AdaptiveInsights mode={vm.mode} />
+        </div>
+
+        {/* Outcome + Warnings */}
+        <div id="outcome" className="mb-4 print:hidden">
+          <OutcomePrompt runId={runId} />
+        </div>
+        <div className="mb-4">
           <ResultsWarnings vm={vm} />
         </div>
 
-        {/* E3. Outcome (hidden in print) */}
-        <div id="outcome" className="mb-6 print:hidden">
-          <OutcomePrompt runId={runId} />
-        </div>
-
-        {/* F. Next Actions (hidden in print) */}
-        <div className="mb-6 print:hidden">
+        {/* Next Actions */}
+        <div className="mb-4 print:hidden">
           <ResultsNextActions vm={vm} />
         </div>
 
