@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Loader2, ArrowRight, ArrowLeft, Mountain, Wrench, Sparkles } from "lucide-react";
+import { Loader2, ArrowRight, ArrowLeft, Mountain, Wrench, Sparkles, Search, CheckCircle } from "lucide-react";
 import AppNav from "@/components/AppNav";
 import HimalayaNav from "@/components/himalaya/HimalayaNav";
 import CheckInBanner from "@/components/himalaya/CheckInBanner";
@@ -74,6 +74,111 @@ function SkillToggle({
     >
       {label}
     </button>
+  );
+}
+
+function ExpressInput() {
+  const router = useRouter();
+  const [input, setInput] = useState("");
+  const [running, setRunning] = useState(false);
+  const [stage, setStage] = useState("");
+  const [error, setError] = useState<string | null>(null);
+
+  const isUrl = /^https?:\/\/.+\..+/.test(input.trim());
+
+  async function handleGo() {
+    const trimmed = input.trim();
+    if (!trimmed) return;
+    setRunning(true);
+    setError(null);
+
+    const stages = ["Researching your market...", "Building your strategy...", "Creating your assets...", "Deploying everything..."];
+    let idx = 0;
+    const interval = setInterval(() => {
+      if (idx < stages.length) { setStage(stages[idx]); idx++; }
+    }, 1500);
+
+    try {
+      const body = isUrl
+        ? { niche: trimmed, url: trimmed }
+        : { niche: trimmed };
+
+      const res = await fetch("/api/himalaya/express", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      const resText = await res.text();
+      let data: { ok: boolean; runId?: string; error?: string };
+      try { data = JSON.parse(resText); } catch { data = { ok: false, error: `Unexpected response: ${resText.slice(0, 100)}` }; }
+
+      clearInterval(interval);
+
+      if (data.ok && data.runId) {
+        setStage("Done! Loading your results...");
+        setTimeout(() => router.push(`/himalaya/run/${data.runId}`), 500);
+      } else {
+        setError(data.error ?? "Something went wrong");
+        setRunning(false);
+      }
+    } catch {
+      clearInterval(interval);
+      setError("Connection failed. Try again.");
+      setRunning(false);
+    }
+  }
+
+  if (running) {
+    return (
+      <div className="mt-8 mb-6 text-center py-12">
+        <Mountain className="w-10 h-10 text-cyan-400 mx-auto mb-4 animate-pulse" />
+        <p className="text-sm font-bold text-white/60 mb-2">{stage || "Starting..."}</p>
+        <p className="text-[10px] text-white/20">Usually takes 30-90 seconds. We're scanning competitors and building your assets.</p>
+        {error && (
+          <div className="mt-4">
+            <p className="text-xs text-red-400">{error}</p>
+            <button onClick={() => setRunning(false)} className="text-[10px] text-white/30 hover:text-white/60 mt-2 transition">Try again</button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  return (
+    <div className="mt-8 mb-6">
+      <div className="text-center mb-5">
+        <h2 className="text-lg font-black text-white mb-1">
+          {isUrl ? "Paste a URL. We'll fix it." : "Tell us your niche. We'll build it."}
+        </h2>
+        <p className="text-xs text-white/30">One input. Himalaya does the rest — research, build, deploy.</p>
+      </div>
+
+      <div className="flex gap-2 max-w-lg mx-auto">
+        <input
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && void handleGo()}
+          placeholder="dental practices in Texas  OR  https://yourbusiness.com"
+          autoFocus
+          className="flex-1 bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/30"
+        />
+        <button
+          onClick={() => void handleGo()}
+          disabled={!input.trim()}
+          className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-30 shrink-0"
+        >
+          Go
+        </button>
+      </div>
+
+      <div className="flex justify-center gap-4 mt-3 text-[10px] text-white/15">
+        <span>✓ Scans competitors</span>
+        <span>✓ Builds assets</span>
+        <span>✓ Deploys everything</span>
+        <span>✓ 7-day action plan</span>
+      </div>
+    </div>
   );
 }
 
@@ -205,93 +310,24 @@ export default function HimalayaEntryPage() {
         {/* Check-in banner for returning users */}
         <CheckInBanner />
 
-        {/* First-time welcome */}
-        {!showProfiler && !hasHistory && (
-          <div className="mt-6 mb-6 bg-gradient-to-br from-cyan-500/[0.04] to-purple-500/[0.03] border border-white/[0.06] rounded-2xl p-6 text-center">
-            <h2 className="text-base font-black text-white mb-2">Here's how Himalaya works</h2>
-            <div className="flex items-center justify-center gap-3 mb-3 text-[10px] text-white/30 font-bold">
-              <span>Pick a path</span>
-              <span className="text-white/10">→</span>
-              <span>We research your market</span>
-              <span className="text-white/10">→</span>
-              <span>Get a complete business foundation</span>
-              <span className="text-white/10">→</span>
-              <span>Deploy and execute</span>
-            </div>
-            <p className="text-xs text-white/25 max-w-md mx-auto">
-              Himalaya scans real competitors in your niche, builds assets that beat them, and learns from your results to improve over time. Your first 2 runs are free.
-            </p>
-          </div>
-        )}
+        {/* Express input — zero friction entry */}
+        {!showProfiler && <ExpressInput />}
 
-        {/* Main path selection */}
+        {/* Need more control? */}
         {!showProfiler && (
-          <div className={`${hasHistory ? "mt-8" : ""} mb-8`}>
-            <h2 className="text-lg font-black text-white text-center mb-2">What do you need help with?</h2>
-            <p className="text-sm text-white/30 text-center mb-6">Start from scratch or improve what you already have.</p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-              {/* Start from Scratch */}
-              <Link
-                href="/himalaya/scratch"
-                className="group p-6 rounded-2xl border border-cyan-500/15 bg-gradient-to-br from-cyan-500/[0.06] to-purple-500/[0.04] hover:border-cyan-500/30 transition"
-              >
-                <div className="w-10 h-10 rounded-xl bg-cyan-500/15 flex items-center justify-center mb-3">
-                  <Sparkles className="w-5 h-5 text-cyan-400" />
-                </div>
-                <h3 className="text-base font-black text-white mb-1">Start from Scratch</h3>
-                <p className="text-xs text-white/35 leading-relaxed">
-                  Build a business foundation from idea to strategy, site direction, and launch assets.
-                </p>
-                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-cyan-400/50 mt-3 group-hover:text-cyan-400/80 transition">
-                  Get started <ArrowRight className="w-3 h-3" />
-                </span>
-              </Link>
-
-              {/* Improve Existing */}
-              <Link
-                href="/himalaya/improve"
-                className="group p-6 rounded-2xl border border-amber-500/15 bg-gradient-to-br from-amber-500/[0.06] to-orange-500/[0.04] hover:border-amber-500/30 transition"
-              >
-                <div className="w-10 h-10 rounded-xl bg-amber-500/15 flex items-center justify-center mb-3">
-                  <Wrench className="w-5 h-5 text-amber-400" />
-                </div>
-                <h3 className="text-base font-black text-white mb-1">Improve Existing Business</h3>
-                <p className="text-xs text-white/35 leading-relaxed">
-                  Analyze your current business, find what is weak, and generate better-performing assets.
-                </p>
-                <span className="inline-flex items-center gap-1 text-[10px] font-bold text-amber-400/50 mt-3 group-hover:text-amber-400/80 transition">
-                  Analyze now <ArrowRight className="w-3 h-3" />
-                </span>
-              </Link>
+          <div className="text-center mb-6">
+            <div className="flex justify-center gap-3 text-[10px]">
+              <Link href="/himalaya/scratch" className="text-white/20 hover:text-white/50 transition">Detailed scratch form</Link>
+              <span className="text-white/10">·</span>
+              <Link href="/himalaya/improve" className="text-white/20 hover:text-white/50 transition">Detailed improve form</Link>
+              <span className="text-white/10">·</span>
+              <button onClick={() => setShowProfiler(true)} className="text-white/20 hover:text-white/50 transition">Let Himalaya decide</button>
             </div>
-
-            {/* Not sure? Advanced profiler */}
-            <div className="text-center mb-6">
-              <p className="text-[10px] text-white/20 mb-2">Not sure which path? Answer 7 quick questions and let the system decide.</p>
-              <button
-                onClick={() => setShowProfiler(true)}
-                className="text-xs text-cyan-400/40 hover:text-cyan-400/70 transition font-semibold"
-              >
-                Let Himalaya decide for me
-              </button>
-            </div>
-
-            {/* Returning user shortcuts */}
             {hasHistory && (
-              <div className="flex gap-2">
-                <Link
-                  href="/himalaya/runs"
-                  className="flex-1 flex items-center gap-2 p-3 rounded-xl bg-white/[0.02] border border-white/[0.06] text-xs font-semibold text-white/35 hover:text-white/60 hover:border-white/[0.12] transition"
-                >
-                  <Sparkles className="w-3.5 h-3.5" /> View Past Results
-                </Link>
-                <Link
-                  href="/himalaya/templates"
-                  className="flex-1 flex items-center gap-2 p-3 rounded-xl bg-white/[0.02] border border-white/[0.06] text-xs font-semibold text-white/35 hover:text-white/60 hover:border-white/[0.12] transition"
-                >
-                  <Mountain className="w-3.5 h-3.5" /> My Templates
-                </Link>
+              <div className="flex justify-center gap-3 mt-2 text-[10px]">
+                <Link href="/himalaya/runs" className="text-white/20 hover:text-white/50 transition">Past results</Link>
+                <span className="text-white/10">·</span>
+                <Link href="/himalaya/templates" className="text-white/20 hover:text-white/50 transition">Templates</Link>
               </div>
             )}
           </div>
