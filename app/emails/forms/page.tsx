@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import AppNav from "@/components/AppNav";
+import EmailSubNav from "@/components/EmailSubNav";
 import { Plus, Loader2, Copy, Check, Trash2, ExternalLink, FileText, Eye } from "lucide-react";
 import { toast } from "sonner";
 
@@ -79,6 +80,7 @@ export default function EmailFormsPage() {
   return (
     <div className="min-h-screen bg-[#050a14] text-white">
       <AppNav />
+      <EmailSubNav />
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
         <div className="flex items-center justify-between mb-6">
           <div>

@@ -878,7 +878,7 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
         {selectedNode && (
           <NodeEditor
             node={selectedNode as Node<Record<string, unknown>>}
-            flowContext={{ trigger: flowMeta.trigger, flowName: flowMeta.name }}
+            flowContext={{ trigger: flowMeta.trigger, flowName: flowMeta.name, flowId: flowMeta.id }}
             onClose={() => setSelectedNode(null)}
             onUpdate={(nodeId, newData) => handleNodeDataUpdate(nodeId, newData)}
           />

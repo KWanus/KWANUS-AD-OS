@@ -2,12 +2,14 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Zap, Users, Send, BarChart2 } from "lucide-react";
+import { Zap, Users, Send, BarChart2, FileText, Layout } from "lucide-react";
 
 const TABS = [
   { href: "/emails", label: "Flows", icon: Zap, exact: true },
   { href: "/emails/broadcasts", label: "Broadcasts", icon: Send, exact: false },
   { href: "/emails/contacts", label: "Contacts", icon: Users, exact: false },
+  { href: "/emails/forms", label: "Forms", icon: FileText, exact: false },
+  { href: "/emails/templates", label: "Templates", icon: Layout, exact: false },
   { href: "/emails/analytics", label: "Analytics", icon: BarChart2, exact: false },
 ];
 

@@ -374,6 +374,7 @@ const BLOCK_LABELS: Record<BlockType, string> = {
   video: "Video Embed",
   products: "Product Grid",
   checkout: "Checkout Form",
+  payment: "Payment Link",
   divider: "Divider / Spacer",
   footer: "Footer",
   stats: "Stats Bar",

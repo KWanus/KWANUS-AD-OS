@@ -13,7 +13,7 @@ type AnyRecord = Record<string, unknown>;
 
 interface NodeEditorProps {
   node: Node<AnyRecord> | null;
-  flowContext?: { trigger?: string; flowName?: string };
+  flowContext?: { trigger?: string; flowName?: string; flowId?: string };
   onClose: () => void;
   onUpdate: (nodeId: string, data: AnyRecord) => void;
 }
@@ -98,7 +98,7 @@ function EmailEditor({
 }: {
   data: AnyRecord;
   onChange: (key: string, value: unknown) => void;
-  flowContext?: { trigger?: string; flowName?: string };
+  flowContext?: { trigger?: string; flowName?: string; flowId?: string };
 }) {
   const [generating, setGenerating] = useState(false);
   const [genError, setGenError] = useState("");
@@ -143,6 +143,31 @@ function EmailEditor({
         {generating ? "Generating..." : "AI Generate Email"}
       </button>
       {genError && <p className="text-[10px] text-red-400/80">{genError}</p>}
+
+      <button
+        onClick={async () => {
+          const flowId = flowContext?.flowId ?? "";
+          try {
+            const res = await fetch(`/api/email-flows/${flowId || "unknown"}/test`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({}),
+            });
+            const result = (await res.json()) as { ok: boolean; sentTo?: string; error?: string };
+            if (result.ok) {
+              alert(`Test email sent to ${result.sentTo}`);
+            } else {
+              alert(`Failed: ${result.error}`);
+            }
+          } catch {
+            alert("Could not send test email");
+          }
+        }}
+        className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white/[0.04] border border-white/[0.08] text-xs font-semibold text-white/40 hover:text-white/70 transition"
+      >
+        <Mail className="w-3.5 h-3.5" />
+        Send Test Email
+      </button>
 
       <div>
         <Label>Subject Line</Label>

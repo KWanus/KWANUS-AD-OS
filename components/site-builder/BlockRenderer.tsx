@@ -18,6 +18,7 @@ export type BlockType =
   | "products"
   | "divider"
   | "checkout"
+  | "payment"
   | "footer"
   | "stats"
   | "guarantee"
@@ -989,6 +990,47 @@ function FormBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
     { name: "email", type: "email", placeholder: "Email Address", required: true },
     { name: "phone", type: "tel", placeholder: "Phone (optional)" },
   ];
+  const siteId = props.siteId ?? "";
+  const submitUrl = props.submitUrl ?? "/api/forms/submit";
+
+  // Form submission script injected inline for public sites
+  const formScript = `
+    (function(){
+      var form = document.getElementById('himalaya-form-${siteId}');
+      if(!form) return;
+      var btn = form.querySelector('button[type="submit"]');
+      var msg = form.querySelector('.form-message');
+      form.addEventListener('submit', function(e){
+        e.preventDefault();
+        if(btn){ btn.disabled=true; btn.textContent='Sending...'; }
+        var data = {};
+        form.querySelectorAll('input,textarea').forEach(function(el){
+          if(el.name) data[el.name] = el.value;
+        });
+        data.siteId = '${siteId}';
+        fetch('${submitUrl}',{
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify(data)
+        }).then(function(r){return r.json()}).then(function(r){
+          if(r.ok){
+            if(msg){msg.textContent='Thank you! We\\'ll be in touch.';msg.style.color='#10b981';}
+            form.querySelectorAll('input,textarea').forEach(function(el){el.value='';});
+            // Fire conversion events
+            if(typeof fbq==='function') fbq('track','Lead');
+            if(typeof gtag==='function') gtag('event','generate_lead');
+            if(typeof ttq!=='undefined') ttq.track('SubmitForm');
+          } else {
+            if(msg){msg.textContent='Something went wrong. Please try again.';msg.style.color='#ef4444';}
+          }
+          if(btn){btn.disabled=false;btn.textContent='${(props.buttonText ?? "Submit").replace(/'/g, "\\'")}';}
+        }).catch(function(){
+          if(msg){msg.textContent='Network error. Please try again.';msg.style.color='#ef4444';}
+          if(btn){btn.disabled=false;btn.textContent='${(props.buttonText ?? "Submit").replace(/'/g, "\\'")}';}
+        });
+      });
+    })();
+  `;
 
   return (
     <section style={sectionBase(bg)}>
@@ -1005,19 +1047,20 @@ function FormBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
           border: `1px solid ${isDark ? "rgba(255,255,255,0.08)" : "#e2e8f0"}`,
           borderRadius: 24, padding: "40px 36px",
         }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <form id={`himalaya-form-${siteId}`} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {fields.map((field, i) => (
               <div key={i}>
                 {field.type === "textarea" ? (
-                  <textarea placeholder={field.placeholder ?? field.name} rows={4}
+                  <textarea name={field.name ?? `field_${i}`} placeholder={field.placeholder ?? field.name} rows={4}
                     style={{ width: "100%", background: inputBg, border: `1px solid ${inputBorder}`, borderRadius: 12, padding: "13px 16px", color: textColor, fontSize: 15, outline: "none", resize: "vertical", fontFamily: "inherit" }} />
                 ) : (
-                  <input type={field.type ?? "text"} placeholder={field.placeholder ?? field.name}
+                  <input name={field.name ?? `field_${i}`} type={field.type ?? "text"} placeholder={field.placeholder ?? field.name}
+                    required={field.required}
                     style={{ width: "100%", background: inputBg, border: `1px solid ${inputBorder}`, borderRadius: 12, padding: "13px 16px", color: textColor, fontSize: 15, outline: "none" }} />
                 )}
               </div>
             ))}
-            <button type="button" style={{
+            <button type="submit" style={{
               width: "100%", padding: "15px", borderRadius: 12, border: "none",
               background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
               color: "#fff", fontWeight: 800, fontSize: 16, cursor: "pointer",
@@ -1025,10 +1068,12 @@ function FormBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
             }}>
               {props.buttonText ?? "Submit"}
             </button>
+            <p className="form-message" style={{ color: subColor, fontSize: 14, textAlign: "center", margin: "8px 0 0", minHeight: 20 }}></p>
             {props.privacyText && (
               <p style={{ color: subColor, fontSize: 12, textAlign: "center", margin: "4px 0 0" }}>{props.privacyText}</p>
             )}
-          </div>
+          </form>
+          {siteId && <script dangerouslySetInnerHTML={{ __html: formScript }} />}
         </div>
       </div>
     </section>
@@ -1264,6 +1309,52 @@ function DividerBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
 // ---------------------------------------------------------------------------
 // FOOTER
 // ---------------------------------------------------------------------------
+// PAYMENT — Stripe payment link integration
+// ---------------------------------------------------------------------------
+
+function PaymentBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
+  const isDark = theme.mode !== "light";
+  const primary = px(theme.primaryColor!);
+  const bg = props.bgColor ?? (isDark ? "#050a14" : "#f0fdf4");
+  const textColor = isDark ? "#ffffff" : "#0f172a";
+  const paymentUrl = props.paymentUrl ?? "#";
+  const price = props.price ?? "";
+  const buttonText = props.buttonText ?? "Get Started Now";
+
+  return (
+    <section style={sectionBase(bg)} id="payment">
+      <div style={{ ...container(560), textAlign: "center" }}>
+        {props.title && <h2 style={{ ...headingStyle(textColor, "clamp(1.5rem,3vw,2.2rem)"), marginBottom: 16 }}>{props.title}</h2>}
+        {price && (
+          <p style={{ fontSize: "clamp(2rem,5vw,3rem)", fontWeight: 900, color: primary, marginBottom: 8 }}>
+            {price}
+          </p>
+        )}
+        {props.subtitle && <p style={{ color: isDark ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.5)", fontSize: 16, marginBottom: 32 }}>{props.subtitle}</p>}
+        <a
+          href={paymentUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          style={{
+            display: "inline-block", padding: "18px 48px", borderRadius: 14, border: "none",
+            background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
+            color: "#fff", fontWeight: 800, fontSize: 18, cursor: "pointer",
+            textDecoration: "none",
+            boxShadow: `0 12px 32px ${primary}40`,
+            transition: "transform 0.2s, box-shadow 0.2s",
+          }}
+        >
+          {buttonText}
+        </a>
+        <p style={{ color: isDark ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.3)", fontSize: 12, marginTop: 16 }}>
+          Secure checkout powered by Stripe
+        </p>
+      </div>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
 
 function FooterBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
@@ -1331,6 +1422,7 @@ export default function BlockRenderer({ block, theme, preview, selected, onClick
       case "divider": return <DividerBlock props={block.props} theme={t} />;
       case "products": return <ProductsBlock props={block.props} theme={t} products={products} />;
       case "checkout": return <CheckoutBlock props={block.props} theme={t} />;
+      case "payment": return <PaymentBlock props={block.props} theme={t} />;
       case "footer": return <FooterBlock props={block.props} theme={t} />;
       case "guarantee": return <GuaranteeBlock props={block.props} theme={t} />;
       case "trust_badges": return <TrustBadgesBlock props={block.props} theme={t} />;

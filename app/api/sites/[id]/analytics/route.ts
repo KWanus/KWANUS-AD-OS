@@ -73,6 +73,54 @@ export async function GET(
       });
     }
 
+    // ── Himalaya deployment metrics (email flow, campaign, form submissions) ──
+    const deployment = await prisma.himalayaDeployment.findFirst({
+      where: { siteId: id, userId: user.id },
+      orderBy: { createdAt: "desc" },
+    }).catch(() => null);
+
+    let emailMetrics = null;
+    if (deployment?.emailFlowId) {
+      const flow = await prisma.emailFlow.findUnique({ where: { id: deployment.emailFlowId } });
+      if (flow) {
+        emailMetrics = {
+          flowId: flow.id,
+          name: flow.name,
+          status: flow.status,
+          enrolled: flow.enrolled,
+          sent: flow.sent,
+          opens: flow.opens,
+          clicks: flow.clicks,
+          conversions: flow.conversions,
+          revenue: flow.revenue,
+          openRate: flow.sent > 0 ? Math.round((flow.opens / flow.sent) * 100) : 0,
+          clickRate: flow.sent > 0 ? Math.round((flow.clicks / flow.sent) * 100) : 0,
+          conversionRate: flow.enrolled > 0 ? Math.round((flow.conversions / flow.enrolled) * 100) : 0,
+        };
+      }
+    }
+
+    let campaignMetrics = null;
+    if (deployment?.campaignId) {
+      const campaign = await prisma.campaign.findUnique({
+        where: { id: deployment.campaignId },
+        include: { adVariations: { select: { id: true, name: true, type: true, platform: true, status: true, metrics: true } } },
+      });
+      if (campaign) {
+        campaignMetrics = {
+          campaignId: campaign.id,
+          name: campaign.name,
+          status: campaign.status,
+          variationCount: campaign.adVariations.length,
+          variations: campaign.adVariations,
+        };
+      }
+    }
+
+    const formSubmissions = await prisma.emailContact.count({
+      where: { userId: user.id, source: { contains: `site:${id}` } },
+    }).catch(() => 0);
+
     return NextResponse.json({
       ok: true,
       analytics: {
@@ -91,6 +139,10 @@ export async function GET(
         },
         dailyRevenue,
         daysSinceLaunch: Math.round((Date.now() - new Date(site.createdAt).getTime()) / (1000 * 60 * 60 * 24)),
+        email: emailMetrics,
+        campaign: campaignMetrics,
+        formSubmissions,
+        deployment: deployment ? { version: deployment.version, qaScore: deployment.qaScore } : null,
       },
     });
   } catch (err) {
