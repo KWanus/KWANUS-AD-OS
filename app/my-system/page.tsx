@@ -717,6 +717,9 @@ export default function MySystemPage() {
                 <p className="mt-4 text-sm leading-7 text-white/60">
                   This is the operating system Himalaya thinks you should run right now based on your business type, stage, niche, and growth goal.
                 </p>
+                <Link href="/himalaya" className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition">
+                  <Sparkles className="w-3.5 h-3.5" /> Run Himalaya to build this system →
+                </Link>
                 <div className="mt-6 flex flex-wrap items-center gap-3">
                   <span className="inline-flex items-center rounded-full border border-cyan-500/20 bg-cyan-500/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-cyan-200">
                     {archetype.emoji} {archetype.label}

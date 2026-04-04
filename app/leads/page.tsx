@@ -698,8 +698,11 @@ export default function LeadsPage() {
             <Building2 className="mx-auto h-12 w-12 text-white/15" />
             <h3 className="mt-4 text-xl font-black tracking-tight text-white">Your lead workspace is empty</h3>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-white/40">
-              Start with a niche and location above, and this page will turn into a command center for analysis, assets, and outreach follow-through.
+              Leads are created when you scan businesses through Himalaya or add them manually. Start with Himalaya to auto-generate leads from your niche.
             </p>
+            <Link href="/himalaya" className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition">
+              <Sparkles className="w-4 h-4" /> Find Leads with Himalaya
+            </Link>
           </div>
         ) : (
           <div className="grid gap-4 lg:grid-cols-2">

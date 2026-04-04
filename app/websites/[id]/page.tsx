@@ -510,6 +510,21 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
           All Sites
         </Link>
 
+        {/* Next step guidance */}
+        {!site.published && (
+          <div className="mb-6 bg-cyan-500/[0.04] border border-cyan-500/10 rounded-xl p-4 flex items-center justify-between gap-4">
+            <div>
+              <p className="text-xs font-bold text-white/50">Next step: {site.pages.length === 0 ? "Add your first page" : site.pages.length < 3 ? "Add more pages to complete your site" : "Preview and publish your site"}</p>
+              <p className="text-[10px] text-white/25 mt-0.5">{site.pages.length === 0 ? "Click '+ Add Page' below to get started" : site.pages.length < 3 ? `${site.pages.length} page${site.pages.length > 1 ? "s" : ""} so far — most sites need 3-5` : "Your site looks ready. Preview it and hit publish."}</p>
+            </div>
+            {site.pages.length >= 3 && (
+              <button onClick={() => void togglePublish()} className="shrink-0 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition">
+                Publish Now
+              </button>
+            )}
+          </div>
+        )}
+
         {/* Site header */}
         <div className="flex items-start justify-between gap-4 mb-8 flex-wrap">
           <div className="flex items-center gap-4">

@@ -192,6 +192,12 @@ export default function StartPage() {
         <Link href="/" className="text-cyan-400 text-sm hover:underline">← Back to Dashboard</Link>
         <h1 className="text-2xl font-bold mt-2">Get Started</h1>
         <p className="text-sm text-white/40 mt-1">Answer 3 questions. Get your complete launch kit.</p>
+        <div className="mt-3 flex items-center gap-3">
+          <Link href="/himalaya" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition">
+            Skip — use Himalaya instead →
+          </Link>
+          <span className="text-[10px] text-white/20">Faster, smarter, auto-deploys everything</span>
+        </div>
       </header>
 
       <div className="flex-1 px-6 py-10 max-w-2xl mx-auto w-full">

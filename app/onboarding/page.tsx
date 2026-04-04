@@ -468,6 +468,24 @@ export default function OnboardingPage() {
       </div>
 
       <div className="relative w-full max-w-2xl">
+        {/* Express skip */}
+        <div className="text-center mb-6">
+          <button
+            onClick={() => router.push("/himalaya")}
+            className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition"
+          >
+            <Sparkles className="w-4 h-4" />
+            Skip setup — go straight to Himalaya
+          </button>
+          <p className="text-[10px] text-white/20 mt-2">Himalaya will figure out your business type automatically</p>
+        </div>
+
+        <div className="flex items-center gap-3 mb-8">
+          <div className="flex-1 h-px bg-white/[0.06]" />
+          <span className="text-[10px] text-white/15 font-bold">OR set up manually</span>
+          <div className="flex-1 h-px bg-white/[0.06]" />
+        </div>
+
         {/* Logo */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-3 mb-4">
