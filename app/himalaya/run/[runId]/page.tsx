@@ -66,9 +66,36 @@ export default function HimalayaRunPage({ params }: { params: Promise<{ runId: s
     return (
       <div className="min-h-screen bg-[#050a14] text-white">
         <AppNav />
-        <div className="flex items-center justify-center min-h-[60vh]">
-          <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
-        </div>
+        <HimalayaNav />
+        <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
+          {/* Skeleton */}
+          <div className="animate-pulse space-y-4">
+            <div className="h-4 w-32 bg-white/[0.04] rounded" />
+            <div className="bg-white/[0.02] border border-white/[0.05] rounded-2xl p-6">
+              <div className="flex gap-5">
+                <div className="w-20 h-20 rounded-full bg-white/[0.04]" />
+                <div className="flex-1 space-y-3">
+                  <div className="h-5 w-48 bg-white/[0.04] rounded" />
+                  <div className="h-3 w-full bg-white/[0.03] rounded" />
+                  <div className="h-3 w-2/3 bg-white/[0.03] rounded" />
+                </div>
+              </div>
+            </div>
+            <div className="bg-white/[0.02] border border-white/[0.05] rounded-2xl p-5 space-y-3">
+              <div className="h-3 w-24 bg-white/[0.04] rounded" />
+              <div className="grid grid-cols-3 gap-3">
+                <div className="h-16 bg-white/[0.03] rounded-xl" />
+                <div className="h-16 bg-white/[0.03] rounded-xl" />
+                <div className="h-16 bg-white/[0.03] rounded-xl" />
+              </div>
+            </div>
+            <div className="bg-white/[0.02] border border-white/[0.05] rounded-2xl p-5 space-y-3">
+              <div className="h-3 w-32 bg-white/[0.04] rounded" />
+              <div className="h-20 bg-white/[0.03] rounded-xl" />
+              <div className="h-20 bg-white/[0.03] rounded-xl" />
+            </div>
+          </div>
+        </main>
       </div>
     );
   }

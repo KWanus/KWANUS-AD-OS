@@ -257,67 +257,85 @@ export default function HimalayaScratchPage() {
               </div>
             )}
 
-            <div className="space-y-6">
-              {/* Business Type */}
+            <div className="space-y-4">
+              {/* Niche — the hero input */}
               <div>
-                <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-2 block">What kind of business?</label>
-                <SelectGrid options={BUSINESS_TYPES} value={businessType} onChange={setBusinessType} />
-              </div>
-
-              {/* Niche */}
-              <div>
-                <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-2 block">Your niche or market</label>
+                <label className="text-xs font-bold text-white/40 mb-2 block">Who do you want to serve?</label>
                 <input
                   value={niche}
                   onChange={(e) => setNiche(e.target.value)}
-                  placeholder="e.g. gym owners in Atlanta, busy moms, B2B SaaS founders"
-                  className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/30"
+                  placeholder="e.g. dental practices in Texas, gym owners, B2B SaaS founders"
+                  autoFocus
+                  className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/30"
                 />
-                {businessType && !niche && (
+                {!niche && (
                   <div className="flex flex-wrap gap-1.5 mt-2">
-                    {(NICHE_SUGGESTIONS[businessType] ?? []).map((s) => (
+                    {(NICHE_SUGGESTIONS[businessType || "Agency"] ?? NICHE_SUGGESTIONS["Agency"]).map((s) => (
                       <button key={s} type="button" onClick={() => setNiche(s)} className="px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.06] text-[10px] text-white/30 hover:text-white/60 hover:border-white/[0.12] transition">
                         {s}
                       </button>
                     ))}
                   </div>
                 )}
-                <p className="text-[10px] text-white/15 mt-1 pl-1">Be specific. The more precise, the better your assets.</p>
               </div>
 
-              {/* Competitor URL (optional) */}
-              <div>
-                <label className="text-[10px] font-bold text-white/20 uppercase tracking-widest mb-2 block">
-                  Know a competitor? <span className="text-white/10">(optional)</span>
-                </label>
-                <input
-                  value={competitorUrl}
-                  onChange={(e) => setCompetitorUrl(e.target.value)}
-                  placeholder="https://competitor-website.com"
-                  className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/15 focus:outline-none focus:border-cyan-500/20"
-                />
-                <p className="text-[10px] text-white/12 mt-1 pl-1">We'll scan them and position you to beat them.</p>
+              {/* Business type + Goal on one row */}
+              <div className="grid grid-cols-2 gap-3">
+                <div>
+                  <label className="text-[10px] font-bold text-white/25 uppercase tracking-widest mb-1.5 block">Business type</label>
+                  <select
+                    value={businessType}
+                    onChange={(e) => setBusinessType(e.target.value)}
+                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-cyan-500/30 appearance-none"
+                  >
+                    <option value="" className="bg-[#0d1525]">Select type...</option>
+                    {BUSINESS_TYPES.map((t) => (
+                      <option key={t} value={t} className="bg-[#0d1525]">{t}</option>
+                    ))}
+                  </select>
+                </div>
+                <div>
+                  <label className="text-[10px] font-bold text-white/25 uppercase tracking-widest mb-1.5 block">Immediate goal</label>
+                  <select
+                    value={goal}
+                    onChange={(e) => setGoal(e.target.value)}
+                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-cyan-500/30 appearance-none"
+                  >
+                    <option value="" className="bg-[#0d1525]">Select goal...</option>
+                    {GOALS.map((g) => (
+                      <option key={g} value={g} className="bg-[#0d1525]">{g}</option>
+                    ))}
+                  </select>
+                </div>
               </div>
 
-              {/* Goal */}
-              <div>
-                <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-2 block">Your immediate goal</label>
-                <SelectGrid options={GOALS} value={goal} onChange={setGoal} />
-              </div>
-
-              {/* Dream (optional) */}
-              <div>
-                <label className="text-[10px] font-bold text-white/30 uppercase tracking-widest mb-2 block">
-                  Anything else? <span className="text-white/15">(optional)</span>
-                </label>
-                <textarea
-                  value={dream}
-                  onChange={(e) => setDream(e.target.value)}
-                  placeholder="Describe your dream outcome, extra context, or challenges"
-                  rows={3}
-                  className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/30 resize-none"
-                />
-              </div>
+              {/* Optional extras — collapsed */}
+              <details className="group">
+                <summary className="text-[10px] font-bold text-white/20 cursor-pointer hover:text-white/40 transition">
+                  More options (competitor URL, extra context)
+                </summary>
+                <div className="space-y-3 mt-3">
+                  <div>
+                    <label className="text-[10px] font-bold text-white/20 mb-1 block">Competitor to beat</label>
+                    <input
+                      value={competitorUrl}
+                      onChange={(e) => setCompetitorUrl(e.target.value)}
+                      placeholder="https://competitor-website.com"
+                      className="w-full bg-white/[0.03] border border-white/[0.06] rounded-xl px-3 py-2 text-sm text-white placeholder-white/15 focus:outline-none focus:border-cyan-500/20"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-bold text-white/20 mb-1 block">Extra context</label>
+                    <textarea
+                      value={dream}
+                      onChange={(e) => setDream(e.target.value)}
+                      placeholder="Anything else we should know?"
+                      rows={2}
+                      className="w-full bg-white/[0.03] border border-white/[0.06] rounded-xl px-3 py-2 text-sm text-white placeholder-white/15 focus:outline-none focus:border-cyan-500/20 resize-none"
+                    />
+                  </div>
+                </div>
+              </details>
 
               {/* Submit */}
               <button
@@ -327,6 +345,16 @@ export default function HimalayaScratchPage() {
               >
                 Build My Foundation
               </button>
+
+              {/* What you'll get preview */}
+              <div className="bg-white/[0.015] border border-white/[0.04] rounded-xl p-3">
+                <p className="text-[9px] font-bold text-white/20 uppercase tracking-widest mb-2">What you'll get</p>
+                <div className="flex flex-wrap gap-2">
+                  {["Business Profile", "Ideal Customer", "Offer Direction", "Website Blueprint", "Marketing Angles", "Email Sequence", "Action Roadmap"].map((item) => (
+                    <span key={item} className="text-[10px] text-white/25 bg-white/[0.03] border border-white/[0.04] px-2 py-0.5 rounded">{item}</span>
+                  ))}
+                </div>
+              </div>
             </div>
           </>
         )}
