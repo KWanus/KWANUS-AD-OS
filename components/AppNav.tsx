@@ -19,12 +19,11 @@ const CreditsDisplay = dynamic(() => import("@/components/CreditsDisplay"), { ss
 
 const MAIN_NAV = [
   { href: "/",           label: "Home",      icon: LayoutDashboard, match: (p: string) => p === "/" },
-  { href: "/himalaya",   label: "Himalaya",  icon: Mountain,        match: (p: string) => p.startsWith("/himalaya") },
-  { href: "/scan",       label: "Scan",      icon: ScanSearch,      match: (p: string) => p.startsWith("/scan") || p.startsWith("/analyses") },
-  { href: "/campaigns",  label: "Campaigns", icon: FolderOpen,      match: (p: string) => p.startsWith("/campaigns") || p.startsWith("/projects") || p.startsWith("/emails") },
+  { href: "/himalaya",   label: "Himalaya",  icon: Mountain,        match: (p: string) => p.startsWith("/himalaya") || p.startsWith("/scan") || p.startsWith("/analyses") },
+  { href: "/campaigns",  label: "Campaigns", icon: FolderOpen,      match: (p: string) => p.startsWith("/campaigns") || p.startsWith("/projects") },
   { href: "/websites",   label: "Sites",     icon: Globe,           match: (p: string) => p.startsWith("/websites") },
+  { href: "/emails",     label: "Emails",    icon: Mail,            match: (p: string) => p.startsWith("/emails") },
   { href: "/clients",    label: "Clients",   icon: Users,           match: (p: string) => p.startsWith("/clients") || p.startsWith("/leads") },
-  { href: "/copilot",    label: "AI",        icon: Sparkles,        match: (p: string) => p.startsWith("/copilot") || p.startsWith("/skills") },
 ];
 
 // ── Business verticals (dropdown) ────────────────────────────────────────────

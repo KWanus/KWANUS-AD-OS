@@ -520,6 +520,18 @@ function ScanPageInner() {
       <ScanSubNav />
 
       <div className="max-w-3xl mx-auto px-4 pt-10 pb-20">
+        {/* Himalaya redirect banner */}
+        <div className="mb-6 rounded-2xl border border-cyan-500/15 bg-gradient-to-r from-cyan-500/[0.06] to-purple-500/[0.04] p-4 flex items-center justify-between gap-4">
+          <div>
+            <p className="text-xs font-bold text-white/50">Want the full experience?</p>
+            <p className="text-[10px] text-white/30">Himalaya scans competitors, builds your assets, deploys everything, and tracks results.</p>
+          </div>
+          <Link href="/himalaya" className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition">
+            <Sparkles className="w-3 h-3" /> Use Himalaya
+          </Link>
+        </div>
+      </div>
+      <div className="max-w-3xl mx-auto px-4 pb-20">
         {businessProfile && (
           <>
             <div className="mb-6 rounded-[28px] border border-white/[0.08] bg-white/[0.03] p-5">
