@@ -194,6 +194,7 @@ export default function NewSitePage() {
               </p>
             </div>
 
+            <p className="text-[10px] text-white/25 mb-2">New to this? Use AI Generate. Already have content? Use Manual.</p>
             <div className="flex flex-wrap gap-2">
               <button
                 onClick={() => setMode("generate")}
@@ -202,7 +203,7 @@ export default function NewSitePage() {
                     : "border-white/[0.08] bg-white/[0.03] text-white/55"
                   }`}
               >
-                AI Generate
+                AI Generate — builds it for you
               </button>
               <button
                 onClick={() => setMode("manual")}
@@ -211,7 +212,7 @@ export default function NewSitePage() {
                     : "border-white/[0.08] bg-white/[0.03] text-white/55"
                   }`}
               >
-                Manual
+                Manual — you fill in content
               </button>
             </div>
           </div>
@@ -266,8 +267,8 @@ export default function NewSitePage() {
             </div>
             <div className="mt-4 grid gap-3 md:grid-cols-2">
               {([
-                ["core", "Core", "Strong, clean, conversion-ready execution."],
-                ["elite", "Elite", "Sharper, more specific, more top-operator output."],
+                ["core", "Core", "Clean site with essential sections. Good for getting live fast."],
+                ["elite", "Elite", "Adds trust proof, objection handling, urgency, and stronger CTAs. Best results."],
               ] as const).map(([value, label, description]) => (
                 <button
                   key={value}

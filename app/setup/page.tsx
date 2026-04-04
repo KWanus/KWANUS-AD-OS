@@ -274,7 +274,7 @@ export default function SetupPage() {
                 <p className="text-[10px] font-black uppercase tracking-[0.28em] text-cyan-200/70">Step 1</p>
                 <h1 className="mt-3 text-4xl font-black tracking-tight text-white">What kind of business are you building?</h1>
                 <p className="mt-4 max-w-2xl text-sm leading-7 text-white/60">
-                  Pick the business model that best matches what you are building. This tells Himalaya which acquisition model, funnel logic, and operating system to preload.
+                  This determines which tools and workflows we recommend. You can change it later in Settings. Pick the closest match — doesn&apos;t have to be perfect.
                 </p>
 
                 <div className="mt-8 grid gap-4 sm:grid-cols-2 xl:grid-cols-3">

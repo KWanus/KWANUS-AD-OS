@@ -55,6 +55,7 @@ const STEPS = [
 function StepIdentity({ form, setForm }: { form: FormData; setForm: (f: FormData) => void }) {
   return (
     <div className="space-y-4">
+      <p className="text-xs text-white/30 -mt-1 mb-2">Enter the client&apos;s contact info. You&apos;ll add business details next.</p>
       <div>
         <label className="block text-[10px] font-black uppercase tracking-widest text-white/30 mb-1.5">Full Name *</label>
         <input
@@ -478,7 +479,7 @@ export default function NewClientPage() {
         }
         throw new Error(data.error ?? "Failed");
       }
-      toast.success("Client created successfully");
+      toast.success("Client added! View their profile or start a campaign for them.");
       router.push(`/clients/${data.client?.id}`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Something went wrong");
