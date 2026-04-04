@@ -7,6 +7,7 @@ import { Loader2, ArrowRight, ArrowLeft, Mountain, Wrench, Sparkles } from "luci
 import AppNav from "@/components/AppNav";
 import HimalayaNav from "@/components/himalaya/HimalayaNav";
 import CheckInBanner from "@/components/himalaya/CheckInBanner";
+import { track } from "@/lib/himalaya/tracking";
 import {
   BUDGET_OPTIONS,
   TIME_OPTIONS,
@@ -154,6 +155,7 @@ export default function HimalayaEntryPage() {
 
   useEffect(() => {
     // Check if user has prior runs
+    track.pageView("/himalaya");
     fetch("/api/analyses?limit=1")
       .then((r) => r.json() as Promise<{ ok: boolean; analyses?: unknown[] }>)
       .then((data) => { if (data.ok && data.analyses && data.analyses.length > 0) setHasHistory(true); })

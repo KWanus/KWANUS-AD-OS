@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, Mountain, RotateCcw } from "lucide-react";
 import AppNav from "@/components/AppNav";
 import HimalayaNav from "@/components/himalaya/HimalayaNav";
+import { track } from "@/lib/himalaya/tracking";
 import ProgressStage from "@/components/himalaya/ProgressStage";
 import type { UiRunStage, UiStageState } from "@/components/himalaya/ProgressStage";
 
@@ -124,6 +125,7 @@ export default function HimalayaScratchPage() {
     if (!canSubmit) return;
     setRunning(true);
     setError(null);
+    track.runStart("scratch", businessType);
 
     // Animate stages progressively
     const stageOrder: UiRunStage[] = ["diagnosis", "strategy", "generation", "save"];
@@ -209,6 +211,7 @@ export default function HimalayaScratchPage() {
           setStages({ diagnosis: "complete", strategy: "complete", generation: "complete", save: "complete" });
         }
 
+        track.runComplete(runData.runId!, "scratch");
         setTimeout(() => router.push(`/himalaya/run/${runData.runId}`), 1000);
       } else {
         throw new Error(runData.error ?? "Run failed");

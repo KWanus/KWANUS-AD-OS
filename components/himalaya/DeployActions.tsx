@@ -4,6 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { Rocket, Loader2, CheckCircle, Globe, Mail, Megaphone, RotateCcw, Eye } from "lucide-react";
 import DeployQAReport from "./DeployQAReport";
+import { track } from "@/lib/himalaya/tracking";
 import type { HimalayaResultsViewModel } from "@/lib/himalaya/types";
 
 type DeployResult = {
@@ -39,6 +40,7 @@ export default function DeployActions({ vm }: { vm: HimalayaResultsViewModel }) 
       const data = (await res.json()) as { ok: boolean; deployed?: DeployResult; qa?: QAReport; error?: string };
       if (data.ok && data.deployed) {
         setDeployed(data.deployed);
+        track.deploy(vm.analysisId, targets);
         if (data.qa) setQaReport(data.qa);
       } else {
         setError(data.error ?? "Deploy failed");

@@ -875,6 +875,19 @@ model HimalayaSubscription {
   @@index([userId])
 }
 
+model HimalayaFunnelEvent {
+  id        String   @id @default(cuid())
+  userId    String?
+  sessionId String?
+  event     String   // page_view, run_start, run_complete, results_view, upgrade_click, purchase, deploy, execute_start, execute_complete, outcome_submit
+  metadata  Json?    // { runId, tier, path, etc }
+  createdAt DateTime @default(now())
+
+  @@index([event])
+  @@index([userId])
+  @@index([createdAt])
+}
+
 model HimalayaDeployment {
   id              String   @id @default(cuid())
   userId          String

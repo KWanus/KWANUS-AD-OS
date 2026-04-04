@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Zap, TrendingUp, Rocket, BarChart2, ArrowRight } from "lucide-react";
+import { track } from "@/lib/himalaya/tracking";
 
 type Access = {
   tier: string;
@@ -103,6 +104,7 @@ export default function UpgradeNudge({ context, onDismiss }: { context: NudgeCon
           <div className="flex items-center gap-3">
             <Link
               href="/himalaya/upgrade"
+              onClick={() => track.upgradeClick(context)}
               className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition"
             >
               {config.cta} <ArrowRight className="w-3 h-3" />

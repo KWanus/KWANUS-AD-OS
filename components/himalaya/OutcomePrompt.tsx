@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { CheckCircle, MinusCircle, TrendingDown, Clock, Loader2, MessageSquare } from "lucide-react";
 import UpgradeNudge from "./UpgradeNudge";
+import { track } from "@/lib/himalaya/tracking";
 
 type OutcomeResult = "improved" | "no_change" | "worse" | "not_done";
 type OutcomeData = { result: OutcomeResult; note?: string; timestamp: string };
@@ -44,6 +45,7 @@ export default function OutcomePrompt({ runId }: { runId: string }) {
       const data = (await res.json()) as { ok: boolean; outcome?: OutcomeData };
       if (data.ok && data.outcome) {
         setOutcome(data.outcome);
+        track.outcomeSubmit(runId, result);
       }
     } catch {
       // non-fatal

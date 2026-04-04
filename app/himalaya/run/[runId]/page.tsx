@@ -22,6 +22,7 @@ import OutcomePrompt from "@/components/himalaya/OutcomePrompt";
 import AdaptiveInsights from "@/components/himalaya/AdaptiveInsights";
 import CompetitorCards from "@/components/himalaya/CompetitorCards";
 import UpgradeNudge from "@/components/himalaya/UpgradeNudge";
+import { track } from "@/lib/himalaya/tracking";
 import { formatResults } from "@/lib/himalaya/formatResults";
 import type { RawAnalysis, HimalayaResultsViewModel } from "@/lib/himalaya/types";
 
@@ -52,6 +53,7 @@ export default function HimalayaRunPage({ params }: { params: Promise<{ runId: s
   // Update operational memory when viewing a run
   useEffect(() => {
     if (!vm) return;
+    track.resultsView(runId);
     fetch("/api/himalaya/memory", {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },

@@ -6,6 +6,7 @@ import Link from "next/link";
 import { ArrowLeft, Mountain, RotateCcw } from "lucide-react";
 import AppNav from "@/components/AppNav";
 import HimalayaNav from "@/components/himalaya/HimalayaNav";
+import { track } from "@/lib/himalaya/tracking";
 import ProgressStage from "@/components/himalaya/ProgressStage";
 import type { UiRunStage, UiStageState } from "@/components/himalaya/ProgressStage";
 
@@ -64,6 +65,7 @@ export default function HimalayaImprovePage() {
     if (!hasInput || !urlValid) return;
     setRunning(true);
     setError(null);
+    track.runStart("improve");
 
     // Animate stages
     const stageOrder: UiRunStage[] = ["diagnosis", "strategy", "generation", "save"];
