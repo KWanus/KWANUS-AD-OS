@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { fireWebhook } from "@/lib/webhooks";
+import { fireTrigger } from "@/lib/email-flows/triggerEngine";
 
 const EXECUTION_TIER_PREFIX = "__execution_tier:";
 
@@ -60,6 +61,26 @@ export async function POST(
       where: { id },
       data: { submissions: { increment: 1 } },
     });
+
+    // Fire email flow triggers (signup + form_submit)
+    fireTrigger({
+      type: "signup",
+      email: body.email.toLowerCase().trim(),
+      firstName: body.firstName,
+      lastName: body.lastName,
+      userId,
+      tags: visibleTags(form.tags),
+    }).catch(() => {}); // fire-and-forget
+
+    fireTrigger({
+      type: "form_submit",
+      email: body.email.toLowerCase().trim(),
+      firstName: body.firstName,
+      lastName: body.lastName,
+      userId,
+      metadata: { formId: id, formName: form.name },
+      tags: visibleTags(form.tags),
+    }).catch(() => {}); // fire-and-forget
 
     // Fire webhook (fire-and-forget)
     fireWebhook(userId, {

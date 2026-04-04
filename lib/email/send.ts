@@ -10,6 +10,9 @@ interface SendEmailOptions {
   replyTo?: string;
   /** User's own Resend API key (overrides platform key) */
   apiKey?: string;
+  /** For tracking: flow ID and enrollment ID */
+  flowId?: string;
+  enrollmentId?: string;
 }
 
 function markdownToHtml(md: string): string {
@@ -21,6 +24,30 @@ function markdownToHtml(md: string): string {
     .replace(/→\s*(.*)/g, '<a href="#">$1</a>')
     .replace(/^/, "<p>")
     .replace(/$/, "</p>");
+}
+
+function injectTracking(html: string, flowId?: string, enrollmentId?: string): string {
+  if (!flowId) return html;
+
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL ?? "https://localhost:3005";
+  const trackBase = `${baseUrl}/api/email-flows/track`;
+
+  // Inject open tracking pixel before </body>
+  const openPixel = `<img src="${trackBase}?type=open&fid=${flowId}&eid=${enrollmentId ?? ""}" width="1" height="1" style="display:none" alt="" />`;
+  html = html.replace("</body>", `${openPixel}</body>`);
+
+  // Wrap all links with click tracking
+  html = html.replace(
+    /href="(https?:\/\/[^"]+)"/g,
+    (match, url) => {
+      // Don't track unsubscribe links
+      if (url.includes("unsubscribe")) return match;
+      const tracked = `${trackBase}?type=click&fid=${flowId}&eid=${enrollmentId ?? ""}&url=${encodeURIComponent(url)}`;
+      return `href="${tracked}"`;
+    }
+  );
+
+  return html;
 }
 
 function wrapHtml(body: string, fromName?: string): string {
@@ -35,6 +62,7 @@ function wrapHtml(body: string, fromName?: string): string {
   .content { padding: 40px; color: #1a1a1a; font-size: 15px; line-height: 1.7; }
   p { margin: 0 0 16px; }
   a { color: #06b6d4; text-decoration: none; font-weight: 600; }
+  .btn { display: inline-block; background: #06b6d4; color: #fff !important; padding: 12px 24px; border-radius: 8px; font-weight: 700; text-decoration: none; }
   .footer { padding: 20px 40px; background: #fafafa; border-top: 1px solid #eee; font-size: 12px; color: #999; }
 </style>
 </head>
@@ -42,7 +70,7 @@ function wrapHtml(body: string, fromName?: string): string {
 <div class="wrapper">
   <div class="content">${body}</div>
   <div class="footer">
-    Sent by ${fromName ?? "KWANUS"} via KWANUS AD OS &middot;
+    Sent by ${fromName ?? "Himalaya"} &middot;
     <a href="{{unsubscribe_url}}" style="color:#999">Unsubscribe</a>
   </div>
 </div>
@@ -61,10 +89,13 @@ export async function sendEmail(opts: SendEmailOptions): Promise<{ ok: boolean; 
   const resend = new Resend(key);
 
   const fromEmail = opts.fromEmail ?? "onboarding@resend.dev";
-  const fromName = opts.fromName ?? "KWANUS AD OS";
+  const fromName = opts.fromName ?? "Himalaya";
   const from = `${fromName} <${fromEmail}>`;
 
-  const htmlBody = opts.html.includes("<html") ? opts.html : wrapHtml(opts.html, fromName);
+  let htmlBody = opts.html.includes("<html") ? opts.html : wrapHtml(opts.html, fromName);
+
+  // Inject tracking
+  htmlBody = injectTracking(htmlBody, opts.flowId, opts.enrollmentId);
 
   try {
     const result = await resend.emails.send({

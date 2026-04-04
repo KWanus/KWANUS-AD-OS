@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import Stripe from "stripe";
+import { fireTrigger } from "@/lib/email-flows/triggerEngine";
 
 function getStripe() {
     const stripeKey = process.env.STRIPE_SECRET_KEY;
@@ -81,7 +82,16 @@ export async function POST(req: NextRequest) {
                         }
                     });
 
-                    // Eventually: Trigger EmailFlows containing 'purchase' triggers here!
+                    // Fire purchase trigger for email flows
+                    fireTrigger({
+                        type: "purchase",
+                        email: customerEmail,
+                        firstName: customerName.split(" ")[0],
+                        lastName: customerName.split(" ").slice(1).join(" "),
+                        userId: product.site.userId,
+                        metadata: { productId, siteId, amount: session.amount_total },
+                        tags: ["customer", "purchased"],
+                    }).catch(() => {});
                 }
             }
 
