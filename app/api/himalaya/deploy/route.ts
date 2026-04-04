@@ -231,30 +231,54 @@ export async function POST(req: NextRequest) {
       const welcomeEmails = (es.welcome ?? []) as { subject: string; purpose?: string; preview?: string; body?: string; timing?: string }[];
 
       if (welcomeEmails.length > 0) {
-        // Build email flow nodes from sequence
-        const nodes = welcomeEmails.map((email, i) => ({
-          id: `node_${i}`,
-          type: i === 0 ? "trigger" : "email",
-          data: {
-            subject: email.subject,
-            preview: email.preview ?? email.purpose ?? "",
-            body: email.body ?? "",
-            timing: email.timing ?? `Day ${i}`,
-          },
-          position: { x: 250, y: i * 150 },
-        }));
+        // Build email flow nodes: trigger → email → delay → email → delay → ...
+        const nodes: object[] = [
+          { id: "trigger_0", type: "trigger", data: { label: "New Signup" }, position: { x: 250, y: 0 } },
+        ];
+        const edges: object[] = [];
+        let prevId = "trigger_0";
+        let yPos = 150;
 
-        const edges = welcomeEmails.slice(1).map((_, i) => ({
-          id: `edge_${i}`,
-          source: `node_${i}`,
-          target: `node_${i + 1}`,
-        }));
+        for (let i = 0; i < welcomeEmails.length; i++) {
+          const email = welcomeEmails[i];
+          const emailId = `email_${i}`;
+
+          // Add delay between emails (except before first)
+          if (i > 0) {
+            const delayId = `delay_${i}`;
+            const dayMatch = email.timing?.match(/(\d+)/);
+            const delayDays = dayMatch ? parseInt(dayMatch[1]) : i * 2;
+            nodes.push({
+              id: delayId, type: "delay",
+              data: { delayValue: delayDays, delayUnit: "days", label: `Wait ${delayDays} day${delayDays > 1 ? "s" : ""}` },
+              position: { x: 250, y: yPos },
+            });
+            edges.push({ id: `e_${prevId}_${delayId}`, source: prevId, target: delayId });
+            prevId = delayId;
+            yPos += 100;
+          }
+
+          // Add email node
+          nodes.push({
+            id: emailId, type: "email",
+            data: {
+              subject: email.subject,
+              previewText: email.preview ?? email.purpose ?? "",
+              body: email.body ?? `<p>${email.purpose ?? email.subject}</p>`,
+              label: email.subject,
+            },
+            position: { x: 250, y: yPos },
+          });
+          edges.push({ id: `e_${prevId}_${emailId}`, source: prevId, target: emailId });
+          prevId = emailId;
+          yPos += 150;
+        }
 
         const flow = await prisma.emailFlow.create({
           data: {
             userId: user.id,
             name: `${run.title ?? "Himalaya"} Welcome Sequence`,
-            trigger: "subscribe",
+            trigger: "signup",
             triggerConfig: {},
             status: "draft",
             nodes: nodes as unknown as object,

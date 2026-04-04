@@ -1,7 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { X, Sparkles, Mail, Clock, GitBranch, Tag, Target } from "lucide-react";
+import { X, Sparkles, Mail, Clock, GitBranch, Tag, Target, Code, Layout } from "lucide-react";
+import EmailBlockEditor, { type EmailBlock, blocksToHtml } from "./EmailBlockEditor";
 import type { Node } from "@xyflow/react";
 
 // ---------------------------------------------------------------------------
@@ -162,14 +163,51 @@ function EmailEditor({
       </div>
 
       <div>
-        <Label>Email Body</Label>
-        <TextInput
-          value={(data.body as string) ?? ""}
-          onChange={(v) => onChange("body", v)}
-          placeholder="Write your email content here. Markdown supported."
-          multiline
-          rows={8}
-        />
+        <div className="flex items-center justify-between mb-1.5">
+          <Label>Email Body</Label>
+          <div className="flex items-center gap-1">
+            <button
+              onClick={() => onChange("_editorMode", (data._editorMode as string) === "code" ? "blocks" : "code")}
+              className="flex items-center gap-1 px-2 py-0.5 rounded text-[9px] font-bold text-white/20 hover:text-white/40 transition"
+            >
+              {(data._editorMode as string) === "code" ? <Layout className="w-2.5 h-2.5" /> : <Code className="w-2.5 h-2.5" />}
+              {(data._editorMode as string) === "code" ? "Visual" : "Code"}
+            </button>
+          </div>
+        </div>
+        {(data._editorMode as string) === "code" ? (
+          <TextInput
+            value={(data.body as string) ?? ""}
+            onChange={(v) => onChange("body", v)}
+            placeholder="Write your email content here. Markdown supported."
+            multiline
+            rows={8}
+          />
+        ) : (
+          <EmailBlockEditor
+            blocks={(() => {
+              try {
+                const parsed = JSON.parse((data._blocks as string) ?? "[]");
+                return Array.isArray(parsed) ? parsed : [];
+              } catch { return []; }
+            })() as EmailBlock[]}
+            onChange={(blocks) => {
+              onChange("_blocks", JSON.stringify(blocks));
+              onChange("body", blocksToHtml(blocks));
+            }}
+          />
+        )}
+        <div className="flex flex-wrap gap-1 mt-2">
+          <span className="text-[9px] text-white/15">Merge tags:</span>
+          {["{{first_name}}", "{{last_name}}", "{{email}}"].map((tag) => (
+            <button key={tag} onClick={() => {
+              const body = (data.body as string) ?? "";
+              onChange("body", body + " " + tag);
+            }} className="text-[9px] text-cyan-400/30 hover:text-cyan-400/60 transition bg-white/[0.02] border border-white/[0.04] px-1.5 py-0.5 rounded">
+              {tag}
+            </button>
+          ))}
+        </div>
       </div>
 
       <div className="grid grid-cols-2 gap-3">
