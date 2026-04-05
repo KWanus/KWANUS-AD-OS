@@ -13,6 +13,7 @@ import type {
   CreatedResources,
   SiteBlock,
 } from "@/lib/himalaya/contracts";
+import { extractJson, withTimeout } from "@/lib/himalaya/utils";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -51,21 +52,25 @@ export async function POST(req: NextRequest) {
       ? buildScratchPrompt(body.diagnosis as ScratchDiagnosis, body.strategy)
       : buildImprovePrompt(body.diagnosis as ImproveDiagnosis, body.strategy);
 
-    const msg = await anthropic.messages.create({
-      model: "claude-sonnet-4-6-20250514",
-      max_tokens: 4096,
-      system: systemPrompt,
-      messages: [{ role: "user", content: userPrompt }],
-    });
+    const msg = await withTimeout(
+      anthropic.messages.create({
+        model: "claude-sonnet-4-6-20250514",
+        max_tokens: 4096,
+        system: systemPrompt,
+        messages: [{ role: "user", content: userPrompt }],
+      }),
+      50000,
+      "Generation"
+    );
 
     const raw = msg.content[0].type === "text" ? msg.content[0].text : "";
-    const match = raw.match(/\{[\s\S]*\}/);
+    const jsonStr = extractJson(raw);
 
-    if (!match) {
+    if (!jsonStr) {
       return NextResponse.json({ ok: false, error: "Generation failed." }, { status: 500 });
     }
 
-    const parsed = JSON.parse(match[0]);
+    const parsed = JSON.parse(jsonStr);
     const genWarnings: string[] = [];
     const hasHomepage = "homepage" in parsed && parsed.homepage?.headline;
     const hasEmails = "emails" in parsed && parsed.emails?.sequence?.length;

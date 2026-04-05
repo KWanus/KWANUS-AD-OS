@@ -5,6 +5,7 @@
  */
 
 export { runHimalaya } from "./orchestrator";
+export { extractJson, withTimeout } from "./utils";
 export type {
   // Input
   HimalayaInput,

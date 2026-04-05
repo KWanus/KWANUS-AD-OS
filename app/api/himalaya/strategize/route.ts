@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Anthropic from "@anthropic-ai/sdk";
 import type { DiagnosisPayload, ImproveDiagnosis, StrategyPayload } from "@/lib/himalaya/contracts";
+import { extractJson, withTimeout } from "@/lib/himalaya/utils";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -73,17 +74,21 @@ DESCRIPTION: ${d.businessDescription || "none"}
 Decide what to fix first.`;
     }
 
-    const msg = await anthropic.messages.create({
-      model: "claude-sonnet-4-6-20250514",
-      max_tokens: 1024,
-      system: systemPrompt,
-      messages: [{ role: "user", content: userPrompt }],
-    });
+    const msg = await withTimeout(
+      anthropic.messages.create({
+        model: "claude-sonnet-4-6-20250514",
+        max_tokens: 1024,
+        system: systemPrompt,
+        messages: [{ role: "user", content: userPrompt }],
+      }),
+      30000,
+      "Strategy"
+    );
 
     const raw = msg.content[0].type === "text" ? msg.content[0].text : "";
-    const match = raw.match(/\{[\s\S]*\}/);
+    const jsonStr = extractJson(raw);
 
-    if (!match) {
+    if (!jsonStr) {
       return NextResponse.json({
         ok: true,
         mode: body.mode,
@@ -91,7 +96,7 @@ Decide what to fix first.`;
       });
     }
 
-    const parsed = JSON.parse(match[0]);
+    const parsed = JSON.parse(jsonStr);
     const strategy: StrategyPayload = { ...parsed, status: "success", warnings: [] };
 
     return NextResponse.json({ ok: true, mode: body.mode, strategy });

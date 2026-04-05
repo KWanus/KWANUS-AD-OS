@@ -40,6 +40,7 @@ import type {
   StageTrace,
   RunTrace,
 } from "./contracts";
+import { extractJson, withTimeout } from "./utils";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -377,16 +378,20 @@ CHALLENGE: ${(diagnosis as ImproveDiagnosis).challenge}
 Decide what to fix first.`;
 
   try {
-    const msg = await anthropic.messages.create({
-      model: "claude-sonnet-4-6-20250514",
-      max_tokens: 1024,
-      system: systemPrompt,
-      messages: [{ role: "user", content: userPrompt }],
-    });
+    const msg = await withTimeout(
+      anthropic.messages.create({
+        model: "claude-sonnet-4-6-20250514",
+        max_tokens: 1024,
+        system: systemPrompt,
+        messages: [{ role: "user", content: userPrompt }],
+      }),
+      30000,
+      "Strategy"
+    );
 
     const raw = msg.content[0].type === "text" ? msg.content[0].text : "";
-    const match = raw.match(/\{[\s\S]*\}/);
-    if (match) return { result: JSON.parse(match[0]) as StrategyPayload, fallbackUsed: false };
+    const jsonStr = extractJson(raw);
+    if (jsonStr) return { result: JSON.parse(jsonStr) as StrategyPayload, fallbackUsed: false };
   } catch (e) {
     console.error("Strategy AI failed:", e);
   }
@@ -444,19 +449,23 @@ async function generate(
     ? `DIAGNOSIS:\n${JSON.stringify(diagnosis, null, 2)}\n\nSTRATEGY:\n${JSON.stringify(strategy, null, 2)}\n\nFix the biggest weaknesses. Rewrite homepage. Create follow-up emails. Generate ad angles. Build action roadmap.`
     : `BUSINESS TYPE: ${diagnosis.businessType}\nNICHE: ${diagnosis.niche}\nGOAL: ${diagnosis.goal}\nDESCRIPTION: ${(diagnosis as ScratchDiagnosis).description || "none"}\nARCHETYPE: ${JSON.stringify((diagnosis as ScratchDiagnosis).archetype)}\n\nSTRATEGY:\n${JSON.stringify(strategy, null, 2)}\n\nGenerate everything. Be specific to the niche. Write copy that converts.`;
 
-  const msg = await anthropic.messages.create({
-    model: "claude-sonnet-4-6-20250514",
-    max_tokens: 4096,
-    system: systemPrompt,
-    messages: [{ role: "user", content: userPrompt }],
-  });
+  const msg = await withTimeout(
+    anthropic.messages.create({
+      model: "claude-sonnet-4-6-20250514",
+      max_tokens: 4096,
+      system: systemPrompt,
+      messages: [{ role: "user", content: userPrompt }],
+    }),
+    50000,
+    "Generation"
+  );
 
   const raw = msg.content[0].type === "text" ? msg.content[0].text : "";
-  const match = raw.match(/\{[\s\S]*\}/);
+  const jsonStr = extractJson(raw);
 
-  if (!match) throw new Error("Generation failed — no structured output returned.");
+  if (!jsonStr) throw new Error("Generation failed — no structured output returned.");
 
-  return JSON.parse(match[0]) as ScratchGeneration | ImproveGeneration;
+  return JSON.parse(jsonStr) as ScratchGeneration | ImproveGeneration;
 }
 
 // ─── Step 4: Save to DB ─────────────────────────────────────────────────────
