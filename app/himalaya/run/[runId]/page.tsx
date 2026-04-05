@@ -437,9 +437,17 @@ export default function HimalayaRunPage() {
               <Mail className="w-4 h-4" /> View Email Output
             </Link>
           )}
+          {!created?.siteId && !created?.emailFlowId && (
+            <Link
+              href="/"
+              className="flex-1 flex items-center justify-center gap-2 rounded-xl bg-cyan-500 px-4 py-3 text-sm font-medium text-white hover:bg-cyan-400 transition-colors"
+            >
+              <Zap className="w-4 h-4" /> Go to Dashboard
+            </Link>
+          )}
           <button
             onClick={() => router.push("/himalaya")}
-            className="flex-1 flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-sm font-medium text-white/60 hover:text-white hover:border-white/20 transition-all"
+            className={`flex-1 flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-sm font-medium text-white/60 hover:text-white hover:border-white/20 transition-all`}
           >
             Start Another Run <ArrowRight className="w-4 h-4" />
           </button>

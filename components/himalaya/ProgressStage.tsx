@@ -1,5 +1,6 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import { Check, Loader2, AlertCircle, AlertTriangle, RefreshCw } from "lucide-react";
 
 export type UiRunStage = "diagnosis" | "strategy" | "generation" | "save";
@@ -86,11 +87,25 @@ interface ProgressStageProps {
 }
 
 export function ProgressStage({ stages, currentStage, error, onRetry, onCancel }: ProgressStageProps) {
+  const [elapsed, setElapsed] = useState(0);
+
+  useEffect(() => {
+    if (error) return;
+    const interval = setInterval(() => setElapsed((e) => e + 1), 1000);
+    return () => clearInterval(interval);
+  }, [error]);
+
+  const timeLabel = elapsed < 60
+    ? `${elapsed}s`
+    : `${Math.floor(elapsed / 60)}m ${elapsed % 60}s`;
+
   return (
     <div className="space-y-8">
       <div className="text-center space-y-2">
         <h1 className="text-2xl font-bold text-white">Building your results</h1>
-        <p className="text-white/40 text-sm">This usually takes about 30 seconds.</p>
+        <p className="text-white/40 text-sm">
+          {error ? "Something went wrong." : `Working on it... ${timeLabel}`}
+        </p>
       </div>
 
       <div className="space-y-1">
