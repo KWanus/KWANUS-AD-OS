@@ -2,18 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 import Anthropic from "@anthropic-ai/sdk";
-import { prisma } from "@/lib/prisma";
 import type {
   DiagnosisPayload,
   ScratchDiagnosis,
   ImproveDiagnosis,
   StrategyPayload,
   GenerationPayload,
-  HomepagePayload,
-  CreatedResources,
-  SiteBlock,
 } from "@/lib/himalaya/contracts";
 import { extractJson, withTimeout } from "@/lib/himalaya/utils";
+import { saveGeneratedAssets, saveBusinessProfile } from "@/lib/himalaya";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -82,8 +79,8 @@ export async function POST(req: NextRequest) {
       warnings: genWarnings,
     };
 
-    // Save to DB
-    const created = await saveToDb(generated, userId);
+    // Save to DB (using shared functions from orchestrator)
+    const created = await saveGeneratedAssets(generated, userId);
 
     // Save business profile for scratch users
     if (userId && body.mode === "scratch" && "profile" in generated) {
@@ -120,128 +117,6 @@ STRATEGY:
 ${JSON.stringify(strategy, null, 2)}
 
 Fix the biggest weaknesses. Rewrite homepage. Create follow-up emails. Generate ad angles. Build action roadmap.`;
-}
-
-// ─── DB Save ─────────────────────────────────────────────────────────────────
-
-async function saveToDb(
-  generated: GenerationPayload,
-  userId: string | null
-): Promise<CreatedResources> {
-  const result: CreatedResources = { siteId: null, emailFlowId: null };
-  if (!userId) return result;
-
-  // Save site
-  const homepage = "homepage" in generated ? generated.homepage : null;
-  if (homepage) {
-    try {
-      const blocks = buildSiteBlocks(homepage);
-      const name = "profile" in generated ? (generated.profile?.businessName || "Himalaya Site") : "Himalaya Site";
-
-      const site = await prisma.site.create({
-        data: {
-          userId,
-          name,
-          slug: `himalaya-${Date.now()}`,
-          published: false,
-          theme: { primaryColor: "#06b6d4", font: "inter", mode: "dark" },
-          pages: {
-            create: {
-              title: "Home",
-              slug: "home",
-              published: true,
-              blocks: blocks as never,
-              seoTitle: homepage.seoTitle ?? null,
-              seoDesc: homepage.seoDesc ?? null,
-            },
-          },
-        },
-      });
-      result.siteId = site.id;
-    } catch (e) {
-      console.error("Site save failed:", e);
-    }
-  }
-
-  // Save email flow
-  const emails = "emails" in generated ? generated.emails : null;
-  if (emails?.sequence?.length) {
-    try {
-      const flow = await prisma.emailFlow.create({
-        data: {
-          userId,
-          name: "Himalaya Starter Sequence",
-          status: "draft",
-          trigger: "manual",
-          nodes: emails.sequence as never,
-        },
-      });
-      result.emailFlowId = flow.id;
-    } catch (e) {
-      console.error("Email flow save failed:", e);
-    }
-  }
-
-  return result;
-}
-
-async function saveBusinessProfile(
-  userId: string,
-  diagnosis: ScratchDiagnosis,
-  generated: GenerationPayload
-): Promise<void> {
-  if (!("profile" in generated)) return;
-  const profile = generated.profile;
-  try {
-    await prisma.businessProfile.upsert({
-      where: { userId },
-      create: {
-        userId,
-        businessType: diagnosis.businessType || "",
-        businessName: profile.businessName || null,
-        niche: diagnosis.niche || "",
-        mainOffer: profile.offer || null,
-        targetAudience: profile.targetAudience || null,
-        stage: "starting",
-      },
-      update: {
-        businessName: profile.businessName || undefined,
-        mainOffer: profile.offer || undefined,
-        targetAudience: profile.targetAudience || undefined,
-      },
-    });
-  } catch (e) {
-    console.error("Business profile save failed:", e);
-  }
-}
-
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
-function buildSiteBlocks(homepage: HomepagePayload): SiteBlock[] {
-  const now = Date.now();
-  const blocks: SiteBlock[] = [];
-
-  blocks.push({
-    id: `hero-${now}`,
-    type: "hero",
-    props: {
-      headline: homepage.headline,
-      subheadline: homepage.subheadline,
-      buttonText: homepage.heroButtonText || "Get Started",
-    },
-  });
-
-  if (homepage.sections) {
-    for (const section of homepage.sections) {
-      blocks.push({
-        id: `${section.type}-${now}-${Math.random().toString(36).slice(2, 6)}`,
-        type: section.type,
-        props: { ...section },
-      });
-    }
-  }
-
-  return blocks;
 }
 
 // ─── Prompt Constants ────────────────────────────────────────────────────────

@@ -4,7 +4,7 @@
  * Public API surface. Import from "@/lib/himalaya" to access contracts and orchestrator.
  */
 
-export { runHimalaya } from "./orchestrator";
+export { runHimalaya, saveGeneratedAssets, saveBusinessProfile, buildSiteBlocks } from "./orchestrator";
 export { extractJson, withTimeout } from "./utils";
 export type {
   // Input

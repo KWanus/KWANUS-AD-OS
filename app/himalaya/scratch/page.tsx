@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { ProgressStage } from "@/components/himalaya/ProgressStage";
-import type { UiRunStage, UiStageState } from "@/components/himalaya/ProgressStage";
+import { useHimalayaRun } from "@/lib/himalaya/useHimalayaRun";
 
 const BUSINESS_TYPES = [
   { key: "local_service", label: "Service Business" },
@@ -27,13 +27,6 @@ const GOALS = [
   { key: "scale_operations", label: "Scale operations" },
 ] as const;
 
-const INITIAL_STAGES: Record<UiRunStage, UiStageState> = {
-  diagnosis: "waiting",
-  strategy: "waiting",
-  generation: "waiting",
-  save: "waiting",
-};
-
 export default function HimalayaScratchPage() {
   const router = useRouter();
   const [businessType, setBusinessType] = useState("");
@@ -41,94 +34,29 @@ export default function HimalayaScratchPage() {
   const [goal, setGoal] = useState("");
   const [dream, setDream] = useState("");
 
-  const [running, setRunning] = useState(false);
-  const [currentStage, setCurrentStage] = useState<UiRunStage | null>(null);
-  const [stages, setStages] = useState(INITIAL_STAGES);
-  const [error, setError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
+  const buildDiagnoseBody = useCallback(() => ({
+    mode: "scratch" as const,
+    businessType,
+    niche,
+    goal,
+    description: dream || undefined,
+  }), [businessType, niche, goal, dream]);
 
-  const canSubmit = businessType && niche.trim() && goal && !submitting;
+  const buildSaveInput = useCallback(() => ({
+    mode: "scratch" as const,
+    businessType,
+    niche,
+    goal,
+    description: dream || undefined,
+  }), [businessType, niche, goal, dream]);
 
-  function updateStage(stage: UiRunStage, state: UiStageState) {
-    setStages((prev) => ({ ...prev, [stage]: state }));
-  }
+  const { running, currentStage, stages, error, run, cancel } = useHimalayaRun({
+    mode: "scratch",
+    buildDiagnoseBody,
+    buildSaveInput,
+  });
 
-  async function handleSubmit() {
-    if (submitting) return;
-    setSubmitting(true);
-    setRunning(true);
-    setError(null);
-    setStages(INITIAL_STAGES);
-
-    try {
-      // Diagnosis
-      setCurrentStage("diagnosis");
-      updateStage("diagnosis", "active");
-      const diagRes = await fetch("/api/himalaya/diagnose", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode: "scratch", businessType, niche, goal, description: dream || undefined }),
-      });
-      const diagData = await diagRes.json();
-      if (!diagData.ok) throw new Error(diagData.error || "Diagnosis failed");
-      updateStage("diagnosis", diagData.diagnosis?.status === "partial" ? "partial" : "complete");
-
-      // Strategy
-      setCurrentStage("strategy");
-      updateStage("strategy", "active");
-      const stratRes = await fetch("/api/himalaya/strategize", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode: "scratch", diagnosis: diagData.diagnosis }),
-      });
-      const stratData = await stratRes.json();
-      if (!stratData.ok) throw new Error(stratData.error || "Strategy failed");
-      const stratStatus = stratData.strategy?.status || "success";
-      updateStage("strategy", stratStatus === "fallback" ? "fallback" : stratStatus === "partial" ? "partial" : "complete");
-
-      // Generation
-      setCurrentStage("generation");
-      updateStage("generation", "active");
-      const genRes = await fetch("/api/himalaya/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode: "scratch", diagnosis: diagData.diagnosis, strategy: stratData.strategy }),
-      });
-      const genData = await genRes.json();
-      if (!genData.ok) throw new Error(genData.error || "Generation failed");
-      const genStatus = genData.generated?.status || "success";
-      updateStage("generation", genStatus === "partial" ? "partial" : "complete");
-
-      // Save
-      setCurrentStage("save");
-      updateStage("save", "active");
-      const saveRes = await fetch("/api/himalaya/run", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "save",
-          mode: "scratch",
-          input: { mode: "scratch", businessType, niche, goal, description: dream || undefined },
-          diagnosis: diagData.diagnosis,
-          strategy: stratData.strategy,
-          generated: genData.generated,
-          created: genData.created || { siteId: null, emailFlowId: null },
-        }),
-      });
-      const saveData = await saveRes.json();
-      if (!saveData.ok) throw new Error(saveData.error || "Save failed");
-      updateStage("save", "complete");
-
-      // Redirect to results
-      router.push(`/himalaya/run/${saveData.runId}`);
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Something went wrong";
-      setError(msg);
-      if (currentStage) updateStage(currentStage, "failed");
-      setRunning(false);
-      setSubmitting(false);
-    }
-  }
+  const canSubmit = businessType && niche.trim() && goal && !running;
 
   // ── Progress UI ───────────────────────────────────────────────────────────
   if (running) {
@@ -139,8 +67,8 @@ export default function HimalayaScratchPage() {
             stages={stages}
             currentStage={currentStage}
             error={error}
-            onRetry={() => handleSubmit()}
-            onCancel={() => { setRunning(false); setSubmitting(false); }}
+            onRetry={run}
+            onCancel={cancel}
           />
         </div>
       </div>
@@ -244,7 +172,7 @@ export default function HimalayaScratchPage() {
           )}
 
           <button
-            onClick={handleSubmit}
+            onClick={run}
             disabled={!canSubmit}
             className="w-full flex items-center justify-center gap-2 rounded-xl bg-cyan-500 px-4 py-3.5 text-sm font-medium text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-cyan-400 transition-colors"
           >

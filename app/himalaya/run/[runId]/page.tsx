@@ -111,19 +111,22 @@ export default function HimalayaRunPage() {
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
+    const controller = new AbortController();
     async function load() {
       try {
-        const res = await fetch(`/api/himalaya/run/${runId}`);
+        const res = await fetch(`/api/himalaya/run/${runId}`, { signal: controller.signal });
         const json = await res.json();
         if (!json.ok) throw new Error(json.error || "Run not found");
         setData(json);
       } catch (err) {
+        if (controller.signal.aborted) return;
         setError(err instanceof Error ? err.message : "Failed to load run");
       } finally {
-        setLoading(false);
+        if (!controller.signal.aborted) setLoading(false);
       }
     }
     if (runId) load();
+    return () => controller.abort();
   }, [runId]);
 
   // ── Loading state ──────────────────────────────────────────────────────

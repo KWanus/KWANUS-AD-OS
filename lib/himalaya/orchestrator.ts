@@ -177,7 +177,7 @@ export async function runHimalaya(
   // Step 4: Save
   let created: CreatedResources;
   try {
-    created = await save(generated, userId);
+    created = await saveGeneratedAssets(generated, userId);
 
     if (userId && diagnosis.mode === "scratch" && "profile" in generated) {
       await saveBusinessProfile(userId, diagnosis as ScratchDiagnosis, generated);
@@ -470,68 +470,77 @@ async function generate(
 
 // ─── Step 4: Save to DB ─────────────────────────────────────────────────────
 
-async function save(
+export async function saveGeneratedAssets(
   generated: GenerationPayload,
   userId: string | null
 ): Promise<CreatedResources> {
   const result: CreatedResources = { siteId: null, emailFlowId: null };
   if (!userId) return result;
 
-  // Save site
   const homepage = "homepage" in generated ? generated.homepage : null;
-  if (homepage) {
-    try {
-      const blocks = buildSiteBlocks(homepage);
-      const profileName = "profile" in generated ? (generated.profile?.businessName || "Himalaya Site") : "Himalaya Site";
+  const emails = "emails" in generated ? generated.emails : null;
 
-      const site = await prisma.site.create({
-        data: {
-          userId,
-          name: profileName,
-          slug: `himalaya-${Date.now()}`,
-          published: false,
-          theme: { primaryColor: "#06b6d4", font: "inter", mode: "dark" },
-          pages: {
-            create: {
-              title: "Home",
-              slug: "home",
-              published: true,
-              blocks: blocks as never,
-              seoTitle: homepage.seoTitle ?? null,
-              seoDesc: homepage.seoDesc ?? null,
+  const saves: Promise<void>[] = [];
+
+  // Save site
+  if (homepage) {
+    saves.push(
+      (async () => {
+        const blocks = buildSiteBlocks(homepage);
+        const profileName = "profile" in generated ? (generated.profile?.businessName || "Himalaya Site") : "Himalaya Site";
+        const site = await prisma.site.create({
+          data: {
+            userId,
+            name: profileName,
+            slug: `himalaya-${Date.now()}`,
+            published: false,
+            theme: { primaryColor: "#06b6d4", font: "inter", mode: "dark" },
+            pages: {
+              create: {
+                title: "Home",
+                slug: "home",
+                published: true,
+                blocks: blocks as never,
+                seoTitle: homepage.seoTitle ?? null,
+                seoDesc: homepage.seoDesc ?? null,
+              },
             },
           },
-        },
-      });
-      result.siteId = site.id;
-    } catch (e) {
-      console.error("Site save failed:", e);
-    }
+        });
+        result.siteId = site.id;
+      })()
+    );
   }
 
   // Save email flow
-  const emails = "emails" in generated ? generated.emails : null;
   if (emails?.sequence?.length) {
-    try {
-      const flow = await prisma.emailFlow.create({
-        data: {
-          userId,
-          name: "Himalaya Starter Sequence",
-          status: "draft",
-          trigger: "manual",
-          nodes: emails.sequence as never,
-        },
-      });
-      result.emailFlowId = flow.id;
-    } catch (e) {
-      console.error("Email flow save failed:", e);
+    saves.push(
+      (async () => {
+        const flow = await prisma.emailFlow.create({
+          data: {
+            userId,
+            name: "Himalaya Starter Sequence",
+            status: "draft",
+            trigger: "manual",
+            nodes: emails.sequence as never,
+          },
+        });
+        result.emailFlowId = flow.id;
+      })()
+    );
+  }
+
+  const outcomes = await Promise.allSettled(saves);
+  for (const outcome of outcomes) {
+    if (outcome.status === "rejected") {
+      console.error("Asset save failed:", outcome.reason);
     }
   }
 
   return result;
 }
 
-async function saveBusinessProfile(
+export async function saveBusinessProfile(
   userId: string,
   diagnosis: ScratchDiagnosis,
   generated: GenerationPayload
@@ -563,7 +572,7 @@ async function saveBusinessProfile(
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 
-function buildSiteBlocks(homepage: HomepagePayload): SiteBlock[] {
+export function buildSiteBlocks(homepage: HomepagePayload): SiteBlock[] {
   const now = Date.now();
   const blocks: SiteBlock[] = [];
 

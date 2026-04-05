@@ -89,11 +89,16 @@ interface ProgressStageProps {
 export function ProgressStage({ stages, currentStage, error, onRetry, onCancel }: ProgressStageProps) {
   const [elapsed, setElapsed] = useState(0);
 
+  const allDone = STAGE_ORDER.every((s) => {
+    const st = stages[s];
+    return st === "complete" || st === "partial" || st === "fallback" || st === "failed";
+  });
+
   useEffect(() => {
-    if (error) return;
+    if (error || allDone) return;
     const interval = setInterval(() => setElapsed((e) => e + 1), 1000);
     return () => clearInterval(interval);
-  }, [error]);
+  }, [error, allDone]);
 
   const timeLabel = elapsed < 60
     ? `${elapsed}s`

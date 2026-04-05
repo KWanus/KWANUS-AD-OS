@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { ArrowLeft, ArrowRight, Globe, MessageSquare } from "lucide-react";
 import { ProgressStage } from "@/components/himalaya/ProgressStage";
-import type { UiRunStage, UiStageState } from "@/components/himalaya/ProgressStage";
+import { useHimalayaRun } from "@/lib/himalaya/useHimalayaRun";
 
 const GOALS = [
   { key: "improve_conversion", label: "Improve conversion" },
@@ -16,13 +16,6 @@ const GOALS = [
   { key: "rebuild_pages", label: "Rebuild weak pages" },
 ] as const;
 
-const INITIAL_STAGES: Record<UiRunStage, UiStageState> = {
-  diagnosis: "waiting",
-  strategy: "waiting",
-  generation: "waiting",
-  save: "waiting",
-};
-
 export default function HimalayaImprovePage() {
   const router = useRouter();
   const [url, setUrl] = useState("");
@@ -30,99 +23,29 @@ export default function HimalayaImprovePage() {
   const [problem, setProblem] = useState("");
   const [goal, setGoal] = useState("");
 
-  const [running, setRunning] = useState(false);
-  const [currentStage, setCurrentStage] = useState<UiRunStage | null>(null);
-  const [stages, setStages] = useState(INITIAL_STAGES);
-  const [error, setError] = useState<string | null>(null);
-  const [submitting, setSubmitting] = useState(false);
+  const buildDiagnoseBody = useCallback(() => ({
+    mode: "improve" as const,
+    url: url.trim() || undefined,
+    businessDescription: description.trim() || undefined,
+    challenge: problem.trim() || undefined,
+    goal: goal || undefined,
+  }), [url, description, problem, goal]);
 
-  const canSubmit = (url.trim() || description.trim()) && !submitting;
+  const buildSaveInput = useCallback(() => ({
+    mode: "improve" as const,
+    url: url.trim() || undefined,
+    businessDescription: description.trim() || undefined,
+    challenge: problem.trim() || undefined,
+    goal: goal || undefined,
+  }), [url, description, problem, goal]);
 
-  function updateStage(stage: UiRunStage, state: UiStageState) {
-    setStages((prev) => ({ ...prev, [stage]: state }));
-  }
+  const { running, currentStage, stages, error, run, cancel } = useHimalayaRun({
+    mode: "improve",
+    buildDiagnoseBody,
+    buildSaveInput,
+  });
 
-  async function handleSubmit() {
-    if (submitting) return;
-    setSubmitting(true);
-    setRunning(true);
-    setError(null);
-    setStages(INITIAL_STAGES);
-
-    try {
-      // Diagnosis
-      setCurrentStage("diagnosis");
-      updateStage("diagnosis", "active");
-      const diagRes = await fetch("/api/himalaya/diagnose", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          mode: "improve",
-          url: url.trim() || undefined,
-          businessDescription: description.trim() || undefined,
-          challenge: problem.trim() || undefined,
-          goal: goal || undefined,
-        }),
-      });
-      const diagData = await diagRes.json();
-      if (!diagData.ok) throw new Error(diagData.error || "Diagnosis failed");
-      updateStage("diagnosis", diagData.diagnosis?.status === "partial" ? "partial" : "complete");
-
-      // Strategy
-      setCurrentStage("strategy");
-      updateStage("strategy", "active");
-      const stratRes = await fetch("/api/himalaya/strategize", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode: "improve", diagnosis: diagData.diagnosis }),
-      });
-      const stratData = await stratRes.json();
-      if (!stratData.ok) throw new Error(stratData.error || "Strategy failed");
-      const stratStatus = stratData.strategy?.status || "success";
-      updateStage("strategy", stratStatus === "fallback" ? "fallback" : stratStatus === "partial" ? "partial" : "complete");
-
-      // Generation
-      setCurrentStage("generation");
-      updateStage("generation", "active");
-      const genRes = await fetch("/api/himalaya/generate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode: "improve", diagnosis: diagData.diagnosis, strategy: stratData.strategy }),
-      });
-      const genData = await genRes.json();
-      if (!genData.ok) throw new Error(genData.error || "Generation failed");
-      const genStatus = genData.generated?.status || "success";
-      updateStage("generation", genStatus === "partial" ? "partial" : "complete");
-
-      // Save
-      setCurrentStage("save");
-      updateStage("save", "active");
-      const saveRes = await fetch("/api/himalaya/run", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          action: "save",
-          mode: "improve",
-          input: { mode: "improve", url: url.trim() || undefined, businessDescription: description.trim() || undefined, challenge: problem.trim() || undefined, goal: goal || undefined },
-          diagnosis: diagData.diagnosis,
-          strategy: stratData.strategy,
-          generated: genData.generated,
-          created: genData.created || { siteId: null, emailFlowId: null },
-        }),
-      });
-      const saveData = await saveRes.json();
-      if (!saveData.ok) throw new Error(saveData.error || "Save failed");
-      updateStage("save", "complete");
-
-      router.push(`/himalaya/run/${saveData.runId}`);
-    } catch (err) {
-      const msg = err instanceof Error ? err.message : "Something went wrong";
-      setError(msg);
-      if (currentStage) updateStage(currentStage, "failed");
-      setRunning(false);
-      setSubmitting(false);
-    }
-  }
+  const canSubmit = (url.trim() || description.trim()) && !running;
 
   // ── Progress UI ───────────────────────────────────────────────────────────
   if (running) {
@@ -133,8 +56,8 @@ export default function HimalayaImprovePage() {
             stages={stages}
             currentStage={currentStage}
             error={error}
-            onRetry={() => handleSubmit()}
-            onCancel={() => { setRunning(false); setSubmitting(false); }}
+            onRetry={run}
+            onCancel={cancel}
           />
         </div>
       </div>
@@ -234,7 +157,7 @@ export default function HimalayaImprovePage() {
           )}
 
           <button
-            onClick={handleSubmit}
+            onClick={run}
             disabled={!canSubmit}
             className="w-full flex items-center justify-center gap-2 rounded-xl bg-purple-500 px-4 py-3.5 text-sm font-medium text-white disabled:opacity-30 disabled:cursor-not-allowed hover:bg-purple-400 transition-colors"
           >
