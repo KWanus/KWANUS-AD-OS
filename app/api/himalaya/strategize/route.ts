@@ -66,6 +66,7 @@ VERDICT: ${d.verdict || "unknown"}
 STRENGTHS: ${d.strengths || "unknown"}
 WEAKNESSES: ${d.weaknesses || "unknown"}
 DIAGNOSTICS: ${d.diagnostics ? JSON.stringify(d.diagnostics) : "none"}
+GOAL: ${d.goal || "not specified"}
 CHALLENGE: ${d.challenge || "not specified"}
 DESCRIPTION: ${d.businessDescription || "none"}
 

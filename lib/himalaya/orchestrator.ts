@@ -371,6 +371,7 @@ VERDICT: ${(diagnosis as ImproveDiagnosis).verdict}
 STRENGTHS: ${(diagnosis as ImproveDiagnosis).strengths}
 WEAKNESSES: ${(diagnosis as ImproveDiagnosis).weaknesses}
 DIAGNOSTICS: ${JSON.stringify((diagnosis as ImproveDiagnosis).diagnostics)}
+GOAL: ${diagnosis.goal || "not specified"}
 CHALLENGE: ${(diagnosis as ImproveDiagnosis).challenge}
 
 Decide what to fix first.`;

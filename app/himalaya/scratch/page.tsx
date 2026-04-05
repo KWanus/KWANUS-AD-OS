@@ -7,14 +7,14 @@ import { ProgressStage } from "@/components/himalaya/ProgressStage";
 import type { UiRunStage, UiStageState } from "@/components/himalaya/ProgressStage";
 
 const BUSINESS_TYPES = [
-  { key: "service_business", label: "Service Business" },
+  { key: "local_service", label: "Service Business" },
   { key: "ecommerce", label: "E-commerce Brand" },
   { key: "agency", label: "Agency" },
-  { key: "coaching_consulting", label: "Coaching / Consulting" },
-  { key: "personal_brand", label: "Personal Brand" },
-  { key: "digital_product", label: "Digital Product" },
+  { key: "consultant_coach", label: "Coaching / Consulting" },
+  { key: "content_creator", label: "Personal Brand / Creator" },
   { key: "saas", label: "SaaS" },
-  { key: "other", label: "Other" },
+  { key: "affiliate", label: "Affiliate / Dropship" },
+  { key: "financial", label: "Financial / Real Estate" },
 ] as const;
 
 const GOALS = [
