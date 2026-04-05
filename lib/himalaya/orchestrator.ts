@@ -253,7 +253,7 @@ async function diagnoseImprove(input: ImproveInput): Promise<ImproveDiagnosis> {
   const base: Omit<ImproveDiagnosis, "mode"> = {
     businessType: null,
     niche: null,
-    goal: null,
+    goal: input.goal || null,
     url: input.url || null,
     title: null,
     score: null,
@@ -303,7 +303,7 @@ async function diagnoseImprove(input: ImproveInput): Promise<ImproveDiagnosis> {
     mode: "improve",
     businessType: null,
     niche: null,
-    goal: null,
+    goal: input.goal || null,
     url: normalized.url,
     title: page.title || signals.productName || normalized.url,
     score: truthResult.totalScore,

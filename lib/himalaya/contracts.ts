@@ -59,6 +59,7 @@ export interface ImproveInput {
   url?: string;
   businessDescription?: string;
   challenge?: string;
+  goal?: string;
 }
 
 export type HimalayaInput = ScratchInput | ImproveInput;
