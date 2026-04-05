@@ -77,6 +77,30 @@ function CopyBtn({ text }: { text: string }) {
   );
 }
 
+function EmailCard({ index, email }: { index: number; email: Record<string, string> }) {
+  const [expanded, setExpanded] = useState(false);
+  return (
+    <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+      <div className="flex items-start justify-between gap-3">
+        <div className="flex-1 min-w-0">
+          <p className="text-white/40 text-xs">Email {index + 1}{email.delayDays ? ` · Day ${email.delayDays}` : ""}</p>
+          <p className="text-white text-sm font-medium mt-0.5">{email.subject}</p>
+          <p className={`text-white/50 text-sm mt-1 whitespace-pre-line ${expanded ? "" : "line-clamp-2"}`}>
+            {email.body}
+          </p>
+          <button
+            onClick={() => setExpanded(!expanded)}
+            className="text-cyan-400/60 hover:text-cyan-400 text-xs mt-1 transition-colors"
+          >
+            {expanded ? "Show less" : "Read full email"}
+          </button>
+        </div>
+        <CopyBtn text={`Subject: ${email.subject}\n\n${email.body}`} />
+      </div>
+    </div>
+  );
+}
+
 // ── Main page ────────────────────────────────────────────────────────────────
 
 export default function HimalayaRunPage() {
@@ -297,6 +321,14 @@ export default function HimalayaRunPage() {
                   ))}
                 </div>
               )}
+              {idealCustomer.buyingTriggers && (
+                <div>
+                  <p className="text-white/40 text-xs mb-1">What makes them buy</p>
+                  {(idealCustomer.buyingTriggers as string[]).map((t, i) => (
+                    <p key={i} className="text-white/70 text-sm">• {t}</p>
+                  ))}
+                </div>
+              )}
             </div>
           </Section>
         )}
@@ -305,6 +337,7 @@ export default function HimalayaRunPage() {
         {homepage && (
           <Section title={mode === "improve" ? "Improved Homepage" : "Homepage Copy"} icon={Layout}>
             <div className="space-y-4">
+              {/* Hero */}
               <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
                 <p className="text-white font-bold text-lg">{String(homepage.headline || "")}</p>
                 <p className="text-white/60 text-sm mt-1">{String(homepage.subheadline || "")}</p>
@@ -316,6 +349,35 @@ export default function HimalayaRunPage() {
                 <CopyBtn text={`${homepage.headline}\n${homepage.subheadline}`} />
                 <span className="text-white/30 text-xs">Copy headline</span>
               </div>
+
+              {/* Sections */}
+              {(homepage.sections as Array<Record<string, unknown>> | undefined)?.map((section, i) => (
+                <div key={i} className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
+                  <div className="flex items-center gap-2 mb-2">
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-white/5 text-white/40 uppercase tracking-wider">
+                      {String(section.type)}
+                    </span>
+                    {section.title && <p className="text-white text-sm font-medium">{String(section.title)}</p>}
+                    {!section.title && section.headline && <p className="text-white text-sm font-medium">{String(section.headline)}</p>}
+                  </div>
+                  {(section.items as Array<Record<string, string>> | undefined)?.map((item, j) => (
+                    <div key={j} className="py-1.5 border-t border-white/[0.04] first:border-0">
+                      {item.title && <p className="text-white text-sm">{item.title}</p>}
+                      {item.body && <p className="text-white/50 text-xs mt-0.5">{item.body}</p>}
+                      {item.name && <p className="text-white/60 text-xs">{item.name}</p>}
+                      {item.quote && <p className="text-white/50 text-xs italic">"{item.quote}"</p>}
+                      {item.q && <p className="text-white text-sm">{item.q}</p>}
+                      {item.a && <p className="text-white/50 text-xs mt-0.5">{item.a}</p>}
+                    </div>
+                  ))}
+                  {section.buttonText && (
+                    <div className="mt-2 inline-block px-3 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-400 text-xs font-medium">
+                      {String(section.buttonText)}
+                    </div>
+                  )}
+                </div>
+              ))}
+
               {created?.siteId && (
                 <Link
                   href={`/websites/${created.siteId}`}
@@ -353,16 +415,7 @@ export default function HimalayaRunPage() {
           <Section title="Email Sequence" icon={Mail}>
             <div className="space-y-3">
               {emails.map((email, i) => (
-                <div key={i} className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
-                  <div className="flex items-start justify-between gap-3">
-                    <div className="flex-1 min-w-0">
-                      <p className="text-white/40 text-xs">Email {i + 1}{email.delayDays ? ` · Day ${email.delayDays}` : ""}</p>
-                      <p className="text-white text-sm font-medium mt-0.5">{email.subject}</p>
-                      <p className="text-white/50 text-sm mt-1 line-clamp-2">{email.body}</p>
-                    </div>
-                    <CopyBtn text={`Subject: ${email.subject}\n\n${email.body}`} />
-                  </div>
-                </div>
+                <EmailCard key={i} index={i} email={email} />
               ))}
               {created?.emailFlowId && (
                 <Link
