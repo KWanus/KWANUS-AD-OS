@@ -34,14 +34,17 @@ export default function HimalayaImprovePage() {
   const [currentStage, setCurrentStage] = useState<UiRunStage | null>(null);
   const [stages, setStages] = useState(INITIAL_STAGES);
   const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  const canSubmit = url.trim() || description.trim();
+  const canSubmit = (url.trim() || description.trim()) && !submitting;
 
   function updateStage(stage: UiRunStage, state: UiStageState) {
     setStages((prev) => ({ ...prev, [stage]: state }));
   }
 
   async function handleSubmit() {
+    if (submitting) return;
+    setSubmitting(true);
     setRunning(true);
     setError(null);
     setStages(INITIAL_STAGES);
@@ -58,6 +61,7 @@ export default function HimalayaImprovePage() {
           url: url.trim() || undefined,
           businessDescription: description.trim() || undefined,
           challenge: problem.trim() || undefined,
+          goal: goal || undefined,
         }),
       });
       const diagData = await diagRes.json();
@@ -99,7 +103,7 @@ export default function HimalayaImprovePage() {
         body: JSON.stringify({
           action: "save",
           mode: "improve",
-          input: { mode: "improve", url: url.trim() || undefined, businessDescription: description.trim() || undefined, challenge: problem.trim() || undefined },
+          input: { mode: "improve", url: url.trim() || undefined, businessDescription: description.trim() || undefined, challenge: problem.trim() || undefined, goal: goal || undefined },
           diagnosis: diagData.diagnosis,
           strategy: stratData.strategy,
           generated: genData.generated,
@@ -116,6 +120,7 @@ export default function HimalayaImprovePage() {
       setError(msg);
       if (currentStage) updateStage(currentStage, "failed");
       setRunning(false);
+      setSubmitting(false);
     }
   }
 
@@ -129,6 +134,7 @@ export default function HimalayaImprovePage() {
             currentStage={currentStage}
             error={error}
             onRetry={() => handleSubmit()}
+            onCancel={() => { setRunning(false); setSubmitting(false); }}
           />
         </div>
       </div>

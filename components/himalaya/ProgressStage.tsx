@@ -68,14 +68,24 @@ function stageStatusLabel(state: UiStageState): string | null {
   }
 }
 
+function sanitizeError(raw: string): string {
+  if (/ANTHROPIC_API_KEY|API key|api_key/i.test(raw)) return "AI service is temporarily unavailable. Please try again.";
+  if (/ECONNREFUSED|ETIMEDOUT|fetch failed|network/i.test(raw)) return "Could not connect to the server. Check your connection and try again.";
+  if (/prisma|database|constraint/i.test(raw)) return "There was a problem saving your results. Please try again.";
+  if (/JSON|parse|unexpected token/i.test(raw)) return "We received an unexpected response. Please try again.";
+  if (raw.length > 120) return "Something went wrong. Please try again.";
+  return raw;
+}
+
 interface ProgressStageProps {
   stages: Record<UiRunStage, UiStageState>;
   currentStage: UiRunStage | null;
   error: string | null;
   onRetry: () => void;
+  onCancel?: () => void;
 }
 
-export function ProgressStage({ stages, currentStage, error, onRetry }: ProgressStageProps) {
+export function ProgressStage({ stages, currentStage, error, onRetry, onCancel }: ProgressStageProps) {
   return (
     <div className="space-y-8">
       <div className="text-center space-y-2">
@@ -136,13 +146,35 @@ export function ProgressStage({ stages, currentStage, error, onRetry }: Progress
       {error && (
         <div className="space-y-4">
           <div className="rounded-xl border border-red-500/20 bg-red-500/5 px-4 py-3">
-            <p className="text-red-400 text-sm">{error}</p>
+            <p className="text-red-400 text-sm">{sanitizeError(error)}</p>
           </div>
+          <div className="flex gap-3">
+            <button
+              onClick={onRetry}
+              className="flex-1 flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-sm font-medium text-white/60 hover:text-white hover:border-white/20 transition-all"
+            >
+              <RefreshCw className="w-4 h-4" /> Try Again
+            </button>
+            {onCancel && (
+              <button
+                onClick={onCancel}
+                className="flex-1 flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-sm font-medium text-white/30 hover:text-white/60 hover:border-white/20 transition-all"
+              >
+                Go Back
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Cancel link (while running, no error) */}
+      {!error && onCancel && (
+        <div className="text-center pt-2">
           <button
-            onClick={onRetry}
-            className="w-full flex items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/[0.02] px-4 py-3 text-sm font-medium text-white/60 hover:text-white hover:border-white/20 transition-all"
+            onClick={onCancel}
+            className="text-white/20 hover:text-white/40 text-xs transition-colors"
           >
-            <RefreshCw className="w-4 h-4" /> Try Again
+            Cancel
           </button>
         </div>
       )}

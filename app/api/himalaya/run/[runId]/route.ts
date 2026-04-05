@@ -21,6 +21,9 @@ export async function GET(
       return NextResponse.json({ ok: false, error: "Run not found." }, { status: 404 });
     }
 
+    const results = run.results as Record<string, unknown> | null;
+    const created = (results?.created as Record<string, unknown>) || { siteId: null, emailFlowId: null };
+
     return NextResponse.json({
       ok: true,
       runId: run.id,
@@ -30,6 +33,7 @@ export async function GET(
       diagnosis: run.diagnosis,
       strategy: run.strategy,
       generated: run.generation,
+      created,
       results: run.results,
       trace: run.trace,
       createdAt: run.createdAt,

@@ -27,6 +27,7 @@ export async function POST(req: NextRequest) {
     // ── Save action: persist a completed run ─────────────────────────────
     if (body.action === "save") {
       const { mode, input, diagnosis, strategy, generated, created } = body;
+      const safeCreated = created || { siteId: null, emailFlowId: null };
 
       const run = await prisma.himalayaRun.create({
         data: {
@@ -36,7 +37,7 @@ export async function POST(req: NextRequest) {
           diagnosis: diagnosis || null,
           strategy: strategy || null,
           generation: generated || null,
-          results: { mode, diagnosis, strategy, generated, created },
+          results: { mode, diagnosis, strategy, generated, created: safeCreated },
           trace: null,
           status: "complete",
         },

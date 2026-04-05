@@ -19,6 +19,7 @@ interface RunData {
   diagnosis: Record<string, unknown>;
   strategy: Record<string, unknown>;
   generated: Record<string, unknown>;
+  created: { siteId?: string | null; emailFlowId?: string | null };
   results: Record<string, unknown>;
   trace: Record<string, unknown> | null;
   createdAt: string;
@@ -143,7 +144,7 @@ export default function HimalayaRunPage() {
   const audit = gen.audit as Record<string, unknown> | undefined;
   const fixes = gen.fixes as Array<Record<string, unknown>> | undefined;
 
-  const created = (data.results as Record<string, unknown>)?.created as { siteId?: string; emailFlowId?: string } | undefined;
+  const created = data.created;
 
   // Collect warnings from all stages
   const allWarnings: string[] = [
@@ -173,7 +174,7 @@ export default function HimalayaRunPage() {
             <p className="text-white/40 text-sm max-w-xl mx-auto">{strategySummary}</p>
           )}
           <p className="text-white/20 text-xs">
-            Run {runId} &middot; {new Date(data.createdAt).toLocaleDateString()}
+            {new Date(data.createdAt).toLocaleDateString("en-US", { month: "long", day: "numeric", year: "numeric" })}
           </p>
         </div>
 
@@ -407,6 +408,15 @@ export default function HimalayaRunPage() {
               ))}
             </div>
           </Section>
+        )}
+
+        {/* ── Unauthenticated note ─────────────────────────────────────── */}
+        {!created?.siteId && !created?.emailFlowId && (
+          <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3 text-center">
+            <p className="text-white/40 text-sm">
+              Sign in to save generated sites and email flows to your account.
+            </p>
+          </div>
         )}
 
         {/* ── E. Next Actions ────────────────────────────────────────────── */}

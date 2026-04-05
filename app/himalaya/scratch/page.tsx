@@ -45,14 +45,17 @@ export default function HimalayaScratchPage() {
   const [currentStage, setCurrentStage] = useState<UiRunStage | null>(null);
   const [stages, setStages] = useState(INITIAL_STAGES);
   const [error, setError] = useState<string | null>(null);
+  const [submitting, setSubmitting] = useState(false);
 
-  const canSubmit = businessType && niche.trim() && goal;
+  const canSubmit = businessType && niche.trim() && goal && !submitting;
 
   function updateStage(stage: UiRunStage, state: UiStageState) {
     setStages((prev) => ({ ...prev, [stage]: state }));
   }
 
   async function handleSubmit() {
+    if (submitting) return;
+    setSubmitting(true);
     setRunning(true);
     setError(null);
     setStages(INITIAL_STAGES);
@@ -123,6 +126,7 @@ export default function HimalayaScratchPage() {
       setError(msg);
       if (currentStage) updateStage(currentStage, "failed");
       setRunning(false);
+      setSubmitting(false);
     }
   }
 
@@ -136,6 +140,7 @@ export default function HimalayaScratchPage() {
             currentStage={currentStage}
             error={error}
             onRetry={() => handleSubmit()}
+            onCancel={() => { setRunning(false); setSubmitting(false); }}
           />
         </div>
       </div>
@@ -228,6 +233,15 @@ export default function HimalayaScratchPage() {
               className="w-full rounded-xl border border-white/10 bg-white/[0.03] px-4 py-3 text-white placeholder:text-white/30 focus:outline-none focus:border-cyan-500/50 resize-none"
             />
           </div>
+
+          {/* Validation hint */}
+          {(!businessType || !niche.trim() || !goal) && (
+            <p className="text-white/30 text-xs text-center">
+              {!businessType ? "Select a business type to continue." :
+               !niche.trim() ? "Enter your niche to continue." :
+               "Select a goal to continue."}
+            </p>
+          )}
 
           <button
             onClick={handleSubmit}
