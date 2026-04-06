@@ -2,10 +2,11 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ScanSearch, BarChart2 } from "lucide-react";
+import { ScanSearch, BarChart2, Sparkles } from "lucide-react";
 
 const SCAN_TABS = [
   { href: "/scan", label: "Scan", icon: ScanSearch, exact: true },
+  { href: "/analyze", label: "Studio", icon: Sparkles, exact: false },
   { href: "/analyses", label: "History", icon: BarChart2, exact: false },
 ];
 

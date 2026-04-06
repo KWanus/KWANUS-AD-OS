@@ -35,15 +35,15 @@ export default function ResultsSummary({ vm }: { vm: HimalayaResultsViewModel })
   if (blocks.length === 0) return null;
 
   return (
-    <div className="bg-white/[0.02] border border-white/[0.07] rounded-2xl p-5">
-      <h2 className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-4">
+    <div className="rounded-2xl border border-white/[0.07] bg-gradient-to-br from-white/[0.04] via-white/[0.025] to-transparent p-4 sm:p-5">
+      <h2 className="mb-4 text-[10px] font-black uppercase tracking-widest text-white/30">
         {isImprove ? "Improvement Summary" : "Executive Summary"}
       </h2>
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
         {blocks.map(({ label, value }) => (
-          <div key={label} className="bg-white/[0.02] rounded-xl p-3 border border-white/[0.05]">
-            <p className="text-[9px] font-black uppercase tracking-widest text-cyan-400/50 mb-1.5">{label}</p>
-            <p className="text-sm text-white/60 leading-relaxed">{value}</p>
+          <div key={label} className="rounded-xl border border-white/[0.06] bg-black/25 p-3.5 sm:p-4">
+            <p className="mb-1.5 text-[9px] font-black uppercase tracking-widest text-cyan-400/50">{label}</p>
+            <p className="text-sm leading-relaxed text-white/65">{value}</p>
           </div>
         ))}
       </div>

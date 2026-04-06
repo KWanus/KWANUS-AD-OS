@@ -44,8 +44,8 @@ export default function CheckInBanner() {
   // Run has execution in progress but no outcome
   if (run.hasExecution && !run.executionComplete) {
     return (
-      <div className="bg-cyan-500/[0.03] border border-cyan-500/10 rounded-xl p-4 mb-6">
-        <div className="flex items-center justify-between gap-4">
+      <div className="mb-6 rounded-2xl border border-cyan-500/10 bg-gradient-to-br from-cyan-500/[0.05] via-cyan-500/[0.025] to-transparent p-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <Play className="w-4 h-4 text-cyan-400/60" />
             <div>
@@ -53,14 +53,14 @@ export default function CheckInBanner() {
               <p className="text-[10px] text-white/25 mt-0.5">{run.title ?? "Your latest run"} — continue where you left off</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-2 shrink-0">
             <Link
               href={`/himalaya/run/${run.id}/execute`}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-bold text-cyan-400 hover:bg-cyan-500/20 transition"
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-[10px] font-bold text-cyan-400 transition hover:bg-cyan-500/20"
             >
               Continue <ArrowRight className="w-2.5 h-2.5" />
             </Link>
-            <button onClick={() => setDismissed(true)} className="text-[10px] text-white/15 hover:text-white/30 transition px-1">
+            <button onClick={() => setDismissed(true)} className="px-1 text-left text-[10px] text-white/15 transition hover:text-white/30">
               later
             </button>
           </div>
@@ -72,8 +72,8 @@ export default function CheckInBanner() {
   // Run has no outcome reported
   if (!run.hasOutcome) {
     return (
-      <div className="bg-amber-500/[0.03] border border-amber-500/10 rounded-xl p-4 mb-6">
-        <div className="flex items-center justify-between gap-4">
+      <div className="mb-6 rounded-2xl border border-amber-500/10 bg-gradient-to-br from-amber-500/[0.05] via-amber-500/[0.025] to-transparent p-4">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <ClipboardCheck className="w-4 h-4 text-amber-400/60" />
             <div>
@@ -81,14 +81,14 @@ export default function CheckInBanner() {
               <p className="text-[10px] text-white/25 mt-0.5">{run.title ?? "Your latest run"} — tell us how it went</p>
             </div>
           </div>
-          <div className="flex items-center gap-2 shrink-0">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-2 shrink-0">
             <Link
               href={`/himalaya/run/${run.id}#outcome`}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20 text-[10px] font-bold text-amber-400 hover:bg-amber-500/20 transition"
+              className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-amber-500/20 bg-amber-500/10 px-3 py-2 text-[10px] font-bold text-amber-400 transition hover:bg-amber-500/20"
             >
               Report outcome <ArrowRight className="w-2.5 h-2.5" />
             </Link>
-            <button onClick={() => setDismissed(true)} className="text-[10px] text-white/15 hover:text-white/30 transition px-1">
+            <button onClick={() => setDismissed(true)} className="px-1 text-left text-[10px] text-white/15 transition hover:text-white/30">
               later
             </button>
           </div>

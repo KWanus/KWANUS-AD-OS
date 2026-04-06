@@ -4,6 +4,11 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import CreativeStudio, { type StudioBrief } from "@/components/studio/CreativeStudio";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
+import PromptKitPanel from "@/components/campaigns/PromptKitPanel";
+import AdPlatformPush from "@/components/campaigns/AdPlatformPush";
+import { analyzeVariations, type ABAnalysis } from "@/lib/campaigns/winnerEngine";
+import { generateCampaignUTMs } from "@/lib/campaigns/utmBuilder";
+import type { PromptKit } from "@/lib/himalaya/promptEngine";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -91,6 +96,17 @@ type Campaign = {
   currentPhase?: number;
   workflowState?: {
     executionTier?: ExecutionTier;
+    tier?: string;
+    promptKit?: PromptKit;
+    businessContext?: {
+      title: string;
+      niche: string;
+      audience: string;
+      painPoint: string;
+      outcome: string;
+      angle: string;
+      mode: string;
+    };
   } | null;
 };
 
@@ -108,7 +124,7 @@ type BusinessProfileSummary = {
 
 // ── Constants ────────────────────────────────────────────────────────────────
 
-type WorkspaceTab = "overview" | "briefs" | "hooks" | "landing" | "emails" | "checklist";
+type WorkspaceTab = "overview" | "generate" | "briefs" | "hooks" | "landing" | "emails" | "checklist";
 
 const STATUS_OPTIONS = ["draft", "testing", "live", "winner", "dead"] as const;
 
@@ -278,6 +294,8 @@ export default function CampaignWorkspace() {
   const [addContent, setAddContent] = useState("");
   const [addPlatform, setAddPlatform] = useState("");
   const [adding, setAdding] = useState(false);
+  const [aiGenerating, setAiGenerating] = useState(false);
+  const [userPixels, setUserPixels] = useState<{ metaPixelId?: string | null; tiktokPixelId?: string | null; googleAdsId?: string | null } | null>(null);
 
   useEffect(() => {
     fetch(`/api/campaigns/${id}`)
@@ -301,6 +319,19 @@ export default function CampaignWorkspace() {
       .then((r) => r.json() as Promise<{ ok: boolean; profile?: BusinessProfileSummary | null }>)
       .then((data) => {
         if (data.ok && data.profile) setBusinessProfile(data.profile);
+      })
+      .catch(() => {});
+    // Load pixel config for ad platform push
+    fetch("/api/settings")
+      .then((r) => r.json() as Promise<{ ok: boolean; settings?: { metaPixelId?: string; tiktokPixelId?: string; googleAdsId?: string } }>)
+      .then((data) => {
+        if (data.ok && data.settings) {
+          setUserPixels({
+            metaPixelId: data.settings.metaPixelId || null,
+            tiktokPixelId: data.settings.tiktokPixelId || null,
+            googleAdsId: data.settings.googleAdsId || null,
+          });
+        }
       })
       .catch(() => {});
   }, []);
@@ -440,6 +471,71 @@ export default function CampaignWorkspace() {
     setAdding(false);
     setShowAddForm(false);
     setAddName(""); setAddContent(""); setAddPlatform("");
+  }
+
+  /** AI Quick-Generate: picks the right prompt from the kit, generates via Claude, and adds as a variation */
+  async function aiQuickGenerate(genType: "hook" | "script", platform?: string) {
+    if (!campaign) return;
+    setAiGenerating(true);
+
+    // Pick the right prompt from the prompt kit based on type + platform
+    const ws = campaign.workflowState as Record<string, unknown> | null;
+    const kit = ws?.promptKit as PromptKit | undefined;
+    const ctx = ws?.businessContext as Record<string, string> | undefined;
+
+    let prompt = "";
+    let label = "";
+
+    if (kit && genType === "hook") {
+      const target = platform === "TikTok" ? "ad-tiktok-hook" : platform === "Google" ? "ad-google-search" : "ad-fb-pain";
+      const found = kit.adCopyPrompts.find((p) => p.id === target);
+      if (found) { prompt = found.prompt; label = found.label; }
+    } else if (kit && genType === "script") {
+      const target = platform === "TikTok" ? "ad-tiktok-story" : "ad-fb-proof";
+      const found = kit.adCopyPrompts.find((p) => p.id === target);
+      if (found) { prompt = found.prompt; label = found.label; }
+    }
+
+    // Fallback prompt if no kit
+    if (!prompt) {
+      const audience = ctx?.audience ?? "customers";
+      const pain = ctx?.painPoint ?? "their problem";
+      const outcome = ctx?.outcome ?? "the result they want";
+      prompt = genType === "hook"
+        ? `Write a short, punchy ${platform ?? "Facebook"} ad hook for ${audience} dealing with "${pain}". One paragraph, under 80 words. Direct, emotional, scroll-stopping. End with a clear CTA for ${outcome}.`
+        : `Write a 30-second ${platform ?? "TikTok"} ad script for ${audience}. Open with a hook about "${pain}", transition to the solution, close with CTA for ${outcome}. Include [VISUAL] notes for each section.`;
+      label = genType === "hook" ? `AI ${platform ?? "Facebook"} Hook` : `AI ${platform ?? "TikTok"} Script`;
+    }
+
+    try {
+      const res = await fetch("/api/ai/generate-copy", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ prompt, context: ctx }),
+      });
+      const data = await res.json() as { ok: boolean; content?: string };
+
+      if (data.ok && data.content && campaign) {
+        // Auto-add as variation
+        const content = genType === "hook"
+          ? { format: label, hook: data.content }
+          : { title: label, duration: "30s", sections: [{ timestamp: "0:00", direction: "Full script", copy: data.content }] };
+
+        const addRes = await fetch(`/api/campaigns/${id}/variations`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: label, type: genType, content, platform: platform ?? undefined }),
+        });
+        const addData = await addRes.json() as { ok: boolean; variation?: AdVariation };
+        if (addData.ok && addData.variation) {
+          setCampaign({ ...campaign, adVariations: [...campaign.adVariations, addData.variation] });
+        }
+      }
+    } catch {
+      // Silent fail
+    } finally {
+      setAiGenerating(false);
+    }
   }
 
   async function regenerateAssets(type: "hooks" | "scripts" | "briefs" | "emails" | "checklist" | "all") {
@@ -629,6 +725,14 @@ export default function CampaignWorkspace() {
             active={activeTab === "overview"}
             onClick={() => setActiveTab("overview")}
           />
+          {campaign.workflowState?.promptKit && (
+            <NavItem
+              id="generate"
+              label="AI Generate"
+              active={activeTab === "generate"}
+              onClick={() => setActiveTab("generate")}
+            />
+          )}
           <NavItem
             id="briefs"
             label="Creative Briefs"
@@ -826,6 +930,16 @@ export default function CampaignWorkspace() {
             </div>
           )}
 
+          {/* ── AI Generate ── */}
+          {activeTab === "generate" && campaign.workflowState?.promptKit && campaign.workflowState?.businessContext && (
+            <PromptKitPanel
+              promptKit={campaign.workflowState.promptKit}
+              businessContext={campaign.workflowState.businessContext}
+              campaignId={campaign.id}
+              autoGenerated={(campaign.workflowState as Record<string, unknown>)?.autoGenerated as Record<string, { content: string; type: string }> | undefined}
+            />
+          )}
+
           {/* ── Creative Briefs ── */}
           {activeTab === "briefs" && (
             <div className="space-y-4">
@@ -921,6 +1035,23 @@ export default function CampaignWorkspace() {
                     >
                       {regenerating === "scripts" ? "⟳ Regenerating..." : "⟳ Scripts"}
                     </button>
+                    <button
+                      onClick={async () => {
+                        setRegenerating("images" as any);
+                        try {
+                          await fetch(`/api/campaigns/${id}/generate-all-images`, { method: "POST" });
+                          const r2 = await fetch(`/api/campaigns/${id}`);
+                          const d2 = await r2.json() as { ok: boolean; campaign?: Campaign };
+                          if (d2.ok && d2.campaign) setCampaign(d2.campaign);
+                        } finally {
+                          setRegenerating(null);
+                        }
+                      }}
+                      disabled={regenerating !== null}
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-emerald-500/30 bg-emerald-500/5 hover:bg-emerald-500/10 text-emerald-400 text-xs font-bold transition disabled:opacity-40"
+                    >
+                      {regenerating === ("images" as any) ? "⟳ Generating images..." : "🖼️ Images for All"}
+                    </button>
                   </div>
                 )}
               </div>
@@ -965,14 +1096,39 @@ export default function CampaignWorkspace() {
                 <EmptyState
                   icon="🪝"
                   title="No hooks or scripts yet"
-                  sub="Run an analysis and save to workspace to generate hooks and scripts."
+                  sub="Generate them instantly with AI or write your own."
                 />
               )}
 
-              {/* Add Variation */}
+              {/* AI Quick Generate buttons */}
+              <div className="rounded-2xl border border-cyan-500/15 bg-cyan-500/[0.04] p-5">
+                <p className="text-xs font-semibold text-cyan-300/70 uppercase tracking-widest mb-3">Quick Generate with AI</p>
+                <p className="text-xs text-white/40 mb-4">One click — we write it using your business data. No prompts needed.</p>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+                  {[
+                    { label: "Facebook Hook", type: "hook" as const, platform: "Facebook" },
+                    { label: "TikTok Hook", type: "hook" as const, platform: "TikTok" },
+                    { label: "Instagram Hook", type: "hook" as const, platform: "Instagram" },
+                    { label: "TikTok Script", type: "script" as const, platform: "TikTok" },
+                    { label: "Facebook Script", type: "script" as const, platform: "Facebook" },
+                    { label: "Google Search Ad", type: "hook" as const, platform: "Google" },
+                  ].map((item) => (
+                    <button
+                      key={item.label}
+                      onClick={() => void aiQuickGenerate(item.type, item.platform)}
+                      disabled={aiGenerating}
+                      className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-cyan-500/20 bg-cyan-500/5 hover:bg-cyan-500/10 text-cyan-300 text-xs font-bold transition disabled:opacity-40 disabled:cursor-wait"
+                    >
+                      {aiGenerating ? "Generating..." : item.label}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Add Variation (manual) */}
               {showAddForm ? (
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-5 space-y-3">
-                  <p className="text-xs font-semibold text-white/60 uppercase tracking-widest">New Variation</p>
+                  <p className="text-xs font-semibold text-white/60 uppercase tracking-widest">Write Your Own</p>
                   <div className="flex gap-2">
                     <button onClick={() => setAddType("hook")} className={`flex-1 rounded-xl border px-3 py-2 text-xs font-semibold transition ${addType === "hook" ? "border-cyan-400/50 bg-cyan-500/10 text-cyan-300" : "border-white/10 text-white/40"}`}>Hook</button>
                     <button onClick={() => setAddType("script")} className={`flex-1 rounded-xl border px-3 py-2 text-xs font-semibold transition ${addType === "script" ? "border-cyan-400/50 bg-cyan-500/10 text-cyan-300" : "border-white/10 text-white/40"}`}>Script</button>
@@ -986,22 +1142,34 @@ export default function CampaignWorkspace() {
                   </div>
                 </div>
               ) : (
-                <button onClick={() => setShowAddForm(true)} className="w-full rounded-2xl border border-dashed border-white/10 hover:border-cyan-400/30 hover:bg-cyan-500/5 py-4 text-sm text-white/30 hover:text-cyan-400 transition">
-                  + Add Variation
+                <button onClick={() => setShowAddForm(true)} className="w-full rounded-2xl border border-dashed border-white/10 hover:border-white/20 hover:bg-white/5 py-3 text-xs text-white/20 hover:text-white/40 transition">
+                  or write your own
                 </button>
               )}
 
-              {/* Testing guide */}
+              {/* A/B Winner Recommendations */}
               {(hooks.length > 0 || scripts.length > 0) && (
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-                  <p className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">How to test these</p>
-                  <ol className="space-y-1.5 text-xs text-white/50">
-                    <li><span className="text-white/70">1.</span> Set each new ad to <span className="text-yellow-300">Testing</span></li>
-                    <li><span className="text-white/70">2.</span> After 3 days + $50 spend: mark low performers <span className="text-red-400">Dead</span></li>
-                    <li><span className="text-white/70">3.</span> Mark your best performer <span className="text-green-300">Winner</span> and scale it</li>
-                    <li><span className="text-white/70">4.</span> Mark the one you&apos;re actively spending on as <span className="text-cyan-300">Live</span></li>
-                  </ol>
-                </div>
+                <ABWinnerPanel variations={[...hooks, ...scripts]} onStatusChange={updateVariationStatus} />
+              )}
+
+              {/* Push to Ad Platforms */}
+              {(hooks.length > 0 || scripts.length > 0) && (
+                <AdPlatformPush
+                  campaignId={campaign.id}
+                  campaignName={campaign.name}
+                  hasVariations={hooks.length + scripts.length > 0}
+                  hasImages={hooks.some((h) => typeof h.content.imageBase64 === "string")}
+                  userPixels={userPixels}
+                />
+              )}
+
+              {/* UTM Links */}
+              {productUrl && (hooks.length > 0 || scripts.length > 0) && (
+                <UTMLinksSection
+                  siteUrl={productUrl}
+                  campaignName={campaign.name}
+                  variations={[...hooks, ...scripts].map((v) => ({ name: v.name, platform: v.platform }))}
+                />
               )}
             </div>
           )}
@@ -1464,6 +1632,136 @@ function AssetStatusCard({ label, count, live, onNav }: { label: string; count: 
   );
 }
 
+// ---------------------------------------------------------------------------
+// UTM Links Section — trackable URLs for each ad variation
+// ---------------------------------------------------------------------------
+
+function UTMLinksSection({
+  siteUrl,
+  campaignName,
+  variations,
+}: {
+  siteUrl: string;
+  campaignName: string;
+  variations: { name: string; platform: string | null }[];
+}) {
+  const [copiedIdx, setCopiedIdx] = useState<number | null>(null);
+  const utmLinks = generateCampaignUTMs({ siteUrl, campaignName, variations });
+
+  if (utmLinks.length === 0) return null;
+
+  return (
+    <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5">
+      <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Trackable Links</p>
+      <p className="text-xs text-white/40 mb-3">Use these UTM links in your ads to track which variation drives traffic.</p>
+      <div className="space-y-2">
+        {utmLinks.map((link, i) => (
+          <div key={i} className="flex items-center gap-2 p-2.5 rounded-xl bg-black/20 border border-white/[0.06]">
+            <div className="flex-1 min-w-0">
+              <p className="text-[10px] text-white/40 truncate">{link.name}</p>
+              <p className="text-[10px] text-cyan-400/50 font-mono truncate">{link.url}</p>
+            </div>
+            <button
+              onClick={() => {
+                navigator.clipboard.writeText(link.url);
+                setCopiedIdx(i);
+                setTimeout(() => setCopiedIdx(null), 2000);
+              }}
+              className="shrink-0 px-2.5 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[10px] font-bold text-white/30 hover:text-white/60 transition"
+            >
+              {copiedIdx === i ? "Copied!" : "Copy"}
+            </button>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// A/B Winner Panel — recommends which variations to scale, keep, or kill
+// ---------------------------------------------------------------------------
+
+function ABWinnerPanel({
+  variations,
+  onStatusChange,
+}: {
+  variations: AdVariation[];
+  onStatusChange: (id: string, status: string) => void;
+}) {
+  const analysis: ABAnalysis = analyzeVariations(
+    variations.map((v) => ({
+      id: v.id,
+      name: v.name,
+      type: v.type,
+      status: v.status,
+      metrics: v.metrics,
+    }))
+  );
+
+  const actionColors = {
+    scale: "border-green-500/20 bg-green-500/5",
+    "keep-testing": "border-yellow-500/20 bg-yellow-500/5",
+    kill: "border-red-500/15 bg-red-500/5",
+  };
+  const actionLabels = {
+    scale: { text: "Scale", color: "text-green-400", icon: "🚀" },
+    "keep-testing": { text: "Keep Testing", color: "text-yellow-400", icon: "🔬" },
+    kill: { text: "Kill", color: "text-red-400", icon: "💀" },
+  };
+
+  return (
+    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
+      <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">A/B Winner Engine</p>
+      <p className="text-xs text-white/40 mb-4">{analysis.summary}</p>
+
+      {analysis.recommendations.length > 0 && (
+        <div className="space-y-2">
+          {analysis.recommendations.map((rec) => {
+            const cfg = actionLabels[rec.action];
+            return (
+              <div
+                key={rec.variationId}
+                className={`rounded-xl border p-3 flex items-center gap-3 ${actionColors[rec.action]}`}
+              >
+                <span className="text-lg shrink-0">{cfg.icon}</span>
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center gap-2 mb-0.5">
+                    <span className="text-xs font-bold text-white truncate">{rec.name}</span>
+                    <span className={`text-[10px] font-bold ${cfg.color}`}>{cfg.text}</span>
+                    <span className="text-[10px] text-white/20">{rec.score}/100</span>
+                  </div>
+                  <p className="text-[10px] text-white/40 leading-relaxed">{rec.reason}</p>
+                </div>
+                {rec.action === "scale" && (
+                  <button
+                    onClick={() => onStatusChange(rec.variationId, "winner")}
+                    className="shrink-0 px-3 py-1.5 rounded-lg bg-green-500/20 border border-green-500/30 text-green-400 text-[10px] font-bold hover:bg-green-500/30 transition"
+                  >
+                    Mark Winner
+                  </button>
+                )}
+                {rec.action === "kill" && (
+                  <button
+                    onClick={() => onStatusChange(rec.variationId, "dead")}
+                    className="shrink-0 px-3 py-1.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400/60 text-[10px] font-bold hover:bg-red-500/20 transition"
+                  >
+                    Kill
+                  </button>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Variation Card
+// ---------------------------------------------------------------------------
+
 function VariationCard({
   variation, onStatusChange, onNotesChange, onDelete,
 }: {
@@ -1523,15 +1821,52 @@ function VariationCard({
         </div>
 
         {isHook && (
-          <p className="text-sm text-white/80 leading-relaxed">
-            &ldquo;{String(content.hook ?? "")}&rdquo;
-          </p>
+          <div>
+            <p className="text-sm text-white/80 leading-relaxed">
+              &ldquo;{String(content.hook ?? "")}&rdquo;
+            </p>
+            {typeof content.imageBase64 === "string" && (
+              <div className="mt-3">
+                <img
+                  src={`data:image/png;base64,${String(content.imageBase64)}`}
+                  alt={variation.name}
+                  className="rounded-lg max-h-48 border border-white/10"
+                />
+                <div className="mt-2 flex gap-2">
+                  <a
+                    href={`data:image/png;base64,${String(content.imageBase64)}`}
+                    download={`${variation.name.replace(/\s+/g, "-").toLowerCase()}.png`}
+                    className="text-[10px] px-2 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 font-bold hover:bg-cyan-500/20 transition"
+                  >
+                    Download Image
+                  </a>
+                  <span className="text-[10px] text-white/20 py-1">
+                    AI generated ({String(content.imageModel ?? "gpt-image")})
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
         )}
 
         {!isHook && !isBrief && (
-          <button onClick={() => setExpanded(!expanded)} className="text-xs text-cyan-400/60 hover:text-cyan-400 transition">
-            {expanded ? "Hide script ↑" : "View script ↓"}
-          </button>
+          <div>
+            {typeof content.videoUrl === "string" && (
+              <div className="mt-2 mb-2">
+                <video
+                  src={String(content.videoUrl)}
+                  controls
+                  className="rounded-lg max-h-48 border border-white/10 w-full"
+                />
+                <span className="text-[10px] text-white/20 mt-1 block">
+                  AI generated ({String(content.videoModel ?? "video")})
+                </span>
+              </div>
+            )}
+            <button onClick={() => setExpanded(!expanded)} className="text-xs text-cyan-400/60 hover:text-cyan-400 transition">
+              {expanded ? "Hide script ↑" : "View script ↓"}
+            </button>
+          </div>
         )}
 
         {!isHook && !isBrief && expanded && (

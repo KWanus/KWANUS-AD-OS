@@ -7,6 +7,10 @@ import { Loader2, ArrowRight, ArrowLeft, Mountain, Wrench, Sparkles, Search, Che
 import AppNav from "@/components/AppNav";
 import HimalayaNav from "@/components/himalaya/HimalayaNav";
 import CheckInBanner from "@/components/himalaya/CheckInBanner";
+import WorkflowGuide from "@/components/navigation/WorkflowGuide";
+import WorkflowHeader from "@/components/navigation/WorkflowHeader";
+import WorkflowPanel from "@/components/navigation/WorkflowPanel";
+import WorkflowLoading from "@/components/navigation/WorkflowLoading";
 import { track } from "@/lib/himalaya/tracking";
 import {
   BUDGET_OPTIONS,
@@ -131,12 +135,16 @@ function ExpressInput() {
 
   if (running) {
     return (
-      <div className="mt-8 mb-6 text-center py-12">
-        <Mountain className="w-10 h-10 text-cyan-400 mx-auto mb-4 animate-pulse" />
-        <p className="text-sm font-bold text-white/60 mb-2">{stage || "Starting..."}</p>
-        <p className="text-[10px] text-white/20">Usually takes 30-90 seconds. We're scanning competitors and building your assets.</p>
+      <div className="mt-8 mb-6">
+        <WorkflowLoading
+          title={stage || "Starting..."}
+          subtitle="Usually takes 30-90 seconds. We're scanning competitors and building your assets."
+          icon={Mountain}
+          steps={["Researching your market...", "Building your strategy...", "Creating your assets...", "Loading your results..."]}
+          activeIndex={Math.max(0, ["Researching your market...", "Building your strategy...", "Creating your assets...", "Done! Loading your results..."].indexOf(stage || "Researching your market..."))}
+        />
         {error && (
-          <div className="mt-4">
+          <div className="mt-4 text-center">
             <p className="text-xs text-red-400">{error}</p>
             <button onClick={() => setRunning(false)} className="text-[10px] text-white/30 hover:text-white/60 mt-2 transition">Try again</button>
           </div>
@@ -147,37 +155,36 @@ function ExpressInput() {
 
   return (
     <div className="mt-8 mb-6">
-      <div className="text-center mb-5">
-        <h2 className="text-lg font-black text-white mb-1">
-          {isUrl ? "Paste a URL. We'll fix it." : "Tell us your niche. We'll build it."}
-        </h2>
-        <p className="text-xs text-white/30">One input. Himalaya does the rest — research, build, deploy.</p>
-      </div>
+      <WorkflowPanel
+        title={isUrl ? "Paste a URL. We'll fix it." : "Tell us your niche. We'll build it."}
+        description="One input. Himalaya handles the research, asset generation, launch path, and next steps."
+        className="text-center"
+      >
+        <div className="mx-auto flex max-w-lg gap-2">
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && void handleGo()}
+            placeholder="dental practices in Texas  OR  https://yourbusiness.com"
+            autoFocus
+            className="flex-1 rounded-xl border border-white/[0.1] bg-white/[0.04] px-4 py-3.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/30"
+          />
+          <button
+            onClick={() => void handleGo()}
+            disabled={!input.trim()}
+            className="shrink-0 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 px-6 py-3.5 text-sm font-bold text-white transition hover:opacity-90 disabled:opacity-30"
+          >
+            Go
+          </button>
+        </div>
 
-      <div className="flex gap-2 max-w-lg mx-auto">
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === "Enter" && void handleGo()}
-          placeholder="dental practices in Texas  OR  https://yourbusiness.com"
-          autoFocus
-          className="flex-1 bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/30"
-        />
-        <button
-          onClick={() => void handleGo()}
-          disabled={!input.trim()}
-          className="px-6 py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-30 shrink-0"
-        >
-          Go
-        </button>
-      </div>
-
-      <div className="flex justify-center gap-4 mt-3 text-[10px] text-white/15">
-        <span>✓ Scans competitors</span>
-        <span>✓ Builds assets</span>
-        <span>✓ Deploys everything</span>
-        <span>✓ 7-day action plan</span>
-      </div>
+        <div className="mt-4 flex flex-wrap justify-center gap-4 text-[10px] text-white/15">
+          <span>✓ Scans competitors</span>
+          <span>✓ Builds assets</span>
+          <span>✓ Maps the launch path</span>
+          <span>✓ 7-day action plan</span>
+        </div>
+      </WorkflowPanel>
     </div>
   );
 }
@@ -283,15 +290,32 @@ export default function HimalayaEntryPage() {
       <HimalayaNav />
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
         {/* Header */}
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
-            <Mountain className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <h1 className="text-xl font-black text-white">Himalaya</h1>
-            <p className="text-xs text-white/30">Build, improve, and grow — guided by real competitive intelligence</p>
-          </div>
-        </div>
+        <WorkflowHeader
+          className="mb-2"
+          title="Himalaya"
+          description="Build, improve, and grow with a guided operating system powered by real competitive intelligence."
+          icon={Mountain}
+        />
+
+        <WorkflowGuide
+          items={[
+            {
+              title: "Need a quick score?",
+              description: "Use Scan when you just want a fast verdict on a URL, offer, or competitor.",
+              href: "/scan",
+            },
+            {
+              title: "Need editable assets?",
+              description: "Use Analysis Studio when you want full briefs, hooks, pages, and emails before launch.",
+              href: "/analyze",
+            },
+            {
+              title: "Use Himalaya",
+              description: "Best when you want guided decisions plus the system building, launching, and iterating the stack.",
+              active: true,
+            },
+          ]}
+        />
 
         {/* Run counter */}
         {tier === "free" && runsRemaining !== null && (

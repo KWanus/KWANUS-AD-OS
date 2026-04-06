@@ -81,6 +81,12 @@ interface StatsSummary {
   };
 }
 
+interface EmailDeliveryAlert {
+  failedEnrollments: number;
+  latestError: string | null;
+  latestFailedAt: string | null;
+}
+
 // ---------------------------------------------------------------------------
 // Trigger config
 // ---------------------------------------------------------------------------
@@ -733,6 +739,7 @@ function EmailsPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [recommendedTemplateId, setRecommendedTemplateId] = useState<string | null>(null);
   const [syncingSystem, setSyncingSystem] = useState(false);
+  const [emailDeliveryAlert, setEmailDeliveryAlert] = useState<EmailDeliveryAlert | null>(null);
 
   // Auto-open create modal when redirected from templates page
   useEffect(() => {
@@ -751,10 +758,11 @@ function EmailsPage() {
         fetch("/api/business-profile"),
         fetch("/api/stats"),
       ]);
-      const data = (await flowRes.json()) as { ok: boolean; flows?: EmailFlow[] };
+      const data = (await flowRes.json()) as { ok: boolean; flows?: EmailFlow[]; emailDeliveryAlert?: EmailDeliveryAlert };
       const profileData = (await profileRes.json()) as { ok: boolean; profile?: BusinessProfileSummary | null };
       const statsData = (await statsRes.json()) as { ok: boolean; stats?: StatsSummary | null };
       if (data.ok && data.flows) setFlows(data.flows);
+      if (data.ok && data.emailDeliveryAlert) setEmailDeliveryAlert(data.emailDeliveryAlert);
       if (profileData.ok && profileData.profile) {
         setBusinessProfile(profileData.profile);
         const recommendedSlug = profileData.profile.recommendedSystems?.prioritizedSystems?.find((system) =>
@@ -905,6 +913,27 @@ function EmailsPage() {
         )}
 
         <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="mb-6" />
+
+        {(emailDeliveryAlert?.failedEnrollments ?? 0) > 0 && (
+          <div className="mb-6 flex items-start gap-3 rounded-[24px] border border-amber-500/20 bg-amber-500/10 px-5 py-4">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />
+            <div className="min-w-0">
+              <p className="text-sm font-black text-amber-100">Email follow-up needs attention</p>
+              <p className="mt-1 text-xs leading-6 text-amber-100/75">
+                {emailDeliveryAlert?.failedEnrollments} enrollment{emailDeliveryAlert?.failedEnrollments === 1 ? "" : "s"} failed in the last 24 hours.
+                {emailDeliveryAlert?.latestError ? ` Latest issue: ${emailDeliveryAlert.latestError}` : ""}
+              </p>
+              <div className="mt-2">
+                <button
+                  onClick={() => window.location.assign("/settings")}
+                  className="inline-flex items-center gap-2 rounded-xl border border-amber-400/20 bg-black/10 px-3 py-2 text-xs font-bold text-amber-100 hover:bg-black/20"
+                >
+                  Open Email Delivery Settings
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
         {businessProfile && (
           <div className="mb-6 rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] to-purple-600/[0.03] p-6">

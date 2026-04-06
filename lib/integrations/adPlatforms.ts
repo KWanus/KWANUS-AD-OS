@@ -298,13 +298,137 @@ export async function pushToGoogle(input: {
   }
 }
 
+// ── TIKTOK ADS ──────────────────────────────────────────────────────────
+
+/** Push campaign to TikTok Ads via Marketing API */
+export async function pushToTikTok(input: {
+  accessToken: string;
+  advertiserId: string;
+  campaignName: string;
+  creatives: { text: string; imageBase64?: string; videoUrl?: string; landingUrl: string }[];
+  dailyBudgetCents?: number;
+}): Promise<PushResult> {
+  try {
+    const { accessToken, advertiserId, campaignName, creatives, dailyBudgetCents } = input;
+    const baseUrl = "https://business-api.tiktok.com/open_api/v1.3";
+
+    // 1. Create campaign
+    const campaignRes = await fetch(`${baseUrl}/campaign/create/`, {
+      method: "POST",
+      headers: {
+        "Access-Token": accessToken,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        advertiser_id: advertiserId,
+        campaign_name: campaignName,
+        objective_type: "TRAFFIC",
+        budget_mode: "BUDGET_MODE_DAY",
+        budget: (dailyBudgetCents ?? 2000) / 100, // TikTok uses dollars not cents
+        operation_status: "DISABLE", // Start paused
+      }),
+    });
+
+    if (!campaignRes.ok) {
+      const errData = await campaignRes.json().catch(() => ({}));
+      return { ok: false, error: `TikTok campaign creation failed: ${JSON.stringify(errData)}` };
+    }
+
+    const campaignData = await campaignRes.json();
+    const tiktokCampaignId = campaignData?.data?.campaign_id;
+    if (!tiktokCampaignId) return { ok: false, error: "TikTok campaign ID not returned" };
+
+    // 2. Create ad group
+    const adGroupRes = await fetch(`${baseUrl}/adgroup/create/`, {
+      method: "POST",
+      headers: {
+        "Access-Token": accessToken,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        advertiser_id: advertiserId,
+        campaign_id: tiktokCampaignId,
+        adgroup_name: `${campaignName} - Ad Group`,
+        placement_type: "PLACEMENT_TYPE_AUTOMATIC",
+        budget_mode: "BUDGET_MODE_DAY",
+        budget: (dailyBudgetCents ?? 2000) / 100,
+        schedule_type: "SCHEDULE_FROM_NOW",
+        billing_event: "CPC",
+        bid_type: "BID_TYPE_NO_BID",
+        optimization_goal: "CLICK",
+        location_ids: ["6252001"], // US
+        operation_status: "DISABLE",
+      }),
+    });
+
+    if (!adGroupRes.ok) {
+      return { ok: false, error: "TikTok ad group creation failed", campaignId: tiktokCampaignId };
+    }
+
+    const adGroupData = await adGroupRes.json();
+    const adGroupId = adGroupData?.data?.adgroup_id;
+
+    // 3. Upload images and create ads
+    for (const creative of creatives) {
+      let imageId: string | undefined;
+
+      // Upload image if provided
+      if (creative.imageBase64) {
+        const imgRes = await fetch(`${baseUrl}/file/image/ad/upload/`, {
+          method: "POST",
+          headers: {
+            "Access-Token": accessToken,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            advertiser_id: advertiserId,
+            upload_type: "UPLOAD_BY_FILE_URL",
+            image_url: `data:image/png;base64,${creative.imageBase64.slice(0, 100)}`, // TikTok requires URL
+          }),
+        });
+        const imgData = await imgRes.json().catch(() => null);
+        imageId = imgData?.data?.image_id;
+      }
+
+      // Create ad
+      if (adGroupId) {
+        await fetch(`${baseUrl}/ad/create/`, {
+          method: "POST",
+          headers: {
+            "Access-Token": accessToken,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            advertiser_id: advertiserId,
+            adgroup_id: adGroupId,
+            creatives: [{
+              ad_name: `${campaignName} Ad`,
+              ad_text: creative.text,
+              landing_page_url: creative.landingUrl,
+              ...(imageId && { image_ids: [imageId] }),
+              ...(creative.videoUrl && { video_id: creative.videoUrl }),
+              call_to_action: "LEARN_MORE",
+            }],
+          }),
+        });
+      }
+    }
+
+    return { ok: true, campaignId: tiktokCampaignId, adSetId: adGroupId ?? undefined };
+  } catch (err) {
+    return { ok: false, error: err instanceof Error ? err.message : "TikTok push failed" };
+  }
+}
+
 /** Check if user has ad platform credentials configured */
 export function hasAdPlatformConfig(user: {
   metaPixelId?: string | null;
   googleAdsId?: string | null;
-}): { hasMeta: boolean; hasGoogle: boolean } {
+  tiktokPixelId?: string | null;
+}): { hasMeta: boolean; hasGoogle: boolean; hasTikTok: boolean } {
   return {
     hasMeta: !!user.metaPixelId,
     hasGoogle: !!user.googleAdsId,
+    hasTikTok: !!user.tiktokPixelId,
   };
 }

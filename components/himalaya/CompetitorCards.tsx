@@ -29,14 +29,14 @@ export default function CompetitorCards({ vm }: { vm: HimalayaResultsViewModel }
   if (!intelGroup && !marketGroup) return null;
 
   return (
-    <div className="bg-white/[0.02] border border-white/[0.07] rounded-2xl p-5">
-      <h2 className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-4">
+    <div className="rounded-2xl border border-white/[0.07] bg-gradient-to-br from-white/[0.03] via-white/[0.02] to-transparent p-4 sm:p-5">
+      <h2 className="mb-4 text-[10px] font-black uppercase tracking-widest text-white/30">
         Competitive Intelligence
       </h2>
 
       {/* Competitor cards */}
       {intelGroup && intelGroup.type === "list" && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+        <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2">
           {(intelGroup.content as string[]).map((item, i) => {
             // Parse: "domain: "headline" — Weaknesses: weakness1, weakness2"
             const parts = item.split(" — Weaknesses: ");
@@ -47,9 +47,9 @@ export default function CompetitorCards({ vm }: { vm: HimalayaResultsViewModel }
             const headline = colonIdx > -1 ? domainAndHeadline.slice(colonIdx + 2).replace(/^"|"$/g, "") : "";
 
             return (
-              <div key={i} className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-3">
-                <div className="flex items-center gap-2 mb-2">
-                  <div className="w-6 h-6 rounded-md bg-red-500/10 flex items-center justify-center shrink-0">
+              <div key={i} className="rounded-xl border border-white/[0.05] bg-black/20 p-3.5">
+                <div className="mb-2 flex items-center gap-2">
+                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-md bg-red-500/10">
                     <TrendingDown className="w-3 h-3 text-red-400/60" />
                   </div>
                   <p className="text-xs font-bold text-white/50 truncate">{domain}</p>
@@ -57,7 +57,7 @@ export default function CompetitorCards({ vm }: { vm: HimalayaResultsViewModel }
                 {headline && headline !== "No clear headline" && (
                   <p className="text-[11px] text-white/35 mb-2 line-clamp-2">"{headline}"</p>
                 )}
-                <div className="flex items-start gap-1.5">
+                <div className="flex items-start gap-1.5 rounded-lg border border-amber-500/10 bg-amber-500/[0.04] px-2.5 py-2">
                   <AlertTriangle className="w-3 h-3 text-amber-400/40 shrink-0 mt-0.5" />
                   <p className="text-[10px] text-amber-400/50">{weaknesses}</p>
                 </div>
@@ -69,11 +69,11 @@ export default function CompetitorCards({ vm }: { vm: HimalayaResultsViewModel }
 
       {/* Market analysis */}
       {marketGroup && marketGroup.type === "kv" && (
-        <div className="bg-white/[0.015] border border-white/[0.04] rounded-xl p-4 mb-4">
-          <h3 className="text-[9px] font-black uppercase tracking-widest text-cyan-400/40 mb-3">Market Analysis</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="mb-4 rounded-xl border border-white/[0.04] bg-black/20 p-4">
+          <h3 className="mb-3 text-[9px] font-black uppercase tracking-widest text-cyan-400/40">Market Analysis</h3>
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {(marketGroup.content as { label: string; value: string }[]).map(({ label, value }, i) => (
-              <div key={i}>
+              <div key={i} className="rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-3">
                 <p className="text-[9px] font-bold text-white/25 uppercase mb-0.5">{label}</p>
                 <p className="text-xs text-white/50">{value}</p>
               </div>
@@ -86,9 +86,9 @@ export default function CompetitorCards({ vm }: { vm: HimalayaResultsViewModel }
       {diffGroup && diffGroup.type === "list" && (
         <div>
           <h3 className="text-[9px] font-black uppercase tracking-widest text-emerald-400/40 mb-2">How You Win</h3>
-          <div className="space-y-1.5">
+          <div className="space-y-2">
             {(diffGroup.content as string[]).map((item, i) => (
-              <div key={i} className="flex items-start gap-2">
+              <div key={i} className="flex items-start gap-2 rounded-xl border border-emerald-500/10 bg-emerald-500/[0.04] px-3 py-3">
                 <Shield className="w-3 h-3 text-emerald-400/50 shrink-0 mt-0.5" />
                 <p className="text-xs text-white/50">{item}</p>
               </div>

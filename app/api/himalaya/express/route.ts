@@ -4,6 +4,7 @@ import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { decide } from "@/lib/himalaya/decisionEngine";
 import { runHimalaya } from "@/lib/himalaya/orchestrator";
+import { deployRun } from "@/lib/himalaya/deployRun";
 import type { HimalayaProfileInput } from "@/lib/himalaya/profileTypes";
 
 /**
@@ -84,21 +85,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: result.summary || "Run failed" }, { status: 500 });
     }
 
-    // Auto-deploy everything
+    // Auto-deploy directly on the server to avoid self-fetching this app in production.
     let deployed = null;
     try {
-      const deployRes = await fetch(new URL("/api/himalaya/deploy", req.url).toString(), {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          cookie: req.headers.get("cookie") ?? "",
-        },
-        body: JSON.stringify({ runId: result.runId, targets: ["all"] }),
+      const deployResult = await deployRun({
+        userId: user.id,
+        runId: result.runId,
+        targets: ["all"],
       });
-      const deployData = (await deployRes.json()) as { ok: boolean; deployed?: unknown };
-      if (deployData.ok) deployed = deployData.deployed;
+      if (deployResult.ok) {
+        deployed = deployResult.deployed;
+      }
     } catch {
-      // deploy is optional
+      // deploy is optional — user can deploy from results page
     }
 
     return NextResponse.json({

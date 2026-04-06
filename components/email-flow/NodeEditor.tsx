@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { toast } from "sonner";
 import { X, Sparkles, Mail, Clock, GitBranch, Tag, Target, Code, Layout } from "lucide-react";
 import EmailBlockEditor, { type EmailBlock, blocksToHtml } from "./EmailBlockEditor";
 import type { Node } from "@xyflow/react";
@@ -155,12 +156,12 @@ function EmailEditor({
             });
             const result = (await res.json()) as { ok: boolean; sentTo?: string; error?: string };
             if (result.ok) {
-              alert(`Test email sent to ${result.sentTo}`);
+              toast.success(`Test email sent to ${result.sentTo}`);
             } else {
-              alert(`Failed: ${result.error}`);
+              toast.error(result.error ?? "Failed to send test email");
             }
           } catch {
-            alert("Could not send test email");
+            toast.error("Could not send test email");
           }
         }}
         className="w-full flex items-center justify-center gap-2 px-4 py-2 rounded-xl bg-white/[0.04] border border-white/[0.08] text-xs font-semibold text-white/40 hover:text-white/70 transition"

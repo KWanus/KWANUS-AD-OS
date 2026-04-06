@@ -25,6 +25,7 @@ export async function GET(
         name: true,
         slug: true,
         published: true,
+        totalViews: true,
         createdAt: true,
         updatedAt: true,
       },
@@ -121,6 +122,34 @@ export async function GET(
       where: { userId: user.id, source: { contains: `site:${id}` } },
     }).catch(() => 0);
 
+    // Generate benchmarks
+    const { calculateBenchmarks } = await import("@/lib/intelligence/benchmarks");
+    const benchmarks = calculateBenchmarks({
+      totalViews: site.totalViews,
+      formSubmissions,
+      purchases: paidOrders.length,
+      revenue,
+      emailSent: emailMetrics?.sent ?? 0,
+      emailOpens: emailMetrics?.opens ?? 0,
+      emailClicks: emailMetrics?.clicks ?? 0,
+      leads: formSubmissions,
+    });
+
+    // Generate optimization suggestions
+    const { analyzeConversionRate } = await import("@/lib/intelligence/conversionOptimizer");
+    const suggestions = analyzeConversionRate({
+      totalViews: site.totalViews,
+      formSubmissions,
+      purchases: paidOrders.length,
+      emailEnrolled: emailMetrics?.enrolled ?? 0,
+      emailSent: emailMetrics?.sent ?? 0,
+      emailOpens: emailMetrics?.opens ?? 0,
+      emailClicks: emailMetrics?.clicks ?? 0,
+      hasPaymentLink: !!deployment?.qaReport,
+      hasTracking: !!(await prisma.user.findUnique({ where: { id: user.id }, select: { metaPixelId: true } }))?.metaPixelId,
+      sitePublished: site.published,
+    });
+
     return NextResponse.json({
       ok: true,
       analytics: {
@@ -143,6 +172,8 @@ export async function GET(
         campaign: campaignMetrics,
         formSubmissions,
         deployment: deployment ? { version: deployment.version, qaScore: deployment.qaScore } : null,
+        suggestions,
+        benchmarks,
       },
     });
   } catch (err) {

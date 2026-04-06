@@ -1000,6 +1000,21 @@ function FormBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
       if(!form) return;
       var btn = form.querySelector('button[type="submit"]');
       var msg = form.querySelector('.form-message');
+      // Capture partial form data (email blur) for abandoned form recovery
+      var emailInput = form.querySelector('input[name="email"]');
+      if(emailInput){
+        var partialSent = false;
+        emailInput.addEventListener('blur', function(){
+          if(!partialSent && emailInput.value && emailInput.value.includes('@')){
+            partialSent = true;
+            fetch('/api/forms/partial',{
+              method:'POST',
+              headers:{'Content-Type':'application/json'},
+              body:JSON.stringify({siteId:'${siteId}',email:emailInput.value,name:(form.querySelector('input[name="name"]')||{}).value||''})
+            }).catch(function(){});
+          }
+        });
+      }
       form.addEventListener('submit', function(e){
         e.preventDefault();
         if(btn){ btn.disabled=true; btn.textContent='Sending...'; }
@@ -1014,7 +1029,17 @@ function FormBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
           body:JSON.stringify(data)
         }).then(function(r){return r.json()}).then(function(r){
           if(r.ok){
-            if(msg){msg.textContent='Thank you! We\\'ll be in touch.';msg.style.color='#10b981';}
+            if(msg){
+              if(r.enrollmentStatus === 'failed' && r.warning){
+                msg.textContent='Thanks! Your request was received. Email follow-up is still being configured.';
+                msg.style.color='#f59e0b';
+                msg.title = String(r.warning);
+              } else {
+                msg.textContent='Thank you! We\\'ll be in touch.';
+                msg.style.color='#10b981';
+                msg.title = '';
+              }
+            }
             form.querySelectorAll('input,textarea').forEach(function(el){el.value='';});
             // Fire conversion events
             if(typeof fbq==='function') fbq('track','Lead');

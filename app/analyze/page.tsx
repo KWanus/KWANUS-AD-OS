@@ -2,7 +2,10 @@
 import { useState, Suspense, useEffect, useCallback } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { Sparkles } from "lucide-react";
 import CreativeStudio from "@/components/studio/CreativeStudio";
+import WorkflowGuide from "@/components/navigation/WorkflowGuide";
+import WorkflowHeader from "@/components/navigation/WorkflowHeader";
 import { getUserId } from "@/lib/userId";
 import AppNav from "@/components/AppNav";
 
@@ -720,12 +723,34 @@ function AnalyzeContent() {
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none" />
 
           <div className="w-full max-w-3xl z-10 flex flex-col items-center">
-            <h1 className="text-4xl md:text-5xl font-black mb-4 text-center tracking-tight bg-gradient-to-r from-white to-white/60 bg-clip-text text-transparent">
-              Himalaya Copilot
-            </h1>
-            <p className="text-white/50 text-base md:text-lg text-center mb-12 max-w-xl leading-relaxed">
-              Drop a competitor's link, your current store, or a raw idea. The AI will scan the market, build your strategy, and **auto-generate your funnel and ads**.
-            </p>
+            <WorkflowHeader
+              className="mb-12 w-full"
+              title="Analysis Studio"
+              description="Drop a competitor's link, your current store, or a raw idea. The AI will scan the market, build your strategy, and generate the assets you need to execute."
+              icon={Sparkles}
+              center
+            />
+
+            <WorkflowGuide
+              className="mb-6 w-full max-w-3xl"
+              items={[
+                {
+                  title: "Need a fast verdict first?",
+                  description: "Use Scan to quickly score a page or offer before investing in the full asset package.",
+                  href: "/scan",
+                },
+                {
+                  title: "Use Analysis Studio",
+                  description: "Best when you want strategy plus usable outputs: hooks, scripts, landing copy, emails, and briefs.",
+                  active: true,
+                },
+                {
+                  title: "Want a guided launch path?",
+                  description: "Use Himalaya when you want the system to take the analysis and launch the business stack for you.",
+                  href: "/himalaya",
+                },
+              ]}
+            />
 
           <div className="w-full bg-[#050a14] border border-white/[0.08] shadow-2xl rounded-3xl p-3 flex flex-col transition-all focus-within:border-cyan-500/40 focus-within:shadow-[0_0_40px_rgba(6,182,212,0.1)]">
               <textarea

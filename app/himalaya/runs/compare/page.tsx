@@ -15,22 +15,25 @@ export default function HimalayaComparePage() {
     <div className="min-h-screen bg-[#050a14] text-white">
       <AppNav />
       <HimalayaNav />
-      <main className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
+      <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <Link
           href="/himalaya/runs"
-          className="inline-flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition mb-6"
+          className="mb-6 inline-flex items-center gap-1.5 text-xs text-white/30 transition hover:text-white/60"
         >
           <ArrowLeft className="w-3.5 h-3.5" /> Run History
         </Link>
 
-        <h1 className="text-xl font-black text-white mb-1">Compare Runs</h1>
-        <p className="text-sm text-white/30 mb-6">Select two runs to compare side by side</p>
+        <div className="mb-6 rounded-3xl border border-white/[0.06] bg-gradient-to-br from-white/[0.03] via-white/[0.015] to-transparent p-5 sm:p-6">
+          <p className="text-[10px] font-black uppercase tracking-[0.24em] text-white/20">Compare</p>
+          <h1 className="mt-1 text-xl font-black text-white">Compare Runs</h1>
+          <p className="mt-1 text-sm text-white/30">Select two runs to compare side by side across priorities, assets, notes, and score shifts.</p>
+        </div>
 
         {comparison ? (
           <div>
             <button
               onClick={() => setComparison(null)}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/[0.08] text-xs font-semibold text-white/40 hover:text-white/70 transition mb-6"
+              className="mb-6 inline-flex items-center gap-1.5 rounded-lg border border-white/[0.08] bg-white/[0.03] px-3 py-2 text-xs font-semibold text-white/40 transition hover:text-white/70"
             >
               <ArrowLeft className="w-3 h-3" /> Pick Different Runs
             </button>

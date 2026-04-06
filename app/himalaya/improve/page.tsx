@@ -165,11 +165,11 @@ export default function HimalayaImprovePage() {
     <div className="min-h-screen bg-[#050a14] text-white">
       <AppNav />
       <HimalayaNav />
-      <main className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
+      <main className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
         {running ? (
           <>
-            <div className="text-center mb-4">
-              <Mountain className="w-8 h-8 text-amber-400 mx-auto mb-3" />
+            <div className="mb-4 rounded-3xl border border-amber-500/12 bg-gradient-to-br from-amber-500/[0.06] via-transparent to-orange-500/[0.05] px-5 py-8 text-center">
+              <Mountain className="mx-auto mb-3 h-8 w-8 text-amber-400" />
               <h1 className="text-xl font-black text-white">Analyzing Your Business</h1>
               <p className="text-sm text-white/30 mt-1">Scanning, scoring, and building improvements</p>
             </div>
@@ -177,22 +177,25 @@ export default function HimalayaImprovePage() {
           </>
         ) : (
           <>
-            <Link href="/himalaya" className="inline-flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition mb-6">
+            <Link href="/himalaya" className="mb-6 inline-flex items-center gap-1.5 text-xs text-white/30 transition hover:text-white/60">
               <ArrowLeft className="w-3.5 h-3.5" /> Back
             </Link>
 
-            <h1 className="text-xl font-black text-white mb-1">Improve Existing Business</h1>
-            <p className="text-sm text-white/35 mb-4">
-              Analyze your current business, find what is weak, and generate better-performing assets.
-            </p>
+            <div className="mb-4 rounded-3xl border border-white/[0.06] bg-gradient-to-br from-white/[0.03] via-white/[0.015] to-transparent p-5 sm:p-6">
+              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-white/20">Improve</p>
+              <h1 className="mt-1 text-xl font-black text-white">Improve Existing Business</h1>
+              <p className="mt-1 text-sm text-white/35">
+                Analyze your current business, find what is weak, and generate better-performing assets.
+              </p>
+            </div>
             {loadedFromRun && (
-              <div className="flex items-center gap-2 mb-4 px-3 py-2 rounded-lg bg-purple-500/5 border border-purple-500/10">
+              <div className="mb-4 flex items-center gap-2 rounded-lg border border-purple-500/10 bg-purple-500/5 px-3 py-2">
                 <RotateCcw className="w-3 h-3 text-purple-400/50" />
                 <p className="text-[10px] text-purple-300/60">Loaded from a previous run. Edit anything before re-analyzing.</p>
               </div>
             )}
 
-            <div className="space-y-6">
+            <div className="space-y-6 rounded-3xl border border-white/[0.06] bg-gradient-to-br from-white/[0.03] via-white/[0.015] to-transparent p-4 sm:p-5">
               {/* URL */}
               <div>
                 <label className="text-[10px] font-bold text-cyan-400/50 uppercase tracking-widest mb-2 block">Your website URL</label>
@@ -247,7 +250,7 @@ export default function HimalayaImprovePage() {
               </div>
 
               {/* Optional extras */}
-              <details>
+              <details className="rounded-2xl border border-white/[0.05] bg-black/20 px-4 py-3">
                 <summary className="text-[10px] font-bold text-white/20 cursor-pointer hover:text-white/40 transition">
                   Add more context (optional)
                 </summary>
@@ -271,11 +274,11 @@ export default function HimalayaImprovePage() {
               </button>
 
               {/* What you'll get */}
-              <div className="bg-white/[0.015] border border-white/[0.04] rounded-xl p-3">
+              <div className="rounded-xl border border-white/[0.04] bg-black/20 p-3">
                 <p className="text-[9px] font-bold text-white/20 uppercase tracking-widest mb-2">What you'll get</p>
                 <div className="flex flex-wrap gap-2">
                   {["Competitor Scan", "Weakness Analysis", "Priority Fixes", "Improved Homepage", "Marketing Angles", "Email Fixes", "Action Roadmap"].map((item) => (
-                    <span key={item} className="text-[10px] text-white/25 bg-white/[0.03] border border-white/[0.04] px-2 py-0.5 rounded">{item}</span>
+                    <span key={item} className="rounded border border-white/[0.04] bg-white/[0.03] px-2 py-0.5 text-[10px] text-white/25">{item}</span>
                   ))}
                 </div>
               </div>

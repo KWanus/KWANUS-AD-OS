@@ -59,10 +59,10 @@ function PathCard({
   const Icon = PATH_ICONS[rec.path] ?? Target;
 
   return (
-    <div className={`rounded-2xl border p-6 ${
+    <div className={`rounded-3xl border p-5 sm:p-6 ${
       isPrimary
         ? "bg-gradient-to-br from-cyan-500/[0.06] to-purple-500/[0.06] border-cyan-500/20"
-        : "bg-white/[0.02] border-white/[0.07]"
+        : "bg-gradient-to-br from-white/[0.03] via-white/[0.02] to-transparent border-white/[0.07]"
     }`}>
       {isPrimary && (
         <div className="flex items-center gap-2 mb-4">
@@ -84,8 +84,8 @@ function PathCard({
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
-        <div className="bg-white/[0.02] rounded-lg p-2.5">
+      <div className="mb-5 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        <div className="rounded-lg bg-black/20 p-2.5">
           <div className="flex items-center gap-1.5 mb-1">
             <Target className="w-3 h-3 text-white/20" />
             <span className="text-[9px] font-bold text-white/25 uppercase">Match</span>
@@ -95,21 +95,21 @@ function PathCard({
             <ConfidenceBar value={rec.confidence} />
           </div>
         </div>
-        <div className="bg-white/[0.02] rounded-lg p-2.5">
+        <div className="rounded-lg bg-black/20 p-2.5">
           <div className="flex items-center gap-1.5 mb-1">
             <Clock className="w-3 h-3 text-white/20" />
             <span className="text-[9px] font-bold text-white/25 uppercase">First Revenue</span>
           </div>
           <p className="text-sm font-bold text-white/60">{rec.estimatedTimeToFirstRevenue}</p>
         </div>
-        <div className="bg-white/[0.02] rounded-lg p-2.5">
+        <div className="rounded-lg bg-black/20 p-2.5">
           <div className="flex items-center gap-1.5 mb-1">
             <DollarSign className="w-3 h-3 text-white/20" />
             <span className="text-[9px] font-bold text-white/25 uppercase">Investment</span>
           </div>
           <p className="text-sm font-bold text-white/60">{rec.startingInvestment}</p>
         </div>
-        <div className="bg-white/[0.02] rounded-lg p-2.5">
+        <div className="rounded-lg bg-black/20 p-2.5">
           <div className="flex items-center gap-1.5 mb-1">
             <Shield className="w-3 h-3 text-white/20" />
             <span className="text-[9px] font-bold text-white/25 uppercase">Risk</span>
@@ -244,10 +244,10 @@ export default function HimalayaPathPage({ params }: { params: Promise<{ profile
     <div className="min-h-screen bg-[#050a14] text-white">
       <AppNav />
       <HimalayaNav />
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
+      <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
         {/* Header */}
-        <div className="text-center mb-8">
-          <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center mx-auto mb-4">
+        <div className="mb-8 rounded-3xl border border-cyan-500/12 bg-gradient-to-br from-cyan-500/[0.06] via-transparent to-purple-500/[0.05] px-5 py-8 text-center sm:px-8">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600">
             <Mountain className="w-6 h-6 text-white" />
           </div>
           <h1 className="text-2xl font-black text-white mb-2">Your Path Is Clear</h1>

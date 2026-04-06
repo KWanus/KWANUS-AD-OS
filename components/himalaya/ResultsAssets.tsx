@@ -24,10 +24,15 @@ export default function ResultsAssets({ vm, onRegenerated }: { vm: HimalayaResul
   const isFree = tier === "free";
 
   return (
-    <div className="bg-white/[0.02] border border-white/[0.07] rounded-2xl p-5">
-      <h2 className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-4">
-        Generated Assets
-      </h2>
+    <div className="rounded-2xl border border-white/[0.07] bg-gradient-to-br from-white/[0.03] to-white/[0.015] p-5">
+      <div className="mb-4 flex items-center justify-between gap-3">
+        <h2 className="text-[10px] font-black uppercase tracking-widest text-white/30">
+          Generated Assets
+        </h2>
+        <span className="rounded-full border border-white/[0.08] bg-white/[0.03] px-2.5 py-1 text-[10px] font-black text-white/35">
+          {vm.assetGroups.length} groups
+        </span>
+      </div>
       <div className="space-y-4">
         {vm.assetGroups.map((group, i) => {
           const isGated = isFree && i >= freePreviewCount;

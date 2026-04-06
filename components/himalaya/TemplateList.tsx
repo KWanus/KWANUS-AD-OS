@@ -56,31 +56,31 @@ export default function TemplateList() {
   useEffect(() => { load(); }, [filterType, filterMode]);
 
   return (
-    <div>
+    <div className="rounded-3xl border border-white/[0.06] bg-gradient-to-br from-white/[0.03] via-white/[0.015] to-transparent p-4 sm:p-5">
       {/* Filters */}
-      <div className="flex flex-wrap gap-2 mb-5">
+      <div className="mb-5 flex flex-wrap gap-2">
         {TYPE_OPTIONS.map(({ key, label }) => (
           <button
             key={key}
             onClick={() => setFilterType(key)}
-            className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition ${
+            className={`rounded-lg px-3 py-2 text-[11px] font-bold transition ${
               filterType === key
-                ? "bg-white/[0.08] border border-white/[0.15] text-white/60"
-                : "bg-white/[0.02] border border-white/[0.06] text-white/30 hover:text-white/50 hover:border-white/[0.1]"
+                ? "border border-white/[0.15] bg-white/[0.08] text-white/60"
+                : "border border-white/[0.06] bg-white/[0.02] text-white/30 hover:border-white/[0.1] hover:text-white/50"
             }`}
           >
             {label}
           </button>
         ))}
-        <div className="w-px h-6 bg-white/[0.06] self-center mx-1" />
+        <div className="mx-1 h-6 w-px self-center bg-white/[0.06]" />
         {MODE_OPTIONS.map(({ key, label }) => (
           <button
             key={key}
             onClick={() => setFilterMode(key)}
-            className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition ${
+            className={`rounded-lg px-3 py-2 text-[11px] font-bold transition ${
               filterMode === key
-                ? "bg-white/[0.08] border border-white/[0.15] text-white/60"
-                : "bg-white/[0.02] border border-white/[0.06] text-white/30 hover:text-white/50 hover:border-white/[0.1]"
+                ? "border border-white/[0.15] bg-white/[0.08] text-white/60"
+                : "border border-white/[0.06] bg-white/[0.02] text-white/30 hover:border-white/[0.1] hover:text-white/50"
             }`}
           >
             {label}
@@ -94,13 +94,13 @@ export default function TemplateList() {
           <Loader2 className="w-5 h-5 text-white/20 animate-spin" />
         </div>
       ) : templates.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 gap-4">
+        <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-white/[0.05] bg-black/20 py-16">
           <Inbox className="w-10 h-10 text-white/10" />
           <p className="text-sm text-white/30">No templates saved yet</p>
           <p className="text-xs text-white/20">Save asset sections from your run results to create reusable templates</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
           {templates.map((t) => (
             <TemplateCard key={t.id} template={t} onDeleted={load} />
           ))}

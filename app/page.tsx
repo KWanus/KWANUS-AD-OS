@@ -11,7 +11,11 @@ import {
   BotMessageSquare,
   Briefcase,
   Building2,
+  Calendar,
   CheckCircle2,
+  Compass,
+  DollarSign,
+  FileText,
   Mail,
   Globe,
   MapPin,
@@ -19,12 +23,14 @@ import {
   ScanSearch,
   ShoppingCart,
   Sparkles,
+  Rocket,
   TrendingUp,
   Users,
   Zap,
   BarChart2,
   AlertTriangle,
   ExternalLink,
+  Wrench,
 } from "lucide-react";
 
 interface Lead {
@@ -176,8 +182,13 @@ const BUSINESS_HUBS = [
 ];
 
 const TOOL_HUBS = [
+  { label: "Starter Wizard", href: "/start", icon: Compass, sub: "Get a first offer, first hook, and day-one plan", accent: "cyan" as Accent },
+  { label: "Launch Wizard", href: "/launch", icon: Rocket, sub: "Launch the full stack for a niche in one shot", accent: "violet" as Accent },
+  { label: "Tools", href: "/tools", icon: Wrench, sub: "All generators, calculators, and audits", accent: "amber" as Accent },
+  { label: "Analytics", href: "/analytics", icon: BarChart2, sub: "Workspace metrics, health, and trends", accent: "blue" as Accent },
+  { label: "Forms", href: "/forms", icon: FileText, sub: "Opt-ins, embeds, and submission tracking", accent: "emerald" as Accent },
   { label: "AI Copilot", href: "/copilot", icon: BotMessageSquare, sub: "Ask what to build next", accent: "cyan" as Accent },
-  { label: "Scan", href: "/scan", icon: ScanSearch, sub: "Analyze any URL or offer", accent: "blue" as Accent },
+  { label: "Scan", href: "/scan", icon: ScanSearch, sub: "Score a URL, market, or offer fast", accent: "blue" as Accent },
   { label: "Skills", href: "/skills", icon: Sparkles, sub: "Run one-click workflows", accent: "violet" as Accent },
   { label: "Campaigns", href: "/campaigns", icon: Zap, sub: "Hooks, landing copy, emails", accent: "emerald" as Accent },
   { label: "Sites", href: "/websites", icon: Globe, sub: "Funnels, stores, and public pages", accent: "pink" as Accent },
@@ -560,6 +571,22 @@ export default function Dashboard() {
           <section className="mb-8">
             <SectionLabel>Getting Started</SectionLabel>
             <div className="rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.06] to-purple-600/[0.03] p-5">
+              <div className="mb-5 grid gap-3 lg:grid-cols-2">
+                <Link href="/start" className="rounded-2xl border border-white/[0.08] bg-black/20 p-4 transition hover:border-white/[0.14] hover:bg-white/[0.04]">
+                  <p className="text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300/80">Beginner Path</p>
+                  <h3 className="mt-2 text-base font-black text-white">Start with the Starter Wizard</h3>
+                  <p className="mt-2 text-sm leading-6 text-white/50">
+                    Best if you want a simpler first win: get matched to an offer, a first hook, and a day-one plan.
+                  </p>
+                </Link>
+                <Link href="/himalaya" className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4 transition hover:border-cyan-500/30">
+                  <p className="text-[10px] font-black uppercase tracking-[0.22em] text-cyan-200/80">Full System</p>
+                  <h3 className="mt-2 text-base font-black text-white">Start with Himalaya</h3>
+                  <p className="mt-2 text-sm leading-6 text-white/55">
+                    Best if you want research, assets, deployment, and an OS-guided path from the start.
+                  </p>
+                </Link>
+              </div>
               <p className="text-sm text-white/50 mb-4">Complete these steps to set up your marketing OS:</p>
               <div className="space-y-2">
                 {[
@@ -610,6 +637,81 @@ export default function Dashboard() {
             ))}
           </div>
         </section>
+
+        {/* Quick Tools */}
+        {!loading && (
+          <section className="mb-8">
+            <SectionLabel>Tools</SectionLabel>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+              {(
+                totalCampaigns > 0 || totalSites > 0
+                  ? [
+                    { label: "Revenue", href: "/revenue", icon: DollarSign, color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/15" },
+                    { label: "Content Calendar", href: "/content", icon: Calendar, color: "text-cyan-400", bg: "bg-cyan-500/10 border-cyan-500/15" },
+                    { label: "Proposals", href: "/proposals", icon: FileText, color: "text-purple-400", bg: "bg-purple-500/10 border-purple-500/15" },
+                    { label: "Analytics", href: "/analytics", icon: BarChart2, color: "text-amber-400", bg: "bg-amber-500/10 border-amber-500/15" },
+                  ]
+                  : [
+                    { label: "Starter Wizard", href: "/start", icon: Compass, color: "text-cyan-400", bg: "bg-cyan-500/10 border-cyan-500/15" },
+                    { label: "Launch Wizard", href: "/launch", icon: Rocket, color: "text-violet-400", bg: "bg-violet-500/10 border-violet-500/15" },
+                    { label: "Scan", href: "/scan", icon: ScanSearch, color: "text-blue-400", bg: "bg-blue-500/10 border-blue-500/15" },
+                    { label: "Himalaya", href: "/himalaya", icon: Sparkles, color: "text-emerald-400", bg: "bg-emerald-500/10 border-emerald-500/15" },
+                  ]
+              ).map((tool) => (
+                <Link
+                  key={tool.label}
+                  href={tool.href}
+                  className={`flex items-center gap-3 p-4 rounded-2xl border transition hover:scale-[1.02] ${tool.bg}`}
+                >
+                  <tool.icon className={`w-5 h-5 ${tool.color}`} />
+                  <span className="text-sm font-bold text-white">{tool.label}</span>
+                </Link>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Live Business Status — shows deployed assets working */}
+        {!loading && (sites.filter(s => s.published).length > 0 || emailFlows.filter(f => f.status === "active").length > 0) && (
+          <section className="mb-8">
+            <SectionLabel>Your Live Business</SectionLabel>
+            <div className="rounded-[28px] border border-emerald-500/15 bg-gradient-to-br from-emerald-500/[0.06] to-cyan-500/[0.03] p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <p className="text-xs font-bold text-emerald-300">Active and running</p>
+              </div>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="rounded-xl bg-black/20 border border-white/[0.06] p-3 text-center">
+                  <Globe className="w-4 h-4 text-cyan-400 mx-auto mb-1" />
+                  <p className="text-lg font-bold text-white">{sites.filter(s => s.published).length}</p>
+                  <p className="text-[10px] text-white/30">Live Sites</p>
+                </div>
+                <div className="rounded-xl bg-black/20 border border-white/[0.06] p-3 text-center">
+                  <Mail className="w-4 h-4 text-blue-400 mx-auto mb-1" />
+                  <p className="text-lg font-bold text-white">{emailFlows.filter(f => f.status === "active").length}</p>
+                  <p className="text-[10px] text-white/30">Active Flows</p>
+                </div>
+                <div className="rounded-xl bg-black/20 border border-white/[0.06] p-3 text-center">
+                  <Users className="w-4 h-4 text-emerald-400 mx-auto mb-1" />
+                  <p className="text-lg font-bold text-white">{totalLeads}</p>
+                  <p className="text-[10px] text-white/30">Total Leads</p>
+                </div>
+                <div className="rounded-xl bg-black/20 border border-white/[0.06] p-3 text-center">
+                  <TrendingUp className="w-4 h-4 text-amber-400 mx-auto mb-1" />
+                  <p className="text-lg font-bold text-white">{totalCampaigns}</p>
+                  <p className="text-[10px] text-white/30">Campaigns</p>
+                </div>
+              </div>
+              <div className="mt-4 flex flex-wrap gap-2 text-[10px] text-white/30">
+                <span>Form submissions auto-enroll contacts into email flows</span>
+                <span>·</span>
+                <span>Emails send automatically via Resend</span>
+                <span>·</span>
+                <span>Tracking pixels fire on every page view</span>
+              </div>
+            </div>
+          </section>
+        )}
 
         {/* Recent Analyses + Client Health Row */}
         {(!loading && (recentAnalyses.length > 0 || atRiskClients.length > 0)) && (

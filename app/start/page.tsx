@@ -1,7 +1,15 @@
 "use client";
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import { Compass } from "lucide-react";
+import AppNav from "@/components/AppNav";
+import WorkflowGuide from "@/components/navigation/WorkflowGuide";
+import WorkflowHeader from "@/components/navigation/WorkflowHeader";
+import WorkflowPanel from "@/components/navigation/WorkflowPanel";
+import WorkflowLoading from "@/components/navigation/WorkflowLoading";
+import WorkflowSuccess from "@/components/navigation/WorkflowSuccess";
 import { getUserId } from "@/lib/userId";
+import { CheckCircle, Zap } from "lucide-react";
 import { NICHES, CURATED_OFFERS, getRecommendedOffer, type CuratedOffer } from "@/src/data/curatedOffers";
 import {
   PRODUCT_LIBRARY,
@@ -188,10 +196,16 @@ export default function StartPage() {
 
   return (
     <main className="min-h-screen bg-[#0a0f1e] text-white flex flex-col">
+      <AppNav />
       <header className="px-8 py-6 border-b border-white/10">
         <Link href="/" className="text-cyan-400 text-sm hover:underline">← Back to Dashboard</Link>
-        <h1 className="text-2xl font-bold mt-2">Get Started</h1>
-        <p className="text-sm text-white/40 mt-1">Answer 3 questions. Get your complete launch kit.</p>
+        <div className="mt-2">
+          <WorkflowHeader
+            title="Starter Wizard"
+            description="Answer 3 questions. Get your first offer, first hook, and day-one plan."
+            icon={Compass}
+          />
+        </div>
         <div className="mt-3 flex items-center gap-3">
           <Link href="/himalaya" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition">
             Skip — use Himalaya instead →
@@ -201,6 +215,26 @@ export default function StartPage() {
       </header>
 
       <div className="flex-1 px-6 py-10 max-w-2xl mx-auto w-full">
+        <WorkflowGuide
+          className="mb-8"
+          items={[
+            {
+              title: "Use Starter Wizard",
+              description: "Best for beginners who want a simple offer match, first hook, and day-one plan without the full system complexity.",
+              active: true,
+            },
+            {
+              title: "Need validation first?",
+              description: "Use Scan if you want to evaluate a competitor, market, or product before choosing what to build.",
+              href: "/scan",
+            },
+            {
+              title: "Ready for full automation?",
+              description: "Use Himalaya when you want the system to research, build, launch, and improve the stack for you.",
+              href: "/himalaya",
+            },
+          ]}
+        />
 
         {/* ── Intro ── */}
         {step === "intro" && (
@@ -214,8 +248,7 @@ export default function StartPage() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <p className="text-xs uppercase tracking-widest text-white/30 mb-4">What you&apos;ll get</p>
+            <WorkflowPanel eyebrow="What you'll get" className="bg-white/5 border-white/10">
               <div className="grid grid-cols-2 gap-3">
                 {[
                   { icon: "🎯", label: "Your matched offer", sub: "Pre-vetted, beginner-proven" },
@@ -232,12 +265,11 @@ export default function StartPage() {
                   </div>
                 ))}
               </div>
-            </div>
+            </WorkflowPanel>
 
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
-              <p className="text-xs uppercase tracking-widest text-white/30 mb-4">Execution Lane</p>
+            <WorkflowPanel eyebrow="Execution lane" className="bg-white/5 border-white/10">
               <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
-            </div>
+            </WorkflowPanel>
 
             <button
               onClick={() => setStep("model")}
@@ -415,18 +447,14 @@ export default function StartPage() {
 
         {/* ── Loading ── */}
         {step === "loading" && (
-          <div className="flex flex-col items-center justify-center min-h-[50vh] text-center">
-            <div className="w-16 h-16 rounded-2xl border border-cyan-500/30 bg-cyan-500/5 flex items-center justify-center mb-6">
-              <span className="text-3xl animate-pulse">⚡</span>
-            </div>
-            <h2 className="text-xl font-bold mb-2">Building your launch kit...</h2>
-            <p className="text-sm text-cyan-400 min-h-[20px]">{LOADING_MESSAGES[loadingMsg]}</p>
-            <div className="mt-8 flex gap-1.5">
-              {LOADING_MESSAGES.map((_, i) => (
-                <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all duration-500 ${i <= loadingMsg ? "bg-cyan-400" : "bg-white/10"}`} />
-              ))}
-            </div>
-          </div>
+          <WorkflowLoading
+            className="min-h-[50vh]"
+            title="Building your launch kit..."
+            subtitle={LOADING_MESSAGES[loadingMsg]}
+            icon={Zap}
+            steps={LOADING_MESSAGES}
+            activeIndex={loadingMsg}
+          />
         )}
 
         {/* ── Result: Affiliate ── */}
@@ -576,15 +604,19 @@ function AffiliateResult({
       {/* Save to Workspace */}
       <div className="rounded-2xl border border-cyan-500/30 bg-cyan-500/5 p-5">
         {savedId ? (
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-sm font-semibold text-cyan-400">Saved to your workspace!</p>
-              <p className="text-xs text-white/40 mt-0.5">Track your ads, mark what&apos;s live, and add new variations.</p>
+          <WorkflowSuccess
+            title="Saved to your workspace!"
+            description="Track your ads, mark what's live, and add new variations."
+            icon={CheckCircle}
+            accent="cyan"
+            className="border-0 bg-transparent p-0"
+          >
+            <div className="flex justify-end">
+              <Link href={`/campaigns/${savedId}`} className="shrink-0 rounded-xl bg-cyan-500 hover:bg-cyan-400 px-5 py-2.5 text-sm font-semibold text-[#0a0f1e] transition">
+                Open Workspace →
+              </Link>
             </div>
-            <Link href={`/campaigns/${savedId}`} className="shrink-0 rounded-xl bg-cyan-500 hover:bg-cyan-400 px-5 py-2.5 text-sm font-semibold text-[#0a0f1e] transition">
-              Open Workspace →
-            </Link>
-          </div>
+          </WorkflowSuccess>
         ) : (
           <div className="flex items-center justify-between gap-4">
             <div>
@@ -745,15 +777,19 @@ function DropshipResult({
       {/* Save to Workspace */}
       <div className="rounded-2xl border border-cyan-500/30 bg-cyan-500/5 p-5">
         {savedId ? (
-          <div className="flex items-center justify-between gap-4">
-            <div>
-              <p className="text-sm font-semibold text-cyan-400">Saved to your workspace!</p>
-              <p className="text-xs text-white/40 mt-0.5">Track your ads, mark what&apos;s live, and add new variations.</p>
+          <WorkflowSuccess
+            title="Saved to your workspace!"
+            description="Track your ads, mark what's live, and add new variations."
+            icon={CheckCircle}
+            accent="cyan"
+            className="border-0 bg-transparent p-0"
+          >
+            <div className="flex justify-end">
+              <Link href={`/campaigns/${savedId}`} className="shrink-0 rounded-xl bg-cyan-500 hover:bg-cyan-400 px-5 py-2.5 text-sm font-semibold text-[#0a0f1e] transition">
+                Open Workspace →
+              </Link>
             </div>
-            <Link href={`/campaigns/${savedId}`} className="shrink-0 rounded-xl bg-cyan-500 hover:bg-cyan-400 px-5 py-2.5 text-sm font-semibold text-[#0a0f1e] transition">
-              Open Workspace →
-            </Link>
-          </div>
+          </WorkflowSuccess>
         ) : (
           <div className="flex items-center justify-between gap-4">
             <div>

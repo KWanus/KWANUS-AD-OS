@@ -42,14 +42,14 @@ export default function ResultOperatorTools({ vm }: { vm: HimalayaResultsViewMod
   }
 
   return (
-    <div className="bg-white/[0.015] border border-white/[0.05] rounded-2xl p-4">
-      <h3 className="text-[10px] font-black uppercase tracking-widest text-white/20 mb-3">
+    <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-br from-white/[0.025] via-white/[0.015] to-transparent p-4">
+      <h3 className="mb-3 text-[10px] font-black uppercase tracking-widest text-white/20">
         Operator Tools
       </h3>
-      <div className="flex flex-wrap gap-2">
+      <div className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap">
         <button
           onClick={copyRunId}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.02] border border-white/[0.06] text-[10px] font-semibold text-white/30 hover:text-white/60 hover:border-white/[0.12] transition"
+          className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/[0.06] bg-white/[0.02] px-2.5 py-2 text-[10px] font-semibold text-white/30 transition hover:border-white/[0.12] hover:text-white/60"
         >
           {copiedId ? <Check className="w-3 h-3 text-emerald-400" /> : <ClipboardCopy className="w-3 h-3" />}
           Copy Run ID
@@ -57,7 +57,7 @@ export default function ResultOperatorTools({ vm }: { vm: HimalayaResultsViewMod
 
         <button
           onClick={() => setShowRaw(!showRaw)}
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-[10px] font-semibold transition ${
+          className={`inline-flex items-center justify-center gap-1.5 rounded-lg border px-2.5 py-2 text-[10px] font-semibold transition ${
             showRaw
               ? "bg-cyan-500/10 border-cyan-500/20 text-cyan-400"
               : "bg-white/[0.02] border-white/[0.06] text-white/30 hover:text-white/60 hover:border-white/[0.12]"
@@ -69,7 +69,7 @@ export default function ResultOperatorTools({ vm }: { vm: HimalayaResultsViewMod
 
         <button
           onClick={copyDuplicateLink}
-          className="inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/[0.02] border border-white/[0.06] text-[10px] font-semibold text-white/30 hover:text-white/60 hover:border-white/[0.12] transition"
+          className="inline-flex items-center justify-center gap-1.5 rounded-lg border border-white/[0.06] bg-white/[0.02] px-2.5 py-2 text-[10px] font-semibold text-white/30 transition hover:border-white/[0.12] hover:text-white/60"
         >
           <Copy className="w-3 h-3" />
           Duplicate Input
@@ -78,7 +78,7 @@ export default function ResultOperatorTools({ vm }: { vm: HimalayaResultsViewMod
         <button
           onClick={() => void togglePin()}
           disabled={pinLoading}
-          className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border text-[10px] font-semibold transition disabled:opacity-40 ${
+          className={`inline-flex items-center justify-center gap-1.5 rounded-lg border px-2.5 py-2 text-[10px] font-semibold transition disabled:opacity-40 ${
             pinned
               ? "bg-amber-500/10 border-amber-500/20 text-amber-400"
               : "bg-white/[0.02] border-white/[0.06] text-white/30 hover:text-white/60 hover:border-white/[0.12]"
@@ -97,7 +97,7 @@ export default function ResultOperatorTools({ vm }: { vm: HimalayaResultsViewMod
 
       {showRaw && (
         <div className="mt-3">
-          <pre className="bg-black/30 border border-white/[0.05] rounded-lg p-3 text-[10px] text-white/40 leading-relaxed overflow-x-auto max-h-80 overflow-y-auto font-mono">
+          <pre className="max-h-80 overflow-x-auto overflow-y-auto rounded-lg border border-white/[0.05] bg-black/30 p-3 text-[10px] leading-relaxed text-white/40 font-mono">
             {exportJSON(vm)}
           </pre>
         </div>

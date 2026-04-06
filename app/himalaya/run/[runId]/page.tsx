@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useCallback, use } from "react";
+import { useState, useEffect, useCallback, use, type ReactNode } from "react";
 import Link from "next/link";
-import { Loader2, ArrowLeft, AlertTriangle } from "lucide-react";
+import { Loader2, ArrowLeft, AlertTriangle, ChevronDown } from "lucide-react";
 import AppNav from "@/components/AppNav";
 import HimalayaNav from "@/components/himalaya/HimalayaNav";
 import ResultsHeader from "@/components/himalaya/ResultsHeader";
@@ -26,6 +26,33 @@ import ExecutionDecisionBlock from "@/components/himalaya/ExecutionDecisionBlock
 import { track } from "@/lib/himalaya/tracking";
 import { formatResults } from "@/lib/himalaya/formatResults";
 import type { RawAnalysis, HimalayaResultsViewModel } from "@/lib/himalaya/types";
+
+function ResultsSection({
+  title,
+  children,
+  defaultOpen = false,
+  printHidden = false,
+}: {
+  title: string;
+  children: ReactNode;
+  defaultOpen?: boolean;
+  printHidden?: boolean;
+}) {
+  return (
+    <details
+      open={defaultOpen}
+      className={`group mb-4 rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4 ${printHidden ? "print:hidden" : ""}`}
+    >
+      <summary className="flex cursor-pointer list-none items-center justify-between gap-3">
+        <span className="text-[10px] font-black uppercase tracking-[0.22em] text-white/30 transition group-hover:text-white/45">
+          {title}
+        </span>
+        <ChevronDown className="h-4 w-4 text-white/20 transition group-open:rotate-180 group-open:text-white/40" />
+      </summary>
+      <div className="mt-4">{children}</div>
+    </details>
+  );
+}
 
 export default function HimalayaRunPage({ params }: { params: Promise<{ runId: string }> }) {
   const { runId } = use(params);
@@ -124,73 +151,76 @@ export default function HimalayaRunPage({ params }: { params: Promise<{ runId: s
     <div className="min-h-screen bg-[#050a14] text-white">
       <AppNav />
       <HimalayaNav />
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8 print:max-w-none print:px-8">
-        {/* Back nav (hidden in print) */}
-        <Link
-          href="/himalaya/runs"
-          className="inline-flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition mb-6 print:hidden"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" /> Run History
-        </Link>
+      <main className="mx-auto max-w-4xl px-4 py-6 sm:px-6 sm:py-8 print:max-w-none print:px-8">
+        {/* Back nav + share portal (hidden in print) */}
+        <div className="mb-6 flex flex-col gap-2 print:hidden sm:flex-row sm:items-center sm:justify-between">
+          <Link
+            href="/himalaya/runs"
+            className="inline-flex items-center gap-1.5 text-xs text-white/30 transition hover:text-white/60"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" /> Run History
+          </Link>
+          <button
+            onClick={() => {
+              const portalUrl = `${window.location.origin}/portal/${runId}`;
+              navigator.clipboard.writeText(portalUrl);
+              alert("Portal link copied! Share it with your client.");
+            }}
+            className="inline-flex w-full items-center justify-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.03] px-3 py-2 text-xs text-white/40 transition hover:text-white/70 sm:w-auto"
+          >
+            Share Client Portal
+          </button>
+        </div>
 
         {/* ═══ ABOVE THE FOLD: what matters immediately ═══ */}
+        <section className="mb-6">
+          <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-white/20">Run Snapshot</p>
+              <p className="mt-1 max-w-2xl text-sm leading-6 text-white/35">Review the verdict, decide whether to execute, and launch from one surface.</p>
+            </div>
+            <div className="hidden rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-white/30 sm:block">
+              Above the fold
+            </div>
+          </div>
 
-        {/* Header */}
-        <div className="mb-4">
-          <ResultsHeader vm={vm} />
-        </div>
+          <div className="grid gap-4 lg:grid-cols-[1.08fr_0.92fr]">
+            <div className="space-y-4">
+              <ResultsHeader vm={vm} />
+              <ResultsSummary vm={vm} />
+              <ExecutionDecisionBlock runId={runId} mode={vm.mode} />
+            </div>
 
-        {/* Summary + Deploy (the two things that matter) */}
-        <div className="mb-4">
-          <ResultsSummary vm={vm} />
-        </div>
-
-        <div className="mb-4 print:hidden">
-          <DeployActions vm={vm} autoDeploy />
-        </div>
-
-        <div className="mb-4 print:hidden">
-          <ExecutionBanner runId={runId} />
-        </div>
-
-        {/* Decision block for free users */}
-        <div className="mb-4">
-          <ExecutionDecisionBlock runId={runId} mode={vm.mode} />
-        </div>
+            <div className="space-y-4 print:hidden">
+              <div className="rounded-3xl border border-cyan-500/15 bg-gradient-to-br from-cyan-500/[0.05] via-transparent to-purple-500/[0.05] p-3 sm:p-4">
+                <p className="mb-3 text-[10px] font-black uppercase tracking-[0.22em] text-cyan-200/70">Launch Surface</p>
+                <DeployActions vm={vm} autoDeploy />
+              </div>
+              <ExecutionBanner runId={runId} />
+            </div>
+          </div>
+        </section>
 
         {/* ═══ BELOW THE FOLD: details on demand ═══ */}
 
         {/* Priorities + Strategy */}
-        <details open className="mb-4">
-          <summary className="text-[10px] font-black uppercase tracking-widest text-white/25 cursor-pointer hover:text-white/40 transition py-2">
-            Priorities & Strategy
-          </summary>
-          <div className="space-y-4 mt-2">
+        <ResultsSection title="Priorities & Strategy" defaultOpen>
+          <div className="space-y-4">
             <ResultsPriorities vm={vm} />
             <StrategyReasoning vm={vm} />
             <ConfidenceBadge vm={vm} />
           </div>
-        </details>
+        </ResultsSection>
 
         {/* Generated Assets */}
-        <details open className="mb-4">
-          <summary className="text-[10px] font-black uppercase tracking-widest text-white/25 cursor-pointer hover:text-white/40 transition py-2">
-            Generated Assets
-          </summary>
-          <div className="mt-2">
-            <ResultsAssets vm={vm} onRegenerated={loadRun} />
-          </div>
-        </details>
+        <ResultsSection title="Generated Assets" defaultOpen>
+          <ResultsAssets vm={vm} onRegenerated={loadRun} />
+        </ResultsSection>
 
         {/* Competitive Intelligence */}
-        <details className="mb-4">
-          <summary className="text-[10px] font-black uppercase tracking-widest text-white/25 cursor-pointer hover:text-white/40 transition py-2">
-            Competitive Intelligence
-          </summary>
-          <div className="mt-2">
-            <CompetitorCards vm={vm} />
-          </div>
-        </details>
+        <ResultsSection title="Competitive Intelligence">
+          <CompetitorCards vm={vm} />
+        </ResultsSection>
 
         {/* Upgrade nudge */}
         <div className="mb-4 print:hidden">
@@ -216,16 +246,13 @@ export default function HimalayaRunPage({ params }: { params: Promise<{ runId: s
         </div>
 
         {/* G. Export + Tools (collapsed, hidden in print) */}
-        <details className="mb-6 print:hidden">
-          <summary className="text-[10px] font-bold text-white/20 uppercase tracking-widest cursor-pointer hover:text-white/40 transition py-2">
-            Export & Tools
-          </summary>
-          <div className="space-y-4 mt-2">
+        <ResultsSection title="Export & Tools" printHidden>
+          <div className="space-y-4">
             <ExportMenu vm={vm} />
             <ResultOperatorTools vm={vm} />
             <ResultsTraceDetails vm={vm} />
           </div>
-        </details>
+        </ResultsSection>
       </main>
     </div>
   );

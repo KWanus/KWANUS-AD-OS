@@ -49,8 +49,7 @@ async function generateWithOpenAI(
         prompt: input.prompt,
         n: 1,
         size: input.size ?? "1024x1024",
-        quality: input.quality ?? "standard",
-        response_format: "b64_json",
+        quality: input.quality === "hd" ? "high" : "medium",
       });
 
       const firstImage = result.data?.[0];

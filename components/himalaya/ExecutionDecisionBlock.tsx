@@ -23,21 +23,22 @@ export default function ExecutionDecisionBlock({ runId, mode }: { runId: string;
   if (!tier || tier !== "free") return null;
 
   return (
-    <div className="bg-gradient-to-br from-cyan-500/[0.07] to-purple-500/[0.05] border border-cyan-500/20 rounded-2xl p-6 print:hidden">
+    <div className="rounded-3xl border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] via-transparent to-purple-500/[0.06] p-6 print:hidden">
+      <p className="mb-2 text-[10px] font-black uppercase tracking-[0.22em] text-cyan-200/70">Unlock Execution</p>
       {/* Main message */}
-      <h3 className="text-base font-black text-white mb-1">
+      <h3 className="mb-1 text-base font-black text-white">
         {mode === "consultant"
           ? "This plan only works if you execute it."
           : "Your foundation is built. The next step is execution."}
       </h3>
-      <p className="text-xs text-white/40 mb-5 max-w-lg">
+      <p className="mb-5 max-w-lg text-xs leading-6 text-white/40">
         {mode === "consultant"
           ? "Deploy the improvements, track what changes, and iterate until your numbers improve."
           : "Deploy your site, launch your marketing, and track what works. The system learns from your results and gets smarter each time."}
       </p>
 
       {/* Value props — what they unlock */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-5">
+      <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
         <ValueProp icon={Rocket} label="Deploy everything" detail="Site, ads, emails — one click" />
         <ValueProp icon={BarChart2} label="Track outcomes" detail="See what actually works" />
         <ValueProp icon={TrendingUp} label="Improve over time" detail="Each run gets smarter" />
@@ -57,7 +58,7 @@ export default function ExecutionDecisionBlock({ runId, mode }: { runId: string;
       </div>
 
       {/* Proof */}
-      <p className="text-[10px] text-white/15 mt-4 italic">
+      <p className="mt-4 text-[10px] italic text-white/15">
         Most users upgrade after their first run. Don't stop at ideas — execute and improve until it works.
       </p>
     </div>
@@ -66,10 +67,10 @@ export default function ExecutionDecisionBlock({ runId, mode }: { runId: string;
 
 function ValueProp({ icon: Icon, label, detail }: { icon: React.ElementType; label: string; detail: string }) {
   return (
-    <div className="text-center">
-      <Icon className="w-4 h-4 text-cyan-400/50 mx-auto mb-1" />
-      <p className="text-[11px] font-bold text-white/50">{label}</p>
-      <p className="text-[9px] text-white/25">{detail}</p>
+    <div className="rounded-xl border border-white/[0.06] bg-black/20 p-3 text-center">
+      <Icon className="mx-auto mb-2 h-4 w-4 text-cyan-400/50" />
+      <p className="text-[11px] font-bold text-white/55">{label}</p>
+      <p className="mt-1 text-[9px] text-white/25">{detail}</p>
     </div>
   );
 }

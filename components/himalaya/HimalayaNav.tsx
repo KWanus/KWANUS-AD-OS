@@ -3,10 +3,12 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Mountain, History, Bookmark, GitCompare, Zap } from "lucide-react";
+import { Mountain, History, Bookmark, GitCompare, Zap, Search, Sparkles } from "lucide-react";
 
 const NAV_ITEMS = [
   { href: "/himalaya", label: "New", icon: Mountain, exact: true },
+  { href: "/scan", label: "Scan", icon: Search },
+  { href: "/analyze", label: "Studio", icon: Sparkles },
   { href: "/himalaya/runs", label: "History", icon: History },
   { href: "/himalaya/templates", label: "Templates", icon: Bookmark },
   { href: "/himalaya/runs/compare", label: "Compare", icon: GitCompare },

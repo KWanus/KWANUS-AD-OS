@@ -296,10 +296,15 @@ function ComposeModal({
         setFromEmail("");
         setSegmentTags("");
         setExecutionTier("elite");
+        // Auto-generate content when creating new broadcast
+        setTimeout(() => {
+          handleAIGenerate();
+        }, 300);
       }
       setError(null);
       setSaving(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, editing]);
 
   async function handleAIGenerate() {
@@ -546,7 +551,7 @@ function ComposeModal({
 
 function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
   return (
-    <div className="flex flex-col items-center justify-center py-24 text-center">
+    <div className="flex flex-col items-center justify-center py-16 text-center">
       <div className="relative mb-6">
         <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-purple-500/20 to-cyan-600/20 border border-white/10 flex items-center justify-center">
           <Send className="w-9 h-9 text-purple-400/70" />
@@ -554,14 +559,37 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
       </div>
       <h2 className="text-xl font-black text-white mb-2">No Broadcasts Yet</h2>
       <p className="text-sm text-white/40 max-w-sm mb-8 leading-relaxed">
-        Broadcasts are one-time emails sent to your entire list or a specific segment. Perfect for announcements, launches, and promotions.
+        Pick a template below — AI writes the content using your business data. Or start from scratch.
       </p>
+
+      {/* Quick-start templates */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full max-w-lg mb-6">
+        {[
+          { label: "Product Launch", icon: "🚀", desc: "Announce something new to your list" },
+          { label: "Flash Sale / Promo", icon: "⚡", desc: "Time-limited offer to drive urgency" },
+          { label: "Value Email", icon: "💡", desc: "Share an insight — build trust before selling" },
+          { label: "Re-engagement", icon: "👋", desc: "Win back subscribers who went quiet" },
+        ].map((tpl) => (
+          <button
+            key={tpl.label}
+            onClick={onCreateClick}
+            className="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/30 hover:bg-cyan-500/5 text-left transition"
+          >
+            <span className="text-lg">{tpl.icon}</span>
+            <div>
+              <p className="text-sm font-bold text-white">{tpl.label}</p>
+              <p className="text-[10px] text-white/30">{tpl.desc}</p>
+            </div>
+          </button>
+        ))}
+      </div>
+
       <button
         onClick={onCreateClick}
         className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition-opacity"
       >
         <Plus className="w-4 h-4" />
-        Create First Broadcast
+        Start from Scratch
       </button>
     </div>
   );

@@ -3,6 +3,9 @@
 import { Suspense, useEffect, useState } from "react";
 import AppNav from "@/components/AppNav";
 import ScanSubNav from "@/components/ScanSubNav";
+import WorkflowGuide from "@/components/navigation/WorkflowGuide";
+import WorkflowHeader from "@/components/navigation/WorkflowHeader";
+import WorkflowPanel from "@/components/navigation/WorkflowPanel";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -621,53 +624,66 @@ function ScanPageInner() {
         )}
 
         {/* Header */}
-        <div className="mb-8">
-          <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
-              <Search className="w-4 h-4 text-white" />
-            </div>
-            <h1 className="text-xl font-black text-white">Scan & Build</h1>
+        <WorkflowHeader
+          className="mb-8"
+          title="Scan"
+          description="Drop any URL. The system scores it fast, surfaces the gaps, and gives you a clear direction before you build."
+          icon={Search}
+        />
+
+        <WorkflowGuide
+          items={[
+            {
+              title: "Use Scan",
+              description: "Best when you want a quick verdict, clear gaps, and a direction before committing to full buildout.",
+              active: true,
+            },
+            {
+              title: "Need deeper assets?",
+              description: "Open Analysis Studio for a fuller decision packet, landing page, emails, and creative briefs.",
+              href: "/analyze",
+            },
+            {
+              title: "Want everything launched?",
+              description: "Use Himalaya when you want the system to research, build, and launch the whole stack for you.",
+              href: "/himalaya",
+            },
+          ]}
+        />
+
+        <WorkflowPanel
+          title="Choose your scan lane"
+          description={mode === "consultant"
+            ? "Score any business site. The system identifies what is broken, prioritizes the highest-impact fixes, and points you toward the strongest next build."
+            : "Score any product or competitor page. The system extracts market signals, sizes up the opportunity, and points you toward the strongest next execution plan."}
+          className="mb-5"
+        >
+          <div className="mb-5 flex gap-2">
+            <button
+              onClick={() => { setMode("consultant"); setResult(null); }}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-bold transition-all ${
+                mode === "consultant"
+                  ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-300"
+                  : "border-white/[0.08] text-white/35 hover:text-white/60 hover:border-white/15"
+              }`}
+            >
+              <Building2 className="w-4 h-4" />
+              Client / Competitor Site
+            </button>
+            <button
+              onClick={() => { setMode("operator"); setResult(null); }}
+              className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-bold transition-all ${
+                mode === "operator"
+                  ? "bg-purple-500/10 border-purple-500/30 text-purple-300"
+                  : "border-white/[0.08] text-white/35 hover:text-white/60 hover:border-white/15"
+              }`}
+            >
+              <ShoppingBag className="w-4 h-4" />
+              Product to Sell
+            </button>
           </div>
-          <p className="text-sm text-white/40 max-w-lg">
-            Drop any URL. We scan it, score it, find the gaps — then build a better version for you in one click.
-          </p>
-        </div>
 
-        {/* Mode selector */}
-        <div className="flex gap-2 mb-5">
-          <button
-            onClick={() => { setMode("consultant"); setResult(null); }}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-bold transition-all ${
-              mode === "consultant"
-                ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-300"
-                : "border-white/[0.08] text-white/35 hover:text-white/60 hover:border-white/15"
-            }`}
-          >
-            <Building2 className="w-4 h-4" />
-            Client / Competitor Site
-          </button>
-          <button
-            onClick={() => { setMode("operator"); setResult(null); }}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-bold transition-all ${
-              mode === "operator"
-                ? "bg-purple-500/10 border-purple-500/30 text-purple-300"
-                : "border-white/[0.08] text-white/35 hover:text-white/60 hover:border-white/15"
-            }`}
-          >
-            <ShoppingBag className="w-4 h-4" />
-            Product to Sell
-          </button>
-        </div>
-
-        {/* Mode context */}
-        <p className="text-xs text-white/30 mb-5 -mt-1 pl-1">
-          {mode === "consultant"
-            ? "Scan any business site. The system identifies what is broken, prioritizes the highest-impact fixes, and generates improved assets you can use or deliver."
-            : "Scan any product or competitor page. The system extracts market signals, scores the opportunity, and builds you a complete campaign system."}
-        </p>
-
-        <div className="mb-5 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-4">
-          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/30">Execution Level</p>
+          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/30">Execution level</p>
           <div className="mt-3 grid gap-2 sm:grid-cols-2">
             {([
               ["core", "Core", "Strong diagnosis and launch-ready next actions."],
@@ -688,7 +704,7 @@ function ScanPageInner() {
               </button>
             ))}
           </div>
-        </div>
+        </WorkflowPanel>
 
         {/* URL input */}
         <div className="mb-6">

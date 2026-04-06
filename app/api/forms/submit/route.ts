@@ -6,6 +6,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { enrollContact } from "@/lib/integrations/emailFlowEngine";
+import { scoreLeadFromSubmission } from "@/lib/leads/leadScoring";
+import { notifyNewLead } from "@/lib/notifications/notify";
+import { enrichFromEmail } from "@/lib/leads/leadEnrichment";
+import { processTrigger } from "@/lib/automations/triggerEngine";
+import { fireLeadWebhook } from "@/lib/automations/webhookFire";
 
 export async function POST(req: NextRequest) {
   try {
@@ -47,21 +52,49 @@ export async function POST(req: NextRequest) {
       },
     });
 
-    // 2. Create lead record
-    await prisma.lead.create({
+    // 2. Create lead record with auto-scoring + enrichment
+    const leadScore = scoreLeadFromSubmission({
+      hasPhone: !!phone,
+      hasMessage: !!message,
+      hasEmail: true,
+      enrolledInFlow: false,
+    });
+    const enrichment = enrichFromEmail(email);
+
+    const lead = await prisma.lead.create({
       data: {
         userId,
         name: name ?? email.split("@")[0],
-        niche: site.name,
+        niche: enrichment.industry ?? site.name,
         location: "",
         email,
         phone: phone ?? null,
-        notes: message ?? null,
+        notes: [
+          message,
+          enrichment.isBusinessEmail ? `Business email (${enrichment.companyGuess ?? enrichment.domain})` : null,
+          enrichment.industry ? `Industry: ${enrichment.industry}` : null,
+        ].filter(Boolean).join("\n") || null,
         status: "new",
+        score: leadScore.score,
+        verdict: leadScore.grade,
+        summary: leadScore.signals.join(". "),
       },
-    }).catch(() => {
-      // Lead creation is non-blocking
-    });
+    }).catch(() => null);
+
+    // 2b. Fire automation triggers
+    processTrigger({
+      userId,
+      event: "form.submitted",
+      data: { email, name, contactId: contact.id, leadId: lead?.id, siteId: site.id },
+    }).catch(() => {});
+
+    if (leadScore.grade === "hot") {
+      processTrigger({
+        userId,
+        event: "lead.scored_hot",
+        data: { email, name, contactId: contact.id, leadId: lead?.id },
+      }).catch(() => {});
+    }
 
     // 3. Find active email flows for this site and auto-enroll
     // Look for flows created from the same deployment
@@ -107,7 +140,17 @@ export async function POST(req: NextRequest) {
       data: { views: { increment: 1 } }, // Using views as a proxy for submissions tracking
     }).catch(() => {});
 
-    // 5. Track event
+    // 5. Notify owner + fire webhook
+    notifyNewLead(userId, name ?? email.split("@")[0], site.name).catch(() => {});
+    fireLeadWebhook(userId, {
+      name: name ?? email.split("@")[0],
+      email,
+      phone: phone ?? undefined,
+      source: site.name,
+      score: leadScore.score,
+    }).catch(() => {});
+
+    // 6. Track event
     await prisma.himalayaFunnelEvent.create({
       data: {
         userId,
@@ -119,6 +162,7 @@ export async function POST(req: NextRequest) {
           hasEmail: true,
           hasPhone: !!phone,
           enrolledInFlow: enrollmentResult?.ok ?? false,
+          enrollmentStatus: enrollmentResult?.status ?? null,
         },
       },
     }).catch(() => {});
@@ -127,6 +171,8 @@ export async function POST(req: NextRequest) {
       ok: true,
       contactId: contact.id,
       enrolled: enrollmentResult?.ok ?? false,
+      enrollmentStatus: enrollmentResult?.status ?? null,
+      warning: enrollmentResult?.warning,
     });
   } catch (err) {
     console.error("Form submission error:", err);

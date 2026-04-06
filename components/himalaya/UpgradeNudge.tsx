@@ -88,9 +88,9 @@ export default function UpgradeNudge({ context, onDismiss }: { context: NudgeCon
   const Icon = config.icon;
 
   return (
-    <div className={`bg-gradient-to-br ${config.color} border rounded-2xl p-5`}>
-      <div className="flex items-start gap-4">
-        <div className="w-10 h-10 rounded-xl bg-white/[0.06] flex items-center justify-center shrink-0">
+    <div className={`rounded-2xl border bg-gradient-to-br p-4 sm:p-5 ${config.color}`}>
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-start">
+        <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-white/[0.06]">
           <Icon className="w-5 h-5 text-white/50" />
         </div>
         <div className="flex-1 min-w-0">
@@ -101,18 +101,18 @@ export default function UpgradeNudge({ context, onDismiss }: { context: NudgeCon
             <p className="text-[10px] text-white/25 italic mb-3">{config.urgency}</p>
           )}
 
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col gap-2 sm:flex-row sm:items-center sm:gap-3">
             <Link
               href="/himalaya/upgrade"
               onClick={() => track.upgradeClick(context)}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 px-4 py-2 text-xs font-bold text-white transition hover:opacity-90"
             >
               {config.cta} <ArrowRight className="w-3 h-3" />
             </Link>
             {onDismiss && (
               <button
                 onClick={() => { setDismissed(true); onDismiss(); }}
-                className="text-[10px] text-white/20 hover:text-white/40 transition"
+                className="text-left text-[10px] text-white/20 transition hover:text-white/40"
               >
                 maybe later
               </button>

@@ -31,7 +31,13 @@ export async function enrollContact(input: {
   contactEmail: string;
   userId: string;
   contactName?: string;
-}): Promise<{ ok: boolean; enrollmentId?: string; error?: string }> {
+}): Promise<{
+  ok: boolean;
+  enrollmentId?: string;
+  error?: string;
+  status?: "active" | "paused" | "completed" | "failed";
+  warning?: string;
+}> {
   try {
     const flow = await prisma.emailFlow.findUnique({ where: { id: input.flowId } });
     if (!flow) return { ok: false, error: "Flow not found" };
@@ -100,7 +106,23 @@ export async function enrollContact(input: {
     // Process immediately (send first email if the next node is an email)
     await processEnrollment(enrollment.id);
 
-    return { ok: true, enrollmentId: enrollment.id };
+    const updatedEnrollment = await prisma.emailFlowEnrollment.findUnique({
+      where: { id: enrollment.id },
+      select: { status: true, errors: true },
+    });
+
+    const latestError = Array.isArray(updatedEnrollment?.errors)
+      ? updatedEnrollment.errors[updatedEnrollment.errors.length - 1]
+      : undefined;
+
+    return {
+      ok: true,
+      enrollmentId: enrollment.id,
+      status: (updatedEnrollment?.status as "active" | "paused" | "completed" | "failed" | undefined) ?? "active",
+      warning: typeof latestError === "string" && updatedEnrollment?.status === "failed"
+        ? latestError
+        : undefined,
+    };
   } catch (err) {
     return { ok: false, error: err instanceof Error ? err.message : "Enrollment failed" };
   }
@@ -113,7 +135,9 @@ export async function processEnrollment(enrollmentId: string): Promise<void> {
     include: { flow: true },
   });
 
-  if (!enrollment || enrollment.status !== "active") return;
+  if (!enrollment || (enrollment.status !== "active" && enrollment.status !== "paused")) {
+    return;
+  }
 
   const flow = enrollment.flow;
   const nodes = flow.nodes as EmailNode[];
@@ -144,6 +168,11 @@ export async function processEnrollment(enrollmentId: string): Promise<void> {
       to: enrollment.contactEmail,
       subject: currentNode.data.subject,
       html: wrapEmailHtml(personalizedBody, currentNode.data.previewText),
+      tags: [
+        { name: "flowId", value: flow.id },
+        { name: "nodeId", value: currentNode.id },
+        { name: "enrollmentId", value: enrollment.id },
+      ],
     });
 
     if (result.ok) {
@@ -155,16 +184,29 @@ export async function processEnrollment(enrollmentId: string): Promise<void> {
 
       await prisma.emailFlowEnrollment.update({
         where: { id: enrollmentId },
-        data: { emailsSent: { increment: 1 } },
+        data: {
+          status: "active",
+          emailsSent: { increment: 1 },
+          errors: [],
+          resumeAfter: null,
+        },
       });
     } else {
-      // Log error but continue
+      // Stop progression on delivery failure so the enrollment reflects reality.
       const errors = (enrollment.errors as string[]) ?? [];
-      errors.push(`${new Date().toISOString()}: ${result.error}`);
+      const errorMessage = `${new Date().toISOString()}: ${result.error ?? "Send failed"}`;
+      errors.push(errorMessage);
+      const failureState = classifySendFailure(result.error);
       await prisma.emailFlowEnrollment.update({
         where: { id: enrollmentId },
-        data: { errors: errors.slice(-10) }, // keep last 10 errors
+        data: {
+          status: failureState.status,
+          errors: errors.slice(-10),
+          resumeAfter: failureState.resumeAfter,
+          currentNodeId: currentNode.id,
+        },
       });
+      return;
     }
 
     // Find next node
@@ -248,13 +290,21 @@ export async function processAllPendingEnrollments(): Promise<{ processed: numbe
   let processed = 0;
   let errors = 0;
 
-  // Find enrollments that are active and past their resume time
+  // Find enrollments that are ready to run now.
   const pendingEnrollments = await prisma.emailFlowEnrollment.findMany({
     where: {
-      status: "active",
       OR: [
-        { resumeAfter: null },
-        { resumeAfter: { lte: now } },
+        {
+          status: "active",
+          OR: [
+            { resumeAfter: null },
+            { resumeAfter: { lte: now } },
+          ],
+        },
+        {
+          status: "paused",
+          resumeAfter: { lte: now },
+        },
       ],
     },
     take: 100, // Process in batches
@@ -272,6 +322,95 @@ export async function processAllPendingEnrollments(): Promise<{ processed: numbe
   return { processed, errors };
 }
 
+export async function retryFailedEnrollmentsForFlow(input: {
+  flowId: string;
+  userId: string;
+  limit?: number;
+}): Promise<{ retried: number; remainingFailed: number }> {
+  const failedEnrollments = await prisma.emailFlowEnrollment.findMany({
+    where: {
+      flowId: input.flowId,
+      userId: input.userId,
+      status: "failed",
+    },
+    orderBy: { updatedAt: "asc" },
+    take: input.limit ?? 25,
+    select: { id: true },
+  });
+
+  let retried = 0;
+
+  for (const enrollment of failedEnrollments) {
+    await prisma.emailFlowEnrollment.update({
+      where: { id: enrollment.id },
+      data: {
+        status: "active",
+        resumeAfter: null,
+      },
+    });
+
+    try {
+      await processEnrollment(enrollment.id);
+      retried++;
+    } catch {
+      // Keep going so one bad enrollment does not block the rest.
+    }
+  }
+
+  const remainingFailed = await prisma.emailFlowEnrollment.count({
+    where: {
+      flowId: input.flowId,
+      userId: input.userId,
+      status: "failed",
+    },
+  });
+
+  return { retried, remainingFailed };
+}
+
+export async function retrySingleEnrollment(input: {
+  enrollmentId: string;
+  flowId: string;
+  userId: string;
+}): Promise<{ ok: boolean; status?: string }> {
+  const enrollment = await prisma.emailFlowEnrollment.findFirst({
+    where: {
+      id: input.enrollmentId,
+      flowId: input.flowId,
+      userId: input.userId,
+    },
+    select: {
+      id: true,
+      status: true,
+    },
+  });
+
+  if (!enrollment) {
+    return { ok: false };
+  }
+
+  await prisma.emailFlowEnrollment.update({
+    where: { id: enrollment.id },
+    data: {
+      status: "active",
+      resumeAfter: null,
+    },
+  });
+
+  try {
+    await processEnrollment(enrollment.id);
+  } catch {
+    // Let the persisted enrollment state tell the truth about the retry result.
+  }
+
+  const updatedEnrollment = await prisma.emailFlowEnrollment.findUnique({
+    where: { id: enrollment.id },
+    select: { status: true },
+  });
+
+  return { ok: true, status: updatedEnrollment?.status ?? "active" };
+}
+
 // ── Helpers ────────────────────────────────────────────────────────────
 
 function getDelayMs(value: number, unit: string): number {
@@ -281,6 +420,32 @@ function getDelayMs(value: number, unit: string): number {
     case "days": return value * 24 * 60 * 60 * 1000;
     default: return value * 24 * 60 * 60 * 1000;
   }
+}
+
+function classifySendFailure(error?: string): {
+  status: "paused" | "failed";
+  resumeAfter: Date | null;
+} {
+  const message = (error ?? "").toLowerCase();
+
+  const isConfigOrPolicyError =
+    message.includes("verify a domain") ||
+    message.includes("testing emails") ||
+    message.includes("your own email address") ||
+    message.includes("no email api key configured") ||
+    message.includes("resend_api_key not set") ||
+    message.includes("from address") ||
+    message.includes("sender");
+
+  if (isConfigOrPolicyError) {
+    return { status: "failed", resumeAfter: null };
+  }
+
+  // Retry transient send failures after a short backoff.
+  return {
+    status: "paused",
+    resumeAfter: new Date(Date.now() + 15 * 60 * 1000),
+  };
 }
 
 function personalizeEmail(body: string, email: string): string {

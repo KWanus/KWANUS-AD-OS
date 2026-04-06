@@ -264,10 +264,26 @@ export default function EmailTemplatesPage() {
     void load();
   }, []);
 
-  function handleUse(t: EmailTemplate) {
+  async function handleUse(t: EmailTemplate) {
     setUsedId(t.id);
-    // Route user to create a new flow pre-seeded with this template
-    window.location.href = `/emails?createFlow=1&templateId=${t.id}`;
+    // One-click deploy: create the flow directly from template API
+    try {
+      const res = await fetch("/api/email-flows/from-template", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ template: t.id }),
+      });
+      const data = await res.json() as { ok: boolean; flow?: { id: string; name: string } };
+      if (data.ok && data.flow) {
+        // Go directly to the new flow
+        window.location.href = `/emails/flows/${data.flow.id}`;
+      } else {
+        // Fallback to old method
+        window.location.href = `/emails?createFlow=1&templateId=${t.id}`;
+      }
+    } catch {
+      window.location.href = `/emails?createFlow=1&templateId=${t.id}`;
+    }
   }
 
   const categories = ["all", ...Array.from(new Set(templates.map((t) => t.category)))];

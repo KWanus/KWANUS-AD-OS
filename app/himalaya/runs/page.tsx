@@ -11,23 +11,24 @@ export default function HimalayaRunsPage() {
     <div className="min-h-screen bg-[#050a14] text-white">
       <AppNav />
       <HimalayaNav />
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
-        <div className="flex items-center justify-between mb-6">
+      <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
+        <div className="mb-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h1 className="text-xl font-black text-white mb-1">Run History</h1>
-            <p className="text-sm text-white/30">Browse your previous Himalaya runs</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.24em] text-white/20">History</p>
+            <h1 className="mt-1 text-xl font-black text-white">Run History</h1>
+            <p className="mt-1 text-sm text-white/30">Browse, revisit, and compare your previous Himalaya runs.</p>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="grid grid-cols-1 gap-2 sm:flex sm:items-center">
             <Link
               href="/himalaya/templates"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.06] hover:border-white/[0.15] transition text-xs font-semibold text-white/50 hover:text-white/80"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-xs font-semibold text-white/50 transition hover:border-white/[0.15] hover:bg-white/[0.06] hover:text-white/80"
             >
               <Bookmark className="w-3.5 h-3.5" />
               Templates
             </Link>
             <Link
               href="/himalaya/runs/compare"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.06] hover:border-white/[0.15] transition text-xs font-semibold text-white/50 hover:text-white/80"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-xs font-semibold text-white/50 transition hover:border-white/[0.15] hover:bg-white/[0.06] hover:text-white/80"
             >
               <GitCompare className="w-3.5 h-3.5" />
               Compare

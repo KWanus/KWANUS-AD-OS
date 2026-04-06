@@ -688,6 +688,24 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                     Open Public Site
                   </a>
                 </div>
+                {/* QR Code */}
+                <div className="mt-4 flex items-center gap-4 pt-4 border-t border-cyan-500/15">
+                  <img
+                    src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(getPublicUrl(site))}&format=png&margin=6`}
+                    alt="QR Code"
+                    className="w-20 h-20 rounded-lg bg-white p-1"
+                  />
+                  <div>
+                    <p className="text-[10px] text-cyan-200/60">Scan to visit your site</p>
+                    <a
+                      href={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(getPublicUrl(site))}&format=png&margin=10`}
+                      download={`${site.slug}-qr.png`}
+                      className="text-[10px] text-cyan-300 hover:underline mt-1 inline-block"
+                    >
+                      Download QR Code
+                    </a>
+                  </div>
+                </div>
               </div>
             </div>
           </div>

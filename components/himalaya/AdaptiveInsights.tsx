@@ -65,19 +65,19 @@ export default function AdaptiveInsights({ mode }: Props) {
   if (insights.length === 0 || dismissed) return null;
 
   return (
-    <div className="bg-gradient-to-br from-purple-500/[0.03] to-cyan-500/[0.03] border border-purple-500/10 rounded-2xl p-4">
-      <div className="flex items-center justify-between mb-2">
+    <div className="rounded-2xl border border-purple-500/10 bg-gradient-to-br from-purple-500/[0.05] via-purple-500/[0.025] to-cyan-500/[0.04] p-4 sm:p-5">
+      <div className="mb-3 flex items-start justify-between gap-3">
         <div className="flex items-center gap-2">
           <TrendingUp className="w-3.5 h-3.5 text-purple-400/50" />
           <span className="text-[10px] font-black uppercase tracking-widest text-white/25">Based on Your History</span>
         </div>
-        <button onClick={() => setDismissed(true)} className="text-[10px] text-white/15 hover:text-white/30 transition">
+        <button onClick={() => setDismissed(true)} className="shrink-0 text-[10px] text-white/15 transition hover:text-white/30">
           dismiss
         </button>
       </div>
-      <ul className="space-y-1.5">
+      <ul className="space-y-2">
         {insights.map((insight, i) => (
-          <li key={i} className="flex items-start gap-2 text-xs text-white/40">
+          <li key={i} className="flex items-start gap-2 rounded-xl border border-white/[0.05] bg-black/20 px-3 py-3 text-xs text-white/40">
             <Lightbulb className="w-3 h-3 text-purple-400/40 shrink-0 mt-0.5" />
             {insight}
           </li>
@@ -85,7 +85,7 @@ export default function AdaptiveInsights({ mode }: Props) {
       </ul>
       <Link
         href="/himalaya/upgrade"
-        className="inline-flex items-center gap-1.5 mt-3 text-[10px] font-semibold text-purple-400/40 hover:text-purple-400/70 transition"
+        className="mt-3 inline-flex items-center gap-1.5 text-[10px] font-semibold text-purple-400/40 transition hover:text-purple-400/70"
       >
         <Zap className="w-2.5 h-2.5" /> These insights get sharper with more data — upgrade for full tracking
       </Link>

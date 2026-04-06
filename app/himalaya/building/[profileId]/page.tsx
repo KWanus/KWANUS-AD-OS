@@ -110,10 +110,10 @@ export default function HimalayaBuildingPage({ params }: { params: Promise<{ pro
     <div className="min-h-screen bg-[#050a14] text-white">
       <AppNav />
       <HimalayaNav />
-      <main className="max-w-lg mx-auto px-4 sm:px-6 py-16">
+      <main className="mx-auto max-w-lg px-4 py-16 sm:px-6">
         {/* Header */}
-        <div className="text-center mb-10">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center mx-auto mb-4">
+        <div className="mb-10 rounded-3xl border border-cyan-500/12 bg-gradient-to-br from-cyan-500/[0.06] via-transparent to-purple-500/[0.05] px-5 py-8 text-center">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600">
             <Mountain className="w-7 h-7 text-white" />
           </div>
           <h1 className="text-xl font-black text-white mb-2">
@@ -139,7 +139,7 @@ export default function HimalayaBuildingPage({ params }: { params: Promise<{ pro
         </div>
 
         {/* Stages */}
-        <div className="space-y-3">
+        <div className="space-y-3 rounded-3xl border border-white/[0.06] bg-gradient-to-br from-white/[0.03] via-white/[0.015] to-transparent p-4 sm:p-5">
           {stages.map((stage) => (
             <div
               key={stage.name}
@@ -169,7 +169,7 @@ export default function HimalayaBuildingPage({ params }: { params: Promise<{ pro
 
         {/* Error */}
         {error && (
-          <div className="mt-6 bg-red-500/5 border border-red-500/15 rounded-xl p-4 flex items-start gap-3">
+          <div className="mt-6 flex items-start gap-3 rounded-xl border border-red-500/15 bg-red-500/5 p-4">
             <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
             <div>
               <p className="text-sm text-red-300">{error}</p>

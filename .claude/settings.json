@@ -3,7 +3,10 @@
     "allow": [
       "Bash(ls -la /Users/kwanus/KWANUS-AD-OS/.env*)",
       "Read(//Users/kwanus/KWANUS-AD-OS/app/projects/%5Bid%5D//**)",
-      "Read(//Users/kwanus/KWANUS-AD-OS/app/projects/%5Bid%5D/**)"
+      "Read(//Users/kwanus/KWANUS-AD-OS/app/projects/%5Bid%5D/**)",
+      "Bash(grep -n \"slug\\\\|url\\\\|deployed\\\\|site.*live\\\\|go.*live\" /Users/kwanus/KWANUS-AD-OS/app/websites/[id]/page.tsx)",
+      "Bash(node -e \":*)",
+      "Bash(brew install:*)"
     ]
   }
 }

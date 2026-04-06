@@ -66,6 +66,38 @@ export async function PATCH(
       },
     });
 
+    // Auto-fill SEO + notify on publish
+    if (body.published === true) {
+      // Notify
+      try {
+        const { notifySitePublished } = await import("@/lib/notifications/notify");
+        const site = await prisma.site.findFirst({ where: { id, userId: user.id }, select: { name: true, slug: true } });
+        if (site) {
+          notifySitePublished(user.id, site.name, `/s/${site.slug}`).catch(() => {});
+        }
+      } catch { /* non-blocking */ }
+      try {
+        const { generateSeoFromBlocks, shouldAutoFillSeo } = await import("@/lib/sites/autoSeo");
+        const site = await prisma.site.findFirst({ where: { id, userId: user.id } });
+        const pages = await prisma.sitePage.findMany({ where: { siteId: id } });
+        for (const page of pages) {
+          if (shouldAutoFillSeo(page)) {
+            const blocks = (page.blocks as { type: string; props: Record<string, unknown> }[]) ?? [];
+            const seo = generateSeoFromBlocks(site?.name ?? "", blocks as any);
+            await prisma.sitePage.update({
+              where: { id: page.id },
+              data: {
+                ...(!page.seoTitle?.trim() && { seoTitle: seo.title }),
+                ...(!page.seoDesc?.trim() && { seoDesc: seo.description }),
+              },
+            });
+          }
+        }
+      } catch {
+        // Auto-SEO is non-blocking
+      }
+    }
+
     return NextResponse.json({ ok: true });
   } catch (err) {
     console.error("Site PATCH:", err);

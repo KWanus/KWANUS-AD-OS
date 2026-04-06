@@ -57,16 +57,16 @@ export default function StrategyReasoning({ vm }: { vm: HimalayaResultsViewModel
   if (reasons.length === 0) return null;
 
   return (
-    <div className="bg-white/[0.02] border border-white/[0.07] rounded-2xl p-5">
-      <div className="flex items-center gap-2 mb-3">
+    <div className="rounded-2xl border border-white/[0.07] bg-gradient-to-br from-white/[0.03] via-white/[0.02] to-transparent p-4 sm:p-5">
+      <div className="mb-3 flex items-center gap-2">
         <Lightbulb className="w-3.5 h-3.5 text-amber-400/50" />
         <h2 className="text-[10px] font-black uppercase tracking-widest text-white/30">
           Why This Direction
         </h2>
       </div>
-      <ul className="space-y-2">
+      <ul className="space-y-2.5">
         {reasons.map((reason, i) => (
-          <li key={i} className="flex items-start gap-2.5">
+          <li key={i} className="flex items-start gap-2.5 rounded-xl border border-white/[0.05] bg-black/20 px-3 py-3">
             <span className="text-[10px] font-black text-amber-400/40 shrink-0 mt-0.5">{i + 1}.</span>
             <p className="text-xs text-white/50 leading-relaxed">{reason}</p>
           </li>

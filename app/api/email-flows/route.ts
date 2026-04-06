@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { isDatabaseUnavailable } from "@/lib/db/runtime";
+import { getEmailDeliveryAlertSummary } from "@/lib/email/deliveryAlerts";
 
 export async function GET(_req: NextRequest) {
   try {
@@ -10,15 +11,27 @@ export async function GET(_req: NextRequest) {
     if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
     const user = await getOrCreateUser();
     if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
-    const flows = await prisma.emailFlow.findMany({
-      where: { userId: user.id },
-      orderBy: { updatedAt: "desc" },
-    });
-    return NextResponse.json({ ok: true, flows });
+    const [flows, emailDeliveryAlert] = await Promise.all([
+      prisma.emailFlow.findMany({
+        where: { userId: user.id },
+        orderBy: { updatedAt: "desc" },
+      }),
+      getEmailDeliveryAlertSummary(user.id),
+    ]);
+    return NextResponse.json({ ok: true, flows, emailDeliveryAlert });
   } catch (err) {
     console.error("EmailFlows GET:", err);
     if (isDatabaseUnavailable(err)) {
-      return NextResponse.json({ ok: true, flows: [], databaseUnavailable: true });
+      return NextResponse.json({
+        ok: true,
+        flows: [],
+        databaseUnavailable: true,
+        emailDeliveryAlert: {
+          failedEnrollments: 0,
+          latestError: null,
+          latestFailedAt: null,
+        },
+      });
     }
     return NextResponse.json({ ok: false, error: "Failed to load flows" }, { status: 500 });
   }

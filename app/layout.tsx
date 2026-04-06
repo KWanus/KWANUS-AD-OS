@@ -7,6 +7,7 @@ import KeyboardShortcuts from "@/components/KeyboardShortcuts";
 import GlobalSearch from "@/components/GlobalSearch";
 import RecentPageTracker from "@/components/RecentPageTracker";
 import ScrollToTop from "@/components/ScrollToTop";
+import ThemeProvider from "@/lib/theme/ThemeProvider";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -24,8 +25,13 @@ export default function RootLayout({
 }>) {
   return (
     <ClerkProvider>
-      <html lang="en">
-        <body className={`${inter.variable} ${outfit.variable} antialiased bg-[#050a14] text-white`}>
+      <html lang="en" data-theme="himalaya" suppressHydrationWarning>
+        <head>
+          {/* Prevent flash of wrong theme */}
+          <script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem('himalaya-theme');if(t&&['dark','light','himalaya'].includes(t))document.documentElement.setAttribute('data-theme',t)}catch(e){}` }} />
+        </head>
+        <body className={`${inter.variable} ${outfit.variable} antialiased`}>
+          <ThemeProvider>
           {children}
           <GlobalCopilotDock />
           <KeyboardShortcuts />
@@ -33,6 +39,7 @@ export default function RootLayout({
           <RecentPageTracker />
           <ScrollToTop />
           <Toaster position="bottom-right" theme="dark" richColors />
+          </ThemeProvider>
         </body>
       </html>
     </ClerkProvider>

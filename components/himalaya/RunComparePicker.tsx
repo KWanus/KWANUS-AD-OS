@@ -42,7 +42,7 @@ export default function RunComparePicker({ onSelect }: Props) {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center py-16">
+      <div className="flex items-center justify-center rounded-3xl border border-white/[0.06] bg-gradient-to-br from-white/[0.03] via-white/[0.015] to-transparent py-16">
         <Loader2 className="w-5 h-5 text-white/20 animate-spin" />
       </div>
     );
@@ -50,34 +50,49 @@ export default function RunComparePicker({ onSelect }: Props) {
 
   if (runs.length < 2) {
     return (
-      <div className="text-center py-16">
+      <div className="rounded-3xl border border-white/[0.06] bg-gradient-to-br from-white/[0.03] via-white/[0.015] to-transparent py-16 text-center">
         <p className="text-sm text-white/30">You need at least 2 runs to compare</p>
       </div>
     );
   }
 
   return (
-    <div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-6">
+    <div className="rounded-3xl border border-white/[0.06] bg-gradient-to-br from-white/[0.03] via-white/[0.015] to-transparent p-4 sm:p-5">
+      <div className="mb-4 grid grid-cols-1 gap-3 rounded-2xl border border-white/[0.05] bg-black/20 p-4 sm:grid-cols-3">
+        <div>
+          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/20">Step 1</p>
+          <p className="mt-1 text-sm font-bold text-white/65">Pick your baseline</p>
+        </div>
+        <div>
+          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/20">Step 2</p>
+          <p className="mt-1 text-sm font-bold text-white/65">Choose the run to compare against it</p>
+        </div>
+        <div>
+          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/20">Step 3</p>
+          <p className="mt-1 text-sm font-bold text-white/65">Review score, priorities, assets, and notes side by side</p>
+        </div>
+      </div>
+
+      <div className="mb-6 grid grid-cols-1 gap-6 sm:grid-cols-2">
         {/* Run A picker */}
         <div>
-          <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">Run A</p>
+          <p className="mb-3 text-[10px] font-black uppercase tracking-widest text-white/30">Run A</p>
           <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
             {runs.map((run) => (
               <button
                 key={run.id}
                 onClick={() => setSelectedA(run.id)}
                 disabled={run.id === selectedB}
-                className={`w-full text-left p-3 rounded-xl border transition text-xs ${
+                className={`w-full rounded-xl border p-3 text-left text-xs transition ${
                   selectedA === run.id
-                    ? "bg-cyan-500/10 border-cyan-500/20"
+                    ? "border-cyan-500/20 bg-cyan-500/10"
                     : run.id === selectedB
-                      ? "bg-white/[0.01] border-white/[0.03] opacity-30"
-                      : "bg-white/[0.02] border-white/[0.06] hover:border-white/[0.12]"
+                      ? "border-white/[0.03] bg-white/[0.01] opacity-30"
+                      : "border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12]"
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <span className="text-white/60 font-semibold truncate">{run.title || run.inputUrl}</span>
+                <div className="flex items-start justify-between gap-3">
+                  <span className="min-w-0 flex-1 text-white/60 font-semibold sm:truncate">{run.title || run.inputUrl}</span>
                   {run.score !== null && <span className={`font-black ${SCORE_COLOR(run.score)}`}>{run.score}</span>}
                 </div>
                 <div className="text-[10px] text-white/25 mt-1">{run.mode} · {run.verdict}</div>
@@ -88,23 +103,23 @@ export default function RunComparePicker({ onSelect }: Props) {
 
         {/* Run B picker */}
         <div>
-          <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">Run B</p>
+          <p className="mb-3 text-[10px] font-black uppercase tracking-widest text-white/30">Run B</p>
           <div className="space-y-2 max-h-80 overflow-y-auto pr-1">
             {runs.map((run) => (
               <button
                 key={run.id}
                 onClick={() => setSelectedB(run.id)}
                 disabled={run.id === selectedA}
-                className={`w-full text-left p-3 rounded-xl border transition text-xs ${
+                className={`w-full rounded-xl border p-3 text-left text-xs transition ${
                   selectedB === run.id
-                    ? "bg-purple-500/10 border-purple-500/20"
+                    ? "border-purple-500/20 bg-purple-500/10"
                     : run.id === selectedA
-                      ? "bg-white/[0.01] border-white/[0.03] opacity-30"
-                      : "bg-white/[0.02] border-white/[0.06] hover:border-white/[0.12]"
+                      ? "border-white/[0.03] bg-white/[0.01] opacity-30"
+                      : "border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12]"
                 }`}
               >
-                <div className="flex items-center justify-between">
-                  <span className="text-white/60 font-semibold truncate">{run.title || run.inputUrl}</span>
+                <div className="flex items-start justify-between gap-3">
+                  <span className="min-w-0 flex-1 text-white/60 font-semibold sm:truncate">{run.title || run.inputUrl}</span>
                   {run.score !== null && <span className={`font-black ${SCORE_COLOR(run.score)}`}>{run.score}</span>}
                 </div>
                 <div className="text-[10px] text-white/25 mt-1">{run.mode} · {run.verdict}</div>
@@ -117,7 +132,7 @@ export default function RunComparePicker({ onSelect }: Props) {
       <button
         onClick={handleCompare}
         disabled={!selectedA || !selectedB}
-        className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-sm font-bold text-cyan-400 hover:bg-cyan-500/20 transition disabled:opacity-30 disabled:cursor-not-allowed"
+        className="inline-flex items-center gap-2 rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-5 py-2.5 text-sm font-bold text-cyan-400 transition hover:bg-cyan-500/20 disabled:cursor-not-allowed disabled:opacity-30"
       >
         <GitCompare className="w-4 h-4" />
         Compare Runs

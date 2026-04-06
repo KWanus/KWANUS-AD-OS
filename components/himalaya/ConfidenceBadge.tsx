@@ -70,21 +70,21 @@ export default function ConfidenceBadge({ vm }: { vm: HimalayaResultsViewModel }
   const hasNotes = vm.notes.length > 0;
 
   return (
-    <div className={`rounded-xl border p-3 ${config.bg}`}>
-      <div className="flex items-center gap-2 mb-1">
+    <div className={`rounded-xl border p-3 sm:p-4 ${config.bg}`}>
+      <div className="mb-1 flex items-center gap-2">
         <Icon className={`w-3.5 h-3.5 ${config.color}`} />
         <span className={`text-[10px] font-black uppercase tracking-widest ${config.color}`}>
           {config.label}
         </span>
       </div>
-      <p className="text-[11px] text-white/35 leading-relaxed">{config.detail}</p>
+      <p className="text-[11px] leading-relaxed text-white/35">{config.detail}</p>
       {metric && (
-        <p className="text-[11px] text-white/30 leading-relaxed mt-1">{metric}</p>
+        <p className="mt-1 text-[11px] leading-relaxed text-white/30">{metric}</p>
       )}
       {hasNotes && (
-        <p className="text-[10px] text-white/20 mt-1">{vm.notes.length} note{vm.notes.length > 1 ? "s" : ""} attached</p>
+        <p className="mt-1 text-[10px] text-white/20">{vm.notes.length} note{vm.notes.length > 1 ? "s" : ""} attached</p>
       )}
-      <p className="text-[9px] text-white/15 mt-2">Built from your inputs and structured analysis</p>
+      <p className="mt-2 text-[9px] text-white/15">Built from your inputs and structured analysis</p>
     </div>
   );
 }

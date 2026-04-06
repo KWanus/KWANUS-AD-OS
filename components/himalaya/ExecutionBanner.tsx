@@ -28,11 +28,12 @@ export default function ExecutionBanner({ runId }: Props) {
   // No execution started yet → show "Start Execution" CTA
   if (!state || !state.startedAt) {
     return (
-      <div className="bg-gradient-to-r from-cyan-500/[0.06] to-purple-500/[0.06] border border-cyan-500/15 rounded-2xl p-5">
+      <div className="rounded-2xl border border-cyan-500/15 bg-gradient-to-br from-cyan-500/[0.08] via-transparent to-purple-500/[0.06] p-5">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <h3 className="text-sm font-bold text-white/70">Ready to execute?</h3>
-            <p className="text-xs text-white/35 mt-0.5">Turn your results into a step-by-step action plan</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-cyan-200/70">Execution</p>
+            <h3 className="mt-2 text-sm font-black text-white">Ready to execute?</h3>
+            <p className="mt-1 text-xs text-white/40">Turn your results into a step-by-step action plan</p>
           </div>
           <Link
             href={`/himalaya/run/${runId}/execute`}
@@ -54,7 +55,7 @@ export default function ExecutionBanner({ runId }: Props) {
   // Execution complete
   if (allDone) {
     return (
-      <div className="bg-emerald-500/[0.04] border border-emerald-500/15 rounded-2xl p-4">
+      <div className="rounded-2xl border border-emerald-500/15 bg-gradient-to-br from-emerald-500/[0.08] to-transparent p-4">
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Trophy className="w-5 h-5 text-emerald-400" />
@@ -76,10 +77,11 @@ export default function ExecutionBanner({ runId }: Props) {
 
   // Execution in progress
   return (
-    <div className="bg-white/[0.02] border border-white/[0.07] rounded-2xl p-4">
+    <div className="rounded-2xl border border-white/[0.07] bg-gradient-to-br from-white/[0.03] to-white/[0.015] p-4">
       <div className="flex items-center justify-between gap-4 mb-3">
         <div>
-          <h3 className="text-sm font-bold text-white/60">{completed} of {total} steps completed</h3>
+          <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/25">Execution</p>
+          <h3 className="mt-2 text-sm font-black text-white/70">{completed} of {total} steps completed</h3>
           <p className="text-[10px] text-white/25">Continue where you left off</p>
         </div>
         <Link

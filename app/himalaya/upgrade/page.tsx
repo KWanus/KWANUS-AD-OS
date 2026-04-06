@@ -136,14 +136,14 @@ export default function HimalayaUpgradePage() {
     <div className="min-h-screen bg-[#050a14] text-white">
       <AppNav />
       <HimalayaNav />
-      <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
-        <Link href="/himalaya" className="inline-flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition mb-8">
+      <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
+        <Link href="/himalaya" className="mb-8 inline-flex items-center gap-1.5 text-xs text-white/30 transition hover:text-white/60">
           <ArrowLeft className="w-3.5 h-3.5" /> Back to Himalaya
         </Link>
 
         {/* Hero */}
-        <div className="text-center mb-10">
-          <Mountain className="w-12 h-12 text-cyan-400 mx-auto mb-4" />
+        <div className="mb-10 rounded-3xl border border-cyan-500/12 bg-gradient-to-br from-cyan-500/[0.06] via-transparent to-purple-500/[0.05] px-5 py-8 text-center sm:px-8 sm:py-10">
+          <Mountain className="mx-auto mb-4 h-12 w-12 text-cyan-400" />
           <h1 className="text-2xl sm:text-3xl font-black text-white mb-3">
             Don't stop at ideas.<br className="hidden sm:block" />
             Execute and improve until it works.
@@ -155,19 +155,19 @@ export default function HimalayaUpgradePage() {
 
         {/* Success/cancel banners */}
         {success && (
-          <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-2xl p-5 mb-8 flex items-center gap-4">
+          <div className="mb-8 flex flex-col gap-4 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-5 sm:flex-row sm:items-center">
             <CheckCircle className="w-6 h-6 text-emerald-400 shrink-0" />
             <div>
               <h3 className="text-sm font-bold text-emerald-300">You're upgraded!</h3>
               <p className="text-xs text-white/40">Full access is now active. Go build something great.</p>
             </div>
-            <Link href="/himalaya" className="ml-auto inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-500/20 text-xs font-bold text-emerald-300 hover:bg-emerald-500/30 transition shrink-0">
+            <Link href="/himalaya" className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-emerald-500/20 px-4 py-2 text-xs font-bold text-emerald-300 transition hover:bg-emerald-500/30 sm:ml-auto sm:shrink-0">
               Start Building <Rocket className="w-3 h-3" />
             </Link>
           </div>
         )}
         {canceled && (
-          <div className="bg-amber-500/5 border border-amber-500/15 rounded-2xl p-5 mb-8 flex items-center gap-4">
+          <div className="mb-8 flex items-center gap-4 rounded-2xl border border-amber-500/15 bg-amber-500/5 p-5">
             <XCircle className="w-5 h-5 text-amber-400/60 shrink-0" />
             <div>
               <p className="text-xs text-white/40">Checkout was canceled. No charges were made. You can upgrade anytime.</p>
@@ -176,7 +176,7 @@ export default function HimalayaUpgradePage() {
         )}
 
         {/* The Loop — visual proof */}
-        <div className="mb-12">
+        <div className="mb-12 rounded-3xl border border-white/[0.06] bg-gradient-to-br from-white/[0.03] via-white/[0.015] to-transparent p-5 sm:p-6">
           <div className="flex items-center justify-center gap-1 sm:gap-2 flex-wrap">
             {LOOP_STEPS.map((step, i) => (
               <div key={i} className="flex items-center gap-1 sm:gap-2">
@@ -205,10 +205,10 @@ export default function HimalayaUpgradePage() {
             return (
               <div
                 key={plan.id}
-                className={`rounded-2xl border p-6 relative ${
+                className={`relative rounded-2xl border p-6 ${
                   plan.popular
                     ? "bg-gradient-to-br from-cyan-500/[0.08] to-purple-500/[0.06] border-cyan-500/25"
-                    : "bg-white/[0.02] border-white/[0.07]"
+                    : "bg-gradient-to-br from-white/[0.03] via-white/[0.02] to-transparent border-white/[0.07]"
                 }`}
               >
                 {plan.popular && (
@@ -280,7 +280,7 @@ export default function HimalayaUpgradePage() {
         )}
 
         {/* Social proof / urgency */}
-        <div className="text-center space-y-3">
+        <div className="space-y-3 rounded-3xl border border-white/[0.06] bg-gradient-to-br from-white/[0.03] via-white/[0.015] to-transparent px-5 py-6 text-center">
           <div className="flex justify-center gap-6 text-[11px] text-white/25">
             <span>Runs completing daily</span>
             <span>Sites being deployed</span>
@@ -294,9 +294,9 @@ export default function HimalayaUpgradePage() {
 
         {/* Usage stats */}
         {access && (
-          <div className="mt-8 pt-6 border-t border-white/[0.05] text-center">
+          <div className="mt-8 border-t border-white/[0.05] pt-6 text-center">
             <p className="text-[10px] text-white/15 mb-2">Your usage so far</p>
-            <div className="flex justify-center gap-6 text-[11px] text-white/25">
+            <div className="grid grid-cols-2 gap-3 text-[11px] text-white/25 sm:flex sm:justify-center sm:gap-6">
               <span><span className="text-white/40 font-bold">{access.usage.runsUsed}</span> runs</span>
               <span><span className="text-white/40 font-bold">{access.usage.deploysUsed}</span> deploys</span>
               <span><span className="text-white/40 font-bold">{access.usage.executionsUsed}</span> executions</span>

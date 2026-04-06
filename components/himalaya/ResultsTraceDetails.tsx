@@ -11,10 +11,10 @@ export default function ResultsTraceDetails({ vm }: { vm: HimalayaResultsViewMod
   if (!vm.trace) return null;
 
   return (
-    <div className="bg-white/[0.015] border border-white/[0.05] rounded-2xl">
+    <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-br from-white/[0.025] via-white/[0.015] to-transparent">
       <button
         onClick={() => setExpanded(!expanded)}
-        className="w-full flex items-center justify-between p-4 text-left hover:bg-white/[0.02] transition rounded-2xl"
+        className="flex w-full items-center justify-between rounded-2xl p-4 text-left transition hover:bg-white/[0.02]"
       >
         <span className="text-[10px] font-black uppercase tracking-widest text-white/20">
           Run Details
@@ -27,7 +27,7 @@ export default function ResultsTraceDetails({ vm }: { vm: HimalayaResultsViewMod
       </button>
 
       {expanded && (
-        <div className="px-4 pb-4 space-y-2">
+        <div className="space-y-3 px-4 pb-4">
           {[
             { label: "Run ID", value: vm.trace.runId },
             { label: "Mode", value: vm.trace.mode },
@@ -36,19 +36,19 @@ export default function ResultsTraceDetails({ vm }: { vm: HimalayaResultsViewMod
             { label: "Assets Generated", value: String(vm.trace.assetsGenerated) },
             { label: "Created", value: format(new Date(vm.trace.createdAt), "MMM d, yyyy 'at' h:mm a") },
           ].map(({ label, value }) => (
-            <div key={label} className="flex items-center justify-between text-xs">
+            <div key={label} className="flex flex-col gap-1 rounded-xl border border-white/[0.05] bg-black/20 px-3 py-3 text-xs sm:flex-row sm:items-center sm:justify-between">
               <span className="text-white/20">{label}</span>
-              <span className="text-white/40 font-mono text-[11px]">{value}</span>
+              <span className="break-all font-mono text-[11px] text-white/40 sm:text-right">{value}</span>
             </div>
           ))}
 
           {/* Dimension scores */}
           {vm.dimensions.length > 0 && (
-            <div className="mt-3 pt-3 border-t border-white/[0.05]">
-              <p className="text-[9px] font-black uppercase tracking-widest text-white/15 mb-2">Dimension Scores</p>
-              <div className="grid grid-cols-2 gap-x-4 gap-y-1">
+            <div className="mt-3 border-t border-white/[0.05] pt-3">
+              <p className="mb-2 text-[9px] font-black uppercase tracking-widest text-white/15">Dimension Scores</p>
+              <div className="grid grid-cols-1 gap-2 sm:grid-cols-2 sm:gap-x-4 sm:gap-y-1">
                 {vm.dimensions.map((d) => (
-                  <div key={d.key} className="flex items-center justify-between text-[11px]">
+                  <div key={d.key} className="flex items-center justify-between rounded-lg border border-white/[0.04] bg-black/20 px-2.5 py-2 text-[11px]">
                     <span className="text-white/20">{d.label}</span>
                     <span className={`font-mono font-bold ${
                       d.isRisk
@@ -63,7 +63,7 @@ export default function ResultsTraceDetails({ vm }: { vm: HimalayaResultsViewMod
 
           {/* Notes count */}
           {vm.notes.length > 0 && (
-            <div className="flex items-center justify-between text-xs mt-2 pt-2 border-t border-white/[0.05]">
+            <div className="mt-2 flex items-center justify-between border-t border-white/[0.05] pt-2 text-xs">
               <span className="text-white/20">Notes</span>
               <span className="text-amber-400/40 font-mono text-[11px]">{vm.notes.length}</span>
             </div>

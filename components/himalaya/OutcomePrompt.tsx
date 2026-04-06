@@ -62,7 +62,7 @@ export default function OutcomePrompt({ runId }: { runId: string }) {
     const Icon = config?.icon ?? CheckCircle;
     return (
       <div className="space-y-3">
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4">
+        <div className="rounded-2xl border border-white/[0.06] bg-gradient-to-br from-white/[0.03] via-white/[0.02] to-transparent p-4">
           <div className="flex items-center gap-3">
             <Icon className={`w-4 h-4 ${
               outcome.result === "improved" ? "text-emerald-400" :
@@ -81,17 +81,17 @@ export default function OutcomePrompt({ runId }: { runId: string }) {
   }
 
   return (
-    <div className="bg-white/[0.02] border border-white/[0.07] rounded-2xl p-5">
-      <h3 className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">How did this perform?</h3>
-      <p className="text-xs text-white/25 mb-4">Your feedback improves future recommendations.</p>
+    <div className="rounded-2xl border border-white/[0.07] bg-gradient-to-br from-white/[0.03] via-white/[0.02] to-transparent p-4 sm:p-5">
+      <h3 className="mb-2 text-[10px] font-black uppercase tracking-widest text-white/30">How did this perform?</h3>
+      <p className="mb-4 text-xs text-white/25">Your feedback improves future recommendations.</p>
 
-      <div className="grid grid-cols-2 gap-2 mb-3">
+      <div className="mb-3 grid grid-cols-1 gap-2 sm:grid-cols-2">
         {OUTCOMES.map(({ value, label, icon: Icon, color }) => (
           <button
             key={value}
             onClick={() => { if (!showNote) void handleSubmit(value); else setSelected(value); }}
             disabled={saving}
-            className={`flex items-center gap-2 p-3 rounded-xl border text-xs font-semibold transition disabled:opacity-40 ${
+            className={`flex items-center gap-2 rounded-xl border p-3 text-left text-xs font-semibold transition disabled:opacity-40 ${
               selected === value ? color : "bg-white/[0.02] border-white/[0.06] text-white/35 hover:border-white/[0.12]"
             }`}
           >
@@ -104,7 +104,7 @@ export default function OutcomePrompt({ runId }: { runId: string }) {
       {!showNote ? (
         <button
           onClick={() => setShowNote(true)}
-          className="text-[10px] text-white/20 hover:text-white/40 transition flex items-center gap-1"
+          className="flex items-center gap-1 text-[10px] text-white/20 transition hover:text-white/40"
         >
           <MessageSquare className="w-2.5 h-2.5" /> Add a note (optional)
         </button>
@@ -115,13 +115,13 @@ export default function OutcomePrompt({ runId }: { runId: string }) {
             onChange={(e) => setNote(e.target.value)}
             placeholder="What happened? Any details that would help improve next time?"
             rows={2}
-            className="w-full bg-white/[0.03] border border-white/[0.08] rounded-lg p-2.5 text-xs text-white/50 placeholder-white/15 focus:outline-none focus:border-cyan-500/20 resize-none"
+            className="w-full resize-none rounded-lg border border-white/[0.08] bg-white/[0.03] p-2.5 text-xs text-white/50 placeholder-white/15 focus:border-cyan-500/20 focus:outline-none"
           />
           {selected && (
             <button
               onClick={() => void handleSubmit(selected)}
               disabled={saving}
-              className="px-4 py-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-xs font-bold text-cyan-400 hover:bg-cyan-500/20 transition disabled:opacity-40"
+              className="rounded-lg border border-cyan-500/20 bg-cyan-500/10 px-4 py-2 text-xs font-bold text-cyan-400 transition hover:bg-cyan-500/20 disabled:opacity-40"
             >
               {saving ? "Saving..." : "Submit Feedback"}
             </button>

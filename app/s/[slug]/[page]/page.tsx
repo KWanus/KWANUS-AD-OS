@@ -109,7 +109,13 @@ export default async function PublicSiteSubPage({
   const currentPage = site.pages.find((entry) => entry.slug === page);
   if (!currentPage) notFound();
   const theme = (site.theme as { primaryColor?: string; font?: string; mode?: "dark" | "light" }) || {};
-  const blocks = (currentPage.blocks as unknown as Block[]) || [];
+  const rawBlocks = (currentPage.blocks as unknown as Block[]) || [];
+  const blocks = rawBlocks.map((block) => {
+    if ((block.type === "form" || block.type === "payment") && block.props && !block.props.siteId) {
+      return { ...block, props: { ...block.props, siteId: site.id, submitUrl: "/api/forms/submit" } };
+    }
+    return block;
+  });
   const products = (site.products as unknown as PublicProduct[]) || [];
   const pixels = site.user;
 

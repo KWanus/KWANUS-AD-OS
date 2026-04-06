@@ -43,17 +43,17 @@ export default function RunHistoryList() {
   ];
 
   return (
-    <div>
+    <div className="rounded-3xl border border-white/[0.06] bg-gradient-to-br from-white/[0.03] via-white/[0.015] to-transparent p-4 sm:p-5">
       {/* Filter bar */}
-      <div className="flex items-center gap-2 mb-5">
+      <div className="mb-5 flex flex-wrap items-center gap-2">
         {filterButtons.map(({ key, label }) => (
           <button
             key={key}
             onClick={() => { setLoading(true); setFilter(key); }}
-            className={`px-3 py-1.5 rounded-lg text-[11px] font-bold transition ${
+            className={`rounded-lg px-3 py-2 text-[11px] font-bold transition ${
               filter === key
-                ? "bg-white/[0.08] border border-white/[0.15] text-white/60"
-                : "bg-white/[0.02] border border-white/[0.06] text-white/30 hover:text-white/50 hover:border-white/[0.1]"
+                ? "border border-white/[0.15] bg-white/[0.08] text-white/60"
+                : "border border-white/[0.06] bg-white/[0.02] text-white/30 hover:border-white/[0.1] hover:text-white/50"
             }`}
           >
             {label}
@@ -67,12 +67,12 @@ export default function RunHistoryList() {
           <Loader2 className="w-5 h-5 text-white/20 animate-spin" />
         </div>
       ) : runs.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-16 gap-4">
+        <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-white/[0.05] bg-black/20 py-16">
           <Inbox className="w-10 h-10 text-white/10" />
           <p className="text-sm text-white/30">No runs yet</p>
           <Link
             href="/himalaya"
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs font-bold text-cyan-400 hover:bg-cyan-500/20 transition"
+            className="inline-flex items-center gap-2 rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-2 text-xs font-bold text-cyan-400 transition hover:bg-cyan-500/20"
           >
             Build Your First Foundation
           </Link>

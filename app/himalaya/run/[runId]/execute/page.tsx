@@ -58,16 +58,17 @@ export default function HimalayaExecutePage({ params }: { params: Promise<{ runI
     <div className="min-h-screen bg-[#050a14] text-white">
       <AppNav />
       <HimalayaNav />
-      <main className="max-w-3xl mx-auto px-4 sm:px-6 py-8">
+      <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
         <Link
           href={`/himalaya/run/${runId}`}
-          className="inline-flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition mb-6"
+          className="mb-6 inline-flex items-center gap-1.5 text-xs text-white/30 transition hover:text-white/60"
         >
           <ArrowLeft className="w-3.5 h-3.5" /> Back to Results
         </Link>
 
-        <div className="mb-6">
-          <h1 className="text-xl font-black text-white mb-1">Execute Your Plan</h1>
+        <div className="mb-6 rounded-3xl border border-white/[0.06] bg-gradient-to-br from-white/[0.03] via-white/[0.015] to-transparent p-5 sm:p-6">
+          <p className="text-[10px] font-black uppercase tracking-[0.24em] text-white/20">Execute</p>
+          <h1 className="mb-1 mt-1 text-xl font-black text-white">Execute Your Plan</h1>
           <p className="text-sm text-white/30">
             {vm.mode === "consultant"
               ? "Follow these steps to implement the improvement plan."
@@ -76,8 +77,8 @@ export default function HimalayaExecutePage({ params }: { params: Promise<{ runI
         </div>
 
         {/* Run context summary */}
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-4 mb-6">
-          <div className="flex items-center justify-between">
+        <div className="mb-6 rounded-2xl border border-white/[0.06] bg-gradient-to-br from-white/[0.03] via-white/[0.02] to-transparent p-4">
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <div>
               <p className="text-xs font-bold text-white/50">{vm.title}</p>
               <p className="text-[10px] text-white/25 mt-0.5">{vm.modeLabel} · Score: {vm.score}/100</p>

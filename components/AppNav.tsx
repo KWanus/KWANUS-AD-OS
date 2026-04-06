@@ -10,7 +10,7 @@ import {
   LayoutDashboard, Globe, Mail, Users, Settings, Zap,
   ScanSearch, Sparkles, FolderOpen, ChevronDown, Search,
   Briefcase, MapPin, TrendingUp, ShoppingCart, Building,
-  Package, BotMessageSquare, Building2, Mountain,
+  Package, BotMessageSquare, Building2, Mountain, Wrench, BarChart3, FileText,
 } from "lucide-react";
 
 const CreditsDisplay = dynamic(() => import("@/components/CreditsDisplay"), { ssr: false });
@@ -19,7 +19,16 @@ const CreditsDisplay = dynamic(() => import("@/components/CreditsDisplay"), { ss
 
 const MAIN_NAV = [
   { href: "/",           label: "Home",      icon: LayoutDashboard, match: (p: string) => p === "/" },
-  { href: "/himalaya",   label: "Himalaya",  icon: Mountain,        match: (p: string) => p.startsWith("/himalaya") || p.startsWith("/scan") || p.startsWith("/analyses") },
+  { href: "/himalaya",   label: "Himalaya",  icon: Mountain,        match: (p: string) =>
+    p.startsWith("/himalaya") ||
+    p.startsWith("/scan") ||
+    p.startsWith("/analyses") ||
+    p.startsWith("/analyze") ||
+    p.startsWith("/launch") ||
+    p.startsWith("/start") ||
+    p.startsWith("/winners") ||
+    p.startsWith("/report")
+  },
   { href: "/campaigns",  label: "Campaigns", icon: FolderOpen,      match: (p: string) => p.startsWith("/campaigns") || p.startsWith("/projects") },
   { href: "/websites",   label: "Sites",     icon: Globe,           match: (p: string) => p.startsWith("/websites") },
   { href: "/emails",     label: "Emails",    icon: Mail,            match: (p: string) => p.startsWith("/emails") },
@@ -29,12 +38,19 @@ const MAIN_NAV = [
 // ── Business verticals (dropdown) ────────────────────────────────────────────
 
 const BUSINESS_NAV = [
-  { href: "/consult",   label: "Consult",   icon: Briefcase,   sub: "Packages, proposals, audits" },
-  { href: "/local",     label: "Local",     icon: MapPin,       sub: "SEO, GMB, review requests" },
-  { href: "/affiliate", label: "Affiliate", icon: TrendingUp,   sub: "Offer research, funnels" },
-  { href: "/dropship",  label: "Dropship",  icon: ShoppingCart,  sub: "Products, profit math, ads" },
-  { href: "/agency",    label: "Agency",    icon: Building,      sub: "Client audits, strategy" },
-  { href: "/products",  label: "Products",  icon: Package,       sub: "Offer library, sources" },
+  { href: "/tools",     label: "Tools",     icon: Wrench,       sub: "Calculators, generators, audits" },
+  { href: "/analytics", label: "Analytics", icon: BarChart3,    sub: "Cross-workspace performance and health" },
+  { href: "/forms",     label: "Forms",     icon: FileText,     sub: "Opt-in forms, links, and submissions" },
+  { href: "/revenue",   label: "Revenue",   icon: TrendingUp,   sub: "Sales, orders, email ROI" },
+  { href: "/content",   label: "Content",   icon: LayoutDashboard, sub: "7-day social calendar" },
+  { href: "/social",    label: "Social",    icon: Globe,         sub: "Generate posts for any platform" },
+  { href: "/proposals", label: "Proposals", icon: Briefcase,    sub: "AI client proposals" },
+  { href: "/consult",   label: "Consult",   icon: Briefcase,    sub: "Packages, proposals, audits" },
+  { href: "/local",     label: "Local",     icon: MapPin,        sub: "SEO, GMB, review requests" },
+  { href: "/affiliate", label: "Affiliate", icon: TrendingUp,    sub: "Offer research, funnels" },
+  { href: "/dropship",  label: "Dropship",  icon: ShoppingCart,   sub: "Products, profit math, ads" },
+  { href: "/agency",    label: "Agency",    icon: Building,       sub: "Client audits, strategy" },
+  { href: "/products",  label: "Products",  icon: Package,        sub: "Offer library, sources" },
 ];
 
 type StatsPayload = {

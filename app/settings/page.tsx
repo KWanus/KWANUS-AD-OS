@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import AppNav from "@/components/AppNav";
+import ThemePicker from "@/components/settings/ThemePicker";
 import Link from "next/link";
 import { toast } from "sonner";
 import {
@@ -53,6 +54,12 @@ interface UserSettings {
   sharesaleAffiliateId: string;
 }
 
+interface EmailDeliveryAlert {
+  failedEnrollments: number;
+  latestError: string | null;
+  latestFailedAt: string | null;
+}
+
 // ---------------------------------------------------------------------------
 // Plan config
 // ---------------------------------------------------------------------------
@@ -100,7 +107,7 @@ function Input({
   return (
     <input
       type={type}
-      value={value}
+      value={value ?? ""}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
       className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
@@ -126,12 +133,14 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [savingAccounts, setSavingAccounts] = useState(false);
+  const [emailDeliveryAlert, setEmailDeliveryAlert] = useState<EmailDeliveryAlert | null>(null);
 
   useEffect(() => {
     fetch("/api/settings")
-      .then((r) => r.json() as Promise<{ ok: boolean; settings?: UserSettings }>)
+      .then((r) => r.json() as Promise<{ ok: boolean; settings?: UserSettings; emailDeliveryAlert?: EmailDeliveryAlert }>)
       .then((data) => {
         if (data.ok && data.settings) setSettings(data.settings);
+        if (data.ok && data.emailDeliveryAlert) setEmailDeliveryAlert(data.emailDeliveryAlert);
       })
       .catch(() => {})
       .finally(() => setLoading(false));
@@ -251,6 +260,29 @@ export default function SettingsPage() {
             <ExternalLink className="w-3 h-3" />
           </Link>
         </div>
+
+        {(emailDeliveryAlert?.failedEnrollments ?? 0) > 0 && (
+          <div className="flex items-start gap-3 rounded-2xl border border-amber-500/20 bg-amber-500/10 px-4 py-3">
+            <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />
+            <div>
+              <p className="text-sm font-bold text-amber-100">
+                Recent email follow-up attempts are failing
+              </p>
+              <p className="mt-1 text-xs leading-6 text-amber-100/75">
+                {emailDeliveryAlert?.failedEnrollments} enrollment{emailDeliveryAlert?.failedEnrollments === 1 ? "" : "s"} failed in the last 24 hours.
+                {emailDeliveryAlert?.latestError ? ` Latest issue: ${emailDeliveryAlert.latestError}` : ""}
+              </p>
+              <p className="mt-1 text-[11px] text-amber-100/60">
+                Check your Resend API key, verified sender domain, and from address below.
+              </p>
+            </div>
+          </div>
+        )}
+
+        {/* Appearance */}
+        <Section title="Appearance" sub="Choose your preferred look and feel">
+          <ThemePicker />
+        </Section>
 
         {/* Workspace */}
         <Section title="Workspace" sub="Your workspace name shown across the platform">

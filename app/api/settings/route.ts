@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { isDatabaseUnavailable } from "@/lib/db/runtime";
+import { getEmailDeliveryAlertSummary } from "@/lib/email/deliveryAlerts";
 
 export async function GET() {
   try {
@@ -10,6 +11,7 @@ export async function GET() {
     if (!clerkId) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
     const user = await getOrCreateUser();
     if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
+    const emailDeliveryAlert = await getEmailDeliveryAlertSummary(user.id);
 
     return NextResponse.json({
       ok: true,
@@ -33,6 +35,7 @@ export async function GET() {
         businessType: user.businessType,
         onboardingCompleted: user.onboardingCompleted,
       },
+      emailDeliveryAlert,
     });
   } catch (err) {
     console.error("Settings GET:", err);
@@ -57,6 +60,11 @@ export async function GET() {
           businessType: null,
           onboardingCompleted: true,
           databaseUnavailable: true,
+        },
+        emailDeliveryAlert: {
+          failedEnrollments: 0,
+          latestError: null,
+          latestFailedAt: null,
         },
       });
     }

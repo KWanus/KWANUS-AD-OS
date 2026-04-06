@@ -37,6 +37,7 @@ import BlockRenderer, { Block, BlockType } from "@/components/site-builder/Block
 import BlockPropsEditor from "@/components/site-builder/BlockPropsEditor";
 import WebsiteCopilotPanel from "@/components/site-builder/WebsiteCopilotPanel";
 import { auditSitePage } from "@/lib/site-builder/publishAudit";
+import { contextualizeBlockProps } from "@/lib/sites/smartBlockDefaults";
 
 // ---------------------------------------------------------------------------
 // Block library
@@ -172,6 +173,11 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
   const [previewMode, setPreviewMode] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [queuedCopilotInstruction, setQueuedCopilotInstruction] = useState<{ id: number; text: string } | null>(null);
+  const [bizData, setBizData] = useState<{
+    businessName?: string; niche?: string; audience?: string;
+    painPoint?: string; outcome?: string; offer?: string;
+    pricing?: string; guarantee?: string; location?: string;
+  } | null>(null);
   const saveTimer = useRef<NodeJS.Timeout | null>(null);
 
   const sensors = useSensors(
@@ -202,6 +208,32 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
       finally { setLoading(false); }
     }
     void load();
+
+    // Load business context from deployment (for smart block defaults)
+    fetch(`/api/sites/${siteId}/analytics`)
+      .then((r) => r.json())
+      .then((data: { ok?: boolean; analytics?: { deployment?: { version?: number } } }) => {
+        if (!data.ok) return;
+        // Also try loading from campaign's businessContext
+        return fetch(`/api/himalaya/prompts?siteId=${siteId}`).catch(() => null);
+      })
+      .catch(() => null);
+
+    // Try loading business profile as fallback
+    fetch("/api/business-profile")
+      .then((r) => r.json())
+      .then((data: { ok?: boolean; profile?: { businessName?: string; niche?: string; targetAudience?: string; mainOffer?: string; location?: string } }) => {
+        if (data.ok && data.profile) {
+          setBizData({
+            businessName: data.profile.businessName ?? undefined,
+            niche: data.profile.niche ?? undefined,
+            audience: data.profile.targetAudience ?? undefined,
+            offer: data.profile.mainOffer ?? undefined,
+            location: data.profile.location ?? undefined,
+          });
+        }
+      })
+      .catch(() => {});
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [siteId, pageId]);
 
@@ -234,10 +266,15 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
 
   function addBlock(type: BlockType) {
     const lib = BLOCK_LIBRARY.find((b) => b.type === type);
+    const baseProps = { ...(lib?.defaultProps ?? {}) };
+    // Contextualize with business data if available
+    const smartProps = bizData
+      ? contextualizeBlockProps(type, baseProps, bizData)
+      : baseProps;
     const newBlock: Block = {
       id: `${type}-${nanoid()}`,
       type,
-      props: { ...(lib?.defaultProps ?? {}) },
+      props: smartProps,
     };
     const next = page ? [...page.blocks, newBlock] : [newBlock];
     updateBlocks(next);
