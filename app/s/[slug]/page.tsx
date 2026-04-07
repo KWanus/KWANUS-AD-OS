@@ -188,6 +188,19 @@ export default async function PublicSitePage({
           )}
         </div>
       </PublicSiteShell>
+
+      {/* ── Chat Widget ── */}
+      <Script id="himalaya-chat-widget" strategy="lazyOnload">{`
+        (function(){
+          var siteId='${site.id}';
+          var vid=localStorage.getItem('h_visitor')||(function(){var id=Math.random().toString(36).slice(2,10);localStorage.setItem('h_visitor',id);return id})();
+          var o=false;var r=document.createElement('div');r.id='himalaya-chat';r.style.cssText='position:fixed;bottom:20px;right:20px;z-index:9999;font-family:system-ui,sans-serif';document.body.appendChild(r);
+          function render(){r.innerHTML=o?'<div style="width:340px;height:420px;background:#fff;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.15);display:flex;flex-direction:column;overflow:hidden"><div style="background:linear-gradient(135deg,#06b6d4,#8b5cf6);padding:14px 16px;color:#fff;display:flex;justify-content:space-between;align-items:center"><div><strong style="font-size:13px">Chat with us</strong><br><span style="font-size:10px;opacity:0.8">We usually reply fast</span></div><button onclick="window._hcT()" style="background:none;border:none;color:#fff;font-size:18px;cursor:pointer">×</button></div><div id="hc-m" style="flex:1;padding:12px;overflow-y:auto;font-size:13px;color:#333"></div><form id="hc-f" onsubmit="return window._hcS(event)" style="padding:8px 12px;border-top:1px solid #eee;display:flex;gap:6px"><input name="msg" placeholder="Type a message..." style="flex:1;border:1px solid #ddd;border-radius:8px;padding:8px;font-size:12px;outline:none" required><button style="background:#06b6d4;color:#fff;border:none;border-radius:8px;padding:8px 14px;font-size:11px;font-weight:bold;cursor:pointer">Send</button></form></div>':'<button onclick="window._hcT()" style="width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#06b6d4,#8b5cf6);border:none;cursor:pointer;box-shadow:0 4px 16px rgba(6,182,212,0.3);display:flex;align-items:center;justify-content:center"><svg width="22" height="22" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg></button>'}
+          window._hcT=function(){o=!o;render()};
+          window._hcS=function(e){e.preventDefault();var i=document.querySelector('#hc-f input[name=msg]');if(!i||!i.value.trim())return false;var m=document.getElementById('hc-m');if(m)m.innerHTML+='<div style="background:#06b6d4;color:#fff;padding:6px 10px;border-radius:10px;margin:3px 0;max-width:80%;margin-left:auto;font-size:12px">'+i.value+'</div>';fetch('/api/chat/message',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({siteId:siteId,visitorId:vid,message:i.value})}).catch(function(){});i.value='';if(m)m.scrollTop=m.scrollHeight;return false};
+          render();
+        })();
+      `}</Script>
     </>
   );
 }

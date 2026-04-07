@@ -50,8 +50,8 @@ export default function ProgressStage({
   error: string | null;
 }) {
   return (
-    <div className="max-w-md mx-auto py-12">
-      <p className="text-[10px] text-white/20 text-center mb-4">Usually takes 30-90 seconds depending on niche research</p>
+    <div className="mx-auto max-w-md py-8 sm:py-12">
+      <p className="mb-4 text-center text-[10px] text-white/20">Usually takes 30-90 seconds depending on niche research</p>
       <div className="space-y-3">
         {STAGE_ORDER.map((key) => {
           const state = stages[key];
@@ -62,7 +62,7 @@ export default function ProgressStage({
           return (
             <div
               key={key}
-              className={`flex items-start gap-4 p-4 rounded-xl border transition-all duration-500 ${
+              className={`flex items-start gap-4 rounded-2xl border p-4 transition-all duration-500 ${
                 isDone
                   ? "bg-emerald-500/[0.03] border-emerald-500/10"
                   : isActive
@@ -95,7 +95,7 @@ export default function ProgressStage({
       </div>
 
       {error && (
-        <div className="mt-6 bg-red-500/5 border border-red-500/15 rounded-xl p-4 flex items-start gap-3">
+        <div className="mt-6 flex items-start gap-3 rounded-xl border border-red-500/15 bg-red-500/5 p-4">
           <AlertTriangle className="w-4 h-4 text-red-400 shrink-0 mt-0.5" />
           <div>
             <p className="text-sm text-red-300">{error}</p>

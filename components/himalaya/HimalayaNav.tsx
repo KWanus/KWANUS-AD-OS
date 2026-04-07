@@ -38,17 +38,17 @@ export default function HimalayaNav() {
   return (
     <div className="border-b border-white/[0.06] bg-white/[0.01]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6">
-        <div className="flex items-center gap-1 h-10 overflow-x-auto">
+        <div className="flex h-11 items-center gap-1 overflow-x-auto">
           {NAV_ITEMS.map(({ href, label, icon: Icon, exact }) => {
             const active = exact ? pathname === href : pathname.startsWith(href);
             return (
               <Link
                 key={href}
                 href={href}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold transition whitespace-nowrap ${
+                className={`flex items-center gap-1.5 whitespace-nowrap rounded-lg px-3 py-1.5 text-[11px] font-bold transition ${
                   active
                     ? "bg-white/[0.06] text-white/70"
-                    : "text-white/25 hover:text-white/50 hover:bg-white/[0.03]"
+                    : "text-white/25 hover:bg-white/[0.03] hover:text-white/50"
                 }`}
               >
                 <Icon className="w-3 h-3" />
@@ -65,12 +65,12 @@ export default function HimalayaNav() {
             tier === "free" ? (
               <Link
                 href="/himalaya/upgrade"
-                className="flex items-center gap-1 px-2.5 py-1 rounded-lg border text-[10px] font-bold transition hover:border-cyan-500/20 hover:text-cyan-400/60 text-white/25 bg-white/[0.03] border-white/[0.06]"
+                className="flex items-center gap-1 rounded-lg border border-white/[0.06] bg-white/[0.03] px-2.5 py-1.5 text-[10px] font-bold text-white/25 transition hover:border-cyan-500/20 hover:text-cyan-400/60"
               >
                 <Zap className="w-2.5 h-2.5" /> Upgrade
               </Link>
             ) : (
-              <span className={`flex items-center gap-1 px-2.5 py-1 rounded-lg border text-[10px] font-bold ${badge.color}`}>
+              <span className={`flex items-center gap-1 rounded-lg border px-2.5 py-1.5 text-[10px] font-bold ${badge.color}`}>
                 {badge.label}
               </span>
             )

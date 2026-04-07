@@ -63,8 +63,8 @@ export default function UpgradeGate({ feature, children }: Props) {
 
   // Show upgrade gate
   return (
-    <div className="bg-gradient-to-br from-purple-500/[0.06] to-cyan-500/[0.06] border border-purple-500/15 rounded-2xl p-6">
-      <div className="flex items-center gap-2 mb-3">
+    <div className="rounded-2xl border border-purple-500/15 bg-gradient-to-br from-purple-500/[0.06] to-cyan-500/[0.06] p-5 sm:p-6">
+      <div className="mb-3 flex items-center gap-2">
         <Lock className="w-4 h-4 text-purple-400/60" />
         <h3 className="text-sm font-bold text-white/60">Unlock Full Access</h3>
       </div>
@@ -75,19 +75,19 @@ export default function UpgradeGate({ feature, children }: Props) {
         {!["run", "deploy"].includes(feature) && "This feature is available on the Pro plan. Upgrade to access the full Himalaya system."}
       </p>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 mb-5">
+      <div className="mb-5 grid grid-cols-1 gap-2 sm:grid-cols-2">
         {PRO_FEATURES.map(({ icon: Icon, text }, i) => (
-          <div key={i} className="flex items-center gap-2">
+          <div key={i} className="flex items-center gap-2 rounded-xl border border-white/[0.05] bg-black/20 px-3 py-3">
             <Icon className="w-3.5 h-3.5 text-cyan-400/50 shrink-0" />
             <p className="text-[11px] text-white/45">{text}</p>
           </div>
         ))}
       </div>
 
-      <div className="flex flex-wrap gap-3">
+      <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
         <Link
           href="/himalaya/upgrade"
-          className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 px-5 py-2.5 text-xs font-bold text-white transition hover:opacity-90"
         >
           <Zap className="w-3.5 h-3.5" /> Upgrade to Pro
         </Link>
@@ -95,7 +95,7 @@ export default function UpgradeGate({ feature, children }: Props) {
       </div>
 
       {/* Show usage stats */}
-      <div className="mt-4 pt-3 border-t border-white/[0.05] flex gap-4 text-[10px] text-white/20">
+      <div className="mt-4 grid grid-cols-2 gap-2 border-t border-white/[0.05] pt-3 text-[10px] text-white/20 sm:flex sm:gap-4">
         <span>{access.usage.runsUsed} runs used</span>
         <span>{access.usage.deploysUsed} deploys used</span>
         <span>{access.usage.executionsUsed} executions</span>

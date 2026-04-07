@@ -48,16 +48,16 @@ export default function ExecutionStepCard({ step, index, runId, onToggle }: Prop
   }
 
   return (
-    <div className={`rounded-xl border transition-all ${
+    <div className={`rounded-2xl border transition-all ${
       isDone
         ? "bg-emerald-500/[0.02] border-emerald-500/10"
         : expanded
-          ? "bg-white/[0.03] border-white/[0.1]"
-          : "bg-white/[0.015] border-white/[0.06] hover:border-white/[0.1]"
+          ? "bg-gradient-to-br from-white/[0.04] via-white/[0.025] to-transparent border-white/[0.1]"
+          : "bg-gradient-to-br from-white/[0.025] via-white/[0.015] to-transparent border-white/[0.06] hover:border-white/[0.1]"
     }`}>
       {/* Header */}
       <div
-        className="flex items-center gap-3 p-4 cursor-pointer"
+        className="flex cursor-pointer items-start gap-3 p-4"
         onClick={() => !isDone && setExpanded(!expanded)}
       >
         <button onClick={(e) => { e.stopPropagation(); onToggle(step.id); }} className="shrink-0">
@@ -69,7 +69,7 @@ export default function ExecutionStepCard({ step, index, runId, onToggle }: Prop
         </button>
 
         <div className="flex-1 min-w-0">
-          <div className="flex items-center gap-2">
+          <div className="flex flex-wrap items-center gap-2">
             <span className={`text-xs font-black w-5 ${isDone ? "text-emerald-400/40" : "text-cyan-400/40"}`}>{index + 1}</span>
             <h3 className={`text-sm font-bold ${isDone ? "text-white/30 line-through" : "text-white/80"}`}>
               {step.title}
@@ -81,7 +81,7 @@ export default function ExecutionStepCard({ step, index, runId, onToggle }: Prop
           <button
             onClick={(e) => { e.stopPropagation(); void handleDeploy(); }}
             disabled={deploying}
-            className="shrink-0 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-bold text-cyan-400 hover:bg-cyan-500/20 transition disabled:opacity-40"
+            className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-[10px] font-bold text-cyan-400 transition hover:bg-cyan-500/20 disabled:opacity-40"
           >
             {deploying ? <Loader2 className="w-3 h-3 animate-spin" /> : <Rocket className="w-3 h-3" />}
             Deploy
@@ -102,11 +102,11 @@ export default function ExecutionStepCard({ step, index, runId, onToggle }: Prop
 
       {/* Expanded body */}
       {expanded && !isDone && (
-        <div className="px-4 pb-4 pl-[56px]">
+        <div className="px-4 pb-4 pl-4 sm:pl-[56px]">
           <p className="text-xs text-white/35 mb-3">{step.instruction}</p>
 
           {step.content && (
-            <div className="bg-white/[0.025] border border-white/[0.06] rounded-lg p-3 mb-3">
+            <div className="mb-3 rounded-xl border border-white/[0.06] bg-black/20 p-3">
               {step.content.type === "list" && (
                 <ul className="space-y-1.5">
                   {(step.content.data as string[]).map((item, i) => (
@@ -131,11 +131,11 @@ export default function ExecutionStepCard({ step, index, runId, onToggle }: Prop
           )}
 
           {/* Action bar */}
-          <div className="flex items-center gap-2">
+          <div className="grid grid-cols-1 gap-2 sm:flex sm:flex-wrap sm:items-center">
             {step.content && (
               <button
                 onClick={copyContent}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-[10px] font-semibold text-white/30 hover:text-white/60 transition"
+                className="inline-flex items-center justify-center gap-1 rounded-md border border-white/[0.06] bg-white/[0.03] px-2.5 py-1.5 text-[10px] font-semibold text-white/30 transition hover:text-white/60"
               >
                 {copied ? <Check className="w-2.5 h-2.5 text-emerald-400" /> : <Copy className="w-2.5 h-2.5" />}
                 {copied ? "Copied" : "Copy"}
@@ -144,7 +144,7 @@ export default function ExecutionStepCard({ step, index, runId, onToggle }: Prop
             {step.actionUrl && (
               <Link
                 href={step.actionUrl}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-white/[0.03] border border-white/[0.06] text-[10px] font-semibold text-white/30 hover:text-white/60 transition"
+                className="inline-flex items-center justify-center gap-1 rounded-md border border-white/[0.06] bg-white/[0.03] px-2.5 py-1.5 text-[10px] font-semibold text-white/30 transition hover:text-white/60"
               >
                 <ExternalLink className="w-2.5 h-2.5" />
                 {step.actionLabel || "Open Tool"}
@@ -152,7 +152,7 @@ export default function ExecutionStepCard({ step, index, runId, onToggle }: Prop
             )}
             <button
               onClick={() => onToggle(step.id)}
-              className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-emerald-500/10 border border-emerald-500/15 text-[10px] font-bold text-emerald-400/70 hover:text-emerald-400 transition ml-auto"
+              className="inline-flex items-center justify-center gap-1 rounded-md border border-emerald-500/15 bg-emerald-500/10 px-2.5 py-1.5 text-[10px] font-bold text-emerald-400/70 transition hover:text-emerald-400 sm:ml-auto"
             >
               <CheckCircle2 className="w-2.5 h-2.5" /> Mark Done
             </button>

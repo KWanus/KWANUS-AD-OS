@@ -85,24 +85,24 @@ export default function EditableAssetCard({ group, analysisId, mode = "operator"
   const isEditable = !!group.regenerateTarget;
 
   return (
-    <div className="bg-white/[0.02] border border-white/[0.05] rounded-xl p-4">
+    <div className="rounded-2xl border border-white/[0.05] bg-gradient-to-br from-white/[0.03] via-white/[0.02] to-transparent p-4">
       {/* Header with actions */}
-      <div className="flex items-center justify-between mb-3">
+      <div className="mb-3 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <h3 className="text-[10px] font-black uppercase tracking-widest text-white/30">{group.title}</h3>
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           {editing ? (
             <>
               <button
                 onClick={() => void saveEdit()}
                 disabled={saving}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-400 hover:bg-emerald-500/20 transition disabled:opacity-40"
+                className="inline-flex items-center gap-1 rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-2.5 py-1.5 text-[10px] font-bold text-emerald-400 transition hover:bg-emerald-500/20 disabled:opacity-40"
               >
                 {saving ? <Loader2 className="w-3 h-3 animate-spin" /> : <Save className="w-3 h-3" />}
                 Save
               </button>
               <button
                 onClick={cancelEdit}
-                className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.08] text-[10px] font-semibold text-white/30 hover:text-white/60 transition"
+                className="inline-flex items-center gap-1 rounded-lg border border-white/[0.08] bg-white/[0.03] px-2.5 py-1.5 text-[10px] font-semibold text-white/30 transition hover:text-white/60"
               >
                 <X className="w-3 h-3" />
                 Cancel
@@ -113,7 +113,7 @@ export default function EditableAssetCard({ group, analysisId, mode = "operator"
               {isEditable && (
                 <button
                   onClick={startEdit}
-                  className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/[0.03] border border-white/[0.08] hover:bg-white/[0.06] hover:border-white/[0.15] transition text-[10px] font-semibold text-white/30 hover:text-white/60"
+                  className="inline-flex items-center gap-1 rounded-lg border border-white/[0.08] bg-white/[0.03] px-2.5 py-1.5 text-[10px] font-semibold text-white/30 transition hover:border-white/[0.15] hover:bg-white/[0.06] hover:text-white/60"
                 >
                   <Pencil className="w-3 h-3" />
                   Edit
@@ -133,7 +133,7 @@ export default function EditableAssetCard({ group, analysisId, mode = "operator"
         <textarea
           value={editText}
           onChange={(e) => setEditText(e.target.value)}
-          className="w-full min-h-[120px] bg-white/[0.03] border border-white/[0.1] rounded-lg p-3 text-xs text-white/70 leading-relaxed font-mono resize-y focus:outline-none focus:border-cyan-500/30 transition"
+          className="min-h-[120px] w-full resize-y rounded-lg border border-white/[0.1] bg-white/[0.03] p-3 font-mono text-xs leading-relaxed text-white/70 transition focus:border-cyan-500/30 focus:outline-none"
           autoFocus
         />
       ) : (
@@ -179,8 +179,8 @@ function AssetCardContent({ group }: { group: AssetGroup }) {
     return (
       <div className="space-y-4">
         {(group.content as { title: string; duration: string; sections: { timestamp: string; direction: string; copy: string }[] }[]).map((script, i) => (
-          <div key={i} className="bg-white/[0.015] border border-white/[0.05] rounded-xl p-4">
-            <div className="flex items-center justify-between mb-3">
+          <div key={i} className="rounded-xl border border-white/[0.05] bg-black/20 p-4">
+            <div className="mb-3 flex items-center justify-between">
               <h4 className="text-sm font-bold text-white/70">{script.title}</h4>
               <span className="text-[10px] text-white/25">{script.duration}</span>
             </div>

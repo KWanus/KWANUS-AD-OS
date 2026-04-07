@@ -5,14 +5,16 @@
 
 import { prisma } from "@/lib/prisma";
 import { sendEmail, getFromAddress } from "./resendClient";
+import { sendSMS, personalizeSMS, hasSMSConfigured } from "./smsClient";
 
 type EmailNode = {
   id: string;
-  type: "trigger" | "email" | "delay" | "condition";
+  type: "trigger" | "email" | "delay" | "condition" | "sms";
   data: {
     subject?: string;
     previewText?: string;
     body?: string;
+    smsBody?: string;
     label?: string;
     delayValue?: number;
     delayUnit?: "minutes" | "hours" | "days";
@@ -263,6 +265,45 @@ export async function processEnrollment(enrollmentId: string): Promise<void> {
       await prisma.emailFlowEnrollment.update({
         where: { id: enrollmentId },
         data: { currentNodeId: nextEdge.target, resumeAfter: null },
+      });
+      await processEnrollment(enrollmentId);
+    } else {
+      await prisma.emailFlowEnrollment.update({
+        where: { id: enrollmentId },
+        data: { status: "completed" },
+      });
+    }
+  } else if (currentNode.type === "sms" && currentNode.data.smsBody && hasSMSConfigured()) {
+    // Send SMS
+    const contact = await prisma.emailContact.findFirst({
+      where: { email: enrollment.contactEmail },
+      select: { properties: true, firstName: true },
+    });
+    const props = (contact?.properties ?? {}) as Record<string, string>;
+    const phone = props.phone;
+
+    if (phone) {
+      const smsBody = personalizeSMS(currentNode.data.smsBody, {
+        firstName: contact?.firstName ?? undefined,
+        email: enrollment.contactEmail,
+      });
+
+      const smsResult = await sendSMS({ to: phone, body: smsBody });
+
+      if (smsResult.ok) {
+        await prisma.emailFlow.update({
+          where: { id: flow.id },
+          data: { sent: { increment: 1 } },
+        });
+      }
+    }
+
+    // Move to next node
+    const nextEdge = edges.find((e) => e.source === currentNode.id);
+    if (nextEdge) {
+      await prisma.emailFlowEnrollment.update({
+        where: { id: enrollmentId },
+        data: { currentNodeId: nextEdge.target },
       });
       await processEnrollment(enrollmentId);
     } else {
