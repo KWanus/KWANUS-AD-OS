@@ -3,7 +3,9 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import AppNav from "@/components/AppNav";
+import OperatorCallout from "@/components/navigation/OperatorCallout";
 import WorkflowHeader from "@/components/navigation/WorkflowHeader";
+import OperatorStatCard from "@/components/navigation/OperatorStatCard";
 import WorkflowPanel from "@/components/navigation/WorkflowPanel";
 import {
   AlertTriangle,
@@ -171,6 +173,10 @@ export default function AdsPage() {
       .slice(0, 5);
   }, [ads]);
 
+  const connectedPlatforms = Object.values(ads?.connected ?? {}).filter(Boolean).length;
+  const hasCampaignData = topCampaigns.length > 0;
+  const hasPlatformData = (ads?.platforms ?? []).some((platform) => platform.campaigns.length > 0 || platform.totals.spend > 0);
+
   return (
     <div className="min-h-screen bg-[#050a14] text-white">
       <AppNav />
@@ -201,51 +207,92 @@ export default function AdsPage() {
           </div>
 
           <div className="mt-5 grid gap-3 md:grid-cols-3">
-            <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
-              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/25">Best Current Channel</p>
-              <p className="mt-2 text-lg font-black capitalize text-white">{topPlatform?.platform ?? "No data yet"}</p>
-              <p className="mt-1 text-xs text-white/35">
-                {topPlatform ? `${topPlatform.totals.roas.toFixed(1)}x ROAS from ${topPlatform.campaigns.length} tracked campaign${topPlatform.campaigns.length === 1 ? "" : "s"}.` : "Connect ad accounts to see where your spend is actually working."}
-              </p>
-            </div>
-            <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
-              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/25">Budget Mode</p>
-              <p className="mt-2 text-lg font-black text-white">{money(Number(budget || 0))}</p>
-              <p className="mt-1 text-xs text-white/35">Current planning budget used for allocation and ROAS guidance.</p>
-            </div>
-            <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
-              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/25">Connection Readiness</p>
-              <p className="mt-2 text-lg font-black text-white">
-                {Object.values(ads?.connected ?? {}).filter(Boolean).length}/3 connected
-              </p>
-              <p className="mt-1 text-xs text-white/35">Meta, Google, and TikTok are staged here as one operating surface.</p>
-            </div>
+            <OperatorStatCard
+              label="Best Current Channel"
+              value={<span className="capitalize">{topPlatform?.platform ?? "No data yet"}</span>}
+              description={topPlatform ? `${topPlatform.totals.roas.toFixed(1)}x ROAS from ${topPlatform.campaigns.length} tracked campaign${topPlatform.campaigns.length === 1 ? "" : "s"}.` : "Connect ad accounts to see where your spend is actually working."}
+            />
+            <OperatorStatCard
+              label="Budget Mode"
+              value={money(Number(budget || 0))}
+              description="Current planning budget used for allocation and ROAS guidance."
+            />
+            <OperatorStatCard
+              label="Connection Readiness"
+              value={`${Object.values(ads?.connected ?? {}).filter(Boolean).length}/3 connected`}
+              description="Meta, Google, and TikTok are staged here as one operating surface."
+            />
           </div>
         </div>
 
         {loading ? (
-          <div className="flex items-center justify-center rounded-3xl border border-white/[0.06] bg-gradient-to-br from-white/[0.03] via-white/[0.015] to-transparent py-20">
-            <Loader2 className="h-6 w-6 animate-spin text-white/20" />
+          <div className="space-y-6">
+            <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
+              {Array.from({ length: 4 }).map((_, index) => (
+                <div key={index} className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
+                  <div className="h-3 w-20 animate-pulse rounded bg-white/[0.08]" />
+                  <div className="mt-3 h-7 w-24 animate-pulse rounded bg-white/[0.08]" />
+                </div>
+              ))}
+            </div>
+            <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
+              <div className="rounded-3xl border border-white/[0.06] bg-gradient-to-br from-white/[0.03] via-white/[0.015] to-transparent p-5">
+                <div className="space-y-3">
+                  {Array.from({ length: 3 }).map((_, index) => (
+                    <div key={index} className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
+                      <div className="h-4 w-28 animate-pulse rounded bg-white/[0.08]" />
+                      <div className="mt-3 h-16 animate-pulse rounded bg-white/[0.06]" />
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <div className="space-y-6">
+                {Array.from({ length: 2 }).map((_, index) => (
+                  <div key={index} className="rounded-3xl border border-white/[0.06] bg-gradient-to-br from-white/[0.03] via-white/[0.015] to-transparent p-5">
+                    <div className="h-4 w-32 animate-pulse rounded bg-white/[0.08]" />
+                    <div className="mt-3 h-24 animate-pulse rounded bg-white/[0.06]" />
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="flex items-center justify-center gap-3 rounded-3xl border border-white/[0.06] bg-gradient-to-br from-white/[0.03] via-white/[0.015] to-transparent py-8 text-sm text-white/35">
+              <Loader2 className="h-5 w-5 animate-spin text-white/20" />
+              Building your ads control room
+            </div>
           </div>
         ) : (
           <>
+            {!hasPlatformData && (
+              <div className="mb-6 rounded-3xl border border-amber-500/15 bg-gradient-to-br from-amber-500/[0.08] via-transparent to-red-500/[0.04] p-5">
+                <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                  <div className="max-w-2xl">
+                    <OperatorCallout
+                      icon={AlertTriangle}
+                      eyebrow="Control Room Not Wired Yet"
+                      title={connectedPlatforms > 0 ? "Connections exist, but no live campaign data is flowing yet." : "Connect at least one ad platform to turn this into a live dashboard."}
+                      description={connectedPlatforms > 0
+                        ? "This page is staged correctly, but the system is still waiting for token-backed sync and real campaign data to populate the control surfaces below."
+                        : "The page structure is ready for Meta, Google, and TikTok. Once those are connected, Himalaya can start behaving like a real media operating system instead of a static reporting shell."}
+                      tone="warning"
+                      className="border-0 bg-transparent p-0"
+                    />
+                  </div>
+                  <Link
+                    href="/settings#ad-connections"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-amber-500/20 bg-amber-500/10 px-4 py-2.5 text-sm font-bold text-amber-200 transition hover:bg-amber-500/20"
+                  >
+                    Open Connections
+                    <ArrowRight className="h-4 w-4" />
+                  </Link>
+                </div>
+              </div>
+            )}
+
             <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
-              <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20">Spend</p>
-                <p className="mt-2 text-2xl font-black text-white">{money(totals.spend)}</p>
-              </div>
-              <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20">Revenue</p>
-                <p className="mt-2 text-2xl font-black text-white">{money(totals.revenue)}</p>
-              </div>
-              <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20">ROAS</p>
-                <p className="mt-2 text-2xl font-black text-cyan-300">{ads?.budgetPlan?.expectedROAS?.toFixed(1) ?? "0.0"}x</p>
-              </div>
-              <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20">Conversions</p>
-                <p className="mt-2 text-2xl font-black text-white">{totals.conversions}</p>
-              </div>
+              <OperatorStatCard label="Spend" value={money(totals.spend)} description="Tracked spend across connected platforms." valueClassName="text-2xl" />
+              <OperatorStatCard label="Revenue" value={money(totals.revenue)} description="Attributed revenue from current campaign data." valueClassName="text-2xl" />
+              <OperatorStatCard label="ROAS" value={`${ads?.budgetPlan?.expectedROAS?.toFixed(1) ?? "0.0"}x`} description="Expected blended return from current allocation guidance." tone="accent" valueClassName="text-2xl text-cyan-300" />
+              <OperatorStatCard label="Conversions" value={totals.conversions} description="Recorded conversions flowing through the dashboard." valueClassName="text-2xl" />
             </div>
 
             <div className="mb-6 grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
@@ -372,8 +419,13 @@ export default function AdsPage() {
               description="This keeps the page grounded in campaigns instead of staying purely abstract at the platform level."
               className="mb-6 rounded-3xl border-white/[0.06] bg-gradient-to-br from-white/[0.03] via-white/[0.015] to-transparent"
             >
-              {topCampaigns.length === 0 ? (
-                <p className="text-sm text-white/35">No campaign-level data yet. Once live pulls are available, your strongest campaigns will surface here automatically.</p>
+              {!hasCampaignData ? (
+                <OperatorCallout
+                  icon={Trophy}
+                  eyebrow="Campaign Spotlight"
+                  title="No campaign-level winners yet."
+                  description="As soon as campaigns begin reporting real spend and outcomes, this area becomes your 'what is working right now' layer instead of just a placeholder section."
+                />
               ) : (
                 <div className="grid gap-3 lg:grid-cols-2">
                   {topCampaigns.map((campaign, index) => (

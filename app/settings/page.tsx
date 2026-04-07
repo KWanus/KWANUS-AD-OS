@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import AppNav from "@/components/AppNav";
 import ThemePicker from "@/components/settings/ThemePicker";
+import OperatorStatCard from "@/components/navigation/OperatorStatCard";
 import WorkflowHeader from "@/components/navigation/WorkflowHeader";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -90,9 +91,9 @@ const PLAN_CONFIG: Record<string, { label: string; color: string; bg: string; bo
 // Section wrapper
 // ---------------------------------------------------------------------------
 
-function Section({ title, sub, children }: { title: string; sub?: string; children: React.ReactNode }) {
+function Section({ id, title, sub, children }: { id?: string; title: string; sub?: string; children: React.ReactNode }) {
   return (
-    <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl overflow-hidden">
+    <div id={id} className="bg-white/[0.02] border border-white/[0.06] rounded-2xl overflow-hidden scroll-mt-32">
       <div className="px-6 py-4 border-b border-white/[0.06]">
         <h2 className="text-sm font-black text-white">{title}</h2>
         {sub && <p className="text-[11px] text-white/35 mt-0.5">{sub}</p>}
@@ -253,6 +254,16 @@ export default function SettingsPage() {
     settings.businessUrl,
     settings.businessType,
   ].filter(Boolean).length;
+  const settingsSections = [
+    { href: "#appearance", label: "Appearance" },
+    { href: "#workspace", label: "Workspace" },
+    { href: "#email-delivery", label: "Email" },
+    { href: "#pixels", label: "Tracking" },
+    { href: "#ad-connections", label: "Ad Connections" },
+    { href: "#automation", label: "Automation" },
+    { href: "#accounts", label: "Accounts" },
+    { href: "#integrations", label: "Integrations" },
+  ];
 
   if (loading) {
     return (
@@ -278,21 +289,9 @@ export default function SettingsPage() {
           />
 
           <div className="mt-5 grid gap-3 md:grid-cols-3">
-            <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
-              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/25">Plan</p>
-              <p className={`mt-2 text-lg font-black ${planCfg.color}`}>{planCfg.label}</p>
-              <p className="mt-1 text-xs text-white/35">Current workspace tier and feature access level.</p>
-            </div>
-            <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
-              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/25">Ad Connections</p>
-              <p className="mt-2 text-lg font-black text-white">{connectedOAuthCount}/3 connected</p>
-              <p className="mt-1 text-xs text-white/35">Meta, Google, and TikTok readiness for the ads dashboard.</p>
-            </div>
-            <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
-              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/25">Tracking IDs</p>
-              <p className="mt-2 text-lg font-black text-white">{hasPixels}/4 saved</p>
-              <p className="mt-1 text-xs text-white/35">Pixels and analytics identifiers currently staged for published sites.</p>
-            </div>
+            <OperatorStatCard label="Plan" value={<span className={planCfg.color}>{planCfg.label}</span>} description="Current workspace tier and feature access level." />
+            <OperatorStatCard label="Ad Connections" value={`${connectedOAuthCount}/3 connected`} description="Meta, Google, and TikTok readiness for the ads dashboard." />
+            <OperatorStatCard label="Tracking IDs" value={`${hasPixels}/4 saved`} description="Pixels and analytics identifiers currently staged for published sites." />
           </div>
         </div>
 
@@ -332,13 +331,27 @@ export default function SettingsPage() {
           </div>
         )}
 
+        <div className="sticky top-[108px] z-20 rounded-2xl border border-white/[0.06] bg-[#07101d]/90 p-3 backdrop-blur xl:top-[72px]">
+          <div className="flex gap-2 overflow-x-auto">
+            {settingsSections.map((section) => (
+              <a
+                key={section.href}
+                href={section.href}
+                className="shrink-0 rounded-lg border border-white/[0.06] bg-white/[0.02] px-3 py-2 text-[11px] font-bold text-white/35 transition hover:border-white/[0.12] hover:text-white/70"
+              >
+                {section.label}
+              </a>
+            ))}
+          </div>
+        </div>
+
         {/* Appearance */}
-        <Section title="Appearance" sub="Choose your preferred look and feel">
+        <Section id="appearance" title="Appearance" sub="Choose your preferred look and feel">
           <ThemePicker />
         </Section>
 
         {/* Workspace */}
-        <Section title="Workspace" sub="Your workspace name shown across the platform">
+        <Section id="workspace" title="Workspace" sub="Your workspace name shown across the platform">
           <div className="space-y-4">
             <Field label="Workspace Name">
               <Input
@@ -360,6 +373,7 @@ export default function SettingsPage() {
 
         {/* Email Delivery */}
         <Section
+          id="email-delivery"
           title="Email Delivery"
           sub="Connect Resend to send broadcasts and flow emails from your own domain"
         >
@@ -459,6 +473,7 @@ export default function SettingsPage() {
 
         {/* Opt-in Forms */}
         <Section
+          id="forms"
           title="Opt-in Forms"
           sub="Embeddable forms that capture leads into your email list"
         >
@@ -467,6 +482,7 @@ export default function SettingsPage() {
 
         {/* Ad & Analytics Pixels */}
         <Section
+          id="pixels"
           title="Ad & Analytics Pixels"
           sub="Pixels fire on every public site page you publish — track conversions and retarget visitors"
         >
@@ -568,6 +584,7 @@ export default function SettingsPage() {
         </Section>
 
         <Section
+          id="ad-connections"
           title="Ad Platform Connections"
           sub="Connect Meta, Google, and TikTok so Himalaya can pull performance data and power the ads dashboard"
         >
@@ -641,6 +658,7 @@ export default function SettingsPage() {
 
         {/* Automation / Webhooks */}
         <Section
+          id="automation"
           title="Automation & Webhooks"
           sub="Connect to N8N, Zapier, or any webhook endpoint to trigger automations"
         >
@@ -717,7 +735,7 @@ export default function SettingsPage() {
         </Section>
 
         {/* Connected Accounts */}
-        <Section title="Connected Accounts" sub="Link your affiliate and platform accounts to auto-generate affiliate URLs">
+        <Section id="accounts" title="Connected Accounts" sub="Link your affiliate and platform accounts to auto-generate affiliate URLs">
           <div className="space-y-4">
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="rounded-xl border border-white/[0.06] bg-black/20 p-4">
@@ -789,7 +807,7 @@ export default function SettingsPage() {
         </Section>
 
         {/* Integrations */}
-        <Section title="Integrations" sub="Connect external tools">
+        <Section id="integrations" title="Integrations" sub="Connect external tools">
           <div className="space-y-3">
             <div className="rounded-xl border border-white/[0.06] bg-black/20 p-4">
               <div className="flex flex-wrap items-center justify-between gap-3">

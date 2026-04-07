@@ -56,6 +56,21 @@ const BUSINESS_NAV = [
   { href: "/products",  label: "Products",  icon: Package,        sub: "Offer library, sources" },
 ];
 
+const BUSINESS_GROUPS = [
+  {
+    title: "Operate",
+    items: ["/inbox", "/ads", "/analytics", "/bookings", "/forms", "/revenue"],
+  },
+  {
+    title: "Create",
+    items: ["/tools", "/content", "/social", "/proposals", "/products"],
+  },
+  {
+    title: "Verticals",
+    items: ["/consult", "/local", "/affiliate", "/dropship", "/agency"],
+  },
+] as const;
+
 const MOBILE_QUICK_NAV = [
   { href: "/himalaya", label: "Himalaya", icon: Mountain },
   { href: "/inbox", label: "Inbox", icon: MessageSquareText },
@@ -118,6 +133,12 @@ export default function AppNav() {
   useEffect(() => { setShowBizDropdown(false); }, [pathname]);
 
   const isBizActive = BUSINESS_NAV.some(n => pathname.startsWith(n.href));
+  const groupedBusinessNav = BUSINESS_GROUPS.map((group) => ({
+    ...group,
+    items: group.items
+      .map((href) => BUSINESS_NAV.find((item) => item.href === href))
+      .filter((item): item is NonNullable<typeof item> => Boolean(item)),
+  }));
 
   return (
     <header className="sticky top-0 z-50">
@@ -173,26 +194,39 @@ export default function AppNav() {
             </button>
 
             {showBizDropdown && (
-              <div className="absolute top-full right-0 mt-2 w-64 rounded-2xl border border-white/[0.1] bg-[#0a1020] shadow-2xl overflow-hidden z-50">
-                <div className="p-2">
-                  {BUSINESS_NAV.map(({ href, label, icon: Icon, sub }) => {
-                    const active = pathname.startsWith(href);
-                    return (
-                      <Link
-                        key={href}
-                        href={href}
-                        className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition ${
-                          active ? "bg-cyan-500/10 text-white" : "text-white/60 hover:bg-white/[0.05] hover:text-white"
-                        }`}
-                      >
-                        <Icon className={`w-4 h-4 shrink-0 ${active ? "text-cyan-400" : "text-white/30"}`} />
-                        <div className="min-w-0">
-                          <p className="text-xs font-bold">{label}</p>
-                          <p className="text-[10px] text-white/30 truncate">{sub}</p>
-                        </div>
-                      </Link>
-                    );
-                  })}
+              <div className="absolute top-full right-0 mt-2 w-[22rem] rounded-2xl border border-white/[0.1] bg-[#0a1020] shadow-2xl overflow-hidden z-50">
+                <div className="border-b border-white/[0.06] px-4 py-3">
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/25">Business Surfaces</p>
+                  <p className="mt-1 text-[11px] text-white/35">Operate the system, create assets, or jump into a vertical-specific workspace.</p>
+                </div>
+                <div className="max-h-[70vh] overflow-y-auto p-2">
+                  {groupedBusinessNav.map((group) => (
+                    <div key={group.title} className="mb-3 last:mb-0">
+                      <div className="px-2 pb-2 pt-1">
+                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20">{group.title}</p>
+                      </div>
+                      <div className="space-y-1">
+                        {group.items.map(({ href, label, icon: Icon, sub }) => {
+                          const active = pathname.startsWith(href);
+                          return (
+                            <Link
+                              key={href}
+                              href={href}
+                              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition ${
+                                active ? "bg-cyan-500/10 text-white" : "text-white/60 hover:bg-white/[0.05] hover:text-white"
+                              }`}
+                            >
+                              <Icon className={`w-4 h-4 shrink-0 ${active ? "text-cyan-400" : "text-white/30"}`} />
+                              <div className="min-w-0">
+                                <p className="text-xs font-bold">{label}</p>
+                                <p className="text-[10px] text-white/30 truncate">{sub}</p>
+                              </div>
+                            </Link>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  ))}
                 </div>
                 <div className="border-t border-white/[0.06] p-2">
                   <Link

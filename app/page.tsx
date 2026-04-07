@@ -565,6 +565,11 @@ export default function Dashboard() {
           </div>
         </section>
 
+        {/* Daily Action Queue — what to do today */}
+        {!loading && (totalCampaigns > 0 || totalSites > 0) && (
+          <DailyActionsSection />
+        )}
+
         <section className="mb-8">
         {/* Getting Started Checklist — only for new users */}
         {!loading && totalCampaigns + totalSites + totalClients + totalEmailFlows === 0 && (
@@ -983,6 +988,58 @@ export default function Dashboard() {
         </div>
       </WorkspaceShell>
     </main>
+  );
+}
+
+function DailyActionsSection() {
+  const [actions, setActions] = useState<{ id: string; priority: number; category: string; title: string; description: string; cta: string; href: string; estimatedImpact: string; timeEstimate: string }[]>([]);
+  const [loaded, setLoaded] = useState(false);
+
+  useEffect(() => {
+    fetch("/api/intelligence/daily-actions")
+      .then((r) => r.json())
+      .then((data: { ok: boolean; actions?: typeof actions }) => {
+        if (data.ok && data.actions) setActions(data.actions);
+      })
+      .catch(() => {})
+      .finally(() => setLoaded(true));
+  }, []);
+
+  if (!loaded || actions.length === 0) return null;
+
+  const priorityColors: Record<number, string> = {
+    1: "border-red-500/20 bg-red-500/[0.06]",
+    2: "border-amber-500/20 bg-amber-500/[0.06]",
+    3: "border-cyan-500/20 bg-cyan-500/[0.06]",
+    4: "border-white/10 bg-white/[0.03]",
+    5: "border-white/10 bg-white/[0.03]",
+  };
+
+  return (
+    <section className="mb-8">
+      <SectionLabel>Today&apos;s Actions</SectionLabel>
+      <div className="space-y-2">
+        {actions.map((action) => (
+          <Link
+            key={action.id}
+            href={action.href}
+            className={`flex items-center gap-4 rounded-2xl border p-4 transition hover:scale-[1.005] ${priorityColors[action.priority] ?? priorityColors[4]}`}
+          >
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2 mb-0.5">
+                <span className="text-xs font-black text-white">{action.title}</span>
+                <span className="text-[9px] text-white/20 border border-white/10 px-1.5 py-0.5 rounded">{action.timeEstimate}</span>
+              </div>
+              <p className="text-[11px] text-white/40 truncate">{action.description}</p>
+            </div>
+            <div className="text-right shrink-0">
+              <span className="text-[10px] font-bold text-cyan-400">{action.cta}</span>
+              <p className="text-[9px] text-white/20 mt-0.5">{action.estimatedImpact}</p>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </section>
   );
 }
 

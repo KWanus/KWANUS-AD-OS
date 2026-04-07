@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import AppNav from "@/components/AppNav";
+import OperatorCallout from "@/components/navigation/OperatorCallout";
+import OperatorStatCard from "@/components/navigation/OperatorStatCard";
 import WorkflowHeader from "@/components/navigation/WorkflowHeader";
 import WorkflowPanel from "@/components/navigation/WorkflowPanel";
 import { CalendarDays, Check, Clock3, Copy, ExternalLink, Loader2, Phone, UserRound } from "lucide-react";
@@ -120,40 +122,22 @@ export default function BookingsPage() {
           </div>
 
           <div className="mt-5 grid gap-3 md:grid-cols-3">
-            <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
-              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/25">Upcoming</p>
-              <p className="mt-2 text-2xl font-black text-white">{bookings.length}</p>
-              <p className="mt-1 text-xs text-white/35">Appointments currently on the calendar.</p>
-            </div>
-            <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
-              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/25">Open Days</p>
-              <p className="mt-2 text-2xl font-black text-white">{availabilityPreview.length}</p>
-              <p className="mt-1 text-xs text-white/35">Upcoming days with at least one bookable slot.</p>
-            </div>
-            <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
-              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/25">Public Link</p>
-              <p className="mt-2 text-lg font-black text-white">{userId ? "Live" : "Pending"}</p>
-              <p className="mt-1 text-xs text-white/35">Share the booking page directly once the workspace user ID is loaded.</p>
-            </div>
+            <OperatorStatCard label="Upcoming" value={bookings.length} description="Appointments currently on the calendar." valueClassName="text-2xl" />
+            <OperatorStatCard label="Open Days" value={availabilityPreview.length} description="Upcoming days with at least one bookable slot." valueClassName="text-2xl" />
+            <OperatorStatCard label="Public Link" value={userId ? "Live" : "Pending"} description="Share the booking page directly once the workspace user ID is loaded." />
           </div>
 
           <div className="mt-3 grid gap-3 lg:grid-cols-2">
-            <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
-              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/25">Next Open Window</p>
-              <p className="mt-2 text-sm font-black text-white">{nextOpenDay ? formatDate(nextOpenDay) : "No future availability"}</p>
-              <p className="mt-1 text-xs text-white/35">
-                {nextOpenDay ? "Your public booking page still has visible capacity." : "Add or reopen availability so visitors do not hit a dead end."}
-              </p>
-            </div>
-            <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
-              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/25">Next Appointment</p>
-              <p className="mt-2 text-sm font-black text-white">
-                {nextBooking ? `${nextBooking.clientName} · ${formatDate(nextBooking.date)}` : "No call booked yet"}
-              </p>
-              <p className="mt-1 text-xs text-white/35">
-                {nextBooking ? `${nextBooking.startTime} to ${nextBooking.endTime}` : "Share the live link across landing pages, chat replies, and email CTAs to start filling this calendar."}
-              </p>
-            </div>
+            <OperatorStatCard
+              label="Next Open Window"
+              value={nextOpenDay ? formatDate(nextOpenDay) : "No future availability"}
+              description={nextOpenDay ? "Your public booking page still has visible capacity." : "Add or reopen availability so visitors do not hit a dead end."}
+            />
+            <OperatorStatCard
+              label="Next Appointment"
+              value={nextBooking ? `${nextBooking.clientName} · ${formatDate(nextBooking.date)}` : "No call booked yet"}
+              description={nextBooking ? `${nextBooking.startTime} to ${nextBooking.endTime}` : "Share the live link across landing pages, chat replies, and email CTAs to start filling this calendar."}
+            />
           </div>
         </div>
 
@@ -175,10 +159,13 @@ export default function BookingsPage() {
                   <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/20">Open Windows</p>
                 </div>
                 {availabilityPreview.length === 0 ? (
-                  <div className="rounded-2xl border border-amber-500/15 bg-amber-500/[0.06] p-4">
-                    <p className="text-sm font-semibold text-white/80">No upcoming available slots yet.</p>
-                    <p className="mt-1 text-xs leading-5 text-white/45">Until availability opens up, your public booking page risks becoming a dead-end CTA.</p>
-                  </div>
+                  <OperatorCallout
+                    icon={CalendarDays}
+                    eyebrow="Availability Warning"
+                    title="No upcoming available slots yet."
+                    description="Until availability opens up, your public booking page risks becoming a dead-end CTA."
+                    tone="warning"
+                  />
                 ) : (
                   <div className="space-y-3">
                     {availabilityPreview.map(([date, count]) => (
@@ -207,10 +194,12 @@ export default function BookingsPage() {
                   <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/20">Calendar Feed</p>
                 </div>
                 {bookings.length === 0 ? (
-                  <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
-                    <p className="text-sm font-semibold text-white/80">No bookings yet.</p>
-                    <p className="mt-1 text-xs leading-5 text-white/45">Share the public booking page in sites, email sequences, and chat follow-up to convert intent faster.</p>
-                  </div>
+                  <OperatorCallout
+                    icon={Clock3}
+                    eyebrow="Calendar Feed"
+                    title="No bookings yet."
+                    description="Share the public booking page in sites, email sequences, and chat follow-up to convert intent faster."
+                  />
                 ) : (
                   <div className="space-y-3">
                     {bookings.map((booking) => (

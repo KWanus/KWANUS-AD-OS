@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState, type ElementType } from "react";
 import Link from "next/link";
 import AppNav from "@/components/AppNav";
+import OperatorCallout from "@/components/navigation/OperatorCallout";
+import OperatorStatCard from "@/components/navigation/OperatorStatCard";
 import WorkflowHeader from "@/components/navigation/WorkflowHeader";
 import {
   CalendarDays,
@@ -224,6 +226,7 @@ export default function InboxPage() {
   const detailBody = selectedItem ? getItemBody(selectedItem) : null;
   const detailHref = selectedItem ? getItemHref(selectedItem) : null;
   const publicSiteHref = selectedItem ? getPublicSiteHref(selectedItem) : null;
+  const hasDirectReply = Boolean(selectedItem?.email);
 
   async function refreshInbox() {
     setRefreshing(true);
@@ -283,21 +286,21 @@ export default function InboxPage() {
           </div>
 
           <div className="mt-5 grid gap-3 md:grid-cols-3">
-            <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
-              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/25">Action Queue</p>
-              <p className="mt-2 text-lg font-black text-white">{activeConversations}</p>
-              <p className="mt-1 text-xs text-white/35">Unread or chat-led conversations that likely need operator attention first.</p>
-            </div>
-            <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
-              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/25">Current Focus</p>
-              <p className="mt-2 text-lg font-black text-white">{selectedItem?.from ?? "Pick a thread"}</p>
-              <p className="mt-1 text-xs text-white/35">Use the detail panel as your triage surface before jumping into leads, bookings, or the live site.</p>
-            </div>
-            <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
-              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/25">Workflow Mode</p>
-              <p className="mt-2 text-lg font-black text-white">Triage first</p>
-              <p className="mt-1 text-xs text-white/35">This page is tuned for fast inspection and routing until full live reply threads are in place.</p>
-            </div>
+            <OperatorStatCard
+              label="Action Queue"
+              value={activeConversations}
+              description="Unread or chat-led conversations that likely need operator attention first."
+            />
+            <OperatorStatCard
+              label="Current Focus"
+              value={selectedItem?.from ?? "Pick a thread"}
+              description="Use the detail panel as your triage surface before jumping into leads, bookings, or the live site."
+            />
+            <OperatorStatCard
+              label="Workflow Mode"
+              value="Triage first"
+              description="This page is tuned for fast inspection and routing until full live reply threads are in place."
+            />
           </div>
         </div>
 
@@ -418,7 +421,7 @@ export default function InboxPage() {
               </div>
             </section>
 
-            <aside className="rounded-3xl border border-white/[0.06] bg-gradient-to-br from-white/[0.04] via-white/[0.015] to-transparent p-5 sm:p-6">
+            <aside className="rounded-3xl border border-white/[0.06] bg-gradient-to-br from-white/[0.04] via-white/[0.015] to-transparent p-5 sm:p-6 xl:sticky xl:top-[138px] xl:self-start">
               {!selectedItem ? (
                 <div className="flex h-full min-h-[360px] flex-col items-center justify-center gap-4 text-center">
                   <InboxIcon className="h-10 w-10 text-white/10" />
@@ -485,6 +488,24 @@ export default function InboxPage() {
                     )}
                   </div>
 
+                  <div className="mt-4 grid gap-2 sm:grid-cols-3">
+                    <OperatorStatCard
+                      label="Reply State"
+                      value={hasDirectReply ? "Reachable" : "No direct channel"}
+                      description={hasDirectReply ? "You can move immediately with copy-email or draft-reply actions." : "Use workspace routing or site context because this thread has no direct email target."}
+                    />
+                    <OperatorStatCard
+                      label="Route Depth"
+                      value={detailHref ? "Connected" : "Triage only"}
+                      description={detailHref ? "This thread can jump directly into a downstream workspace flow." : "Stay in triage mode here, then act from the surrounding operator systems."}
+                    />
+                    <OperatorStatCard
+                      label="Signal Freshness"
+                      value={selectedItem.read ? "Known" : "Fresh"}
+                      description={selectedItem.read ? "Already present in the system, so prioritize by context and value." : "This looks newly surfaced, so faster follow-up likely matters more."}
+                    />
+                  </div>
+
                   <div className="mt-6 rounded-2xl border border-white/[0.07] bg-black/20 p-4">
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20">Message</p>
                     <p className="mt-3 whitespace-pre-wrap text-sm leading-6 text-white/70">{detailBody}</p>
@@ -522,15 +543,14 @@ export default function InboxPage() {
                     </div>
                   )}
 
-                  <div className="mt-4 rounded-2xl border border-amber-500/15 bg-amber-500/[0.06] p-4">
-                    <div className="flex items-center gap-2">
-                      <Sparkles className="h-3.5 w-3.5 text-amber-300" />
-                      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-amber-200/70">Operator Note</p>
-                    </div>
-                    <p className="mt-2 text-sm leading-6 text-amber-50/75">
-                      Live reply threads are not wired yet, so this workspace focuses on triage: inspect the lead, jump into the right system, and use draft actions to follow up fast.
-                    </p>
-                  </div>
+                  <OperatorCallout
+                    icon={Sparkles}
+                    eyebrow="Operator Note"
+                    title="This workspace is optimized for triage right now."
+                    description="Live reply threads are not wired yet, so the fastest path is still: inspect the lead, jump into the right system, and use draft actions to follow up fast."
+                    tone="warning"
+                    className="mt-4"
+                  />
 
                   <div className="mt-4 grid gap-2 sm:grid-cols-2">
                     <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
