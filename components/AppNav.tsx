@@ -10,7 +10,7 @@ import {
   LayoutDashboard, Globe, Mail, Users, Settings, Zap,
   ScanSearch, Sparkles, FolderOpen, ChevronDown, Search,
   Briefcase, MapPin, TrendingUp, ShoppingCart, Building,
-  Package, BotMessageSquare, Building2, Mountain, Wrench, BarChart3, FileText,
+  Package, BotMessageSquare, Building2, Mountain, Wrench, BarChart3, FileText, MessageSquareText,
 } from "lucide-react";
 
 const CreditsDisplay = dynamic(() => import("@/components/CreditsDisplay"), { ssr: false });
@@ -38,9 +38,12 @@ const MAIN_NAV = [
 // ── Business verticals (dropdown) ────────────────────────────────────────────
 
 const BUSINESS_NAV = [
+  { href: "/inbox",     label: "Inbox",     icon: MessageSquareText, sub: "Forms, chat, bookings, replies" },
+  { href: "/ads",       label: "Ads",       icon: TrendingUp,   sub: "Spend, ROAS, budget shifts, leaks" },
   { href: "/tools",     label: "Tools",     icon: Wrench,       sub: "Calculators, generators, audits" },
   { href: "/analytics", label: "Analytics", icon: BarChart3,    sub: "Cross-workspace performance and health" },
   { href: "/forms",     label: "Forms",     icon: FileText,     sub: "Opt-in forms, links, and submissions" },
+  { href: "/bookings",  label: "Bookings",  icon: Briefcase,    sub: "Public scheduling and appointments" },
   { href: "/revenue",   label: "Revenue",   icon: TrendingUp,   sub: "Sales, orders, email ROI" },
   { href: "/content",   label: "Content",   icon: LayoutDashboard, sub: "7-day social calendar" },
   { href: "/social",    label: "Social",    icon: Globe,         sub: "Generate posts for any platform" },
@@ -51,6 +54,13 @@ const BUSINESS_NAV = [
   { href: "/dropship",  label: "Dropship",  icon: ShoppingCart,   sub: "Products, profit math, ads" },
   { href: "/agency",    label: "Agency",    icon: Building,       sub: "Client audits, strategy" },
   { href: "/products",  label: "Products",  icon: Package,        sub: "Offer library, sources" },
+];
+
+const MOBILE_QUICK_NAV = [
+  { href: "/himalaya", label: "Himalaya", icon: Mountain },
+  { href: "/inbox", label: "Inbox", icon: MessageSquareText },
+  { href: "/ads", label: "Ads", icon: TrendingUp },
+  { href: "/bookings", label: "Bookings", icon: Briefcase },
 ];
 
 type StatsPayload = {
@@ -235,6 +245,41 @@ export default function AppNav() {
           )}
         </div>
       </div>
+
+      {isSignedIn && (
+        <div className="border-b border-white/[0.05] bg-[#040912]/85 px-4 py-2.5 backdrop-blur-2xl lg:hidden">
+          <div className="flex gap-2 overflow-x-auto pb-0.5">
+            {MOBILE_QUICK_NAV.map(({ href, label, icon: Icon }) => {
+              const active = pathname.startsWith(href);
+              return (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`inline-flex shrink-0 items-center gap-1.5 rounded-xl border px-3 py-2 text-[11px] font-bold transition ${
+                    active
+                      ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-300"
+                      : "border-white/[0.08] bg-white/[0.03] text-white/45 hover:text-white/75"
+                  }`}
+                >
+                  <Icon className="h-3.5 w-3.5" />
+                  {label}
+                </Link>
+              );
+            })}
+            <Link
+              href="/settings"
+              className={`inline-flex shrink-0 items-center gap-1.5 rounded-xl border px-3 py-2 text-[11px] font-bold transition ${
+                pathname.startsWith("/settings")
+                  ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-300"
+                  : "border-white/[0.08] bg-white/[0.03] text-white/45 hover:text-white/75"
+              }`}
+            >
+              <Settings className="h-3.5 w-3.5" />
+              Settings
+            </Link>
+          </div>
+        </div>
+      )}
     </header>
   );
 }

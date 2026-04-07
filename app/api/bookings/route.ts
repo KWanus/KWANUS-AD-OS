@@ -28,7 +28,7 @@ export async function GET(req: NextRequest) {
     getUpcomingBookings(user.id),
   ]);
 
-  return NextResponse.json({ ok: true, slots, bookings });
+  return NextResponse.json({ ok: true, userId: user.id, slots, bookings });
 }
 
 export async function POST(req: NextRequest) {

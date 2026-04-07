@@ -11,6 +11,8 @@ import { notifyNewLead } from "@/lib/notifications/notify";
 import { enrichFromEmail } from "@/lib/leads/leadEnrichment";
 import { processTrigger } from "@/lib/automations/triggerEngine";
 import { fireLeadWebhook } from "@/lib/automations/webhookFire";
+import { recordConsent } from "@/lib/compliance/gdprManager";
+import { recordWin } from "@/lib/intelligence/learningEngine";
 
 export async function POST(req: NextRequest) {
   try {
@@ -150,7 +152,11 @@ export async function POST(req: NextRequest) {
       score: leadScore.score,
     }).catch(() => {});
 
-    // 6. Track event
+    // 6. Record consent + learning signal
+    recordConsent({ userId, contactEmail: email, consentType: "email", consented: true, source: `site:${site.id}` }).catch(() => {});
+    recordWin({ userId, niche: site.name, type: "headline", content: `Form submission from ${site.name}`, conversionRate: 1, channel: "site" }).catch(() => {});
+
+    // 7. Track event
     await prisma.himalayaFunnelEvent.create({
       data: {
         userId,
@@ -159,6 +165,9 @@ export async function POST(req: NextRequest) {
           siteId: site.id,
           siteSlug: site.slug,
           contactId: contact.id,
+          contactEmail: email,
+          contactName: name ?? null,
+          message: message ?? null,
           hasEmail: true,
           hasPhone: !!phone,
           enrolledInFlow: enrollmentResult?.ok ?? false,

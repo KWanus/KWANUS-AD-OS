@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import AppNav from "@/components/AppNav";
 import ThemePicker from "@/components/settings/ThemePicker";
+import WorkflowHeader from "@/components/navigation/WorkflowHeader";
 import Link from "next/link";
 import { toast } from "sonner";
 import {
@@ -22,6 +23,7 @@ import {
   BarChart3,
   Webhook,
   TrendingUp,
+  MessageSquareText,
 } from "lucide-react";
 
 // ---------------------------------------------------------------------------
@@ -58,6 +60,20 @@ interface EmailDeliveryAlert {
   failedEnrollments: number;
   latestError: string | null;
   latestFailedAt: string | null;
+}
+
+interface OAuthPlatformStatus {
+  connected: boolean;
+  connectUrl: string;
+}
+
+interface OAuthStatusResponse {
+  ok: boolean;
+  platforms?: {
+    meta: OAuthPlatformStatus;
+    google: OAuthPlatformStatus;
+    tiktok: OAuthPlatformStatus;
+  };
 }
 
 // ---------------------------------------------------------------------------
@@ -134,6 +150,7 @@ export default function SettingsPage() {
   const [saving, setSaving] = useState(false);
   const [savingAccounts, setSavingAccounts] = useState(false);
   const [emailDeliveryAlert, setEmailDeliveryAlert] = useState<EmailDeliveryAlert | null>(null);
+  const [oauthStatus, setOauthStatus] = useState<OAuthStatusResponse["platforms"] | null>(null);
 
   useEffect(() => {
     fetch("/api/settings")
@@ -159,6 +176,13 @@ export default function SettingsPage() {
           }));
         }
       }).catch(() => {});
+
+    fetch("/api/oauth/status")
+      .then((r) => r.json() as Promise<OAuthStatusResponse>)
+      .then((data) => {
+        if (data.ok && data.platforms) setOauthStatus(data.platforms);
+      })
+      .catch(() => {});
   }, []);
 
   async function save(fields: Partial<UserSettings & { resendApiKey: string }>) {
@@ -215,6 +239,20 @@ export default function SettingsPage() {
 
   const planCfg = PLAN_CONFIG[settings.plan] ?? PLAN_CONFIG.free;
   const PlanIcon = planCfg.icon;
+  const connectedOAuthCount = Object.values(oauthStatus ?? {}).filter((platform) => platform.connected).length;
+  const hasPixels = [settings.metaPixelId, settings.googleAnalyticsId, settings.tiktokPixelId, settings.googleAdsId].filter(Boolean).length;
+  const connectedAffiliateCount = [
+    settings.clickbankNickname,
+    settings.amazonTrackingId,
+    settings.jvzooAffiliateId,
+    settings.warriorplusId,
+    settings.sharesaleAffiliateId,
+  ].filter(Boolean).length;
+  const automationReadyCount = [
+    settings.webhookUrl,
+    settings.businessUrl,
+    settings.businessType,
+  ].filter(Boolean).length;
 
   if (loading) {
     return (
@@ -232,14 +270,29 @@ export default function SettingsPage() {
       <AppNav />
 
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-10 space-y-6">
-        {/* Header */}
-        <div className="flex items-center gap-3 mb-2">
-          <div className="w-9 h-9 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
-            <Settings className="w-4 h-4 text-white/50" />
-          </div>
-          <div>
-            <h1 className="text-xl font-black text-white">Settings</h1>
-            <p className="text-xs text-white/30">Workspace configuration and integrations</p>
+        <div className="rounded-3xl border border-white/[0.06] bg-gradient-to-br from-cyan-500/[0.07] via-white/[0.02] to-purple-500/[0.04] p-5 sm:p-6">
+          <WorkflowHeader
+            title="Settings"
+            description="Workspace configuration, delivery health, tracking, and connected growth systems in one control surface."
+            icon={Settings}
+          />
+
+          <div className="mt-5 grid gap-3 md:grid-cols-3">
+            <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
+              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/25">Plan</p>
+              <p className={`mt-2 text-lg font-black ${planCfg.color}`}>{planCfg.label}</p>
+              <p className="mt-1 text-xs text-white/35">Current workspace tier and feature access level.</p>
+            </div>
+            <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
+              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/25">Ad Connections</p>
+              <p className="mt-2 text-lg font-black text-white">{connectedOAuthCount}/3 connected</p>
+              <p className="mt-1 text-xs text-white/35">Meta, Google, and TikTok readiness for the ads dashboard.</p>
+            </div>
+            <div className="rounded-2xl border border-white/[0.07] bg-black/20 p-4">
+              <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/25">Tracking IDs</p>
+              <p className="mt-2 text-lg font-black text-white">{hasPixels}/4 saved</p>
+              <p className="mt-1 text-xs text-white/35">Pixels and analytics identifiers currently staged for published sites.</p>
+            </div>
           </div>
         </div>
 
@@ -418,6 +471,19 @@ export default function SettingsPage() {
           sub="Pixels fire on every public site page you publish — track conversions and retarget visitors"
         >
           <div className="space-y-5">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-xl border border-white/[0.06] bg-black/20 p-4">
+                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/20">Tracking Readiness</p>
+                <p className="mt-2 text-sm font-black text-white">{hasPixels}/4 identifiers saved</p>
+                <p className="mt-1 text-[11px] leading-5 text-white/35">Once IDs are set, published sites can fire analytics and retargeting signals without manual code edits.</p>
+              </div>
+              <div className="rounded-xl border border-white/[0.06] bg-black/20 p-4">
+                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/20">Operator View</p>
+                <p className="mt-2 text-sm font-black text-white">One publish path</p>
+                <p className="mt-1 text-[11px] leading-5 text-white/35">This page is where measurement gets wired into every generated site before you send traffic.</p>
+              </div>
+            </div>
+
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <Field label="Meta Pixel ID" sub="Facebook & Instagram ads">
                 <div className="relative">
@@ -501,12 +567,97 @@ export default function SettingsPage() {
           </div>
         </Section>
 
+        <Section
+          title="Ad Platform Connections"
+          sub="Connect Meta, Google, and TikTok so Himalaya can pull performance data and power the ads dashboard"
+        >
+          <div className="space-y-3">
+            <div className="rounded-xl border border-cyan-500/15 bg-cyan-500/10 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-100/70">Connection Status</p>
+                  <p className="mt-2 text-sm font-black text-white">{connectedOAuthCount}/3 ad platforms connected</p>
+                  <p className="mt-1 text-[11px] leading-5 text-white/40">
+                    These connections are the bridge between settings and the unified ads dashboard. Once connected, this stops being static setup and becomes a live control system.
+                  </p>
+                </div>
+                <Link
+                  href="/ads"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-xs font-bold text-white/55 transition hover:text-white/80"
+                >
+                  Open Ads Dashboard
+                  <ExternalLink className="w-3 h-3" />
+                </Link>
+              </div>
+            </div>
+
+            {([
+              { key: "meta", label: "Meta Ads", sub: "Facebook and Instagram campaign data" },
+              { key: "google", label: "Google Ads", sub: "Search, YouTube, and display campaign data" },
+              { key: "tiktok", label: "TikTok Ads", sub: "TikTok campaign performance and spend" },
+            ] as const).map((platform) => {
+              const status = oauthStatus?.[platform.key];
+              return (
+                <div key={platform.key} className="flex flex-col gap-3 rounded-xl border border-white/[0.05] bg-white/[0.02] p-4">
+                  <div>
+                    <p className="text-sm font-bold text-white/70">{platform.label}</p>
+                    <p className="mt-1 text-[11px] text-white/30">{platform.sub}</p>
+                  </div>
+                  <div className="grid gap-3 sm:grid-cols-[minmax(0,1fr)_auto] sm:items-center">
+                    <div className="rounded-xl border border-white/[0.06] bg-black/20 p-3">
+                      <div className="flex flex-wrap items-center gap-2">
+                        <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.18em] ${
+                          status?.connected
+                            ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-300"
+                            : "border-white/[0.08] bg-white/[0.04] text-white/35"
+                        }`}>
+                          {status?.connected ? "Connected" : "Not Connected"}
+                        </span>
+                        <span className="text-[11px] text-white/35">
+                          {status?.connected ? "Ready for token-backed campaign sync." : "Still in setup mode for this platform."}
+                        </span>
+                      </div>
+                    </div>
+                    <a
+                      href={status?.connectUrl ?? `/api/oauth/connect?provider=${platform.key}`}
+                      className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-2 text-xs font-bold text-cyan-300 transition hover:bg-cyan-500/20"
+                    >
+                      {status?.connected ? "Reconnect" : "Connect"}
+                      <ExternalLink className="w-3 h-3" />
+                    </a>
+                  </div>
+                </div>
+              );
+            })}
+
+            <div className="rounded-xl bg-white/[0.02] p-3 text-[10px] text-white/25 flex items-start gap-2">
+              <MessageSquareText className="w-3.5 h-3.5 text-cyan-400/50 shrink-0 mt-0.5" />
+              <span>
+                Once connected, the unified ads dashboard can pull live spend, ROAS, and campaign totals. The current backend is ready for token-based sync, and these connections are the frontend entry point.
+              </span>
+            </div>
+          </div>
+        </Section>
+
         {/* Automation / Webhooks */}
         <Section
           title="Automation & Webhooks"
           sub="Connect to N8N, Zapier, or any webhook endpoint to trigger automations"
         >
           <div className="space-y-4">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-xl border border-white/[0.06] bg-black/20 p-4">
+                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/20">Automation Readiness</p>
+                <p className="mt-2 text-sm font-black text-white">{automationReadyCount}/3 essentials configured</p>
+                <p className="mt-1 text-[11px] leading-5 text-white/35">Webhook target, business URL, and business type give the automation layer enough context to trigger and enrich downstream actions.</p>
+              </div>
+              <div className="rounded-xl border border-white/[0.06] bg-black/20 p-4">
+                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/20">Operator Use</p>
+                <p className="mt-2 text-sm font-black text-white">External workflow bridge</p>
+                <p className="mt-1 text-[11px] leading-5 text-white/35">This is where Himalaya hands off events to Zapier, N8N, or custom systems without adding manual glue code to every campaign.</p>
+              </div>
+            </div>
+
             <Field
               label="Webhook URL"
               sub="We POST JSON events here: new_contact, broadcast_sent, order_placed, campaign_launched"
@@ -568,6 +719,19 @@ export default function SettingsPage() {
         {/* Connected Accounts */}
         <Section title="Connected Accounts" sub="Link your affiliate and platform accounts to auto-generate affiliate URLs">
           <div className="space-y-4">
+            <div className="grid gap-3 sm:grid-cols-2">
+              <div className="rounded-xl border border-white/[0.06] bg-black/20 p-4">
+                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/20">Connected Accounts</p>
+                <p className="mt-2 text-sm font-black text-white">{connectedAffiliateCount}/5 saved</p>
+                <p className="mt-1 text-[11px] leading-5 text-white/35">Stored account handles let affiliate links and monetized assets be generated directly inside the workspace.</p>
+              </div>
+              <div className="rounded-xl border border-white/[0.06] bg-black/20 p-4">
+                <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/20">Revenue Path</p>
+                <p className="mt-2 text-sm font-black text-white">Offer links without hand-editing</p>
+                <p className="mt-1 text-[11px] leading-5 text-white/35">Once these IDs are present, the frontend can route generated product and funnel assets toward your actual monetization accounts.</p>
+              </div>
+            </div>
+
             <Field label="ClickBank Nickname" sub="Your ClickBank account nickname (for hoplinks)">
               <Input
                 value={settings.clickbankNickname}
@@ -627,6 +791,23 @@ export default function SettingsPage() {
         {/* Integrations */}
         <Section title="Integrations" sub="Connect external tools">
           <div className="space-y-3">
+            <div className="rounded-xl border border-white/[0.06] bg-black/20 p-4">
+              <div className="flex flex-wrap items-center justify-between gap-3">
+                <div>
+                  <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/20">Integration Surface</p>
+                  <p className="mt-2 text-sm font-black text-white">Current plan: {planCfg.label}</p>
+                  <p className="mt-1 text-[11px] leading-5 text-white/35">These are the next external systems the product can absorb into the operating workflow as the platform matures.</p>
+                </div>
+                <Link
+                  href="/billing"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-2 text-xs font-bold text-white/55 transition hover:text-white/80"
+                >
+                  {settings.plan === "free" ? "Upgrade Plan" : "Manage Plan"}
+                  <ExternalLink className="w-3 h-3" />
+                </Link>
+              </div>
+            </div>
+
             {[
               { name: "Shopify", desc: "Sync customers to email contacts", status: "coming_soon" },
               { name: "Stripe Webhooks", desc: "Trigger flows on purchase events", status: "coming_soon" },
