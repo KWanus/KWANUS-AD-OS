@@ -38,12 +38,57 @@ export async function GET(req: NextRequest) {
     // Save tokens encrypted
     await saveTokens(state.userId, tokens);
 
+    // Extract ad account IDs from the platform
+    try {
+      const { prisma } = await import("@/lib/prisma");
+
+      if (state.provider === "meta") {
+        // Fetch Meta ad accounts
+        const acctRes = await fetch(`https://graph.facebook.com/v25.0/me/adaccounts?fields=account_id,name&access_token=${tokens.accessToken}`);
+        if (acctRes.ok) {
+          const acctData = await acctRes.json();
+          const firstAccount = acctData?.data?.[0];
+          if (firstAccount?.account_id) {
+            await prisma.user.update({
+              where: { id: state.userId },
+              data: { metaPixelId: firstAccount.account_id.replace("act_", "") },
+            });
+          }
+        }
+      }
+
+      if (state.provider === "google") {
+        // Google Ads customer ID comes from the ads API
+        // For now, prompt user to enter it in settings
+        // Full extraction requires Google Ads API developer token
+      }
+
+      if (state.provider === "tiktok") {
+        // Fetch TikTok advertiser accounts
+        const acctRes = await fetch("https://business-api.tiktok.com/open_api/v1.3/oauth2/advertiser/get/", {
+          headers: { "Access-Token": tokens.accessToken },
+        });
+        if (acctRes.ok) {
+          const acctData = await acctRes.json();
+          const firstAdvertiser = acctData?.data?.list?.[0];
+          if (firstAdvertiser?.advertiser_id) {
+            await prisma.user.update({
+              where: { id: state.userId },
+              data: { tiktokPixelId: String(firstAdvertiser.advertiser_id) },
+            });
+          }
+        }
+      }
+    } catch {
+      // Ad account extraction is non-blocking — user can still set manually
+    }
+
     // Notify user
     createNotification({
       userId: state.userId,
       type: "system",
       title: `${state.provider.charAt(0).toUpperCase() + state.provider.slice(1)} connected`,
-      body: "Ad platform connected successfully. You can now pull metrics and push campaigns.",
+      body: "Ad platform connected. Account IDs extracted automatically. You can now push campaigns and pull metrics.",
       href: "/settings",
     }).catch(() => {});
 

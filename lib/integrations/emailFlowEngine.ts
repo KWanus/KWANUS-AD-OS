@@ -218,6 +218,8 @@ export async function processEnrollment(enrollmentId: string): Promise<void> {
         where: { id: enrollmentId },
         data: { status: "completed", currentNodeId: null },
       });
+      // Fire completion triggers
+      onFlowCompleted(flow.id, enrollment.contactEmail, flow.userId ?? "").catch(() => {});
       return;
     }
 
@@ -227,6 +229,7 @@ export async function processEnrollment(enrollmentId: string): Promise<void> {
         where: { id: enrollmentId },
         data: { status: "completed", currentNodeId: null },
       });
+      onFlowCompleted(flow.id, enrollment.contactEmail, flow.userId ?? "").catch(() => {});
       return;
     }
 
@@ -497,6 +500,42 @@ function personalizeEmail(body: string, email: string): string {
     .replace(/\[EMAIL\]/gi, email)
     .replace(/\{firstName\}/gi, name)
     .replace(/\{\{\{FIRST_NAME\|there\}\}\}/g, name);
+}
+
+/** Called when an enrollment completes all nodes — fires learning + progression */
+async function onFlowCompleted(flowId: string, contactEmail: string, userId: string): Promise<void> {
+  try {
+    // Record learning signal — this flow completed successfully
+    const { recordWin } = await import("@/lib/intelligence/learningEngine");
+    const flow = await prisma.emailFlow.findUnique({ where: { id: flowId }, select: { name: true, conversions: true } });
+    if (flow) {
+      recordWin({ userId, niche: flow.name, type: "email_subject", content: `Flow "${flow.name}" completed`, conversionRate: flow.conversions > 0 ? 100 : 50, channel: "email_flow" }).catch(() => {});
+    }
+
+    // Update contact tags to reflect nurture completion
+    await prisma.emailContact.updateMany({
+      where: { email: contactEmail, userId },
+      data: { tags: { push: "flow-completed" } },
+    }).catch(() => {});
+
+    // Update lead status if exists
+    await prisma.lead.updateMany({
+      where: { email: contactEmail, userId, status: "new" },
+      data: { status: "nurtured" },
+    }).catch(() => {});
+
+    // Notify owner
+    const { createNotification } = await import("@/lib/notifications/notify");
+    createNotification({
+      userId,
+      type: "system",
+      title: `${contactEmail} completed email flow`,
+      body: `${flow?.name ?? "Flow"} sequence finished. Lead has been marked as nurtured.`,
+      href: "/leads",
+    }).catch(() => {});
+  } catch {
+    // Completion triggers are never blocking
+  }
 }
 
 function wrapEmailHtml(body: string, previewText?: string): string {

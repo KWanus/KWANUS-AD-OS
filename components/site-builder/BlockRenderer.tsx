@@ -25,7 +25,8 @@ export type BlockType =
   | "trust_badges"
   | "process"
   | "before_after"
-  | "urgency";
+  | "urgency"
+  | "booking";
 
 export interface Block {
   id: string;
@@ -1337,6 +1338,79 @@ function DividerBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
 // PAYMENT — Stripe payment link integration
 // ---------------------------------------------------------------------------
 
+// ---------------------------------------------------------------------------
+// BOOKING — appointment scheduling block for public sites
+// ---------------------------------------------------------------------------
+
+function BookingBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
+  const isDark = theme.mode !== "light";
+  const primary = px(theme.primaryColor!);
+  const bg = props.bgColor ?? (isDark ? "#07101f" : "#f0fdf4");
+  const textColor = isDark ? "#ffffff" : "#0f172a";
+  const userId = props.userId ?? "";
+  const headline = (props.headline as string) ?? "Book a Free Consultation";
+  const subtitle = (props.subtitle as string) ?? "Pick a time that works for you. We'll confirm within minutes.";
+
+  const bookingScript = `
+    (function(){
+      var userId = '${userId}';
+      var container = document.getElementById('booking-widget-${userId}');
+      if(!container || !userId) return;
+      container.innerHTML = '<p style="color:${isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)"};font-size:13px;">Loading available times...</p>';
+      fetch('/api/bookings?userId=' + userId)
+        .then(function(r){return r.json()})
+        .then(function(data){
+          if(!data.ok || !data.slots) { container.innerHTML = '<p style="color:${isDark ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.3)"};font-size:12px;">No available times right now. Contact us directly.</p>'; return; }
+          var available = data.slots.filter(function(s){return s.available});
+          var grouped = {};
+          available.forEach(function(s){ if(!grouped[s.date]) grouped[s.date]=[]; grouped[s.date].push(s); });
+          var dates = Object.keys(grouped).slice(0,5);
+          var html = '<div style="display:flex;flex-direction:column;gap:8px;">';
+          dates.forEach(function(date){
+            var d = new Date(date+'T12:00:00');
+            var label = d.toLocaleDateString(undefined,{weekday:'short',month:'short',day:'numeric'});
+            html += '<div><p style="font-size:11px;font-weight:700;color:${isDark ? "rgba(255,255,255,0.5)" : "rgba(0,0,0,0.5)"};margin:0 0 4px;text-transform:uppercase;letter-spacing:0.1em;">'+label+'</p>';
+            html += '<div style="display:flex;flex-wrap:wrap;gap:4px;">';
+            grouped[date].slice(0,6).forEach(function(slot){
+              html += '<button onclick="window._bookSlot(\\''+date+'\\',\\''+slot.startTime+'\\',\\''+slot.endTime+'\\')" style="padding:6px 12px;border-radius:8px;border:1px solid ${isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.1)"};background:${isDark ? "rgba(255,255,255,0.05)" : "rgba(0,0,0,0.03)"};color:${textColor};font-size:12px;cursor:pointer;">'+slot.startTime+'</button>';
+            });
+            html += '</div></div>';
+          });
+          html += '</div>';
+          container.innerHTML = html;
+        }).catch(function(){ container.innerHTML = '<p style="font-size:12px;color:${isDark ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.3)"};">Could not load times.</p>'; });
+
+      window._bookSlot = function(date,start,end){
+        var name = prompt('Your name:');
+        if(!name) return;
+        var email = prompt('Your email:');
+        if(!email) return;
+        fetch('/api/bookings',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({userId:userId,date:date,startTime:start,endTime:end,clientName:name,clientEmail:email})})
+          .then(function(r){return r.json()})
+          .then(function(data){
+            if(data.ok) { container.innerHTML = '<div style="text-align:center;padding:20px;"><p style="font-size:16px;font-weight:700;color:${primary};">Booked!</p><p style="font-size:12px;color:${isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)"};">'+date+' at '+start+'. Check your email for confirmation.</p></div>'; }
+            else { alert(data.error || 'Booking failed. Try again.'); }
+          }).catch(function(){ alert('Connection error.'); });
+      };
+    })();
+  `;
+
+  return (
+    <section style={sectionBase(bg)} id="booking">
+      <div style={{ ...container(600), textAlign: "center" }}>
+        <h2 style={{ ...headingStyle(textColor, "clamp(1.3rem,2.5vw,1.8rem)"), marginBottom: 8 }}>{headline}</h2>
+        <p style={{ color: isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)", fontSize: 14, marginBottom: 24 }}>{subtitle}</p>
+        <div id={`booking-widget-${userId}`} style={{ minHeight: 100 }} />
+        {userId && <script dangerouslySetInnerHTML={{ __html: bookingScript }} />}
+      </div>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// PAYMENT — Stripe payment link integration
+// ---------------------------------------------------------------------------
+
 function PaymentBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
@@ -1454,6 +1528,7 @@ export default function BlockRenderer({ block, theme, preview, selected, onClick
       case "process": return <ProcessBlock props={block.props} theme={t} />;
       case "before_after": return <BeforeAfterBlock props={block.props} theme={t} />;
       case "urgency": return <UrgencyBlock props={block.props} theme={t} />;
+      case "booking": return <BookingBlock props={block.props} theme={t} />;
       default: return null;
     }
   })();
