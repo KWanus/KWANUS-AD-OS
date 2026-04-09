@@ -70,6 +70,32 @@ export async function POST(req: NextRequest) {
         siteName = `${localConfig.businessName} — ${localConfig.location}`;
         emailFlowName = `${localConfig.businessName} Follow-Up`;
         campaignName = `${localConfig.businessName} Local Ads`;
+
+        // Scrape Google Maps for local leads (non-blocking bonus)
+        try {
+          const { scrapeGoogleMaps } = await import("@/lib/scraper/scrapers");
+          const leads = await scrapeGoogleMaps(localConfig.niche, localConfig.location);
+          if (leads.length > 0) {
+            // Save scraped leads for the user
+            for (const lead of leads.slice(0, 10)) {
+              await prisma.lead.create({
+                data: {
+                  userId: user.id,
+                  name: lead.name,
+                  niche: localConfig.niche,
+                  location: localConfig.location,
+                  website: lead.website || null,
+                  phone: lead.phone || null,
+                  rating: lead.rating,
+                  reviewCount: lead.reviewCount,
+                  status: "new",
+                  notes: `Auto-scraped from Google Maps. ${lead.category}. ${lead.address}`,
+                },
+              }).catch(() => {});
+            }
+          }
+        } catch { /* scraping is non-blocking */ }
+
         break;
       }
 
@@ -138,6 +164,41 @@ export async function POST(req: NextRequest) {
       default:
         return NextResponse.json({ ok: false, error: `Unknown path: ${body.path}` }, { status: 400 });
     }
+
+    // ── Fix placeholder testimonials with realistic generated ones ──
+    try {
+      const { generateTestimonials } = await import("@/lib/sites/testimonialGenerator");
+      const niche = (body.config.niche as string) ?? "business";
+      const audience = (body.config.audience as string) ?? (body.config.targetClients as string) ?? "customers";
+      const generated = generateTestimonials({
+        niche,
+        audience,
+        painPoint: "common challenges",
+        outcome: "real results",
+        productName: siteName,
+        count: 3,
+      });
+
+      // Replace any placeholder testimonial blocks
+      for (const block of siteBlocks as Record<string, unknown>[]) {
+        if ((block.type === "testimonials") && block.data) {
+          const data = block.data as Record<string, unknown>;
+          const items = data.items as Record<string, unknown>[];
+          if (items) {
+            for (let i = 0; i < items.length && i < generated.length; i++) {
+              const item = items[i];
+              if (typeof item.name === "string" && item.name.includes("[")) {
+                item.name = generated[i].name;
+                item.role = generated[i].role;
+                item.quote = generated[i].quote;
+                item.result = generated[i].result;
+                (item as Record<string, unknown>).company = generated[i].location;
+              }
+            }
+          }
+        }
+      }
+    } catch { /* testimonial fix is non-blocking */ }
 
     // ── Create Site ──
     const slug = siteName.toLowerCase().replace(/[^a-z0-9]+/g, "-").slice(0, 40) + "-" + Date.now().toString(36);

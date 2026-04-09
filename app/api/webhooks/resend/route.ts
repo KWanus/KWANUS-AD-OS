@@ -5,6 +5,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { recordWin } from "@/lib/intelligence/learningEngine";
 
 type ResendEvent = {
   type: "email.sent" | "email.delivered" | "email.opened" | "email.clicked" | "email.bounced" | "email.complained";
@@ -48,6 +49,13 @@ export async function POST(req: NextRequest) {
             where: { id: flowId },
             data: { clicks: { increment: 1 } },
           }).catch(() => {});
+          // Record learning signal — this email subject/content drives clicks
+          if (flowId) {
+            const flow = await prisma.emailFlow.findUnique({ where: { id: flowId }, select: { userId: true, name: true } }).catch(() => null);
+            if (flow?.userId) {
+              recordWin({ userId: flow.userId, niche: flow.name, type: "email_subject", content: event.data.subject ?? "", conversionRate: 1, channel: "email" }).catch(() => {});
+            }
+          }
           break;
 
         case "email.bounced":

@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { enrollContact } from "@/lib/integrations/emailFlowEngine";
 import { notifyPayment } from "@/lib/notifications/notify";
 import { firePaymentWebhook } from "@/lib/automations/webhookFire";
+import { recordWin } from "@/lib/intelligence/learningEngine";
 
 export async function POST(req: NextRequest) {
   const stripeKey = process.env.STRIPE_SECRET_KEY;
@@ -167,6 +168,9 @@ export async function POST(req: NextRequest) {
           customerEmail: customerEmail ?? "unknown",
           productName: session.metadata?.productName ?? "Product",
         }).catch(() => {});
+
+        // Record learning signal — the entire funnel worked (biggest win signal)
+        recordWin({ userId, niche: "purchase", type: "offer_angle", content: `Converted at $${(session.amount_total / 100).toFixed(2)}`, conversionRate: 100, channel: "stripe" }).catch(() => {});
 
         console.log(`✓ Purchase: $${(session.amount_total / 100).toFixed(2)} from ${customerEmail} for run ${runId}`);
       } catch (err) {

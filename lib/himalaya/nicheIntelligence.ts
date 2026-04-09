@@ -42,7 +42,26 @@ export type NicheIntelligence = {
 async function findCompetitors(niche: string, businessType: string): Promise<string[]> {
   const serpKey = process.env.SERPAPI_KEY;
   if (!serpKey) {
-    console.warn("[NicheIntel] No SERPAPI_KEY — using fallback search");
+    // Fallback: use our own scraper to find competitors via Google search
+    console.warn("[NicheIntel] No SERPAPI_KEY — using Himalaya scraper fallback");
+    try {
+      const { fetchPage: coreFetch } = await import("@/lib/scraper/core");
+      const searchUrl = `https://www.google.com/search?q=${encodeURIComponent(`${niche} ${businessType} services`)}&num=10`;
+      const result = await coreFetch(searchUrl, { timeout: 10000 });
+      if (result.ok) {
+        const { load } = await import("cheerio");
+        const $ = load(result.html);
+        const urls: string[] = [];
+        $("a[href]").each((_, el) => {
+          const href = $(el).attr("href") ?? "";
+          const match = href.match(/url\?q=(https?:\/\/[^&]+)/);
+          if (match && !match[1].includes("google.com") && !match[1].includes("youtube.com") && !match[1].includes("facebook.com")) {
+            urls.push(match[1]);
+          }
+        });
+        return [...new Set(urls)].slice(0, 5);
+      }
+    } catch { /* fallback failed, continue with empty */ }
     return [];
   }
 
@@ -233,18 +252,60 @@ export async function runNicheIntelligence(
   // Step 1: Find competitors
   const competitorUrls = await findCompetitors(niche, businessType);
 
-  // Step 2: Scan them (parallel, with timeout)
-  const scanPromises = competitorUrls.map(url =>
-    Promise.race([
+  // Step 2: Scan them (parallel, with timeout) — use our deep scraper if available
+  const scanPromises = competitorUrls.map(async (url) => {
+    try {
+      // Try our deep scraper first (more data)
+      const { analyzeCompetitor } = await import("@/lib/scraper/scrapers");
+      const deep = await Promise.race([
+        analyzeCompetitor(url),
+        new Promise<null>((resolve) => setTimeout(() => resolve(null), 10000)),
+      ]);
+      if (deep) {
+        return {
+          url: deep.url,
+          title: deep.title,
+          headline: deep.headline,
+          ctas: deep.ctas,
+          trustSignals: deep.trustSignals,
+          benefits: deep.benefits,
+          pricing: deep.pricing[0] ?? null,
+          weaknesses: deep.weaknesses,
+        } as CompetitorScan;
+      }
+    } catch { /* deep scraper failed, fall back */ }
+
+    // Fallback to basic scraper
+    return Promise.race([
       scanCompetitor(url),
-      new Promise<null>(resolve => setTimeout(() => resolve(null), 8000)),
-    ])
-  );
+      new Promise<null>((resolve) => setTimeout(() => resolve(null), 8000)),
+    ]);
+  });
+
   const scannedRaw = await Promise.all(scanPromises);
   const competitors = scannedRaw.filter((c): c is CompetitorScan => c !== null);
 
-  // Step 3: Analyze with Claude
+  // Step 2b: Scrape real pain points from Reddit/Quora (non-blocking)
+  let realPainPoints: string[] = [];
+  try {
+    const { scrapePainPoints } = await import("@/lib/scraper/scrapers");
+    const painResults = await Promise.race([
+      scrapePainPoints(niche),
+      new Promise<never[]>((resolve) => setTimeout(() => resolve([]), 8000)),
+    ]);
+    realPainPoints = painResults
+      .filter((p) => p.sentiment === "pain")
+      .map((p) => p.text.slice(0, 150))
+      .slice(0, 5);
+  } catch { /* non-blocking */ }
+
+  // Step 3: Analyze with Claude (now with richer data)
   const analysis = await analyzeWithClaude(niche, businessType, competitors);
+
+  // Inject real pain points if found
+  if (realPainPoints.length > 0) {
+    analysis.topPainPoints = [...realPainPoints, ...analysis.topPainPoints].slice(0, 8);
+  }
 
   return {
     niche,

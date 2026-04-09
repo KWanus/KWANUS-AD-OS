@@ -49,33 +49,39 @@ export async function runAdAgent(config: AdAgentConfig): Promise<AgentReport> {
   let totalRevenue = 0;
 
   // Pull metrics from all connected platforms
+  // Get user's ad account IDs from database
+  const dbUser = await prisma.user.findUnique({
+    where: { id: config.userId },
+    select: { metaPixelId: true, googleAdsId: true, tiktokPixelId: true },
+  });
+
   const metaTokens = await getTokens(config.userId, "meta");
   const googleTokens = await getTokens(config.userId, "google");
   const tiktokTokens = await getTokens(config.userId, "tiktok");
 
   const platforms = [];
 
-  if (metaTokens) {
+  if (metaTokens && dbUser?.metaPixelId) {
     const metrics = await pullMetaMetrics({
       accessToken: metaTokens.accessToken,
-      accountId: "", // Would come from user settings
+      accountId: dbUser.metaPixelId,
     }).catch(() => null);
     if (metrics) platforms.push(metrics);
   }
 
-  if (googleTokens) {
+  if (googleTokens && dbUser?.googleAdsId) {
     const metrics = await pullGoogleMetrics({
       accessToken: googleTokens.accessToken,
-      customerId: "",
+      customerId: dbUser.googleAdsId,
       developerToken: process.env.GOOGLE_ADS_DEVELOPER_TOKEN ?? "",
     }).catch(() => null);
     if (metrics) platforms.push(metrics);
   }
 
-  if (tiktokTokens) {
+  if (tiktokTokens && dbUser?.tiktokPixelId) {
     const metrics = await pullTikTokMetrics({
       accessToken: tiktokTokens.accessToken,
-      advertiserId: "",
+      advertiserId: dbUser.tiktokPixelId,
     }).catch(() => null);
     if (metrics) platforms.push(metrics);
   }
