@@ -201,6 +201,28 @@ export default async function PublicSitePage({
           render();
         })();
       `}</Script>
+      {/* ── Predictive Intent Tracking ── */}
+      <Script id="himalaya-intent-tracking" strategy="lazyOnload">{`
+        (function(){
+          var siteId='${site.id}';
+          var vid=localStorage.getItem('h_visitor')||(function(){var id=Math.random().toString(36).slice(2,10);localStorage.setItem('h_visitor',id);return id})();
+          var tracked={};
+          function signal(type,meta){
+            if(tracked[type+JSON.stringify(meta||{})])return;
+            tracked[type+JSON.stringify(meta||{})]=1;
+            fetch('/api/intent/signal',{method:'POST',headers:{'Content-Type':'application/json'},
+              body:JSON.stringify({siteId:siteId,visitorId:vid,eventType:type,metadata:meta||{}})
+            }).catch(function(){});
+          }
+          signal('page_view',{path:location.pathname});
+          var lv=localStorage.getItem('h_lv_'+siteId);
+          if(lv&&Date.now()-parseInt(lv)>3600000)signal('return_visit');
+          localStorage.setItem('h_lv_'+siteId,Date.now().toString());
+          if(location.pathname.includes('pric')||location.hash.includes('pric')||document.querySelector('[class*=pricing],[id*=pricing]'))signal('pricing_view');
+          setTimeout(function(){signal('high_engagement',{duration:60})},60000);
+          document.addEventListener('focus',function(e){if(e.target&&(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'))signal('form_start',{field:e.target.name||e.target.type});},true);
+        })();
+      `}</Script>
     </>
   );
 }
