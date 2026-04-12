@@ -7,163 +7,82 @@ import { useEffect, useState, useRef } from "react";
 import dynamic from "next/dynamic";
 import NotificationBell from "@/components/NotificationBell";
 import {
-  LayoutDashboard, Globe, Mail, Users, Settings, Zap,
-  Search, Mountain, ChevronDown, BarChart3,
-  Briefcase, MapPin, TrendingUp, ShoppingCart, Building2,
-  Package, MessageSquareText, Wrench, FileText,
+  Home, Mountain, FolderKanban, Globe, Mail, Users, Settings,
+  Search, ChevronDown, LayoutGrid,
+  MessageSquareText, TrendingUp, BarChart3, Briefcase, FileText,
+  MapPin, ShoppingCart, Building2, Package, Wrench,
 } from "lucide-react";
 
 const CreditsDisplay = dynamic(() => import("@/components/CreditsDisplay"), { ssr: false });
 
-// ── Primary nav (always visible — only the essentials) ──────────────────────
+// ── Primary nav — 6 items max ────────────────────────────────────────────────
 
-const MAIN_NAV = [
-  { href: "/",           label: "Home",      icon: LayoutDashboard, match: (p: string) => p === "/" },
-  { href: "/himalaya",   label: "Himalaya",  icon: Mountain,        match: (p: string) =>
-    p.startsWith("/himalaya") ||
-    p.startsWith("/scan") ||
-    p.startsWith("/analyses") ||
-    p.startsWith("/analyze") ||
-    p.startsWith("/launch") ||
-    p.startsWith("/start") ||
-    p.startsWith("/winners") ||
-    p.startsWith("/report")
-  },
-  { href: "/campaigns",  label: "Campaigns", icon: Zap,             match: (p: string) => p.startsWith("/campaigns") || p.startsWith("/projects") },
-  { href: "/websites",   label: "Sites",     icon: Globe,           match: (p: string) => p.startsWith("/websites") },
-  { href: "/emails",     label: "Emails",    icon: Mail,            match: (p: string) => p.startsWith("/emails") },
-  { href: "/clients",    label: "CRM",       icon: Users,           match: (p: string) => p.startsWith("/clients") || p.startsWith("/leads") },
+const NAV = [
+  { href: "/",          label: "Home",      icon: Home,          match: (p: string) => p === "/" },
+  { href: "/himalaya",  label: "Himalaya",  icon: Mountain,      match: (p: string) => ["/himalaya","/scan","/analyses","/analyze","/launch","/start","/winners","/report"].some(r => p.startsWith(r)) },
+  { href: "/campaigns", label: "Campaigns", icon: FolderKanban,  match: (p: string) => p.startsWith("/campaigns") || p.startsWith("/projects") },
+  { href: "/websites",  label: "Sites",     icon: Globe,         match: (p: string) => p.startsWith("/websites") },
+  { href: "/emails",    label: "Emails",    icon: Mail,          match: (p: string) => p.startsWith("/emails") },
+  { href: "/clients",   label: "CRM",       icon: Users,         match: (p: string) => p.startsWith("/clients") || p.startsWith("/leads") },
 ];
 
-// ── More menu — organized, not overwhelming ──────────────────────────────────
+// ── More menu ────────────────────────────────────────────────────────────────
 
-const MORE_SECTIONS = [
-  {
-    title: "Operate",
-    items: [
-      { href: "/inbox",     label: "Inbox",     icon: MessageSquareText, sub: "Messages & replies" },
-      { href: "/ads",       label: "Ads",       icon: TrendingUp,       sub: "Spend & ROAS" },
-      { href: "/analytics", label: "Analytics", icon: BarChart3,        sub: "Performance" },
-      { href: "/bookings",  label: "Bookings",  icon: Briefcase,        sub: "Scheduling" },
-      { href: "/forms",     label: "Forms",     icon: FileText,         sub: "Opt-ins" },
-      { href: "/revenue",   label: "Revenue",   icon: TrendingUp,       sub: "Sales" },
-    ],
-  },
-  {
-    title: "Create",
-    items: [
-      { href: "/tools",     label: "Tools",     icon: Wrench,          sub: "Generators & audits" },
-      { href: "/content",   label: "Content",   icon: LayoutDashboard, sub: "Social calendar" },
-      { href: "/proposals", label: "Proposals", icon: Briefcase,       sub: "Client proposals" },
-      { href: "/products",  label: "Products",  icon: Package,         sub: "Offer library" },
-    ],
-  },
-  {
-    title: "Verticals",
-    items: [
-      { href: "/consult",   label: "Consult",    icon: Briefcase,       sub: "Coaching & services" },
-      { href: "/local",     label: "Local",      icon: MapPin,          sub: "SEO & GMB" },
-      { href: "/affiliate", label: "Affiliate",  icon: TrendingUp,      sub: "Offers & funnels" },
-      { href: "/dropship",  label: "Dropship",   icon: ShoppingCart,    sub: "Products & ads" },
-      { href: "/agency",    label: "Agency",     icon: Building2,       sub: "Client workspace" },
-    ],
-  },
-];
-
-type StatsPayload = {
-  databaseUnavailable?: boolean;
-};
-
-const MOBILE_QUICK_NAV = [
-  { href: "/himalaya", label: "Himalaya", icon: Mountain },
-  { href: "/inbox", label: "Inbox", icon: MessageSquareText },
-  { href: "/ads", label: "Ads", icon: TrendingUp },
-  { href: "/bookings", label: "Bookings", icon: Briefcase },
+const MORE = [
+  { href: "/inbox",      label: "Inbox",      icon: MessageSquareText },
+  { href: "/ads",        label: "Ads",        icon: TrendingUp },
+  { href: "/analytics",  label: "Analytics",  icon: BarChart3 },
+  { href: "/bookings",   label: "Bookings",   icon: Briefcase },
+  { href: "/forms",      label: "Forms",      icon: FileText },
+  { href: "/revenue",    label: "Revenue",    icon: TrendingUp },
+  { href: "/tools",      label: "Tools",      icon: Wrench },
+  { href: "/content",    label: "Content",    icon: LayoutGrid },
+  { href: "/proposals",  label: "Proposals",  icon: Briefcase },
+  { href: "/products",   label: "Products",   icon: Package },
+  { href: "/consult",    label: "Consult",    icon: Briefcase },
+  { href: "/local",      label: "Local",      icon: MapPin },
+  { href: "/affiliate",  label: "Affiliate",  icon: TrendingUp },
+  { href: "/dropship",   label: "Dropship",   icon: ShoppingCart },
+  { href: "/agency",     label: "Agency",     icon: Building2 },
+  { href: "/my-system",  label: "My System",  icon: Settings },
 ];
 
 export default function AppNav() {
   const pathname = usePathname();
   const { isSignedIn } = useUser();
-  const [databaseUnavailable, setDatabaseUnavailable] = useState(false);
   const [showMore, setShowMore] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (!isSignedIn) {
-      setDatabaseUnavailable(false);
-      return;
-    }
-
-    let cancelled = false;
-
-    async function loadHealth() {
-      try {
-        const res = await fetch("/api/stats");
-        const data = await res.json() as { ok: boolean; stats?: StatsPayload | null };
-        if (!cancelled) {
-          setDatabaseUnavailable(Boolean(data.ok && data.stats?.databaseUnavailable));
-        }
-      } catch {
-        if (!cancelled) setDatabaseUnavailable(false);
-      }
-    }
-
-    void loadHealth();
-    const interval = setInterval(() => void loadHealth(), 30000);
-
-    return () => {
-      cancelled = true;
-      clearInterval(interval);
-    };
-  }, [isSignedIn]);
-
-  // Close dropdown on outside click
-  useEffect(() => {
     function handleClick(e: MouseEvent) {
-      if (moreRef.current && !moreRef.current.contains(e.target as Node)) {
-        setShowMore(false);
-      }
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) setShowMore(false);
     }
     document.addEventListener("mousedown", handleClick);
     return () => document.removeEventListener("mousedown", handleClick);
   }, []);
 
-  // Close dropdown on route change
   useEffect(() => { setShowMore(false); }, [pathname]);
 
-  const isMoreActive = MORE_SECTIONS.flatMap(s => s.items).some(n => pathname.startsWith(n.href));
-
   return (
-    <header className="sticky top-0 z-50">
-      {databaseUnavailable && (
-        <div className="border-b border-amber-500/20 bg-amber-500/12 px-6 py-2 text-center text-[11px] font-medium text-amber-100 backdrop-blur-xl">
-          Production workspace data is temporarily unavailable. The app is running in fallback mode.
-        </div>
-      )}
+    <header className="sticky top-0 z-50 bg-[#020509]/90 backdrop-blur-xl border-b border-white/[0.04]">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
 
-      <div className="bg-[#020509]/80 backdrop-blur-2xl border-b border-white/[0.05] px-6 py-3 flex items-center justify-between gap-4">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
-          <div className="relative w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shadow-[0_0_16px_rgba(6,182,212,0.4)] group-hover:shadow-[0_0_24px_rgba(6,182,212,0.6)] transition-all duration-300">
-            <Zap className="w-4 h-4 text-white" />
+        <Link href="/" className="flex items-center gap-2 shrink-0">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
+            <Mountain className="w-3.5 h-3.5 text-white" />
           </div>
-          <div className="hidden sm:flex flex-col leading-none">
-            <span className="text-[13px] font-black tracking-tight text-white">Himalaya</span>
-            <span className="text-[9px] font-bold tracking-[0.2em] text-white/30 uppercase">Marketing OS</span>
-          </div>
+          <span className="hidden sm:block text-sm font-black text-white tracking-tight">Himalaya</span>
         </Link>
 
         {/* Nav */}
-        <nav className="flex items-center gap-0.5 overflow-x-auto">
-          {MAIN_NAV.map(({ href, label, icon: Icon, match }) => {
+        <nav className="flex items-center gap-0.5">
+          {NAV.map(({ href, label, icon: Icon, match }) => {
             const active = match(pathname);
             return (
               <Link key={href} href={href}
-                className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap
-                  ${active
-                    ? "bg-white/[0.07] text-white border border-white/[0.08]"
-                    : "text-white/30 hover:text-white/70 hover:bg-white/[0.04]"
-                  }`}
+                className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition whitespace-nowrap
+                  ${active ? "bg-white/[0.08] text-white" : "text-white/30 hover:text-white/60"}`}
               >
                 <Icon className={`w-3.5 h-3.5 ${active ? "text-cyan-400" : ""}`} />
                 <span className="hidden md:block">{label}</span>
@@ -171,133 +90,57 @@ export default function AppNav() {
             );
           })}
 
-          {/* More dropdown */}
+          {/* More */}
           <div className="relative" ref={moreRef}>
-            <button
-              onClick={() => setShowMore(v => !v)}
-              className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap
-                ${isMoreActive
-                  ? "bg-white/[0.07] text-white border border-white/[0.08]"
-                  : "text-white/30 hover:text-white/70 hover:bg-white/[0.04]"
-                }`}
+            <button onClick={() => setShowMore(v => !v)}
+              className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition
+                ${showMore ? "bg-white/[0.08] text-white" : "text-white/30 hover:text-white/60"}`}
             >
-              <span className="hidden md:block">More</span>
-              <ChevronDown className={`w-3 h-3 transition-transform ${showMore ? "rotate-180" : ""}`} />
+              <LayoutGrid className="w-3.5 h-3.5" />
+              <ChevronDown className={`w-3 h-3 transition ${showMore ? "rotate-180" : ""}`} />
             </button>
 
             {showMore && (
-              <div className="absolute top-full right-0 mt-2 w-[20rem] rounded-2xl border border-white/[0.1] bg-[#0a1020]/95 backdrop-blur-xl shadow-2xl overflow-hidden z-50">
-                <div className="max-h-[70vh] overflow-y-auto p-2">
-                  {MORE_SECTIONS.map((section) => (
-                    <div key={section.title} className="mb-2 last:mb-0">
-                      <p className="px-3 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-white/20">{section.title}</p>
-                      {section.items.map(({ href, label, icon: Icon, sub }) => {
-                        const active = pathname.startsWith(href);
-                        return (
-                          <Link
-                            key={href}
-                            href={href}
-                            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition ${
-                              active ? "bg-cyan-500/10 text-white" : "text-white/60 hover:bg-white/[0.05] hover:text-white"
-                            }`}
-                          >
-                            <Icon className={`w-4 h-4 shrink-0 ${active ? "text-cyan-400" : "text-white/30"}`} />
-                            <div className="min-w-0">
-                              <p className="text-xs font-bold">{label}</p>
-                              <p className="text-[10px] text-white/25">{sub}</p>
-                            </div>
-                          </Link>
-                        );
-                      })}
-                    </div>
-                  ))}
-                </div>
-                <div className="border-t border-white/[0.06] p-2">
-                  <Link
-                    href="/my-system"
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition ${
-                      pathname.startsWith("/my-system") ? "bg-cyan-500/10 text-white" : "text-white/60 hover:bg-white/[0.05] hover:text-white"
-                    }`}
+              <div className="absolute top-full right-0 mt-1.5 w-48 rounded-xl border border-white/[0.08] bg-[#0a0f1a]/95 backdrop-blur-xl shadow-2xl overflow-hidden z-50 py-1">
+                {MORE.map(({ href, label, icon: Icon }) => (
+                  <Link key={href} href={href}
+                    className={`flex items-center gap-2.5 px-3 py-2 text-[11px] font-semibold transition
+                      ${pathname.startsWith(href) ? "bg-cyan-500/10 text-white" : "text-white/45 hover:bg-white/[0.04] hover:text-white/80"}`}
                   >
-                    <LayoutDashboard className={`w-4 h-4 shrink-0 ${pathname.startsWith("/my-system") ? "text-cyan-400" : "text-white/30"}`} />
-                    <div className="min-w-0">
-                      <p className="text-xs font-bold">My System</p>
-                      <p className="text-[10px] text-white/25">Business profile & config</p>
-                    </div>
+                    <Icon className={`w-3.5 h-3.5 ${pathname.startsWith(href) ? "text-cyan-400" : "text-white/25"}`} />
+                    {label}
                   </Link>
-                </div>
+                ))}
               </div>
             )}
           </div>
         </nav>
 
-        {/* Right side */}
-        <div className="flex items-center gap-2 shrink-0">
-          {/* Search trigger */}
+        {/* Right */}
+        <div className="flex items-center gap-1.5 shrink-0">
           {isSignedIn && (
-            <button
-              onClick={() => window.dispatchEvent(new Event("open-global-search"))}
-              className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-xl border border-white/[0.06] bg-white/[0.02] text-white/25 hover:text-white/50 hover:border-white/[0.12] transition text-xs"
-            >
+            <button onClick={() => window.dispatchEvent(new Event("open-global-search"))}
+              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-white/[0.06] text-white/20 hover:text-white/50 transition text-[11px]">
               <Search className="w-3 h-3" />
-              <span>Search</span>
-              <kbd className="px-1 py-0.5 rounded bg-white/[0.06] border border-white/[0.08] text-[9px] font-mono text-white/30">/</kbd>
+              <kbd className="px-1 py-0.5 rounded bg-white/[0.05] text-[9px] font-mono text-white/25">/</kbd>
             </button>
           )}
           <CreditsDisplay />
           {isSignedIn && <NotificationBell />}
           {isSignedIn && (
-            <Link href="/settings"
-              className={`p-2 rounded-xl transition-all ${pathname.startsWith("/settings") ? "bg-white/[0.07] text-white" : "text-white/25 hover:text-white/60 hover:bg-white/[0.04]"}`}>
+            <Link href="/settings" className={`p-1.5 rounded-lg transition ${pathname.startsWith("/settings") ? "bg-white/[0.08] text-white" : "text-white/20 hover:text-white/50"}`}>
               <Settings className="w-3.5 h-3.5" />
             </Link>
           )}
-          {isSignedIn ? (
-            <UserButton />
-          ) : (
+          {isSignedIn ? <UserButton /> : (
             <SignInButton mode="modal">
-              <button className="text-xs px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500/10 to-purple-500/10 hover:from-cyan-500/20 hover:to-purple-500/20 border border-white/[0.08] hover:border-white/[0.15] transition font-bold text-white/60 hover:text-white">
+              <button className="text-[11px] px-3 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] font-semibold text-white/50 hover:text-white transition">
                 Sign in
               </button>
             </SignInButton>
           )}
         </div>
       </div>
-
-      {isSignedIn && (
-        <div className="border-b border-white/[0.05] bg-[#040912]/85 px-4 py-2.5 backdrop-blur-2xl lg:hidden">
-          <div className="flex gap-2 overflow-x-auto pb-0.5">
-            {MOBILE_QUICK_NAV.map(({ href, label, icon: Icon }) => {
-              const active = pathname.startsWith(href);
-              return (
-                <Link
-                  key={href}
-                  href={href}
-                  className={`inline-flex shrink-0 items-center gap-1.5 rounded-xl border px-3 py-2 text-[11px] font-bold transition ${
-                    active
-                      ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-300"
-                      : "border-white/[0.08] bg-white/[0.03] text-white/45 hover:text-white/75"
-                  }`}
-                >
-                  <Icon className="h-3.5 w-3.5" />
-                  {label}
-                </Link>
-              );
-            })}
-            <Link
-              href="/settings"
-              className={`inline-flex shrink-0 items-center gap-1.5 rounded-xl border px-3 py-2 text-[11px] font-bold transition ${
-                pathname.startsWith("/settings")
-                  ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-300"
-                  : "border-white/[0.08] bg-white/[0.03] text-white/45 hover:text-white/75"
-              }`}
-            >
-              <Settings className="h-3.5 w-3.5" />
-              Settings
-            </Link>
-          </div>
-        </div>
-      )}
     </header>
   );
 }
