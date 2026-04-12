@@ -322,6 +322,11 @@ Input:
       },
     });
 
+    // Auto-outreach: send the email immediately (fire-and-forget)
+    void import("@/lib/leads/autoOutreach").then(({ autoOutreachLead }) =>
+      autoOutreachLead({ leadId: id, userId: user.id })
+    ).catch((err) => console.error("Auto-outreach failed:", err));
+
     return NextResponse.json({ ok: true, executionTier });
   } catch (err) {
     console.error("Lead generate error:", err);

@@ -2,6 +2,7 @@
 // POST /api/campaigns/[id]/push
 // Push campaign variations to an ad platform (Meta, TikTok, Google)
 // Creates campaign + ad set + creatives on the platform — starts PAUSED
+// Now uses real OAuth tokens from the user's connected accounts
 // ---------------------------------------------------------------------------
 
 import { NextRequest, NextResponse } from "next/server";
@@ -9,6 +10,8 @@ import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { pushToMeta, pushToTikTok } from "@/lib/integrations/adPlatforms";
+import { getTokens } from "@/lib/integrations/oauth";
+import { getSitePublicUrl } from "@/lib/integrations/siteDeployer";
 
 export async function POST(
   req: NextRequest,
@@ -42,10 +45,9 @@ export async function POST(
     });
     let landingUrl = campaign.productUrl ?? "";
     if (deployment?.siteId) {
-      const site = await prisma.site.findUnique({ where: { id: deployment.siteId } });
+      const site = await prisma.site.findUnique({ where: { id: deployment.siteId }, select: { slug: true, customDomain: true, published: true } });
       if (site?.published) {
-        const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3005";
-        landingUrl = `${appUrl}/s/${site.slug}`;
+        landingUrl = getSitePublicUrl(site.slug, site.customDomain);
       }
     }
 
@@ -70,40 +72,65 @@ export async function POST(
       return NextResponse.json({ ok: false, error: "No ad variations to push. Generate hooks first." }, { status: 400 });
     }
 
+    // ── Meta Ads ──────────────────────────────────────────────────────────────
     if (body.platform === "meta") {
       if (!dbUser?.metaPixelId) {
-        return NextResponse.json({ ok: false, error: "Connect Meta in Settings first (add your Meta Pixel ID)" }, { status: 400 });
+        return NextResponse.json({ ok: false, error: "Connect Meta in Settings first (Settings → Ad Accounts → Connect Meta)" }, { status: 400 });
       }
 
-      // Note: Meta push requires an access token from OAuth, not just pixel ID
-      // For now, we'll use the pixel ID as the account indicator
-      // Full OAuth flow would be a separate integration
+      // Get real OAuth tokens
+      const tokens = await getTokens(user.id, "meta");
+      if (!tokens?.accessToken) {
+        return NextResponse.json({
+          ok: false,
+          error: "Meta OAuth not connected. Go to Settings → Ad Accounts → Connect Meta to authorize ad creation.",
+        }, { status: 400 });
+      }
+
       const result = await pushToMeta({
         accountId: dbUser.metaPixelId,
-        accessToken: "", // Requires Meta Business OAuth — placeholder
+        accessToken: tokens.accessToken,
         campaignName: campaign.name,
         creatives,
         linkUrl: landingUrl,
       });
 
-      if (!result.ok && result.error?.includes("access_token")) {
-        return NextResponse.json({
-          ok: false,
-          error: "Meta Ads requires OAuth authentication. For now, copy your ad content from the campaign and paste it into Meta Ads Manager directly.",
-        }, { status: 400 });
+      if (result.ok) {
+        // Save the platform campaign ID back to our campaign
+        await prisma.campaign.update({
+          where: { id },
+          data: {
+            status: "active",
+            workflowState: JSON.parse(JSON.stringify({
+              ...(campaign.workflowState as Record<string, unknown> ?? {}),
+              metaCampaignId: result.campaignId,
+              pushedToMeta: true,
+              pushedAt: new Date().toISOString(),
+            })),
+          },
+        });
       }
 
       return NextResponse.json({ ok: result.ok, campaignId: result.campaignId, error: result.error });
     }
 
+    // ── TikTok Ads ────────────────────────────────────────────────────────────
     if (body.platform === "tiktok") {
       if (!dbUser?.tiktokPixelId) {
-        return NextResponse.json({ ok: false, error: "Connect TikTok in Settings first (add your TikTok Pixel ID)" }, { status: 400 });
+        return NextResponse.json({ ok: false, error: "Connect TikTok in Settings first (Settings → Ad Accounts → Connect TikTok)" }, { status: 400 });
+      }
+
+      const tokens = await getTokens(user.id, "tiktok");
+      if (!tokens?.accessToken) {
+        return NextResponse.json({
+          ok: false,
+          error: "TikTok OAuth not connected. Go to Settings → Ad Accounts → Connect TikTok to authorize ad creation.",
+        }, { status: 400 });
       }
 
       const result = await pushToTikTok({
         advertiserId: dbUser.tiktokPixelId,
-        accessToken: "", // Requires TikTok Ads OAuth — placeholder
+        accessToken: tokens.accessToken,
         campaignName: campaign.name,
         creatives: creatives.map((c) => ({
           text: c.body,
@@ -112,20 +139,39 @@ export async function POST(
         })),
       });
 
-      if (!result.ok && result.error?.includes("access_token")) {
-        return NextResponse.json({
-          ok: false,
-          error: "TikTok Ads requires OAuth authentication. For now, copy your ad content and paste it into TikTok Ads Manager directly.",
-        }, { status: 400 });
+      if (result.ok) {
+        await prisma.campaign.update({
+          where: { id },
+          data: {
+            status: "active",
+            workflowState: JSON.parse(JSON.stringify({
+              ...(campaign.workflowState as Record<string, unknown> ?? {}),
+              tiktokCampaignId: result.campaignId,
+              pushedToTikTok: true,
+              pushedAt: new Date().toISOString(),
+            })),
+          },
+        });
       }
 
       return NextResponse.json({ ok: result.ok, campaignId: result.campaignId, error: result.error });
     }
 
+    // ── Google Ads ────────────────────────────────────────────────────────────
     if (body.platform === "google") {
+      const tokens = await getTokens(user.id, "google");
+      if (!tokens?.accessToken || !dbUser?.googleAdsId) {
+        return NextResponse.json({
+          ok: false,
+          error: "Google Ads OAuth not connected. Go to Settings → Ad Accounts → Connect Google to authorize ad creation.",
+        }, { status: 400 });
+      }
+
+      // Google Ads requires the google-ads-api package for full integration
+      // For now, return clear instructions
       return NextResponse.json({
         ok: false,
-        error: "Google Ads push requires OAuth setup. Copy your ad content from the campaign and paste it into Google Ads directly.",
+        error: "Google Ads API integration requires additional setup (developer token approval). Your ad content is ready — copy it from the campaign and paste into Google Ads.",
       }, { status: 400 });
     }
 

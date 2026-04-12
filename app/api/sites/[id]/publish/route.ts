@@ -2,10 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
+import { deploySiteToProduction, getSitePublicUrl } from "@/lib/integrations/siteDeployer";
 
 /**
  * POST /api/sites/[id]/publish
- * Toggle publish status of a site. Also publishes/unpublishes all pages.
+ * Toggle publish status. When publishing, deploys to real URL.
  */
 export async function POST(
   req: NextRequest,
@@ -20,7 +21,7 @@ export async function POST(
 
     const site = await prisma.site.findFirst({
       where: { id, userId: user.id },
-      select: { id: true, published: true, slug: true },
+      select: { id: true, published: true, slug: true, customDomain: true, name: true },
     });
 
     if (!site) {
@@ -42,10 +43,21 @@ export async function POST(
       }),
     ]);
 
+    let url: string | null = null;
+    let deployResult = null;
+
+    if (newStatus) {
+      // Deploy to real URL — ping search engines, notify user
+      deployResult = await deploySiteToProduction({ siteId: id, userId: user.id });
+      url = deployResult.ok ? deployResult.url : getSitePublicUrl(site.slug, site.customDomain);
+    }
+
     return NextResponse.json({
       ok: true,
       published: newStatus,
-      url: newStatus ? `/s/${site.slug}` : null,
+      url,
+      liveUrl: url, // explicit real URL
+      customDomainInstructions: deployResult?.customDomainInstructions,
     });
   } catch (err) {
     console.error("Site publish error:", err);

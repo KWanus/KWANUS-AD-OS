@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { prisma } from "@/lib/prisma";
-import { Resend } from "resend";
+import { sendEmailUnified, getFromAddressUnified } from "@/lib/integrations/emailSender";
 
 export async function POST(
   req: NextRequest,
@@ -15,7 +15,7 @@ export async function POST(
 
     const user = await prisma.user.findUnique({
       where: { clerkId },
-      select: { id: true, resendApiKey: true, sendingFromEmail: true, sendingFromName: true },
+      select: { id: true, name: true, workspaceName: true, sendingFromName: true, sendingFromEmail: true, sendingDomain: true },
     });
     if (!user) return NextResponse.json({ ok: false, error: "User not found" }, { status: 404 });
 
@@ -34,23 +34,22 @@ export async function POST(
       return NextResponse.json({ ok: false, error: "No email address for this lead. Add one manually." }, { status: 400 });
     }
 
-    const resendKey = user.resendApiKey ?? process.env.RESEND_API_KEY;
-    if (!resendKey || resendKey === "re_REPLACE_ME") {
-      return NextResponse.json({ ok: false, error: "Configure your Resend API key in Settings first." }, { status: 400 });
-    }
-
-    const resend = new Resend(resendKey);
-    const fromEmail = user.sendingFromEmail ?? "onboarding@resend.dev";
-    const fromName = user.sendingFromName ?? "Himalaya";
-
+    // Use unified sender (Resend → SMTP → Gmail → fallback)
+    const from = getFromAddressUnified(user);
     const emailBody = body.customBody ?? outreachEmail.body;
 
-    await resend.emails.send({
-      from: `${fromName} <${fromEmail}>`,
+    const result = await sendEmailUnified({
+      from,
       to: toEmail,
       subject: outreachEmail.subject,
-      text: emailBody,
+      html: `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.7; color: #1a1a2e;">
+${emailBody.split("\n").map((line: string) => `<p style="margin: 0 0 12px;">${line}</p>`).join("")}
+</div>`,
     });
+
+    if (!result.ok) {
+      return NextResponse.json({ ok: false, error: result.error ?? "Failed to send email" }, { status: 500 });
+    }
 
     await prisma.lead.update({
       where: { id },
@@ -61,7 +60,7 @@ export async function POST(
       },
     });
 
-    return NextResponse.json({ ok: true });
+    return NextResponse.json({ ok: true, provider: result.provider });
   } catch (err) {
     console.error("Outreach send error:", err);
     return NextResponse.json({ ok: false, error: "Failed to send email" }, { status: 500 });

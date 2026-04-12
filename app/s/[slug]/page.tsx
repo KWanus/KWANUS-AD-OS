@@ -183,7 +183,7 @@ export default async function PublicSitePage({
             </div>
           ) : (
             blocks.map((block) => (
-              <BlockRenderer key={block.id} block={block} theme={theme} preview={false} products={products} />
+              <BlockRenderer key={block.id} block={block} theme={theme} preview={false} products={products} siteId={site.id} />
             ))
           )}
         </div>

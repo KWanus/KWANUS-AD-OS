@@ -22,17 +22,24 @@ export async function POST(req: NextRequest) {
         const rawBody = await req.text();
         const signature = req.headers.get("stripe-signature");
 
-        if (!signature || !webhookSecret) {
-            return NextResponse.json({ error: "Missing signature or secret" }, { status: 400 });
-        }
-
         let event: Stripe.Event;
 
-        try {
-            event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
-        } catch (err: any) {
-            console.error(`Webhook signature verification failed: ${err.message}`);
-            return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+        // In dev mode (no real webhook secret), parse the body directly
+        const isDevMode = !webhookSecret || webhookSecret === "whsec_REPLACE_ME" || webhookSecret === "REPLACE_ME";
+
+        if (isDevMode) {
+            // Dev: trust the payload without signature verification
+            event = JSON.parse(rawBody) as Stripe.Event;
+        } else if (!signature) {
+            return NextResponse.json({ error: "Missing signature" }, { status: 400 });
+        } else {
+            try {
+                event = stripe.webhooks.constructEvent(rawBody, signature, webhookSecret);
+            } catch (err: unknown) {
+                const msg = err instanceof Error ? err.message : "Unknown";
+                console.error(`Webhook signature verification failed: ${msg}`);
+                return NextResponse.json({ error: "Invalid signature" }, { status: 400 });
+            }
         }
 
         if (event.type === "checkout.session.completed") {

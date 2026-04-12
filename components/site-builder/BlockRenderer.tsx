@@ -58,6 +58,7 @@ interface Props {
   selected?: boolean;
   onClick?: () => void;
   products?: SiteProduct[];
+  siteId?: string;
   overlayActions?: Array<{
     label: string;
     onClick: () => void;
@@ -1194,10 +1195,14 @@ function ProductsBlock({
   props,
   theme,
   products = [],
+  siteId,
+  preview,
 }: {
   props: Block["props"];
   theme: SiteTheme;
   products?: SiteProduct[];
+  siteId?: string;
+  preview?: boolean;
 }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
@@ -1207,6 +1212,26 @@ function ProductsBlock({
   const cardBg = isDark ? "rgba(255,255,255,0.03)" : "#ffffff";
   const cardBorder = isDark ? "rgba(255,255,255,0.08)" : "#e2e8f0";
   const columns = Math.max(1, Math.min(Number(props.columns ?? 3), 4));
+
+  // Real checkout: call /api/checkout → redirect to Stripe
+  async function handleBuyNow(productId: string) {
+    if (preview || !siteId) return;
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ siteId, productId }),
+      });
+      const data = await res.json() as { url?: string; error?: string };
+      if (data.url) {
+        window.location.href = data.url;
+      } else {
+        alert(data.error ?? "Checkout unavailable. Please try again.");
+      }
+    } catch {
+      alert("Could not start checkout. Please try again.");
+    }
+  }
 
   return (
     <section style={sectionBase(bg)}>
@@ -1285,8 +1310,9 @@ function ProductsBlock({
                       </p>
                     )}
 
-                    <a
-                      href={props.buttonUrl ?? "#"}
+                    <button
+                      onClick={() => void handleBuyNow(product.id)}
+                      disabled={preview || !siteId}
                       style={{
                         display: "inline-flex",
                         alignItems: "center",
@@ -1294,7 +1320,8 @@ function ProductsBlock({
                         width: "100%",
                         padding: "14px 18px",
                         borderRadius: 14,
-                        textDecoration: "none",
+                        border: "none",
+                        cursor: preview ? "default" : "pointer",
                         background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
                         color: "#ffffff",
                         fontSize: 14,
@@ -1302,8 +1329,8 @@ function ProductsBlock({
                         boxShadow: `0 12px 30px ${primary}33`,
                       }}
                     >
-                      {props.buttonText ?? "Shop now"}
-                    </a>
+                      {props.buttonText ?? "Buy Now"}
+                    </button>
                   </div>
                 </article>
               );
@@ -1502,7 +1529,7 @@ function FooterBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme
 // Main renderer
 // ---------------------------------------------------------------------------
 
-export default function BlockRenderer({ block, theme, preview, selected, onClick, products, overlayActions }: Props) {
+export default function BlockRenderer({ block, theme, preview, selected, onClick, products, siteId, overlayActions }: Props) {
   const t = { ...DEFAULT_THEME, ...theme };
 
   const rendered = (() => {
@@ -1519,7 +1546,7 @@ export default function BlockRenderer({ block, theme, preview, selected, onClick
       case "form": return <FormBlock props={block.props} theme={t} />;
       case "video": return <VideoBlock props={block.props} theme={t} />;
       case "divider": return <DividerBlock props={block.props} theme={t} />;
-      case "products": return <ProductsBlock props={block.props} theme={t} products={products} />;
+      case "products": return <ProductsBlock props={block.props} theme={t} products={products} siteId={siteId} preview={preview} />;
       case "checkout": return <CheckoutBlock props={block.props} theme={t} />;
       case "payment": return <PaymentBlock props={block.props} theme={t} />;
       case "footer": return <FooterBlock props={block.props} theme={t} />;
