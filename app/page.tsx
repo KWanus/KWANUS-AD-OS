@@ -79,6 +79,9 @@ export default function Dashboard() {
 
   const [stats, setStats] = useState<LiveStats | null>(null);
   const [actions, setActions] = useState<QuickAction[]>([]);
+  const [commands, setCommands] = useState<{ id: string; priority: number; action: string; details: string; estimatedTime: string; category: string; href?: string; content?: string; completed: boolean }[]>([]);
+  const [commandGreeting, setCommandGreeting] = useState("");
+  const [commandStats, setCommandStats] = useState<{ streak: number; stage: string } | null>(null);
   const [loading, setLoading] = useState(true);
   const [goal, setGoal] = useState("");
   const [running, setRunning] = useState(false);
@@ -94,9 +97,10 @@ export default function Dashboard() {
   const fetchData = useCallback(async () => {
     setLoading(true);
     try {
-      const [sRes, aRes] = await Promise.allSettled([
+      const [sRes, aRes, cRes] = await Promise.allSettled([
         fetch("/api/stats").then(r => r.json() as Promise<{ ok: boolean; stats?: Record<string, unknown> | null }>),
         fetch("/api/quick-actions").then(r => r.json() as Promise<{ ok: boolean; actions?: QuickAction[] }>),
+        fetch("/api/himalaya/commands").then(r => r.json() as Promise<{ ok: boolean; greeting?: string; commands?: typeof commands; stats?: { streak: number; stage: string } }>),
       ]);
       if (sRes.status === "fulfilled" && sRes.value.ok && sRes.value.stats) {
         const s = sRes.value.stats;
@@ -108,6 +112,11 @@ export default function Dashboard() {
         });
       }
       if (aRes.status === "fulfilled" && aRes.value.ok) setActions(aRes.value.actions ?? []);
+      if (cRes.status === "fulfilled" && cRes.value.ok) {
+        setCommands(cRes.value.commands ?? []);
+        setCommandGreeting(cRes.value.greeting ?? "");
+        setCommandStats(cRes.value.stats ?? null);
+      }
     } finally { setLoading(false); }
   }, []);
 
@@ -186,7 +195,7 @@ export default function Dashboard() {
         {/* ── Greeting ── */}
         <div className="pt-16 pb-2 text-center">
           <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white">
-            Hey {name}. <span className="text-white/30">What are we building?</span>
+            {commandGreeting || <>Hey {name}. <span className="text-white/30">What are we building?</span></>}
           </h1>
         </div>
 
@@ -280,25 +289,55 @@ export default function Dashboard() {
           </div>
         )}
 
-        {/* ── Next step ── */}
-        {actions.length > 0 && !loading && (
+        {/* ── Daily commands — "do this now" ── */}
+        {commands.length > 0 && !loading && (
           <div className="mb-6">
-            <p className="text-[10px] font-bold text-white/15 mb-2">NEXT STEP</p>
-            <Link href={actions[0].href}
-              className="flex items-center justify-between gap-3 rounded-xl border border-cyan-500/10 bg-cyan-500/[0.03] px-4 py-3 hover:border-cyan-500/20 transition group">
-              <div className="min-w-0">
-                <p className="text-sm font-bold text-white group-hover:text-cyan-100 transition truncate">{actions[0].title}</p>
-                <p className="text-[11px] text-white/25 truncate">{actions[0].description}</p>
-              </div>
-              <ArrowRight className="w-4 h-4 text-cyan-400/50 shrink-0" />
-            </Link>
+            <div className="flex items-center justify-between mb-2">
+              <p className="text-[10px] font-bold text-white/15">TODAY&apos;S COMMANDS</p>
+              {commandStats && commandStats.streak > 0 && (
+                <p className="text-[10px] font-bold text-cyan-400/40">{commandStats.streak}-day streak</p>
+              )}
+            </div>
+            <div className="space-y-2">
+              {commands.map((cmd, i) => {
+                const priorityStyle = cmd.priority === 1 ? "border-cyan-500/15 bg-cyan-500/[0.03]" : "border-white/[0.04]";
+                return (
+                  <div key={cmd.id} className={`rounded-xl border ${priorityStyle} px-4 py-3`}>
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="flex items-start gap-3 min-w-0">
+                        <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 mt-0.5 ${cmd.priority === 1 ? "border-cyan-500/30 text-cyan-400" : "border-white/[0.08] text-white/20"}`}>
+                          <span className="text-[9px] font-black">{i + 1}</span>
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-bold text-white">{cmd.action}</p>
+                          <p className="text-[11px] text-white/25 mt-0.5">{cmd.details}</p>
+                          {cmd.content && (
+                            <div className="mt-2 rounded-lg bg-white/[0.03] border border-white/[0.04] px-3 py-2">
+                              <p className="text-[11px] text-white/50 italic">&ldquo;{cmd.content}&rdquo;</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="text-[9px] text-white/15">{cmd.estimatedTime}</span>
+                        {cmd.href && (
+                          <Link href={cmd.href} className="text-[10px] font-bold text-cyan-400/60 hover:text-cyan-400 transition">
+                            Do it →
+                          </Link>
+                        )}
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         )}
 
-        {/* ── More actions ── */}
-        {actions.length > 1 && !loading && (
+        {/* ── Fallback actions if no commands ── */}
+        {commands.length === 0 && actions.length > 0 && !loading && (
           <div className="mb-6 space-y-1.5">
-            {actions.slice(1, 4).map(a => (
+            {actions.slice(0, 3).map(a => (
               <Link key={a.id} href={a.href}
                 className="flex items-center justify-between gap-3 rounded-lg border border-white/[0.04] px-4 py-2.5 hover:border-white/[0.08] transition group">
                 <p className="text-xs text-white/40 group-hover:text-white/70 transition truncate">{a.title}</p>
