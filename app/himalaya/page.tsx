@@ -267,13 +267,19 @@ export default function HimalayaEntryPage() {
           description: description.trim() || undefined,
         }),
       });
-      const data = (await res.json()) as { ok: boolean; profileId?: string };
+      const text = await res.text();
+      let data: { ok: boolean; profileId?: string; error?: string };
+      try { data = JSON.parse(text); } catch { data = { ok: false, error: `Unexpected response: ${text.slice(0, 100)}` }; }
+
       if (data.ok && data.profileId) {
         router.push(`/himalaya/path/${data.profileId}`);
+      } else {
+        alert(data.error ?? "Something went wrong. Try again.");
+        setSubmitting(false);
       }
-    } catch {
-      // non-fatal
-    } finally {
+    } catch (err) {
+      console.error("Find My Path error:", err);
+      alert("Connection error. Please try again.");
       setSubmitting(false);
     }
   }
