@@ -88,6 +88,24 @@ function ExpressInput() {
   const [stage, setStage] = useState("");
   const [error, setError] = useState<string | null>(null);
 
+  // Pick up goal from homepage redirect
+  useEffect(() => {
+    try {
+      const goal = sessionStorage.getItem("himalaya_goal");
+      if (goal) {
+        setInput(goal);
+        sessionStorage.removeItem("himalaya_goal");
+      }
+    } catch { /* ignore */ }
+
+    // Pick up revenue target from URL
+    const params = new URLSearchParams(window.location.search);
+    const target = params.get("target");
+    if (target) {
+      setInput(`I want to make $${Number(target).toLocaleString()}/month`);
+    }
+  }, []);
+
   const isUrl = /^https?:\/\/.+\..+/.test(input.trim());
 
   async function handleGo() {

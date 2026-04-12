@@ -8,14 +8,14 @@ import dynamic from "next/dynamic";
 import NotificationBell from "@/components/NotificationBell";
 import {
   LayoutDashboard, Globe, Mail, Users, Settings, Zap,
-  ScanSearch, Sparkles, FolderOpen, ChevronDown, Search,
-  Briefcase, MapPin, TrendingUp, ShoppingCart, Building,
-  Package, BotMessageSquare, Building2, Mountain, Wrench, BarChart3, FileText, MessageSquareText,
+  Search, Mountain, ChevronDown, BarChart3,
+  Briefcase, MapPin, TrendingUp, ShoppingCart, Building2,
+  Package, MessageSquareText, Wrench, FileText,
 } from "lucide-react";
 
 const CreditsDisplay = dynamic(() => import("@/components/CreditsDisplay"), { ssr: false });
 
-// ── Primary nav (always visible) ─────────────────────────────────────────────
+// ── Primary nav (always visible — only the essentials) ──────────────────────
 
 const MAIN_NAV = [
   { href: "/",           label: "Home",      icon: LayoutDashboard, match: (p: string) => p === "/" },
@@ -29,47 +29,50 @@ const MAIN_NAV = [
     p.startsWith("/winners") ||
     p.startsWith("/report")
   },
-  { href: "/campaigns",  label: "Campaigns", icon: FolderOpen,      match: (p: string) => p.startsWith("/campaigns") || p.startsWith("/projects") },
+  { href: "/campaigns",  label: "Campaigns", icon: Zap,             match: (p: string) => p.startsWith("/campaigns") || p.startsWith("/projects") },
   { href: "/websites",   label: "Sites",     icon: Globe,           match: (p: string) => p.startsWith("/websites") },
   { href: "/emails",     label: "Emails",    icon: Mail,            match: (p: string) => p.startsWith("/emails") },
-  { href: "/clients",    label: "Clients",   icon: Users,           match: (p: string) => p.startsWith("/clients") || p.startsWith("/leads") },
+  { href: "/clients",    label: "CRM",       icon: Users,           match: (p: string) => p.startsWith("/clients") || p.startsWith("/leads") },
 ];
 
-// ── Business verticals (dropdown) ────────────────────────────────────────────
+// ── More menu — organized, not overwhelming ──────────────────────────────────
 
-const BUSINESS_NAV = [
-  { href: "/inbox",     label: "Inbox",     icon: MessageSquareText, sub: "Forms, chat, bookings, replies" },
-  { href: "/ads",       label: "Ads",       icon: TrendingUp,   sub: "Spend, ROAS, budget shifts, leaks" },
-  { href: "/tools",     label: "Tools",     icon: Wrench,       sub: "Calculators, generators, audits" },
-  { href: "/analytics", label: "Analytics", icon: BarChart3,    sub: "Cross-workspace performance and health" },
-  { href: "/forms",     label: "Forms",     icon: FileText,     sub: "Opt-in forms, links, and submissions" },
-  { href: "/bookings",  label: "Bookings",  icon: Briefcase,    sub: "Public scheduling and appointments" },
-  { href: "/revenue",   label: "Revenue",   icon: TrendingUp,   sub: "Sales, orders, email ROI" },
-  { href: "/content",   label: "Content",   icon: LayoutDashboard, sub: "7-day social calendar" },
-  { href: "/social",    label: "Social",    icon: Globe,         sub: "Generate posts for any platform" },
-  { href: "/proposals", label: "Proposals", icon: Briefcase,    sub: "AI client proposals" },
-  { href: "/consult",   label: "Consult",   icon: Briefcase,    sub: "Packages, proposals, audits" },
-  { href: "/local",     label: "Local",     icon: MapPin,        sub: "SEO, GMB, review requests" },
-  { href: "/affiliate", label: "Affiliate", icon: TrendingUp,    sub: "Offer research, funnels" },
-  { href: "/dropship",  label: "Dropship",  icon: ShoppingCart,   sub: "Products, profit math, ads" },
-  { href: "/agency",    label: "Agency",    icon: Building,       sub: "Client audits, strategy" },
-  { href: "/products",  label: "Products",  icon: Package,        sub: "Offer library, sources" },
-];
-
-const BUSINESS_GROUPS = [
+const MORE_SECTIONS = [
   {
     title: "Operate",
-    items: ["/inbox", "/ads", "/analytics", "/bookings", "/forms", "/revenue"],
+    items: [
+      { href: "/inbox",     label: "Inbox",     icon: MessageSquareText, sub: "Messages & replies" },
+      { href: "/ads",       label: "Ads",       icon: TrendingUp,       sub: "Spend & ROAS" },
+      { href: "/analytics", label: "Analytics", icon: BarChart3,        sub: "Performance" },
+      { href: "/bookings",  label: "Bookings",  icon: Briefcase,        sub: "Scheduling" },
+      { href: "/forms",     label: "Forms",     icon: FileText,         sub: "Opt-ins" },
+      { href: "/revenue",   label: "Revenue",   icon: TrendingUp,       sub: "Sales" },
+    ],
   },
   {
     title: "Create",
-    items: ["/tools", "/content", "/social", "/proposals", "/products"],
+    items: [
+      { href: "/tools",     label: "Tools",     icon: Wrench,          sub: "Generators & audits" },
+      { href: "/content",   label: "Content",   icon: LayoutDashboard, sub: "Social calendar" },
+      { href: "/proposals", label: "Proposals", icon: Briefcase,       sub: "Client proposals" },
+      { href: "/products",  label: "Products",  icon: Package,         sub: "Offer library" },
+    ],
   },
   {
     title: "Verticals",
-    items: ["/consult", "/local", "/affiliate", "/dropship", "/agency"],
+    items: [
+      { href: "/consult",   label: "Consult",    icon: Briefcase,       sub: "Coaching & services" },
+      { href: "/local",     label: "Local",      icon: MapPin,          sub: "SEO & GMB" },
+      { href: "/affiliate", label: "Affiliate",  icon: TrendingUp,      sub: "Offers & funnels" },
+      { href: "/dropship",  label: "Dropship",   icon: ShoppingCart,    sub: "Products & ads" },
+      { href: "/agency",    label: "Agency",     icon: Building2,       sub: "Client workspace" },
+    ],
   },
-] as const;
+];
+
+type StatsPayload = {
+  databaseUnavailable?: boolean;
+};
 
 const MOBILE_QUICK_NAV = [
   { href: "/himalaya", label: "Himalaya", icon: Mountain },
@@ -78,16 +81,12 @@ const MOBILE_QUICK_NAV = [
   { href: "/bookings", label: "Bookings", icon: Briefcase },
 ];
 
-type StatsPayload = {
-  databaseUnavailable?: boolean;
-};
-
 export default function AppNav() {
   const pathname = usePathname();
   const { isSignedIn } = useUser();
   const [databaseUnavailable, setDatabaseUnavailable] = useState(false);
-  const [showBizDropdown, setShowBizDropdown] = useState(false);
-  const dropdownRef = useRef<HTMLDivElement>(null);
+  const [showMore, setShowMore] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (!isSignedIn) {
@@ -121,8 +120,8 @@ export default function AppNav() {
   // Close dropdown on outside click
   useEffect(() => {
     function handleClick(e: MouseEvent) {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
-        setShowBizDropdown(false);
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) {
+        setShowMore(false);
       }
     }
     document.addEventListener("mousedown", handleClick);
@@ -130,15 +129,9 @@ export default function AppNav() {
   }, []);
 
   // Close dropdown on route change
-  useEffect(() => { setShowBizDropdown(false); }, [pathname]);
+  useEffect(() => { setShowMore(false); }, [pathname]);
 
-  const isBizActive = BUSINESS_NAV.some(n => pathname.startsWith(n.href));
-  const groupedBusinessNav = BUSINESS_GROUPS.map((group) => ({
-    ...group,
-    items: group.items
-      .map((href) => BUSINESS_NAV.find((item) => item.href === href))
-      .filter((item): item is NonNullable<typeof item> => Boolean(item)),
-  }));
+  const isMoreActive = MORE_SECTIONS.flatMap(s => s.items).some(n => pathname.startsWith(n.href));
 
   return (
     <header className="sticky top-0 z-50">
@@ -178,53 +171,44 @@ export default function AppNav() {
             );
           })}
 
-          {/* Business verticals dropdown */}
-          <div className="relative" ref={dropdownRef}>
+          {/* More dropdown */}
+          <div className="relative" ref={moreRef}>
             <button
-              onClick={() => setShowBizDropdown(v => !v)}
+              onClick={() => setShowMore(v => !v)}
               className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap
-                ${isBizActive
+                ${isMoreActive
                   ? "bg-white/[0.07] text-white border border-white/[0.08]"
                   : "text-white/30 hover:text-white/70 hover:bg-white/[0.04]"
                 }`}
             >
-              <Building2 className={`w-3.5 h-3.5 ${isBizActive ? "text-cyan-400" : ""}`} />
-              <span className="hidden md:block">Business</span>
-              <ChevronDown className={`w-3 h-3 transition-transform ${showBizDropdown ? "rotate-180" : ""}`} />
+              <span className="hidden md:block">More</span>
+              <ChevronDown className={`w-3 h-3 transition-transform ${showMore ? "rotate-180" : ""}`} />
             </button>
 
-            {showBizDropdown && (
-              <div className="absolute top-full right-0 mt-2 w-[22rem] rounded-2xl border border-white/[0.1] bg-[#0a1020] shadow-2xl overflow-hidden z-50">
-                <div className="border-b border-white/[0.06] px-4 py-3">
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/25">Business Surfaces</p>
-                  <p className="mt-1 text-[11px] text-white/35">Operate the system, create assets, or jump into a vertical-specific workspace.</p>
-                </div>
+            {showMore && (
+              <div className="absolute top-full right-0 mt-2 w-[20rem] rounded-2xl border border-white/[0.1] bg-[#0a1020]/95 backdrop-blur-xl shadow-2xl overflow-hidden z-50">
                 <div className="max-h-[70vh] overflow-y-auto p-2">
-                  {groupedBusinessNav.map((group) => (
-                    <div key={group.title} className="mb-3 last:mb-0">
-                      <div className="px-2 pb-2 pt-1">
-                        <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/20">{group.title}</p>
-                      </div>
-                      <div className="space-y-1">
-                        {group.items.map(({ href, label, icon: Icon, sub }) => {
-                          const active = pathname.startsWith(href);
-                          return (
-                            <Link
-                              key={href}
-                              href={href}
-                              className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition ${
-                                active ? "bg-cyan-500/10 text-white" : "text-white/60 hover:bg-white/[0.05] hover:text-white"
-                              }`}
-                            >
-                              <Icon className={`w-4 h-4 shrink-0 ${active ? "text-cyan-400" : "text-white/30"}`} />
-                              <div className="min-w-0">
-                                <p className="text-xs font-bold">{label}</p>
-                                <p className="text-[10px] text-white/30 truncate">{sub}</p>
-                              </div>
-                            </Link>
-                          );
-                        })}
-                      </div>
+                  {MORE_SECTIONS.map((section) => (
+                    <div key={section.title} className="mb-2 last:mb-0">
+                      <p className="px-3 py-2 text-[10px] font-black uppercase tracking-[0.2em] text-white/20">{section.title}</p>
+                      {section.items.map(({ href, label, icon: Icon, sub }) => {
+                        const active = pathname.startsWith(href);
+                        return (
+                          <Link
+                            key={href}
+                            href={href}
+                            className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition ${
+                              active ? "bg-cyan-500/10 text-white" : "text-white/60 hover:bg-white/[0.05] hover:text-white"
+                            }`}
+                          >
+                            <Icon className={`w-4 h-4 shrink-0 ${active ? "text-cyan-400" : "text-white/30"}`} />
+                            <div className="min-w-0">
+                              <p className="text-xs font-bold">{label}</p>
+                              <p className="text-[10px] text-white/25">{sub}</p>
+                            </div>
+                          </Link>
+                        );
+                      })}
                     </div>
                   ))}
                 </div>
@@ -238,7 +222,7 @@ export default function AppNav() {
                     <LayoutDashboard className={`w-4 h-4 shrink-0 ${pathname.startsWith("/my-system") ? "text-cyan-400" : "text-white/30"}`} />
                     <div className="min-w-0">
                       <p className="text-xs font-bold">My System</p>
-                      <p className="text-[10px] text-white/30">Business profile & OS config</p>
+                      <p className="text-[10px] text-white/25">Business profile & config</p>
                     </div>
                   </Link>
                 </div>
