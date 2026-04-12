@@ -13,6 +13,7 @@
 import { prisma } from "@/lib/prisma";
 import { sendEmailUnified, getFromAddressUnified } from "@/lib/integrations/emailSender";
 import { autoCallLead } from "@/lib/agents/voiceAgent";
+import { contactLead } from "@/lib/agents/himalayaVoice";
 import { createNotification } from "@/lib/notifications/notify";
 
 /** Auto-send outreach when a lead reaches "ready" status */
@@ -73,14 +74,14 @@ ${body.split("\n").map((line) => `<p style="margin: 0 0 12px;">${line}</p>`).joi
       }
     }
 
-    // ── 2. Auto-call hot leads with voice agent ─────────────────────────────
+    // ── 2. Auto-contact hot leads (voice call / SMS / email-SMS) ────────────
     const score = lead.score ?? 0;
     const hasPhone = !!lead.phone;
-    const hasVoiceAgent = !!(process.env.RETELL_API_KEY || process.env.VAPI_API_KEY);
 
-    if (hasPhone && hasVoiceAgent && score >= 60) {
+    if (hasPhone && score >= 40) {
       try {
-        const callResult = await autoCallLead({
+        // Try Himalaya's own voice system first (Twilio / SMS / email-SMS)
+        const contactResult = await contactLead({
           userId: input.userId,
           leadId: lead.id,
           leadName: lead.name ?? "there",
@@ -90,21 +91,23 @@ ${body.split("\n").map((line) => `<p style="margin: 0 0 12px;">${line}</p>`).joi
           businessName: lead.user.workspaceName ?? lead.user.name ?? "our team",
         });
 
-        if (callResult.ok) {
+        if (contactResult.ok) {
           callInitiated = true;
-          await createNotification({
+        } else if (process.env.RETELL_API_KEY || process.env.VAPI_API_KEY) {
+          // Fallback to Retell/Vapi if Himalaya voice didn't work
+          const callResult = await autoCallLead({
             userId: input.userId,
-            type: "system",
-            title: `Voice call made to ${lead.name ?? lead.phone}`,
-            body: callResult.qualified
-              ? `Lead is QUALIFIED! ${callResult.bookedAppointment ? "Appointment booked." : "Follow up to book."}`
-              : `Call completed (${callResult.duration ?? 0}s). Lead needs nurturing.`,
-            href: `/leads/${lead.id}`,
-          }).catch(() => {});
+            leadId: lead.id,
+            leadName: lead.name ?? "there",
+            leadPhone: lead.phone!,
+            leadEmail: lead.email ?? undefined,
+            niche: lead.niche ?? "business services",
+            businessName: lead.user.workspaceName ?? lead.user.name ?? "our team",
+          });
+          if (callResult.ok) callInitiated = true;
         }
       } catch (err) {
-        console.error("Auto-call failed:", err);
-        // Don't fail the whole outreach if voice fails
+        console.error("Auto-contact failed:", err);
       }
     }
 
