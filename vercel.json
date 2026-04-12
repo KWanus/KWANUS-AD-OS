@@ -6,7 +6,7 @@
     },
     {
       "path": "/api/email-flows/process",
-      "schedule": "*/5 * * * *"
+      "schedule": "0 8 * * *"
     },
     {
       "path": "/api/cron/competitor-check",
@@ -14,7 +14,7 @@
     },
     {
       "path": "/api/cron/lead-followup",
-      "schedule": "0 9 * * 3"
+      "schedule": "0 9 * * *"
     },
     {
       "path": "/api/cron/weekly-digest",
@@ -22,7 +22,7 @@
     },
     {
       "path": "/api/cron/proactive-alerts",
-      "schedule": "0 */6 * * *"
+      "schedule": "0 18 * * *"
     }
   ]
 }
