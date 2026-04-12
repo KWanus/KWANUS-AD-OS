@@ -4,7 +4,7 @@
 // ---------------------------------------------------------------------------
 
 import { prisma } from "@/lib/prisma";
-import { sendEmail, getFromAddress } from "./resendClient";
+import { sendEmailUnified as sendEmail, getFromAddressUnified as getFromAddress } from "./emailSender";
 import { sendSMS, personalizeSMS, hasSMSConfigured } from "./smsClient";
 
 type EmailNode = {
