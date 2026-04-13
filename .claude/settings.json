@@ -6,7 +6,10 @@
       "Read(//Users/kwanus/KWANUS-AD-OS/app/projects/%5Bid%5D/**)",
       "Bash(grep -n \"slug\\\\|url\\\\|deployed\\\\|site.*live\\\\|go.*live\" /Users/kwanus/KWANUS-AD-OS/app/websites/[id]/page.tsx)",
       "Bash(node -e \":*)",
-      "Bash(brew install:*)"
+      "Bash(brew install:*)",
+      "Bash(curl -s http://localhost:3005/api/himalaya/commands)",
+      "Bash(curl -s -X POST http://localhost:3005/api/track -H \"Content-Type: application/json\" -d '{\"\"type\"\":\"\"pageview\"\",\"\"siteId\"\":\"\"test123\"\"}')",
+      "Bash(curl -s -X POST http://localhost:3005/api/checkout -H \"Content-Type: application/json\" -d '{\"\"\"\"siteId\"\"\"\":\"\"\"\"test\"\"\"\",\"\"\"\"productId\"\"\"\":\"\"\"\"test\"\"\"\"}')"
     ],
     "additionalDirectories": [
       "/Users/kwanus/KWANUS-AD-OS/app/api/orders/[id]"
