@@ -7,6 +7,9 @@
       "Bash(grep -n \"slug\\\\|url\\\\|deployed\\\\|site.*live\\\\|go.*live\" /Users/kwanus/KWANUS-AD-OS/app/websites/[id]/page.tsx)",
       "Bash(node -e \":*)",
       "Bash(brew install:*)"
+    ],
+    "additionalDirectories": [
+      "/Users/kwanus/KWANUS-AD-OS/app/api/orders/[id]"
     ]
   }
 }

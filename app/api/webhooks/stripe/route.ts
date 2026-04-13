@@ -99,6 +99,28 @@ export async function POST(req: NextRequest) {
                         metadata: { productId, siteId, amount: session.amount_total },
                         tags: ["customer", "purchased"],
                     }).catch(() => {});
+
+                    // Run post-purchase automation: receipt, cross-sell, testimonial request, loyalty
+                    void import("@/lib/himalaya/postPurchaseEngine").then(({ runPostPurchaseAutomation }) => {
+                        // Get order ID from the most recent order for this customer
+                        prisma.siteOrder.findFirst({
+                            where: { siteId, productId, customerEmail },
+                            orderBy: { createdAt: "desc" },
+                            select: { id: true },
+                        }).then((order) => {
+                            if (order) {
+                                void runPostPurchaseAutomation({
+                                    orderId: order.id,
+                                    userId: product!.site!.userId,
+                                    customerEmail,
+                                    customerName,
+                                    productName: product!.name,
+                                    businessName: (product!.site as unknown as { name?: string })?.name ?? "Our Store",
+                                    siteId,
+                                });
+                            }
+                        }).catch(() => {});
+                    }).catch(() => {});
                 }
             }
 
