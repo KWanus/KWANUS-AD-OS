@@ -20,6 +20,7 @@ import { createNotification } from "@/lib/notifications/notify";
 import { retry } from "@/lib/utils/retry";
 import { generateRevenueSystem } from "@/lib/himalaya/revenueEngine";
 import { generateLegalPages, generateDayOneProof, generateSchemaMarkup, generateChatWidget } from "@/lib/himalaya/siteHardening";
+import { generateExitIntentPopup, generateTestimonialWidget, generateCampaignName } from "@/lib/himalaya/growthAutomations";
 
 export type PostDeployResult = {
   siteUrl?: string;
@@ -205,6 +206,18 @@ export async function runPostDeploy(input: {
             chatWidget,
             schemaMarkup: schema,
             dayOneProof,
+            exitIntentPopup: generateExitIntentPopup({
+              headline: "Wait — before you go",
+              offer: `Get our free ${niche} guide. No spam, just value.`,
+              ctaText: "Get the Free Guide",
+              ctaUrl: siteUrl ? `${siteUrl}#form` : "#form",
+              primaryColor: "#06b6d4",
+            }),
+            testimonialWidget: generateTestimonialWidget({
+              businessName,
+              webhookUrl: `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/api/forms/submit`,
+              primaryColor: "#06b6d4",
+            }),
           },
         },
       }).catch(() => {});
