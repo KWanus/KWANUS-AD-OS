@@ -2,9 +2,9 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { decide } from "@/lib/himalaya/decisionEngine";
 import { runHimalaya } from "@/lib/himalaya/orchestrator";
 import { deployRun } from "@/lib/himalaya/deployRun";
+import { smartDecide } from "@/lib/himalaya/smartDecision";
 import type { HimalayaProfileInput } from "@/lib/himalaya/profileTypes";
 
 /**
@@ -62,23 +62,17 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, runId: result.runId, mode: "improve" });
     }
 
-    // Scratch: decide + run in one shot
-    const profileInput: HimalayaProfileInput = {
-      businessStage: "no_business",
-      primaryGoal: (body.goal as HimalayaProfileInput["primaryGoal"]) || "full_business",
-      budget: "micro",
-      timeAvailable: "parttime",
-      skills: ["communication"],
-      riskTolerance: "medium",
-      niche: body.niche,
-      description: [body.businessType, body.goal].filter(Boolean).join(". "),
-    };
+    // Smart decision: AI-powered path selection from user's input
+    const smartResult = await smartDecide({
+      text: body.niche ?? "",
+      entryType: body.businessType === "Service Business" ? "has_business" : "no_business",
+      revenue: undefined,
+    });
 
-    // Decide best path
-    const decision = decide(profileInput);
+    const profileInput: HimalayaProfileInput = smartResult.profile;
     const path = body.businessType
       ? mapBusinessType(body.businessType)
-      : decision.primary.path;
+      : smartResult.path;
 
     // Save profile
     const profile = await prisma.himalayaProfile.create({
@@ -93,7 +87,7 @@ export async function POST(req: NextRequest) {
         niche: body.niche ?? null,
         description: profileInput.description ?? null,
         recommendedPath: path,
-        decisionResult: JSON.parse(JSON.stringify(decision)),
+        decisionResult: JSON.parse(JSON.stringify(smartResult)),
       },
     });
 
