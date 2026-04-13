@@ -40,6 +40,25 @@ export async function POST(req: NextRequest) {
         return NextResponse.json({ ok: false, error: result.summary || "Run failed" }, { status: 500 });
       }
 
+      // Auto-deploy for improve path too
+      try {
+        const deployResult = await deployRun({
+          userId: user.id,
+          runId: result.runId,
+          targets: ["all"],
+        });
+        if (deployResult.ok) {
+          const { runPostDeploy } = await import("@/lib/himalaya/postDeploy");
+          const d = deployResult.deployed as Record<string, { id: string }>;
+          void runPostDeploy({
+            userId: user.id,
+            runId: result.runId,
+            campaignId: d.campaign?.id,
+            siteId: d.site?.id,
+          }).catch((err) => console.error("Post-deploy error:", err));
+        }
+      } catch { /* non-blocking */ }
+
       return NextResponse.json({ ok: true, runId: result.runId, mode: "improve" });
     }
 
@@ -85,7 +104,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: false, error: result.summary || "Run failed" }, { status: 500 });
     }
 
-    // Auto-deploy directly on the server to avoid self-fetching this app in production.
+    // Auto-deploy: create campaign, site, email flows
     let deployed = null;
     try {
       const deployResult = await deployRun({
@@ -95,6 +114,17 @@ export async function POST(req: NextRequest) {
       });
       if (deployResult.ok) {
         deployed = deployResult.deployed;
+
+        // Post-deploy: auto-publish site, generate ad images/videos,
+        // create organic posts, activate everything
+        const { runPostDeploy } = await import("@/lib/himalaya/postDeploy");
+        const dResult = deployed as Record<string, { id: string }>;
+        void runPostDeploy({
+          userId: user.id,
+          runId: result.runId,
+          campaignId: dResult.campaign?.id,
+          siteId: dResult.site?.id,
+        }).catch((err) => console.error("Post-deploy error:", err));
       }
     } catch {
       // deploy is optional — user can deploy from results page
