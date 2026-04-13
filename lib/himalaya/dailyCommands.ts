@@ -15,6 +15,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { generateAI } from "@/lib/integrations/aiInference";
+import { getPlaybook } from "@/lib/himalaya/nichePlaybooks";
 
 export type DailyCommand = {
   id: string;
@@ -219,6 +220,27 @@ export async function generateDailyCommands(userId: string): Promise<CommandsRes
         estimatedTime: "2 min",
         category: "post",
         content: contentAI.content,
+        completed: false,
+      });
+    }
+
+    // ── Niche-specific commands from playbook ──
+    const profile = await prisma.businessProfile.findUnique({
+      where: { userId },
+      select: { businessType: true },
+    }).catch(() => null);
+
+    const playbook = getPlaybook(profile?.businessType ?? "");
+    if (playbook && commands.length < 4) {
+      // Add a niche-specific tip from the playbook's mistakes list
+      const tip = playbook.mistakes[Math.floor(Math.random() * playbook.mistakes.length)];
+      commands.push({
+        id: `cmd-${cmdId++}`,
+        priority: 3,
+        action: `Avoid this ${playbook.niche} mistake`,
+        details: tip,
+        estimatedTime: "1 min",
+        category: "review",
         completed: false,
       });
     }

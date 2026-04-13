@@ -17,6 +17,7 @@ import { deploySiteToProduction } from "@/lib/integrations/siteDeployer";
 import { generateCreativePackage, generateCreativeImages, saveCreativePackage, type AdBrief } from "@/lib/ads/creativeEngine";
 import { generateVideoSpokesperson } from "@/lib/agents/himalayaVideo";
 import { createNotification } from "@/lib/notifications/notify";
+import { retry } from "@/lib/utils/retry";
 
 export type PostDeployResult = {
   siteUrl?: string;
@@ -65,22 +66,21 @@ export async function runPostDeploy(input: {
   const offerDesc = offer?.coreOffer || run?.summary || "our solution";
   const angle = (packet?.angle as string) || offer?.uniqueAngle || "proven approach";
 
-  // ── 1. Auto-publish site ────────────────────────────────────────────────
+  // ── 1. Auto-publish site (with retry) ────────────────────────────────────
   if (input.siteId) {
     try {
-      const deployResult = await deploySiteToProduction({
-        siteId: input.siteId,
-        userId: input.userId,
-      });
-      if (deployResult.ok) {
-        siteUrl = deployResult.url;
-      }
+      const deployResult = await retry(
+        () => deploySiteToProduction({ siteId: input.siteId!, userId: input.userId }),
+        { maxAttempts: 3, label: "site-publish" },
+      );
+      if (deployResult.ok) siteUrl = deployResult.url;
+      else errors.push(`Site publish: ${deployResult.error}`);
     } catch (err) {
-      errors.push(`Site publish: ${err instanceof Error ? err.message : "failed"}`);
+      errors.push(`Site publish: ${err instanceof Error ? err.message : "failed after retries"}`);
     }
   }
 
-  // ── 2. Generate ad creatives with REAL images ──────────────────────────
+  // ── 2. Generate ad creatives with REAL images (with retry) ──────────────
   if (input.campaignId) {
     try {
       const brief: AdBrief = {
@@ -178,7 +178,18 @@ export async function runPostDeploy(input: {
     href: "/",
   }).catch(() => {});
 
-  // ── 6. Log the full deployment ─────────────────────────────────────────
+  // ── 6. Report errors to user (not silent) ───────────────────────────────
+  if (errors.length > 0) {
+    await createNotification({
+      userId: input.userId,
+      type: "system",
+      title: `Deploy had ${errors.length} issue${errors.length > 1 ? "s" : ""}`,
+      body: errors.join(". "),
+      href: "/",
+    }).catch(() => {});
+  }
+
+  // ── 7. Log the full deployment ─────────────────────────────────────────
   await prisma.himalayaFunnelEvent.create({
     data: {
       userId: input.userId,

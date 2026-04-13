@@ -10,6 +10,8 @@ import {
   type TrackingConfig,
 } from "@/lib/integrations/trackingPixels";
 import { buildPromptKit, extractBusinessContext } from "@/lib/himalaya/promptEngine";
+import { getPlaybook } from "@/lib/himalaya/nichePlaybooks";
+import { buildHimalayaTrackingScript } from "@/lib/integrations/himalayaTracking";
 
 export type DeployTarget = "campaign" | "site" | "emails" | "all";
 
@@ -191,12 +193,24 @@ export async function deployRun(input: {
       },
     });
 
-    const hooks = (assets.adHooks ?? []) as { format: string; hook: string }[];
+    let hooks = (assets.adHooks ?? []) as { format: string; hook: string }[];
     const adImages = (generatedAssets.adImages ?? []) as {
       base64: string;
       prompt: string;
       model: string;
     }[];
+
+    // Inject proven ad angles from playbook if generated hooks are weak
+    const campaignPlaybook = getPlaybook(
+      ((run.rawSignals as Record<string, unknown> | null)?.foundation as Record<string, unknown> | undefined)?.path as string ?? ""
+    );
+    if (campaignPlaybook && hooks.length < 3) {
+      const playbookHooks = campaignPlaybook.adAngles.map(a => ({
+        format: `${a.angle} (proven)`,
+        hook: a.hook,
+      }));
+      hooks = [...hooks, ...playbookHooks];
+    }
 
     for (let i = 0; i < hooks.length; i++) {
       await prisma.adVariation.create({
@@ -372,25 +386,27 @@ export async function deployRun(input: {
           textColor: "#ffffff",
           trackingScript: buildTrackingScript(trackingConfig),
           formTrackingScript: buildFormTrackingScript(trackingConfig),
-          hasTracking: !!(
-            trackingConfig.metaPixelId || trackingConfig.googleAnalyticsId
-          ),
+          himalayaTrackingScript: "", // placeholder — set after site.id is known
+          hasTracking: true, // Himalaya tracking always works, no pixel needed
         },
         published: false,
       },
     });
 
     const lp = (assets?.landingPage ?? {}) as Record<string, unknown>;
-    const foundation = (run.rawSignals as Record<string, unknown> | null)
+    const siteFoundation = (run.rawSignals as Record<string, unknown> | null)
       ?.foundation as Record<string, unknown> | undefined;
     const headline = (lp.headline ?? run.title ?? "") as string;
     const subheadline = (lp.subheadline ?? run.summary ?? "") as string;
-    const offer = foundation?.offerDirection as
+    const offer = siteFoundation?.offerDirection as
       | Record<string, string>
       | undefined;
-    const icp = foundation?.idealCustomer as Record<string, string> | undefined;
+    const icp = siteFoundation?.idealCustomer as Record<string, string> | undefined;
     const paymentUrl = (generatedAssets.paymentLink as string) ?? "#contact";
-    const ctaText = (lp.ctaCopy ?? lp.ctaText ?? lp.heroCtaText ?? "Get Started") as string;
+    const sitePlaybook = getPlaybook(
+      (siteFoundation?.path as string) ?? ""
+    );
+    const ctaText = (lp.ctaCopy ?? lp.ctaText ?? lp.heroCtaText ?? sitePlaybook?.offer.coreOffer ?? "Get Started") as string;
 
     const blocks: object[] = [
       {
@@ -517,6 +533,20 @@ export async function deployRun(input: {
       });
     }
 
+    // Add playbook benchmarks as social proof if available
+    if (sitePlaybook) {
+      blocks.push({
+        type: "stats",
+        data: {
+          items: [
+            { value: sitePlaybook.benchmarks.avgROAS, label: "Avg ROAS" },
+            { value: sitePlaybook.benchmarks.avgConversionRate, label: "Conversion Rate" },
+            { value: sitePlaybook.benchmarks.monthsToProfit, label: "Time to Profit" },
+          ],
+        },
+      });
+    }
+
     blocks.push({
       type: "form",
       data: {
@@ -538,6 +568,23 @@ export async function deployRun(input: {
       },
     });
 
+    // Inject Himalaya tracking (always works, no pixel setup needed)
+    await prisma.site.update({
+      where: { id: site.id },
+      data: {
+        theme: {
+          font: "Inter",
+          primaryColor: sitePlaybook?.offer.structure ? "#06b6d4" : "#06b6d4",
+          backgroundColor: "#050a14",
+          textColor: "#ffffff",
+          trackingScript: buildTrackingScript(trackingConfig),
+          formTrackingScript: buildFormTrackingScript(trackingConfig),
+          himalayaTrackingScript: buildHimalayaTrackingScript(site.id),
+          hasTracking: true,
+        },
+      },
+    }).catch(() => {});
+
     const appUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3005";
     results.site = {
       id: site.id,
@@ -548,14 +595,29 @@ export async function deployRun(input: {
   }
 
   if (shouldDeploy("emails") && assets) {
+    // Try to use niche-specific email sequences from playbooks first
+    const foundation = (run.rawSignals as Record<string, unknown> | null)?.foundation as Record<string, unknown> | undefined;
+    const bizType = (foundation?.path as string) ?? run.mode ?? "";
+    const playbook = getPlaybook(bizType);
+
     const sequences = (assets.emailSequences ?? {}) as Record<string, unknown>;
-    const welcomeEmails = (sequences.welcome ?? []) as {
+    let welcomeEmails = (sequences.welcome ?? []) as {
       subject: string;
       purpose?: string;
       preview?: string;
       body?: string;
       timing?: string;
     }[];
+
+    // If playbook has proven sequences and generated ones are weak, use playbook
+    if (playbook && (welcomeEmails.length < 3 || !welcomeEmails[0]?.body)) {
+      welcomeEmails = playbook.emailSequence[0]?.emails.map(e => ({
+        subject: e.subject,
+        purpose: e.purpose,
+        body: e.body,
+        timing: `Day ${e.day}`,
+      })) ?? welcomeEmails;
+    }
 
     if (welcomeEmails.length > 0) {
       const nodes: object[] = [
