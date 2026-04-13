@@ -7,6 +7,7 @@ import {
   Image, Video, CreditCard, BarChart3, Zap, ArrowRight, Send,
 } from "lucide-react";
 import DeployQAReport from "./DeployQAReport";
+import AdReviewLaunch from "./AdReviewLaunch";
 import WorkflowSuccess from "@/components/navigation/WorkflowSuccess";
 import { track } from "@/lib/himalaya/tracking";
 import type { HimalayaResultsViewModel } from "@/lib/himalaya/types";
@@ -215,42 +216,10 @@ export default function DeployActions({ vm, autoDeploy = false, autoPublish = fa
               </div>
             )}
 
-            {/* Generated ad creatives — show the actual images */}
-            {adImages.length > 0 && (
+            {/* Full ad review + launch — select best, one-click launch */}
+            {deployed.campaign && (
               <div className="mb-4">
-                <p className="text-[10px] font-black uppercase tracking-widest text-white/25 mb-2">Your Ad Creatives</p>
-                <div className="grid grid-cols-2 gap-2 sm:grid-cols-5">
-                  {adImages.slice(0, 5).map((img, i) => (
-                    <a
-                      key={i}
-                      href={`data:image/png;base64,${img.base64}`}
-                      download={`${img.name.replace(/\s+/g, "-").toLowerCase()}.png`}
-                      className="group relative aspect-square overflow-hidden rounded-xl border border-white/10 transition hover:border-cyan-400/30"
-                    >
-                      <img
-                        src={`data:image/png;base64,${img.base64}`}
-                        alt={img.name}
-                        className="w-full h-full object-cover"
-                      />
-                      <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition flex items-center justify-center">
-                        <span className="text-[10px] font-bold text-white">Download</span>
-                      </div>
-                    </a>
-                  ))}
-                </div>
-                <p className="text-[10px] text-white/20 mt-1.5">Click any image to download. All sized for ad platforms.</p>
-              </div>
-            )}
-
-            {/* Generated video */}
-            {videoUrl && (
-              <div className="mb-4">
-                <p className="text-[10px] font-black uppercase tracking-widest text-white/25 mb-2">Your Ad Video</p>
-                <video
-                  src={videoUrl}
-                  controls
-                  className="rounded-xl border border-white/10 max-h-48 w-full"
-                />
+                <AdReviewLaunch campaignId={deployed.campaign.id} />
               </div>
             )}
 
