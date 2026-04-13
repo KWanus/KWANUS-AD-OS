@@ -18,6 +18,8 @@ import { generateCreativePackage, generateCreativeImages, saveCreativePackage, t
 import { generateVideoSpokesperson } from "@/lib/agents/himalayaVideo";
 import { createNotification } from "@/lib/notifications/notify";
 import { retry } from "@/lib/utils/retry";
+import { generateRevenueSystem } from "@/lib/himalaya/revenueEngine";
+import { generateLegalPages, generateDayOneProof, generateSchemaMarkup, generateChatWidget } from "@/lib/himalaya/siteHardening";
 
 export type PostDeployResult = {
   siteUrl?: string;
@@ -155,7 +157,96 @@ export async function runPostDeploy(input: {
     errors.push(`Video: ${err instanceof Error ? err.message : "failed"}`);
   }
 
-  // ── 4. Count active email flows ────────────────────────────────────────
+  // ── 4. Add legal pages + social proof + chat widget to site ─────────────
+  if (input.siteId) {
+    try {
+      const legalPages = generateLegalPages({
+        businessName,
+        websiteUrl: siteUrl ?? "",
+        contactEmail: "hello@" + (siteUrl ?? "himalaya.app").replace(/https?:\/\//, "").split("/")[0],
+        niche,
+      });
+
+      const dayOneProof = await generateDayOneProof({ niche, offer: offerDesc, businessName });
+
+      // Create legal pages as site sub-pages
+      await prisma.sitePage.createMany({
+        data: [
+          { siteId: input.siteId, title: "Privacy Policy", slug: "privacy", order: 10, blocks: [{ id: "legal-privacy", type: "text", props: { title: "Privacy Policy", body: legalPages.privacy } }], published: true },
+          { siteId: input.siteId, title: "Terms of Service", slug: "terms", order: 11, blocks: [{ id: "legal-terms", type: "text", props: { title: "Terms of Service", body: legalPages.terms } }], published: true },
+          { siteId: input.siteId, title: "Refund Policy", slug: "refund", order: 12, blocks: [{ id: "legal-refund", type: "text", props: { title: "Refund Policy", body: legalPages.refund } }], published: true },
+        ],
+      }).catch(() => {});
+
+      // Inject chat widget + schema markup into site theme
+      const chatWidget = generateChatWidget({
+        businessName,
+        greeting: `Hey! 👋 How can we help you with ${niche}?`,
+        webhookUrl: `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/api/voice/reply`,
+        primaryColor: "#06b6d4",
+      });
+
+      const schema = generateSchemaMarkup({
+        businessName,
+        niche,
+        url: siteUrl ?? "",
+        description: offerDesc,
+        offer: offerDesc,
+      });
+
+      const site = await prisma.site.findUnique({ where: { id: input.siteId }, select: { theme: true } });
+      const currentTheme = (site?.theme ?? {}) as Record<string, unknown>;
+
+      await prisma.site.update({
+        where: { id: input.siteId },
+        data: {
+          theme: {
+            ...currentTheme,
+            chatWidget,
+            schemaMarkup: schema,
+            dayOneProof,
+          },
+        },
+      }).catch(() => {});
+    } catch (err) {
+      errors.push(`Site hardening: ${err instanceof Error ? err.message : "failed"}`);
+    }
+  }
+
+  // ── 5. Generate revenue system ──────────────────────────────────────────
+  try {
+    const revSystem = await generateRevenueSystem({
+      businessType: (foundation?.path as string) ?? "affiliate",
+      niche,
+      coreOffer: offerDesc,
+      corePrice: (offer?.pricing as string) ?? "$97",
+      targetAudience: audience,
+    });
+
+    // Store revenue system for use in daily commands + email flows
+    await prisma.himalayaFunnelEvent.create({
+      data: {
+        userId: input.userId,
+        event: "revenue_system_generated",
+        metadata: JSON.parse(JSON.stringify({
+          runId: input.runId,
+          upsell: revSystem.upsellFlow,
+          referral: revSystem.referralProgram,
+          recurring: revSystem.recurringModel,
+          winBack: revSystem.winBackSequence,
+          cartRecovery: revSystem.cartRecovery,
+          pricingLadder: revSystem.pricingLadder,
+          fulfillmentChecklist: revSystem.fulfillmentChecklist,
+          seasonalCalendar: revSystem.seasonalCalendar,
+          createdAt: new Date().toISOString(),
+        })),
+      },
+    }).catch(() => {});
+  } catch (err) {
+    errors.push(`Revenue system: ${err instanceof Error ? err.message : "failed"}`);
+  }
+
+  // ── 6. Count active email flows ────────────────────────────────────────
   try {
     emailFlowsActive = await prisma.emailFlow.count({
       where: { userId: input.userId, status: "active" },
