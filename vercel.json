@@ -21,7 +21,7 @@
       "schedule": "0 7 * * 1"
     },
     {
-      "path": "/api/cron/proactive-alerts",
+      "path": "/api/ads/optimize",
       "schedule": "0 18 * * *"
     }
   ]
