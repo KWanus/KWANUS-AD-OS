@@ -5,6 +5,8 @@ import { prisma } from "@/lib/prisma";
 import { runHimalaya } from "@/lib/himalaya/orchestrator";
 import { deployRun } from "@/lib/himalaya/deployRun";
 import { smartDecide } from "@/lib/himalaya/smartDecision";
+import { runPreBuildCheck } from "@/lib/himalaya/readinessCheck";
+import { generateDifferentiators } from "@/lib/himalaya/differentiationEngine";
 import type { HimalayaProfileInput } from "@/lib/himalaya/profileTypes";
 
 /**
@@ -62,6 +64,19 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ ok: true, runId: result.runId, mode: "improve" });
     }
 
+    // Pre-build check: validate niche, user readiness, blockers
+    const preBuild = await runPreBuildCheck({
+      text: body.niche ?? "",
+      entryType: body.businessType === "Service Business" ? "has_business" : "no_business",
+      userId: user.id,
+    });
+
+    // Generate unique differentiators (no two businesses look the same)
+    const differentiators = await generateDifferentiators({
+      niche: body.niche ?? "online business",
+      userId: user.id,
+    }).catch(() => null);
+
     // Smart decision: AI-powered path selection from user's input
     const smartResult = await smartDecide({
       text: body.niche ?? "",
@@ -69,7 +84,18 @@ export async function POST(req: NextRequest) {
       revenue: undefined,
     });
 
-    const profileInput: HimalayaProfileInput = smartResult.profile;
+    const profileInput: HimalayaProfileInput = {
+      ...smartResult.profile,
+      // Inject differentiators into the description so foundation uses them
+      description: [
+        smartResult.profile.description,
+        differentiators?.uniqueAngle ? `Unique angle: ${differentiators.uniqueAngle}` : "",
+        differentiators?.brandVoice.personality ? `Brand voice: ${differentiators.brandVoice.personality}` : "",
+        differentiators?.founderStory.mission || "",
+        preBuild.userContext.hasPastFailure ? `Past failure: ${preBuild.userContext.pastFailureReason}. Avoid this approach.` : "",
+        preBuild.nicheDemand && !preBuild.nicheDemand.isViable ? `Niche concern: ${preBuild.nicheDemand.reasoning}. ${preBuild.nicheDemand.suggestedPivot ?? ""}` : "",
+      ].filter(Boolean).join(". "),
+    };
     const path = body.businessType
       ? mapBusinessType(body.businessType)
       : smartResult.path;
