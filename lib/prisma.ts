@@ -12,7 +12,7 @@ function createPrismaClient(): PrismaClient {
     console.log(`[Prisma] Initializing with: ${masked}`);
   }
 
-  // Parse the connection string manually to avoid URL-encoding issues with special characters in passwords
+  // Parse manually to handle special chars in password (like !!)
   let poolConfig: pg.PoolConfig;
   try {
     const url = new URL(connectionString);
@@ -21,12 +21,14 @@ function createPrismaClient(): PrismaClient {
       port: parseInt(url.port || "5432", 10),
       user: decodeURIComponent(url.username),
       password: decodeURIComponent(url.password),
-      database: url.pathname.slice(1),
+      database: url.pathname.slice(1) || "postgres",
       ssl: url.hostname !== "localhost" ? { rejectUnauthorized: false } : undefined,
+      max: 3,
+      idleTimeoutMillis: 10000,
+      connectionTimeoutMillis: 15000,
     };
   } catch {
-    // Fallback: let pg parse it directly (works for simple connection strings)
-    poolConfig = { connectionString };
+    poolConfig = { connectionString, max: 3 };
   }
 
   const pool = new pg.Pool(poolConfig);
