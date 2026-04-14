@@ -12,7 +12,8 @@
       "Bash(curl -s -X POST http://localhost:3005/api/checkout -H \"Content-Type: application/json\" -d '{\"\"\"\"siteId\"\"\"\":\"\"\"\"test\"\"\"\",\"\"\"\"productId\"\"\"\":\"\"\"\"test\"\"\"\"}')",
       "Bash(curl -s -L -o /dev/null -w \"code=%{http_code} redirect=%{redirect_url}\" http://localhost:3005/ 2)",
       "Bash(1 echo:*)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(curl -s -o /dev/null -w \"%{http_code}\" https://kwanus-ad-os-hazel.vercel.app)"
     ],
     "additionalDirectories": [
       "/Users/kwanus/KWANUS-AD-OS/app/api/orders/[id]"
