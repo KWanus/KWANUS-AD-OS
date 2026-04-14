@@ -114,21 +114,36 @@ export default function HimalayaPage() {
       }
 
       const isUrl = /^https?:\/\/.+\..+/.test(niche);
-      const body = isUrl
-        ? { niche, url: niche }
-        : { niche };
 
       const res = await fetch("/api/himalaya/express", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(body),
+        body: JSON.stringify({
+          niche,
+          ...(isUrl ? { url: niche } : {}),
+          entryType: entry,
+          revenue: revenue || undefined,
+        }),
       });
 
-      const data = await res.json() as { ok: boolean; runId?: string; error?: string };
+      const data = await res.json() as {
+        ok: boolean; runId?: string; error?: string;
+        deployed?: { site?: { url: string } | null };
+        postDeploy?: { siteUrl?: string; adCreatives?: number };
+        buildScore?: number;
+        readyToLaunch?: boolean;
+        path?: string;
+        niche?: string;
+        steps?: { step: string; ok: boolean }[];
+      };
       clearInterval(iv);
 
       if (data.ok && data.runId) {
-        setBuildStage("Done. Loading your business...");
+        setBuildStage(
+          data.readyToLaunch
+            ? `Your business is live! Score: ${data.buildScore}/100`
+            : "Done. Loading your results..."
+        );
         setTimeout(() => router.push(`/himalaya/run/${data.runId}`), 800);
       } else {
         alert(data.error ?? "Something went wrong. Try again.");
