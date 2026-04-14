@@ -34,6 +34,7 @@ const isPublicRoute = createRouteMatcher([
   "/api/mcp(.*)",
   "/api/oauth/callback(.*)",
   "/api/debug(.*)",
+  "/api/ping(.*)",
   "/api/track(.*)",
   "/api/orders(.*)",
   "/api/checkout(.*)",

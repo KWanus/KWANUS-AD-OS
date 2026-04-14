@@ -24,7 +24,8 @@
       "Bash(python3 -c \":*)",
       "Bash(1 printf:*)",
       "Bash(curl -s https://kwanus-ad-os-hazel.vercel.app/api/ads/optimize)",
-      "Bash(curl -s https://kwanus-ad-os-hazel.vercel.app/api/debug)"
+      "Bash(curl -s https://kwanus-ad-os-hazel.vercel.app/api/debug)",
+      "Bash(curl -s https://kwanus-ad-os-hazel.vercel.app/api/ping)"
     ],
     "additionalDirectories": [
       "/Users/kwanus/KWANUS-AD-OS/app/api/orders/[id]",
