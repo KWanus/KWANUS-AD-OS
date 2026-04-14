@@ -369,10 +369,17 @@ export default function Dashboard() {
         </div>
 
         {/* ── Himalaya link ── */}
-        <div className="text-center">
+        <div className="text-center space-y-2">
+          {hasWork && (
+            <Link href="/dashboard"
+              className="inline-flex items-center gap-2 text-[11px] text-white/25 hover:text-white/50 transition">
+              <BarChart2 className="w-3 h-3" /> Open full dashboard <ArrowRight className="w-3 h-3" />
+            </Link>
+          )}
+          <br />
           <Link href="/himalaya"
             className="inline-flex items-center gap-2 text-[11px] text-white/15 hover:text-white/35 transition">
-            <Sparkles className="w-3 h-3" /> Open full Himalaya system <ArrowRight className="w-3 h-3" />
+            <Sparkles className="w-3 h-3" /> Open Himalaya system <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
       </div>

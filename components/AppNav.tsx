@@ -18,7 +18,7 @@ const CreditsDisplay = dynamic(() => import("@/components/CreditsDisplay"), { ss
 // ── Primary nav — 6 items max ────────────────────────────────────────────────
 
 const NAV = [
-  { href: "/",          label: "Home",      icon: Home,          match: (p: string) => p === "/" },
+  { href: "/",          label: "Home",      icon: Home,          match: (p: string) => p === "/" || p === "/dashboard" },
   { href: "/himalaya",  label: "Himalaya",  icon: Mountain,      match: (p: string) => ["/himalaya","/scan","/analyses","/analyze","/launch","/start","/winners","/report"].some(r => p.startsWith(r)) },
   { href: "/campaigns", label: "Campaigns", icon: FolderKanban,  match: (p: string) => p.startsWith("/campaigns") || p.startsWith("/projects") },
   { href: "/websites",  label: "Sites",     icon: Globe,         match: (p: string) => p.startsWith("/websites") },
