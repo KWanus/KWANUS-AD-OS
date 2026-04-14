@@ -33,6 +33,7 @@ const isPublicRoute = createRouteMatcher([
   "/api/intent(.*)",
   "/api/mcp(.*)",
   "/api/oauth/callback(.*)",
+  "/api/debug(.*)",
   "/api/track(.*)",
   "/api/orders(.*)",
   "/api/checkout(.*)",
