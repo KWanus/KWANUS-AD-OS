@@ -18,6 +18,7 @@
 
 import { generateAI } from "@/lib/integrations/aiInference";
 import { getPlaybook } from "./nichePlaybooks";
+import { getPreBuiltCampaignPackage } from "./campaignPackages";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -115,6 +116,13 @@ export async function generateCampaignPackage(input: {
   businessType: string;          // "affiliate", "dropship", etc.
   audienceDescription?: string;
 }): Promise<CampaignPackage> {
+  // Try pre-built packages first (CitrusBurn-level quality)
+  const preBuilt = getPreBuiltCampaignPackage({
+    businessType: input.businessType,
+    subNiche: input.niche,
+    targetIncome: input.targetIncome,
+  });
+  if (preBuilt) return preBuilt;
   const dailyTarget = Math.round(input.targetIncome / 30);
 
   // Step 1: Find the best product for this niche
