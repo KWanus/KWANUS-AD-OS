@@ -18,6 +18,7 @@ import { generateCreativePackage, generateCreativeImages, saveCreativePackage, t
 import { generateVideoSpokesperson } from "@/lib/agents/himalayaVideo";
 import { createNotification } from "@/lib/notifications/notify";
 import { retry } from "@/lib/utils/retry";
+import { generateCampaignPackage } from "@/lib/himalaya/campaignPackageGenerator";
 import { generateRevenueSystem } from "@/lib/himalaya/revenueEngine";
 import { generateLegalPages, generateDayOneProof, generateSchemaMarkup, generateChatWidget } from "@/lib/himalaya/siteHardening";
 import { generateExitIntentPopup, generateTestimonialWidget, generateCampaignName } from "@/lib/himalaya/growthAutomations";
@@ -259,7 +260,36 @@ export async function runPostDeploy(input: {
     errors.push(`Revenue system: ${err instanceof Error ? err.message : "failed"}`);
   }
 
-  // ── 6. Count active email flows ────────────────────────────────────────
+  // ── 6. Generate full campaign package (scripts, bridge page, emails, math) ──
+  try {
+    const campaignPkg = await generateCampaignPackage({
+      niche,
+      targetIncome: 10000, // default $10K/month target
+      businessType: (foundation?.path as string) ?? "affiliate",
+      audienceDescription: audience,
+    });
+
+    await prisma.himalayaFunnelEvent.create({
+      data: {
+        userId: input.userId,
+        event: "campaign_package_generated",
+        metadata: JSON.parse(JSON.stringify({
+          runId: input.runId,
+          product: campaignPkg.product,
+          math: campaignPkg.math,
+          scriptCount: campaignPkg.scripts.length,
+          emailCount: campaignPkg.emails.length,
+          timeline: campaignPkg.timeline,
+          compliance: campaignPkg.compliance,
+          createdAt: new Date().toISOString(),
+        })),
+      },
+    }).catch(() => {});
+  } catch (err) {
+    errors.push(`Campaign package: ${err instanceof Error ? err.message : "failed"}`);
+  }
+
+  // ── 7. Count active email flows ────────────────────────────────────────
   try {
     emailFlowsActive = await prisma.emailFlow.count({
       where: { userId: input.userId, status: "active" },
