@@ -93,8 +93,8 @@ export default function SetupPage() {
   // ── Building screen ──
   if (phase === "building") {
     return (
-      <main className="min-h-screen bg-[#020509] text-white flex flex-col items-center justify-center px-4">
-        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shadow-[0_0_60px_rgba(6,182,212,0.25)] mb-6">
+      <main className="min-h-screen bg-[#0c0a08] text-white flex flex-col items-center justify-center px-4">
+        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#f5a623] to-[#e07850] flex items-center justify-center shadow-[0_0_60px_rgba(245,166,35,0.25)] mb-6">
           <Mountain className="w-10 h-10 text-white animate-pulse" />
         </div>
         <p className="text-xl font-black text-white mb-2">{stage}</p>
@@ -103,7 +103,7 @@ export default function SetupPage() {
           {Array.from({ length: 8 }).map((_, idx) => {
             const msgs = ["Setting up your account...", "Picking the best business for you...", "Building your website...", "Creating your ads...", "Writing your emails...", "Setting up your funnel...", "Adding tracking...", "Going live..."];
             const ci = msgs.indexOf(stage);
-            return <div key={idx} className={`w-2.5 h-2.5 rounded-full transition-all ${idx <= ci ? "bg-cyan-400" : "bg-white/[0.06]"}`} />;
+            return <div key={idx} className={`w-2.5 h-2.5 rounded-full transition-all ${idx <= ci ? "bg-[#f5a623]" : "bg-white/[0.06]"}`} />;
           })}
         </div>
         <Loader2 className="w-4 h-4 text-white/15 animate-spin mt-6" />
@@ -112,12 +112,12 @@ export default function SetupPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#020509] text-white flex flex-col items-center justify-center px-4">
+    <main className="min-h-screen bg-[#0c0a08] text-white flex flex-col items-center justify-center px-4">
       <div className="max-w-md w-full">
 
         {/* Logo */}
         <div className="text-center mb-10">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center mx-auto mb-4 shadow-[0_0_40px_rgba(6,182,212,0.2)]">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#f5a623] to-[#e07850] flex items-center justify-center mx-auto mb-4 shadow-[0_0_40px_rgba(245,166,35,0.2)]">
             <Mountain className="w-8 h-8 text-white" />
           </div>
           <h1 className="text-3xl font-black text-white">
@@ -137,10 +137,10 @@ export default function SetupPage() {
               { id: "scale" as const, label: "I'm making money, I want more", sub: "We find what's leaking and multiply what's working" },
             ].map(opt => (
               <button key={opt.id} onClick={() => { setEntry(opt.id); setPhase("tell"); }}
-                className="w-full text-left rounded-2xl border border-white/[0.06] bg-white/[0.02] px-6 py-5 hover:border-cyan-500/20 hover:bg-cyan-500/[0.03] transition group">
+                className="w-full text-left rounded-2xl border border-white/[0.06] bg-white/[0.02] px-6 py-5 hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.03] transition group">
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-base font-black text-white group-hover:text-cyan-100 transition">{opt.label}</p>
+                    <p className="text-base font-black text-white group-hover:text-[#f5f0e8] transition">{opt.label}</p>
                     <p className="text-sm text-white/25 mt-1">{opt.sub}</p>
                   </div>
                   <ChevronRight className="w-5 h-5 text-white/10 group-hover:text-white/30 transition" />
@@ -164,7 +164,7 @@ export default function SetupPage() {
                 entry === "have" ? "Paste your website or describe your business" :
                 "What's your business?"
               }
-              className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.03] px-5 py-4 text-base text-white placeholder-white/15 outline-none focus:border-cyan-500/25 transition"
+              className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.03] px-5 py-4 text-base text-white placeholder-white/15 outline-none focus:border-[#f5a623]/25 transition"
             />
 
             {entry === "scale" && (
@@ -174,7 +174,7 @@ export default function SetupPage() {
                   {["$1-5k", "$5-10k", "$10-25k", "$25-50k", "$50k+"].map(r => (
                     <button key={r} onClick={() => setRevenue(r)}
                       className={`flex-1 py-2.5 rounded-xl border text-sm font-bold transition ${
-                        revenue === r ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300" : "border-white/[0.06] text-white/25 hover:text-white/50"
+                        revenue === r ? "border-[#f5a623]/30 bg-[#f5a623]/10 text-[#f5a623]" : "border-white/[0.06] text-white/25 hover:text-white/50"
                       }`}>{r}</button>
                   ))}
                 </div>
@@ -191,7 +191,7 @@ export default function SetupPage() {
             )}
 
             <button onClick={() => void go()}
-              className="w-full flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 py-4 text-base font-black text-white hover:opacity-90 transition">
+              className="w-full flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] py-4 text-base font-black text-white hover:opacity-90 transition">
               <Mountain className="w-5 h-5" /> Build My Business
             </button>
 

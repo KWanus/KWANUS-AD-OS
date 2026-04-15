@@ -77,10 +77,10 @@ export default function Home() {
 
   if (running) {
     return (
-      <main className="min-h-screen bg-[#020509] text-white">
+      <main className="min-h-screen bg-[#0c0a08] text-white">
         <AppNav />
         <div className="flex flex-col items-center justify-center min-h-[75vh] gap-5 px-4">
-          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center animate-pulse">
+          <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#f5a623] to-[#e07850] flex items-center justify-center animate-pulse">
             <Mountain className="w-8 h-8 text-white" />
           </div>
           <p className="text-lg font-black text-white">{stage}</p>
@@ -92,16 +92,16 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-[#020509] text-white">
+    <main className="min-h-screen bg-[#0c0a08] text-white">
       <AppNav />
       <div className="max-w-xl mx-auto px-4 sm:px-6 pb-20">
 
         {/* ── Greeting ── */}
         <div className="pt-14 pb-2 text-center">
           {streak > 0 && (
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/20 mb-3">
-              <Flame className="w-3 h-3 text-amber-400" />
-              <span className="text-[11px] font-bold text-amber-300">{streak}-day streak</span>
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[#f5a623]/10 border border-[#f5a623]/20 mb-3">
+              <Flame className="w-3 h-3 text-[#f5a623]" />
+              <span className="text-[11px] font-bold text-[#f5a623]">{streak}-day streak</span>
             </div>
           )}
           <h1 className="text-3xl sm:text-4xl font-black tracking-tight text-white">
@@ -119,10 +119,10 @@ export default function Home() {
               onChange={e => setGoal(e.target.value)}
               onKeyDown={e => { if (e.key === "Enter") void run(goal); }}
               placeholder="What do you want? Type anything..."
-              className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.03] px-5 py-4 pr-24 text-base text-white placeholder-white/20 outline-none focus:border-cyan-500/30 transition"
+              className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.03] px-5 py-4 pr-24 text-base text-white placeholder-white/20 outline-none focus:border-[#f5a623]/30 transition"
             />
             <button onClick={() => void run(goal)} disabled={!goal.trim()}
-              className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-cyan-500 text-sm font-bold text-white disabled:opacity-20 hover:bg-cyan-400 transition">
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-[#f5a623] text-sm font-bold text-white disabled:opacity-20 hover:bg-[#f5a623] transition">
               <Send className="w-3.5 h-3.5" /> Go
             </button>
           </div>
@@ -143,8 +143,8 @@ export default function Home() {
             </div>
             <div className="grid grid-cols-4 divide-x divide-white/[0.04]">
               {([
-                { l: "Campaigns", v: stats.campaigns, h: "/campaigns", c: "text-cyan-400", i: Zap },
-                { l: "Sites", v: stats.sites, h: "/websites", c: "text-violet-400", i: Globe },
+                { l: "Campaigns", v: stats.campaigns, h: "/campaigns", c: "text-[#f5a623]", i: Zap },
+                { l: "Sites", v: stats.sites, h: "/websites", c: "text-[#e07850]", i: Globe },
                 { l: "Emails", v: stats.emailFlows, h: "/emails", c: "text-blue-400", i: Mail },
                 { l: "Leads", v: stats.leads, h: "/leads", c: "text-emerald-400", i: Users },
               ] as const).map(m => (
@@ -164,10 +164,10 @@ export default function Home() {
             <p className="text-xs font-bold text-white/15 mb-2">DO THIS NOW</p>
             <div className="space-y-2">
               {commands.slice(0, 4).map((cmd, i) => (
-                <div key={cmd.id} className={`rounded-2xl border px-4 py-3.5 ${cmd.priority === 1 ? "border-cyan-500/15 bg-cyan-500/[0.03]" : "border-white/[0.04]"}`}>
+                <div key={cmd.id} className={`rounded-2xl border px-4 py-3.5 ${cmd.priority === 1 ? "border-[#f5a623]/15 bg-[#f5a623]/[0.03]" : "border-white/[0.04]"}`}>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3 min-w-0">
-                      <div className={`w-6 h-6 rounded-full border flex items-center justify-center shrink-0 mt-0.5 ${cmd.priority === 1 ? "border-cyan-500/30 text-cyan-400" : "border-white/[0.08] text-white/20"}`}>
+                      <div className={`w-6 h-6 rounded-full border flex items-center justify-center shrink-0 mt-0.5 ${cmd.priority === 1 ? "border-[#f5a623]/30 text-[#f5a623]" : "border-white/[0.08] text-white/20"}`}>
                         <span className="text-[10px] font-black">{i + 1}</span>
                       </div>
                       <div className="min-w-0">
@@ -181,7 +181,7 @@ export default function Home() {
                       </div>
                     </div>
                     {cmd.href && (
-                      <Link href={cmd.href} className="shrink-0 text-xs font-bold text-cyan-400/60 hover:text-cyan-400 transition whitespace-nowrap">
+                      <Link href={cmd.href} className="shrink-0 text-xs font-bold text-[#f5a623]/60 hover:text-[#f5a623] transition whitespace-nowrap">
                         Do it →
                       </Link>
                     )}
@@ -197,11 +197,11 @@ export default function Home() {
           <p className="text-xs font-bold text-white/15 mb-2">{hasWork ? "JUMP TO" : "GO TO"}</p>
           <div className="grid grid-cols-3 gap-2">
             {[
-              { l: "Campaigns", h: "/campaigns", i: Zap, c: "text-cyan-400" },
-              { l: "Sites", h: "/websites", i: Globe, c: "text-violet-400" },
+              { l: "Campaigns", h: "/campaigns", i: Zap, c: "text-[#f5a623]" },
+              { l: "Sites", h: "/websites", i: Globe, c: "text-[#e07850]" },
               { l: "Emails", h: "/emails", i: Mail, c: "text-blue-400" },
               { l: "CRM", h: "/clients", i: Users, c: "text-emerald-400" },
-              { l: "Analytics", h: "/analytics", i: BarChart2, c: "text-amber-400" },
+              { l: "Analytics", h: "/analytics", i: BarChart2, c: "text-[#f5a623]" },
               { l: "Tools", h: "/tools", i: Target, c: "text-pink-400" },
             ].map(item => (
               <Link key={item.l} href={item.h}

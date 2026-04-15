@@ -161,10 +161,10 @@ export default function HimalayaPage() {
   // ── Building state ─────────────────────────────────────────────────────────
   if (phase === "building") {
     return (
-      <main className="min-h-screen bg-[#020509] text-white">
+      <main className="min-h-screen bg-[#0c0a08] text-white">
         <AppNav />
         <div className="flex flex-col items-center justify-center min-h-[80vh] gap-6 px-4">
-          <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shadow-[0_0_60px_rgba(6,182,212,0.25)]">
+          <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#f5a623] to-[#e07850] flex items-center justify-center shadow-[0_0_60px_rgba(245,166,35,0.25)]">
             <Mountain className="w-10 h-10 text-white animate-pulse" />
           </div>
           <div className="text-center max-w-sm">
@@ -178,7 +178,7 @@ export default function HimalayaPage() {
               const stages = ["Analyzing your situation...", "Choosing the best path for you...", "Generating your website...", "Writing your ad copy...", "Building your email sequences...", "Creating your funnel...", "Setting up tracking...", "Deploying everything..."];
               const currentIdx = stages.indexOf(buildStage);
               return (
-                <div key={idx} className={`w-2 h-2 rounded-full transition-all ${idx <= currentIdx ? "bg-cyan-400" : "bg-white/[0.06]"}`} />
+                <div key={idx} className={`w-2 h-2 rounded-full transition-all ${idx <= currentIdx ? "bg-[#f5a623]" : "bg-white/[0.06]"}`} />
               );
             })}
           </div>
@@ -190,14 +190,14 @@ export default function HimalayaPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#020509] text-white">
+    <main className="min-h-screen bg-[#0c0a08] text-white">
       <AppNav />
 
       <div className="max-w-lg mx-auto px-4 sm:px-6 pb-20">
 
         {/* ── Header ── */}
         <div className="pt-14 pb-8 text-center">
-          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center mx-auto mb-4 shadow-[0_0_40px_rgba(6,182,212,0.2)]">
+          <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#f5a623] to-[#e07850] flex items-center justify-center mx-auto mb-4 shadow-[0_0_40px_rgba(245,166,35,0.2)]">
             <Mountain className="w-7 h-7 text-white" />
           </div>
           <h1 className="text-2xl font-black text-white">
@@ -215,11 +215,11 @@ export default function HimalayaPage() {
               <button
                 key={opt.id}
                 onClick={() => { setEntry(opt.id); setPhase("context"); }}
-                className="w-full text-left rounded-xl border border-white/[0.06] bg-white/[0.02] px-5 py-4 hover:border-cyan-500/20 hover:bg-cyan-500/[0.03] transition group"
+                className="w-full text-left rounded-xl border border-white/[0.06] bg-white/[0.02] px-5 py-4 hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.03] transition group"
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-bold text-white group-hover:text-cyan-100 transition">{opt.label}</p>
+                    <p className="text-sm font-bold text-white group-hover:text-[#f5f0e8] transition">{opt.label}</p>
                     <p className="text-xs text-white/25 mt-0.5">{opt.sub}</p>
                   </div>
                   <ChevronRight className="w-4 h-4 text-white/10 group-hover:text-white/30 transition" />
@@ -255,7 +255,7 @@ export default function HimalayaPage() {
                   entry === "has_business" ? "Paste your website URL or describe your business" :
                   "What's your business? e.g. coaching, agency, ecommerce"
                 }
-                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5 text-sm text-white placeholder-white/15 outline-none focus:border-cyan-500/25 transition"
+                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5 text-sm text-white placeholder-white/15 outline-none focus:border-[#f5a623]/25 transition"
               />
             </div>
 
@@ -267,7 +267,7 @@ export default function HimalayaPage() {
                   {["$1-5k", "$5-10k", "$10-25k", "$25-50k", "$50k+"].map(r => (
                     <button key={r} onClick={() => setRevenue(r)}
                       className={`flex-1 py-2 rounded-lg border text-xs font-bold transition ${
-                        revenue === r ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300" : "border-white/[0.06] text-white/25 hover:text-white/50"
+                        revenue === r ? "border-[#f5a623]/30 bg-[#f5a623]/10 text-[#f5a623]" : "border-white/[0.06] text-white/25 hover:text-white/50"
                       }`}>
                       {r}
                     </button>
@@ -292,7 +292,7 @@ export default function HimalayaPage() {
             <button
               onClick={() => void launch()}
               disabled={building}
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 py-3.5 text-sm font-bold text-white hover:opacity-90 transition disabled:opacity-40"
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] py-3.5 text-sm font-bold text-white hover:opacity-90 transition disabled:opacity-40"
             >
               <Mountain className="w-4 h-4" />
               {entry === "no_business" ? "Build My Business" : entry === "want_to_scale" ? "Find My Growth Levers" : "Analyze & Improve"}

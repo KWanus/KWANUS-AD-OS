@@ -64,13 +64,13 @@ export default function AppNav() {
   useEffect(() => { setShowMore(false); }, [pathname]);
 
   return (
-    <header className="sticky top-0 z-50 bg-[#020509]/90 backdrop-blur-xl border-b border-white/[0.04]">
+    <header className="sticky top-0 z-50 bg-[#0c0a08]/90 backdrop-blur-xl border-b border-white/[0.04]">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
 
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2 shrink-0">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
-            <Mountain className="w-3.5 h-3.5 text-white" />
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#f5a623] to-[#e07850] flex items-center justify-center">
+            <Mountain className="w-3.5 h-3.5 text-[#0c0a08]" />
           </div>
           <span className="hidden sm:block text-sm font-black text-white tracking-tight">Himalaya</span>
         </Link>
@@ -84,7 +84,7 @@ export default function AppNav() {
                 className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition whitespace-nowrap
                   ${active ? "bg-white/[0.08] text-white" : "text-white/30 hover:text-white/60"}`}
               >
-                <Icon className={`w-3.5 h-3.5 ${active ? "text-cyan-400" : ""}`} />
+                <Icon className={`w-3.5 h-3.5 ${active ? "text-[#f5a623]" : ""}`} />
                 <span className="hidden md:block">{label}</span>
               </Link>
             );
@@ -105,9 +105,9 @@ export default function AppNav() {
                 {MORE.map(({ href, label, icon: Icon }) => (
                   <Link key={href} href={href}
                     className={`flex items-center gap-2.5 px-3 py-2 text-[11px] font-semibold transition
-                      ${pathname.startsWith(href) ? "bg-cyan-500/10 text-white" : "text-white/45 hover:bg-white/[0.04] hover:text-white/80"}`}
+                      ${pathname.startsWith(href) ? "bg-[#f5a623]/10 text-white" : "text-white/45 hover:bg-white/[0.04] hover:text-white/80"}`}
                   >
-                    <Icon className={`w-3.5 h-3.5 ${pathname.startsWith(href) ? "text-cyan-400" : "text-white/25"}`} />
+                    <Icon className={`w-3.5 h-3.5 ${pathname.startsWith(href) ? "text-[#f5a623]" : "text-white/25"}`} />
                     {label}
                   </Link>
                 ))}

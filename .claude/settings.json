@@ -25,11 +25,14 @@
       "Bash(1 printf:*)",
       "Bash(curl -s https://kwanus-ad-os-hazel.vercel.app/api/ads/optimize)",
       "Bash(curl -s https://kwanus-ad-os-hazel.vercel.app/api/debug)",
-      "Bash(curl -s https://kwanus-ad-os-hazel.vercel.app/api/ping)"
+      "Bash(curl -s https://kwanus-ad-os-hazel.vercel.app/api/ping)",
+      "Bash(claude mcp:*)",
+      "Bash(1 __NEW_LINE_399ae42bf361f5fc__ python3 -c \":*)"
     ],
     "additionalDirectories": [
       "/Users/kwanus/KWANUS-AD-OS/app/api/orders/[id]",
-      "/Users/kwanus/KWANUS-AD-OS/$(cat <<'EOF'\nDB connection fix attempts + cleanup\nTried multiple Supabase connection formats:\n- Direct (port 5432): Can't reach from Vercel serverless\n- Pooler (port 6543): Tenant not found (wrong region)\n- Session pooler: Same issue\n- With SSL: Same issue\nRoot cause: Supabase free tier blocks direct Postgres connections\nfrom Vercel's IP range. Need the exact Transaction Pooler URL from\nthe Supabase dashboard (Settings → Database → Connection string → URI).\nThe app already handles DB unavailability gracefully via\nlib/db"
+      "/Users/kwanus/KWANUS-AD-OS/$(cat <<'EOF'\nDB connection fix attempts + cleanup\nTried multiple Supabase connection formats:\n- Direct (port 5432): Can't reach from Vercel serverless\n- Pooler (port 6543): Tenant not found (wrong region)\n- Session pooler: Same issue\n- With SSL: Same issue\nRoot cause: Supabase free tier blocks direct Postgres connections\nfrom Vercel's IP range. Need the exact Transaction Pooler URL from\nthe Supabase dashboard (Settings → Database → Connection string → URI).\nThe app already handles DB unavailability gracefully via\nlib/db",
+      "/Users/kwanus/KWANUS-AD-OS/.claude"
     ]
   }
 }

@@ -101,7 +101,7 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[#020509] text-white">
+      <main className="min-h-screen bg-[#0c0a08] text-white">
         <AppNav />
         <div className="flex items-center justify-center min-h-[70vh]">
           <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
@@ -114,7 +114,7 @@ export default function DashboardPage() {
   const d = data;
 
   return (
-    <main className="min-h-screen bg-[#020509] text-white">
+    <main className="min-h-screen bg-[#0c0a08] text-white">
       <AppNav />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-20">
 
@@ -132,9 +132,9 @@ export default function DashboardPage() {
               )}
             </div>
             {d.streak > 0 && (
-              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/20">
-                <Flame className="w-3.5 h-3.5 text-amber-400" />
-                <span className="text-xs font-bold text-amber-300">{d.streak}-day streak</span>
+              <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#f5a623]/10 border border-[#f5a623]/20">
+                <Flame className="w-3.5 h-3.5 text-[#f5a623]" />
+                <span className="text-xs font-bold text-[#f5a623]">{d.streak}-day streak</span>
               </div>
             )}
           </div>
@@ -143,15 +143,15 @@ export default function DashboardPage() {
         {/* ── Key Metrics ── */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 mb-6">
           <MetricCard icon={DollarSign} label="Revenue" value={`$${d.totalRevenue.toLocaleString()}`} color="text-emerald-400" highlight={d.isActuallyMakingMoney} />
-          <MetricCard icon={Users} label="Leads" value={String(d.totalLeads)} color="text-cyan-400" />
-          <MetricCard icon={Globe} label="Site Views" value={d.totalSiteViews.toLocaleString()} color="text-violet-400" />
+          <MetricCard icon={Users} label="Leads" value={String(d.totalLeads)} color="text-[#f5a623]" />
+          <MetricCard icon={Globe} label="Site Views" value={d.totalSiteViews.toLocaleString()} color="text-[#e07850]" />
           <MetricCard icon={BarChart2} label="Conversion" value={`${d.conversionRate}%`} color="text-blue-400" />
         </div>
 
         {/* ── Next Milestone ── */}
         {d.nextMilestone && (
           <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3 mb-6 flex items-center gap-3">
-            <Target className="w-4 h-4 text-cyan-400/60 shrink-0" />
+            <Target className="w-4 h-4 text-[#f5a623]/60 shrink-0" />
             <div className="flex-1 min-w-0">
               <p className="text-[10px] font-bold text-white/20">NEXT MILESTONE</p>
               <p className="text-sm font-bold text-white/60">{d.nextMilestone}</p>
@@ -161,10 +161,10 @@ export default function DashboardPage() {
 
         {/* ── Strategic Advisor ── */}
         {d.advisor && (
-          <div className="rounded-xl border border-cyan-500/10 bg-cyan-500/[0.03] px-4 py-4 mb-6">
+          <div className="rounded-xl border border-[#f5a623]/10 bg-[#f5a623]/[0.03] px-4 py-4 mb-6">
             <div className="flex items-center gap-2 mb-2">
-              <Mountain className="w-4 h-4 text-cyan-400/60" />
-              <p className="text-[10px] font-bold text-cyan-300/60">HIMALAYA ADVISOR</p>
+              <Mountain className="w-4 h-4 text-[#f5a623]/60" />
+              <p className="text-[10px] font-bold text-[#f5a623]/60">HIMALAYA ADVISOR</p>
             </div>
             <p className="text-sm font-bold text-white mb-1">{d.advisor.topPriority}</p>
             <p className="text-xs text-white/30 mb-3">{d.advisor.reasoning}</p>
@@ -182,10 +182,10 @@ export default function DashboardPage() {
             <p className="text-[10px] font-bold text-white/15 mb-2">TODAY&apos;S COMMANDS</p>
             <div className="space-y-2">
               {d.commands.slice(0, 5).map((cmd, i) => (
-                <div key={cmd.id} className={`rounded-xl border px-4 py-3 ${cmd.priority === 1 ? "border-cyan-500/15 bg-cyan-500/[0.03]" : "border-white/[0.04]"}`}>
+                <div key={cmd.id} className={`rounded-xl border px-4 py-3 ${cmd.priority === 1 ? "border-[#f5a623]/15 bg-[#f5a623]/[0.03]" : "border-white/[0.04]"}`}>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3 min-w-0">
-                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 mt-0.5 ${cmd.priority === 1 ? "border-cyan-500/30 text-cyan-400" : "border-white/[0.08] text-white/20"}`}>
+                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 mt-0.5 ${cmd.priority === 1 ? "border-[#f5a623]/30 text-[#f5a623]" : "border-white/[0.08] text-white/20"}`}>
                         <span className="text-[9px] font-black">{i + 1}</span>
                       </div>
                       <div className="min-w-0">
@@ -201,7 +201,7 @@ export default function DashboardPage() {
                     <div className="flex items-center gap-2 shrink-0">
                       <span className="text-[9px] text-white/15">{cmd.estimatedTime}</span>
                       {cmd.href && (
-                        <Link href={cmd.href} className="text-[10px] font-bold text-cyan-400/60 hover:text-cyan-400 transition">Do it →</Link>
+                        <Link href={cmd.href} className="text-[10px] font-bold text-[#f5a623]/60 hover:text-[#f5a623] transition">Do it →</Link>
                       )}
                     </div>
                   </div>
@@ -219,7 +219,7 @@ export default function DashboardPage() {
               {d.funnel.stages.map((stage, i) => {
                 const maxCount = Math.max(...d.funnel!.stages.map(s => s.count), 1);
                 const height = Math.max((stage.count / maxCount) * 100, 5);
-                const colors = ["bg-cyan-400", "bg-blue-400", "bg-violet-400", "bg-emerald-400"];
+                const colors = ["bg-[#f5a623]", "bg-blue-400", "bg-violet-400", "bg-emerald-400"];
                 return (
                   <div key={stage.name} className="flex-1 flex flex-col items-center gap-1">
                     <div className={`w-full rounded-t ${colors[i % colors.length]}`} style={{ height: `${height}%` }} />
@@ -240,9 +240,9 @@ export default function DashboardPage() {
             </div>
             {d.funnel.biggestLeak && d.funnel.biggestLeak !== "No data yet" && (
               <div className="mt-3 flex items-start gap-2 px-1">
-                <AlertTriangle className="w-3 h-3 text-amber-400/50 shrink-0 mt-0.5" />
+                <AlertTriangle className="w-3 h-3 text-[#f5a623]/50 shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-[10px] font-bold text-amber-300/60">Biggest leak: {d.funnel.biggestLeak}</p>
+                  <p className="text-[10px] font-bold text-[#f5a623]/60">Biggest leak: {d.funnel.biggestLeak}</p>
                   <p className="text-[10px] text-white/20">{d.funnel.fix}</p>
                 </div>
               </div>
@@ -257,7 +257,7 @@ export default function DashboardPage() {
               <p className="text-[10px] font-bold text-white/15">SYSTEM HEALTH</p>
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
                 d.health.overall === "healthy" ? "bg-emerald-500/10 text-emerald-400" :
-                d.health.overall === "degraded" ? "bg-amber-500/10 text-amber-400" :
+                d.health.overall === "degraded" ? "bg-[#f5a623]/10 text-[#f5a623]" :
                 "bg-red-500/10 text-red-400"
               }`}>{d.health.overall}</span>
             </div>
@@ -278,9 +278,9 @@ export default function DashboardPage() {
             <p className="text-[10px] font-bold text-white/15 mb-2">ACHIEVEMENTS</p>
             <div className="flex flex-wrap gap-2">
               {d.milestones.filter(m => m.achieved).slice(0, 8).map(m => (
-                <div key={m.id} className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-amber-500/5 border border-amber-500/10">
-                  <Trophy className="w-3 h-3 text-amber-400" />
-                  <span className="text-[10px] font-bold text-amber-300/60">{m.title}</span>
+                <div key={m.id} className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-[#f5a623]/5 border border-[#f5a623]/10">
+                  <Trophy className="w-3 h-3 text-[#f5a623]" />
+                  <span className="text-[10px] font-bold text-[#f5a623]/60">{m.title}</span>
                 </div>
               ))}
             </div>
@@ -295,11 +295,11 @@ export default function DashboardPage() {
           <p className="text-[10px] font-bold text-white/15 mb-2">MANAGE</p>
           <div className="grid grid-cols-3 gap-1.5">
             {[
-              { l: "Campaigns", h: "/campaigns", i: Zap, c: "text-cyan-400" },
-              { l: "Sites", h: "/websites", i: Globe, c: "text-violet-400" },
+              { l: "Campaigns", h: "/campaigns", i: Zap, c: "text-[#f5a623]" },
+              { l: "Sites", h: "/websites", i: Globe, c: "text-[#e07850]" },
               { l: "Emails", h: "/emails", i: Mail, c: "text-blue-400" },
               { l: "CRM", h: "/clients", i: Users, c: "text-emerald-400" },
-              { l: "Ads", h: "/ads", i: TrendingUp, c: "text-amber-400" },
+              { l: "Ads", h: "/ads", i: TrendingUp, c: "text-[#f5a623]" },
               { l: "Revenue", h: "/revenue", i: DollarSign, c: "text-pink-400" },
             ].map(item => (
               <Link key={item.l} href={item.h} className="flex items-center gap-2 rounded-lg border border-white/[0.04] px-3 py-2.5 hover:border-white/[0.08] transition group">
