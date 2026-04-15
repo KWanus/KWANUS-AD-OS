@@ -101,10 +101,10 @@ export default function DashboardPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[#0c0a08] text-white">
+      <main className="min-h-screen bg-t-bg text-t-text">
         <AppNav />
         <div className="flex items-center justify-center min-h-[70vh]">
-          <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
+          <Loader2 className="w-6 h-6 text-t-text/20 animate-spin" />
         </div>
       </main>
     );
@@ -114,7 +114,7 @@ export default function DashboardPage() {
   const d = data;
 
   return (
-    <main className="min-h-screen bg-[#0c0a08] text-white">
+    <main className="min-h-screen bg-t-bg text-t-text">
       <AppNav />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-20">
 
@@ -122,12 +122,12 @@ export default function DashboardPage() {
         <div className="pt-8 pb-6">
           <div className="flex items-center justify-between">
             <div>
-              <h1 className="text-2xl font-black text-white">
+              <h1 className="text-2xl font-black text-t-text">
                 {d.commandGreeting || `Hey ${name}. Here's your business.`}
               </h1>
               {d.maturity && (
-                <p className="text-xs text-white/30 mt-1">
-                  Stage: <span className="text-white/50 font-bold capitalize">{d.maturity.stage}</span> · Score: {d.maturity.score}/100
+                <p className="text-xs text-t-text/30 mt-1">
+                  Stage: <span className="text-t-text/50 font-bold capitalize">{d.maturity.stage}</span> · Score: {d.maturity.score}/100
                 </p>
               )}
             </div>
@@ -150,11 +150,11 @@ export default function DashboardPage() {
 
         {/* ── Next Milestone ── */}
         {d.nextMilestone && (
-          <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-3 mb-6 flex items-center gap-3">
+          <div className="rounded-xl border border-t-border bg-t-bg-raised px-4 py-3 mb-6 flex items-center gap-3">
             <Target className="w-4 h-4 text-[#f5a623]/60 shrink-0" />
             <div className="flex-1 min-w-0">
-              <p className="text-[10px] font-bold text-white/20">NEXT MILESTONE</p>
-              <p className="text-sm font-bold text-white/60">{d.nextMilestone}</p>
+              <p className="text-[10px] font-bold text-t-text/20">NEXT MILESTONE</p>
+              <p className="text-sm font-bold text-t-text/60">{d.nextMilestone}</p>
             </div>
           </div>
         )}
@@ -166,11 +166,11 @@ export default function DashboardPage() {
               <Mountain className="w-4 h-4 text-[#f5a623]/60" />
               <p className="text-[10px] font-bold text-[#f5a623]/60">HIMALAYA ADVISOR</p>
             </div>
-            <p className="text-sm font-bold text-white mb-1">{d.advisor.topPriority}</p>
-            <p className="text-xs text-white/30 mb-3">{d.advisor.reasoning}</p>
+            <p className="text-sm font-bold text-t-text mb-1">{d.advisor.topPriority}</p>
+            <p className="text-xs text-t-text/30 mb-3">{d.advisor.reasoning}</p>
             <div className="flex flex-wrap gap-2">
               {d.advisor.actions.map((a, i) => (
-                <span key={i} className="text-[10px] px-2 py-1 rounded-lg bg-white/[0.04] border border-white/[0.06] text-white/40">{a}</span>
+                <span key={i} className="text-[10px] px-2 py-1 rounded-lg bg-t-bg-card border border-t-border text-t-text/40">{a}</span>
               ))}
             </div>
           </div>
@@ -179,27 +179,27 @@ export default function DashboardPage() {
         {/* ── Daily Commands ── */}
         {d.commands && d.commands.length > 0 && (
           <div className="mb-6">
-            <p className="text-[10px] font-bold text-white/15 mb-2">TODAY&apos;S COMMANDS</p>
+            <p className="text-[10px] font-bold text-t-text/15 mb-2">TODAY&apos;S COMMANDS</p>
             <div className="space-y-2">
               {d.commands.slice(0, 5).map((cmd, i) => (
-                <div key={cmd.id} className={`rounded-xl border px-4 py-3 ${cmd.priority === 1 ? "border-[#f5a623]/15 bg-[#f5a623]/[0.03]" : "border-white/[0.04]"}`}>
+                <div key={cmd.id} className={`rounded-xl border px-4 py-3 ${cmd.priority === 1 ? "border-[#f5a623]/15 bg-[#f5a623]/[0.03]" : "border-t-border"}`}>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3 min-w-0">
-                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 mt-0.5 ${cmd.priority === 1 ? "border-[#f5a623]/30 text-[#f5a623]" : "border-white/[0.08] text-white/20"}`}>
+                      <div className={`w-5 h-5 rounded-full border flex items-center justify-center shrink-0 mt-0.5 ${cmd.priority === 1 ? "border-[#f5a623]/30 text-[#f5a623]" : "border-t-border text-t-text/20"}`}>
                         <span className="text-[9px] font-black">{i + 1}</span>
                       </div>
                       <div className="min-w-0">
-                        <p className="text-sm font-bold text-white">{cmd.action}</p>
-                        <p className="text-[11px] text-white/25 mt-0.5">{cmd.details}</p>
+                        <p className="text-sm font-bold text-t-text">{cmd.action}</p>
+                        <p className="text-[11px] text-t-text/25 mt-0.5">{cmd.details}</p>
                         {cmd.content && (
-                          <div className="mt-2 rounded-lg bg-white/[0.03] border border-white/[0.04] px-3 py-2">
-                            <p className="text-[11px] text-white/40 italic">&ldquo;{cmd.content}&rdquo;</p>
+                          <div className="mt-2 rounded-lg bg-t-bg-raised border border-t-border px-3 py-2">
+                            <p className="text-[11px] text-t-text/40 italic">&ldquo;{cmd.content}&rdquo;</p>
                           </div>
                         )}
                       </div>
                     </div>
                     <div className="flex items-center gap-2 shrink-0">
-                      <span className="text-[9px] text-white/15">{cmd.estimatedTime}</span>
+                      <span className="text-[9px] text-t-text/15">{cmd.estimatedTime}</span>
                       {cmd.href && (
                         <Link href={cmd.href} className="text-[10px] font-bold text-[#f5a623]/60 hover:text-[#f5a623] transition">Do it →</Link>
                       )}
@@ -213,8 +213,8 @@ export default function DashboardPage() {
 
         {/* ── Funnel Health ── */}
         {d.funnel && d.funnel.stages && (
-          <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-4 mb-6">
-            <p className="text-[10px] font-bold text-white/15 mb-3">FUNNEL HEALTH</p>
+          <div className="rounded-xl border border-t-border bg-t-bg-raised px-4 py-4 mb-6">
+            <p className="text-[10px] font-bold text-t-text/15 mb-3">FUNNEL HEALTH</p>
             <div className="flex items-end gap-1 h-16 mb-2">
               {d.funnel.stages.map((stage, i) => {
                 const maxCount = Math.max(...d.funnel!.stages.map(s => s.count), 1);
@@ -230,8 +230,8 @@ export default function DashboardPage() {
             <div className="flex gap-1">
               {d.funnel.stages.map((stage, i) => (
                 <div key={stage.name} className="flex-1 text-center">
-                  <p className="text-lg font-black text-white">{stage.count}</p>
-                  <p className="text-[9px] text-white/20">{stage.name}</p>
+                  <p className="text-lg font-black text-t-text">{stage.count}</p>
+                  <p className="text-[9px] text-t-text/20">{stage.name}</p>
                   {stage.dropoffPercent > 0 && (
                     <p className="text-[8px] text-red-400/50">-{stage.dropoffPercent}%</p>
                   )}
@@ -243,7 +243,7 @@ export default function DashboardPage() {
                 <AlertTriangle className="w-3 h-3 text-[#f5a623]/50 shrink-0 mt-0.5" />
                 <div>
                   <p className="text-[10px] font-bold text-[#f5a623]/60">Biggest leak: {d.funnel.biggestLeak}</p>
-                  <p className="text-[10px] text-white/20">{d.funnel.fix}</p>
+                  <p className="text-[10px] text-t-text/20">{d.funnel.fix}</p>
                 </div>
               </div>
             )}
@@ -252,9 +252,9 @@ export default function DashboardPage() {
 
         {/* ── System Health ── */}
         {d.health && (
-          <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-4 mb-6">
+          <div className="rounded-xl border border-t-border bg-t-bg-raised px-4 py-4 mb-6">
             <div className="flex items-center justify-between mb-3">
-              <p className="text-[10px] font-bold text-white/15">SYSTEM HEALTH</p>
+              <p className="text-[10px] font-bold text-t-text/15">SYSTEM HEALTH</p>
               <span className={`text-[10px] font-bold px-2 py-0.5 rounded ${
                 d.health.overall === "healthy" ? "bg-emerald-500/10 text-emerald-400" :
                 d.health.overall === "degraded" ? "bg-[#f5a623]/10 text-[#f5a623]" :
@@ -263,9 +263,9 @@ export default function DashboardPage() {
             </div>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {d.health.checks.map(check => (
-                <div key={check.name} className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-white/[0.02]">
+                <div key={check.name} className="flex items-center gap-2 px-2 py-1.5 rounded-lg bg-t-bg-raised">
                   <div className={`w-1.5 h-1.5 rounded-full ${check.status === "ok" ? "bg-emerald-400" : check.status === "warning" ? "bg-amber-400" : "bg-red-400"}`} />
-                  <span className="text-[10px] text-white/40">{check.name}</span>
+                  <span className="text-[10px] text-t-text/40">{check.name}</span>
                 </div>
               ))}
             </div>
@@ -274,8 +274,8 @@ export default function DashboardPage() {
 
         {/* ── Badges ── */}
         {d.milestones && d.milestones.filter(m => m.achieved).length > 0 && (
-          <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] px-4 py-4 mb-6">
-            <p className="text-[10px] font-bold text-white/15 mb-2">ACHIEVEMENTS</p>
+          <div className="rounded-xl border border-t-border bg-t-bg-raised px-4 py-4 mb-6">
+            <p className="text-[10px] font-bold text-t-text/15 mb-2">ACHIEVEMENTS</p>
             <div className="flex flex-wrap gap-2">
               {d.milestones.filter(m => m.achieved).slice(0, 8).map(m => (
                 <div key={m.id} className="flex items-center gap-1.5 px-2 py-1 rounded-lg bg-[#f5a623]/5 border border-[#f5a623]/10">
@@ -285,14 +285,14 @@ export default function DashboardPage() {
               ))}
             </div>
             {d.nextBadge && (
-              <p className="text-[9px] text-white/15 mt-2">Next: {d.nextBadge.title} — {d.nextBadge.description}</p>
+              <p className="text-[9px] text-t-text/15 mt-2">Next: {d.nextBadge.title} — {d.nextBadge.description}</p>
             )}
           </div>
         )}
 
         {/* ── Quick Access ── */}
         <div className="mb-6">
-          <p className="text-[10px] font-bold text-white/15 mb-2">MANAGE</p>
+          <p className="text-[10px] font-bold text-t-text/15 mb-2">MANAGE</p>
           <div className="grid grid-cols-3 gap-1.5">
             {[
               { l: "Campaigns", h: "/campaigns", i: Zap, c: "text-[#f5a623]" },
@@ -302,9 +302,9 @@ export default function DashboardPage() {
               { l: "Ads", h: "/ads", i: TrendingUp, c: "text-[#f5a623]" },
               { l: "Revenue", h: "/revenue", i: DollarSign, c: "text-pink-400" },
             ].map(item => (
-              <Link key={item.l} href={item.h} className="flex items-center gap-2 rounded-lg border border-white/[0.04] px-3 py-2.5 hover:border-white/[0.08] transition group">
+              <Link key={item.l} href={item.h} className="flex items-center gap-2 rounded-lg border border-t-border px-3 py-2.5 hover:border-t-border transition group">
                 <item.i className={`w-3.5 h-3.5 ${item.c}`} />
-                <span className="text-[11px] font-semibold text-white/35 group-hover:text-white/60 transition">{item.l}</span>
+                <span className="text-[11px] font-semibold text-t-text/35 group-hover:text-t-text/60 transition">{item.l}</span>
               </Link>
             ))}
           </div>
@@ -312,7 +312,7 @@ export default function DashboardPage() {
 
         {/* ── Build New ── */}
         <div className="text-center">
-          <Link href="/himalaya" className="inline-flex items-center gap-2 text-[11px] text-white/15 hover:text-white/35 transition">
+          <Link href="/himalaya" className="inline-flex items-center gap-2 text-[11px] text-t-text/15 hover:text-t-text/35 transition">
             <Mountain className="w-3 h-3" /> Build another business <ArrowRight className="w-3 h-3" />
           </Link>
         </div>
@@ -325,10 +325,10 @@ function MetricCard({ icon: Icon, label, value, color, highlight }: {
   icon: React.ElementType; label: string; value: string; color: string; highlight?: boolean;
 }) {
   return (
-    <div className={`rounded-xl border px-3 py-3 ${highlight ? "border-emerald-500/20 bg-emerald-500/[0.04]" : "border-white/[0.06] bg-white/[0.02]"}`}>
+    <div className={`rounded-xl border px-3 py-3 ${highlight ? "border-emerald-500/20 bg-emerald-500/[0.04]" : "border-t-border bg-t-bg-raised"}`}>
       <Icon className={`w-3.5 h-3.5 ${color} mb-1`} />
-      <p className="text-xl font-black text-white">{value}</p>
-      <p className="text-[9px] text-white/20">{label}</p>
+      <p className="text-xl font-black text-t-text">{value}</p>
+      <p className="text-[9px] text-t-text/20">{label}</p>
     </div>
   );
 }

@@ -161,15 +161,15 @@ export default function HimalayaPage() {
   // ── Building state ─────────────────────────────────────────────────────────
   if (phase === "building") {
     return (
-      <main className="min-h-screen bg-[#0c0a08] text-white">
+      <main className="min-h-screen bg-t-bg text-t-text">
         <AppNav />
         <div className="flex flex-col items-center justify-center min-h-[80vh] gap-6 px-4">
           <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#f5a623] to-[#e07850] flex items-center justify-center shadow-[0_0_60px_rgba(245,166,35,0.25)]">
-            <Mountain className="w-10 h-10 text-white animate-pulse" />
+            <Mountain className="w-10 h-10 text-t-text animate-pulse" />
           </div>
           <div className="text-center max-w-sm">
-            <p className="text-lg font-bold text-white mb-1">{buildStage}</p>
-            <p className="text-xs text-white/25">Himalaya is building your entire business. This takes about 60 seconds.</p>
+            <p className="text-lg font-bold text-t-text mb-1">{buildStage}</p>
+            <p className="text-xs text-t-text/25">Himalaya is building your entire business. This takes about 60 seconds.</p>
           </div>
 
           {/* Progress dots */}
@@ -183,14 +183,14 @@ export default function HimalayaPage() {
             })}
           </div>
 
-          <Loader2 className="w-4 h-4 text-white/15 animate-spin mt-4" />
+          <Loader2 className="w-4 h-4 text-t-text/15 animate-spin mt-4" />
         </div>
       </main>
     );
   }
 
   return (
-    <main className="min-h-screen bg-[#0c0a08] text-white">
+    <main className="min-h-screen bg-t-bg text-t-text">
       <AppNav />
 
       <div className="max-w-lg mx-auto px-4 sm:px-6 pb-20">
@@ -198,12 +198,12 @@ export default function HimalayaPage() {
         {/* ── Header ── */}
         <div className="pt-14 pb-8 text-center">
           <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#f5a623] to-[#e07850] flex items-center justify-center mx-auto mb-4 shadow-[0_0_40px_rgba(245,166,35,0.2)]">
-            <Mountain className="w-7 h-7 text-white" />
+            <Mountain className="w-7 h-7 text-t-text" />
           </div>
-          <h1 className="text-2xl font-black text-white">
+          <h1 className="text-2xl font-black text-t-text">
             {phase === "entry" ? "Where are you right now?" : entry === "no_business" ? "Tell us what you want" : entry === "want_to_scale" ? "What are you scaling?" : "Tell us about your business"}
           </h1>
-          <p className="mt-2 text-sm text-white/30">
+          <p className="mt-2 text-sm text-t-text/30">
             {phase === "entry" ? "Pick one. Himalaya handles the rest." : "Be specific or vague — we'll figure it out."}
           </p>
         </div>
@@ -215,14 +215,14 @@ export default function HimalayaPage() {
               <button
                 key={opt.id}
                 onClick={() => { setEntry(opt.id); setPhase("context"); }}
-                className="w-full text-left rounded-xl border border-white/[0.06] bg-white/[0.02] px-5 py-4 hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.03] transition group"
+                className="w-full text-left rounded-xl border border-t-border bg-t-bg-raised px-5 py-4 hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.03] transition group"
               >
                 <div className="flex items-center justify-between">
                   <div>
-                    <p className="text-sm font-bold text-white group-hover:text-[#f5f0e8] transition">{opt.label}</p>
-                    <p className="text-xs text-white/25 mt-0.5">{opt.sub}</p>
+                    <p className="text-sm font-bold text-t-text group-hover:text-[#f5f0e8] transition">{opt.label}</p>
+                    <p className="text-xs text-t-text/25 mt-0.5">{opt.sub}</p>
                   </div>
-                  <ChevronRight className="w-4 h-4 text-white/10 group-hover:text-white/30 transition" />
+                  <ChevronRight className="w-4 h-4 text-t-text/10 group-hover:text-t-text/30 transition" />
                 </div>
               </button>
             ))}
@@ -230,7 +230,7 @@ export default function HimalayaPage() {
             {/* Past results */}
             {hasHistory && (
               <div className="pt-4 text-center">
-                <Link href="/himalaya/runs" className="text-[11px] text-white/20 hover:text-white/40 transition">
+                <Link href="/himalaya/runs" className="text-[11px] text-t-text/20 hover:text-t-text/40 transition">
                   View past results →
                 </Link>
               </div>
@@ -255,19 +255,19 @@ export default function HimalayaPage() {
                   entry === "has_business" ? "Paste your website URL or describe your business" :
                   "What's your business? e.g. coaching, agency, ecommerce"
                 }
-                className="w-full rounded-xl border border-white/[0.08] bg-white/[0.03] px-4 py-3.5 text-sm text-white placeholder-white/15 outline-none focus:border-[#f5a623]/25 transition"
+                className="w-full rounded-xl border border-t-border bg-t-bg-raised px-4 py-3.5 text-sm text-t-text placeholder-t-text-faint outline-none focus:border-[#f5a623]/25 transition"
               />
             </div>
 
             {/* Revenue input for scale mode */}
             {entry === "want_to_scale" && (
               <div>
-                <p className="text-[10px] font-bold text-white/20 mb-1.5">Current monthly revenue</p>
+                <p className="text-[10px] font-bold text-t-text/20 mb-1.5">Current monthly revenue</p>
                 <div className="flex gap-2">
                   {["$1-5k", "$5-10k", "$10-25k", "$25-50k", "$50k+"].map(r => (
                     <button key={r} onClick={() => setRevenue(r)}
                       className={`flex-1 py-2 rounded-lg border text-xs font-bold transition ${
-                        revenue === r ? "border-[#f5a623]/30 bg-[#f5a623]/10 text-[#f5a623]" : "border-white/[0.06] text-white/25 hover:text-white/50"
+                        revenue === r ? "border-[#f5a623]/30 bg-[#f5a623]/10 text-[#f5a623]" : "border-t-border text-t-text/25 hover:text-t-text/50"
                       }`}>
                       {r}
                     </button>
@@ -281,7 +281,7 @@ export default function HimalayaPage() {
               <div className="flex flex-wrap gap-1.5">
                 {["Affiliate marketing", "Start a coaching business", "Dropshipping", "Digital products", "Marketing agency", "Freelance services"].map(s => (
                   <button key={s} onClick={() => setContext(s)}
-                    className="px-2.5 py-1 rounded-lg border border-white/[0.04] text-[10px] text-white/20 hover:text-white/40 hover:border-white/[0.08] transition">
+                    className="px-2.5 py-1 rounded-lg border border-t-border text-[10px] text-t-text/20 hover:text-t-text/40 hover:border-t-border transition">
                     {s}
                   </button>
                 ))}
@@ -292,7 +292,7 @@ export default function HimalayaPage() {
             <button
               onClick={() => void launch()}
               disabled={building}
-              className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] py-3.5 text-sm font-bold text-white hover:opacity-90 transition disabled:opacity-40"
+              className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] py-3.5 text-sm font-bold text-t-text hover:opacity-90 transition disabled:opacity-40"
             >
               <Mountain className="w-4 h-4" />
               {entry === "no_business" ? "Build My Business" : entry === "want_to_scale" ? "Find My Growth Levers" : "Analyze & Improve"}
@@ -302,7 +302,7 @@ export default function HimalayaPage() {
             {entry === "no_business" && (
               <button
                 onClick={() => { setContext(""); void launch(); }}
-                className="w-full text-center text-[11px] text-white/15 hover:text-white/30 transition py-2"
+                className="w-full text-center text-[11px] text-t-text/15 hover:text-t-text/30 transition py-2"
               >
                 Skip — let Himalaya pick everything for me
               </button>
@@ -310,13 +310,13 @@ export default function HimalayaPage() {
 
             {/* Back */}
             <button onClick={() => { setPhase("entry"); setEntry(null); setContext(""); setRevenue(""); }}
-              className="w-full text-center text-[11px] text-white/15 hover:text-white/30 transition">
+              className="w-full text-center text-[11px] text-t-text/15 hover:text-t-text/30 transition">
               ← Back
             </button>
 
             {/* Advanced toggle */}
             <div className="pt-2 text-center">
-              <Link href="/himalaya/scratch" className="inline-flex items-center gap-1 text-[10px] text-white/10 hover:text-white/25 transition">
+              <Link href="/himalaya/scratch" className="inline-flex items-center gap-1 text-[10px] text-t-text/10 hover:text-t-text/25 transition">
                 <Settings2 className="w-3 h-3" /> I want full control over every setting
               </Link>
             </div>
@@ -325,8 +325,8 @@ export default function HimalayaPage() {
 
         {/* ── What happens next ── */}
         {phase === "context" && (
-          <div className="mt-8 rounded-xl border border-white/[0.04] bg-white/[0.01] px-4 py-3">
-            <p className="text-[10px] font-bold text-white/15 mb-2">WHAT HIMALAYA WILL DO</p>
+          <div className="mt-8 rounded-xl border border-t-border bg-white/[0.01] px-4 py-3">
+            <p className="text-[10px] font-bold text-t-text/15 mb-2">WHAT HIMALAYA WILL DO</p>
             <div className="space-y-1.5">
               {[
                 "Pick the best business model for your situation",
@@ -337,10 +337,10 @@ export default function HimalayaPage() {
                 "Give you daily commands: post this, run this, send this",
               ].map((step, i) => (
                 <div key={i} className="flex items-start gap-2">
-                  <div className="w-4 h-4 rounded-full border border-white/[0.06] flex items-center justify-center shrink-0 mt-0.5">
-                    <span className="text-[8px] font-bold text-white/20">{i + 1}</span>
+                  <div className="w-4 h-4 rounded-full border border-t-border flex items-center justify-center shrink-0 mt-0.5">
+                    <span className="text-[8px] font-bold text-t-text/20">{i + 1}</span>
                   </div>
-                  <p className="text-[11px] text-white/25">{step}</p>
+                  <p className="text-[11px] text-t-text/25">{step}</p>
                 </div>
               ))}
             </div>

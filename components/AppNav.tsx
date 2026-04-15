@@ -65,7 +65,7 @@ export default function AppNav() {
   useEffect(() => { setShowMore(false); }, [pathname]);
 
   return (
-    <header className="sticky top-0 z-50 bg-[#0c0a08]/90 backdrop-blur-xl border-b border-white/[0.04]">
+    <header className="sticky top-0 z-50 bg-t-bg/90 backdrop-blur-xl border-b border-t-border">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
 
         {/* Logo */}
@@ -73,7 +73,7 @@ export default function AppNav() {
           <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#f5a623] to-[#e07850] flex items-center justify-center">
             <Mountain className="w-3.5 h-3.5 text-[#0c0a08]" />
           </div>
-          <span className="hidden sm:block text-sm font-black text-white tracking-tight">Himalaya</span>
+          <span className="hidden sm:block text-sm font-black text-t-text tracking-tight">Himalaya</span>
         </Link>
 
         {/* Nav */}
@@ -83,7 +83,7 @@ export default function AppNav() {
             return (
               <Link key={href} href={href}
                 className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition whitespace-nowrap
-                  ${active ? "bg-white/[0.08] text-white" : "text-white/30 hover:text-white/60"}`}
+                  ${active ? "bg-white/[0.08] text-t-text" : "text-t-text/30 hover:text-t-text/60"}`}
               >
                 <Icon className={`w-3.5 h-3.5 ${active ? "text-[#f5a623]" : ""}`} />
                 <span className="hidden md:block">{label}</span>
@@ -95,20 +95,20 @@ export default function AppNav() {
           <div className="relative" ref={moreRef}>
             <button onClick={() => setShowMore(v => !v)}
               className={`flex items-center gap-1 px-2.5 py-1.5 rounded-lg text-[11px] font-semibold transition
-                ${showMore ? "bg-white/[0.08] text-white" : "text-white/30 hover:text-white/60"}`}
+                ${showMore ? "bg-white/[0.08] text-t-text" : "text-t-text/30 hover:text-t-text/60"}`}
             >
               <LayoutGrid className="w-3.5 h-3.5" />
               <ChevronDown className={`w-3 h-3 transition ${showMore ? "rotate-180" : ""}`} />
             </button>
 
             {showMore && (
-              <div className="absolute top-full right-0 mt-1.5 w-48 rounded-xl border border-white/[0.08] bg-[#0a0f1a]/95 backdrop-blur-xl shadow-2xl overflow-hidden z-50 py-1">
+              <div className="absolute top-full right-0 mt-1.5 w-48 rounded-xl border border-t-border bg-t-bg-card/95 backdrop-blur-xl shadow-2xl overflow-hidden z-50 py-1">
                 {MORE.map(({ href, label, icon: Icon }) => (
                   <Link key={href} href={href}
                     className={`flex items-center gap-2.5 px-3 py-2 text-[11px] font-semibold transition
-                      ${pathname.startsWith(href) ? "bg-[#f5a623]/10 text-white" : "text-white/45 hover:bg-white/[0.04] hover:text-white/80"}`}
+                      ${pathname.startsWith(href) ? "bg-[#f5a623]/10 text-t-text" : "text-t-text/45 hover:bg-t-bg-card hover:text-t-text/80"}`}
                   >
-                    <Icon className={`w-3.5 h-3.5 ${pathname.startsWith(href) ? "text-[#f5a623]" : "text-white/25"}`} />
+                    <Icon className={`w-3.5 h-3.5 ${pathname.startsWith(href) ? "text-[#f5a623]" : "text-t-text/25"}`} />
                     {label}
                   </Link>
                 ))}
@@ -121,22 +121,22 @@ export default function AppNav() {
         <div className="flex items-center gap-1.5 shrink-0">
           {isSignedIn && (
             <button onClick={() => window.dispatchEvent(new Event("open-global-search"))}
-              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-white/[0.06] text-white/20 hover:text-white/50 transition text-[11px]">
+              className="hidden sm:flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg border border-t-border text-t-text/20 hover:text-t-text/50 transition text-[11px]">
               <Search className="w-3 h-3" />
-              <kbd className="px-1 py-0.5 rounded bg-white/[0.05] text-[9px] font-mono text-white/25">/</kbd>
+              <kbd className="px-1 py-0.5 rounded bg-white/[0.05] text-[9px] font-mono text-t-text/25">/</kbd>
             </button>
           )}
           <CreditsDisplay />
           {isSignedIn && <NotificationBell />}
           <ThemeToggle />
           {isSignedIn && (
-            <Link href="/settings" className={`p-1.5 rounded-lg transition ${pathname.startsWith("/settings") ? "bg-white/[0.08] text-white" : "text-white/20 hover:text-white/50"}`}>
+            <Link href="/settings" className={`p-1.5 rounded-lg transition ${pathname.startsWith("/settings") ? "bg-white/[0.08] text-t-text" : "text-t-text/20 hover:text-t-text/50"}`}>
               <Settings className="w-3.5 h-3.5" />
             </Link>
           )}
           {isSignedIn ? <UserButton /> : (
             <SignInButton mode="modal">
-              <button className="text-[11px] px-3 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] border border-white/[0.08] font-semibold text-white/50 hover:text-white transition">
+              <button className="text-[11px] px-3 py-1.5 rounded-lg bg-white/[0.06] hover:bg-white/[0.1] border border-t-border font-semibold text-t-text/50 hover:text-t-text transition">
                 Sign in
               </button>
             </SignInButton>
@@ -169,15 +169,15 @@ function ThemeToggle() {
   return (
     <div className="relative" ref={ref}>
       <button onClick={() => setOpen(v => !v)}
-        className="p-1.5 rounded-lg text-white/20 hover:text-white/50 transition" title="Theme">
+        className="p-1.5 rounded-lg text-t-text/20 hover:text-t-text/50 transition" title="Theme">
         <current.icon className="w-3.5 h-3.5" />
       </button>
       {open && (
-        <div className="absolute top-full right-0 mt-1.5 w-36 rounded-xl border border-white/[0.08] bg-[#0a0f1a]/95 backdrop-blur-xl shadow-2xl overflow-hidden z-50 py-1">
+        <div className="absolute top-full right-0 mt-1.5 w-36 rounded-xl border border-t-border bg-t-bg-card/95 backdrop-blur-xl shadow-2xl overflow-hidden z-50 py-1">
           {MODES.map(m => (
             <button key={m.id} onClick={() => { setMode(m.id); setOpen(false); }}
               className={`flex items-center gap-2.5 w-full px-3 py-2 text-[11px] font-semibold transition ${
-                mode === m.id ? "bg-[#f5a623]/10 text-[#f5a623]" : "text-white/45 hover:bg-white/[0.04] hover:text-white/80"
+                mode === m.id ? "bg-[#f5a623]/10 text-[#f5a623]" : "text-t-text/45 hover:bg-t-bg-card hover:text-t-text/80"
               }`}>
               <m.icon className="w-3.5 h-3.5" />
               {m.label}
