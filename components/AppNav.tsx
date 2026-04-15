@@ -8,10 +8,11 @@ import dynamic from "next/dynamic";
 import NotificationBell from "@/components/NotificationBell";
 import {
   Home, Mountain, FolderKanban, Globe, Mail, Users, Settings,
-  Search, ChevronDown, LayoutGrid,
+  Search, ChevronDown, LayoutGrid, Sun, Moon, Sparkles,
   MessageSquareText, TrendingUp, BarChart3, Briefcase, FileText,
   MapPin, ShoppingCart, Building2, Package, Wrench,
 } from "lucide-react";
+import { useTheme, type ThemeMode } from "@/lib/theme/ThemeProvider";
 
 const CreditsDisplay = dynamic(() => import("@/components/CreditsDisplay"), { ssr: false });
 
@@ -127,6 +128,7 @@ export default function AppNav() {
           )}
           <CreditsDisplay />
           {isSignedIn && <NotificationBell />}
+          <ThemeToggle />
           {isSignedIn && (
             <Link href="/settings" className={`p-1.5 rounded-lg transition ${pathname.startsWith("/settings") ? "bg-white/[0.08] text-white" : "text-white/20 hover:text-white/50"}`}>
               <Settings className="w-3.5 h-3.5" />
@@ -142,5 +144,47 @@ export default function AppNav() {
         </div>
       </div>
     </header>
+  );
+}
+
+function ThemeToggle() {
+  const { mode, setMode } = useTheme();
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handleClick(e: MouseEvent) { if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false); }
+    document.addEventListener("mousedown", handleClick);
+    return () => document.removeEventListener("mousedown", handleClick);
+  }, []);
+
+  const MODES: { id: ThemeMode; icon: React.ElementType; label: string }[] = [
+    { id: "himalaya", icon: Mountain, label: "Himalaya" },
+    { id: "dark", icon: Moon, label: "Dark" },
+    { id: "light", icon: Sun, label: "Light" },
+  ];
+
+  const current = MODES.find(m => m.id === mode) ?? MODES[0];
+
+  return (
+    <div className="relative" ref={ref}>
+      <button onClick={() => setOpen(v => !v)}
+        className="p-1.5 rounded-lg text-white/20 hover:text-white/50 transition" title="Theme">
+        <current.icon className="w-3.5 h-3.5" />
+      </button>
+      {open && (
+        <div className="absolute top-full right-0 mt-1.5 w-36 rounded-xl border border-white/[0.08] bg-[#0a0f1a]/95 backdrop-blur-xl shadow-2xl overflow-hidden z-50 py-1">
+          {MODES.map(m => (
+            <button key={m.id} onClick={() => { setMode(m.id); setOpen(false); }}
+              className={`flex items-center gap-2.5 w-full px-3 py-2 text-[11px] font-semibold transition ${
+                mode === m.id ? "bg-[#f5a623]/10 text-[#f5a623]" : "text-white/45 hover:bg-white/[0.04] hover:text-white/80"
+              }`}>
+              <m.icon className="w-3.5 h-3.5" />
+              {m.label}
+            </button>
+          ))}
+        </div>
+      )}
+    </div>
   );
 }
