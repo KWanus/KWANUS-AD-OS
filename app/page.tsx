@@ -8,7 +8,7 @@ import AppNav from "@/components/AppNav";
 import {
   ArrowRight, Sparkles, Mountain, Send, Loader2,
   Zap, Globe, Mail, Users, Flame, BarChart2,
-  Target, ExternalLink,
+  Target, ExternalLink, Trash2,
 } from "lucide-react";
 
 type Project = {
@@ -58,6 +58,14 @@ export default function Home() {
   }, []);
 
   useEffect(() => { if (isSignedIn) void load(); }, [load, isSignedIn]);
+
+  async function deleteProject(projectId: string) {
+    if (!confirm("Delete this business? This removes the site, campaign, and emails. This cannot be undone.")) return;
+    try {
+      await fetch(`/api/himalaya/projects/${projectId}`, { method: "DELETE" });
+      setProjects(prev => prev.filter(p => p.id !== projectId));
+    } catch { /* ignore */ }
+  }
 
   async function run(input: string) {
     if (!input.trim()) return;
@@ -152,7 +160,13 @@ export default function Home() {
                         <h3 className="text-base font-black">{project.name}</h3>
                         <p className="text-xs text-t-text-faint">{project.niche}</p>
                       </div>
-                      {project.revenue > 0 && <span className="text-lg font-black text-emerald-500">${project.revenue.toLocaleString()}</span>}
+                      <div className="flex items-center gap-2">
+                        {project.revenue > 0 && <span className="text-lg font-black text-emerald-500">${project.revenue.toLocaleString()}</span>}
+                        <button onClick={() => void deleteProject(project.id)} title="Delete business"
+                          className="p-1.5 rounded-lg text-t-text-faint hover:text-red-400 hover:bg-red-500/10 transition">
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </div>
                     </div>
                     <div className="grid grid-cols-4 gap-2 mb-3">
                       {[
