@@ -125,10 +125,27 @@ export async function generateImages(
 
   // Fallback to fal.ai
   if (process.env.FAL_KEY) {
-    return generateWithFal(inputs);
+    const falResult = await generateWithFal(inputs);
+    if (falResult.ok) return falResult;
   }
 
-  return { ok: false, images: [], error: "No image generation API available" };
+  // Final fallback: HTML/SVG image generator (ZERO API, always works)
+  try {
+    const { generateAdImageSet } = await import("./htmlImageGenerator");
+    const htmlImages = generateAdImageSet({
+      hooks: inputs.map(i => i.prompt.slice(0, 80)),
+    });
+    return {
+      ok: true,
+      images: htmlImages.map(img => ({
+        base64: img.base64,
+        prompt: img.prompt,
+        model: img.model,
+      })),
+    };
+  } catch {
+    return { ok: false, images: [], error: "All image generation methods failed" };
+  }
 }
 
 /** Build ad-specific image prompts from campaign data */

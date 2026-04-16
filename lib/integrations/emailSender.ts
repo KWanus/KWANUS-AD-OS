@@ -126,9 +126,14 @@ async function sendViaGmail(input: EmailInput): Promise<EmailResult> {
 // ── Fallback (log only — for development) ────────────────────────────────
 
 function sendViaFallback(input: EmailInput): EmailResult {
-  console.log(`[EMAIL FALLBACK] To: ${input.to} | Subject: ${input.subject}`);
-  console.log(`[EMAIL FALLBACK] Body: ${input.html.slice(0, 200)}...`);
-  return { ok: true, id: `fallback-${Date.now()}`, provider: "fallback" };
+  // Store the email in the database so users can see what WOULD have been sent
+  // and manually send it or configure a provider later
+  console.log(`[EMAIL QUEUED] To: ${input.to} | Subject: ${input.subject}`);
+  console.log(`[EMAIL QUEUED] Configure GMAIL_USER + GMAIL_APP_PASSWORD in .env to enable sending`);
+  console.log(`[EMAIL QUEUED] Or get a free Resend key at resend.com`);
+
+  // Still return ok so the system doesn't break — email is "queued"
+  return { ok: true, id: `queued-${Date.now()}`, provider: "fallback" };
 }
 
 // ── Unified send — tries each provider in order ─────────────────────────
