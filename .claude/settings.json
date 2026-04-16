@@ -27,7 +27,8 @@
       "Bash(curl -s https://kwanus-ad-os-hazel.vercel.app/api/debug)",
       "Bash(curl -s https://kwanus-ad-os-hazel.vercel.app/api/ping)",
       "Bash(claude mcp:*)",
-      "Bash(1 __NEW_LINE_399ae42bf361f5fc__ python3 -c \":*)"
+      "Bash(1 __NEW_LINE_399ae42bf361f5fc__ python3 -c \":*)",
+      "Bash(npx tsx -e \":*)"
     ],
     "additionalDirectories": [
       "/Users/kwanus/KWANUS-AD-OS/app/api/orders/[id]",

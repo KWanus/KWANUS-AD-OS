@@ -203,6 +203,59 @@ export default function ProjectPage({ params }: { params: Promise<{ id: string }
           </>
         )}
 
+        {/* ── Growth Tools ── */}
+        <Section title="GROWTH TOOLS" icon={Zap}>
+          <p className="text-xs text-t-text-faint mb-3">Click any tool to generate it for this business</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {[
+              { id: "webinar", label: "Webinar System", desc: "Evergreen webinar funnel" },
+              { id: "vsl", label: "Video Sales Letter", desc: "10-min conversion script" },
+              { id: "challenge", label: "Challenge Funnel", desc: "7-day challenge" },
+              { id: "case_study", label: "Case Study", desc: "From client results" },
+              { id: "blog_post", label: "SEO Blog Post", desc: "Rank on Google" },
+              { id: "offer_stack", label: "Offer Stack", desc: "No-brainer offer" },
+              { id: "quiz_funnel", label: "Quiz Funnel", desc: "Segment visitors" },
+              { id: "sales_script", label: "Sales Script", desc: "Close on calls" },
+              { id: "sop", label: "SOP Generator", desc: "Systemize processes" },
+              { id: "proposal", label: "Proposal", desc: "Win clients" },
+              { id: "flash_sale", label: "Flash Sale", desc: "48-hour promotion" },
+              { id: "launch_sequence", label: "Launch Sequence", desc: "Pre-launch → launch" },
+              { id: "influencer_outreach", label: "Influencer Outreach", desc: "Collab templates" },
+              { id: "partnerships", label: "Find Partners", desc: "Collab opportunities" },
+              { id: "market_trends", label: "Market Trends", desc: "What's hot now" },
+              { id: "profit_margins", label: "Profit Calculator", desc: "Your real margins" },
+              { id: "cash_flow", label: "Cash Flow Forecast", desc: "12-month projection" },
+              { id: "valuation", label: "Business Value", desc: "What you're worth" },
+              { id: "brand_guide", label: "Brand Guide", desc: "Colors, voice, style" },
+              { id: "pitch_deck", label: "Pitch Deck", desc: "For investors" },
+            ].map(tool => (
+              <button
+                key={tool.id}
+                onClick={async () => {
+                  const niche = (p?.niche as string) ?? "business";
+                  const name = (p?.name as string) ?? "My Business";
+                  const res = await fetch("/api/himalaya/tools", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ tool: tool.id, params: { niche, businessName: name, offer: name, audience: niche } }),
+                  });
+                  const data = await res.json();
+                  if (data.ok) {
+                    alert(`${tool.label} generated! Check the console for full output.`);
+                    console.log(`[${tool.label}]`, data.result);
+                  } else {
+                    alert(data.error ?? "Failed to generate");
+                  }
+                }}
+                className="flex flex-col items-start rounded-xl border border-t-border bg-t-bg-card px-3 py-2.5 hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.03] transition text-left"
+              >
+                <span className="text-xs font-bold text-t-text">{tool.label}</span>
+                <span className="text-[10px] text-t-text-faint">{tool.desc}</span>
+              </button>
+            ))}
+          </div>
+        </Section>
+
         {/* No package yet */}
         {!pkg && !loading && (
           <div className="rounded-xl border border-t-border bg-t-bg-raised p-6 text-center">
