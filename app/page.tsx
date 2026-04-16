@@ -156,10 +156,10 @@ export default function Home() {
                 return (
                   <div key={project.id} className="rounded-2xl border border-t-border bg-t-bg-raised p-4">
                     <div className="flex items-start justify-between gap-3 mb-3">
-                      <div>
+                      <Link href={`/project/${project.id}`} className="hover:opacity-80 transition">
                         <h3 className="text-base font-black">{project.name}</h3>
                         <p className="text-xs text-t-text-faint">{project.niche}</p>
-                      </div>
+                      </Link>
                       <div className="flex items-center gap-2">
                         {project.revenue > 0 && <span className="text-lg font-black text-emerald-500">${project.revenue.toLocaleString()}</span>}
                         <button onClick={() => void deleteProject(project.id)} title="Delete business"
