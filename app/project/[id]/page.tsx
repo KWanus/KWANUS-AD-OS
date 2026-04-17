@@ -25,8 +25,11 @@ export default function ProjectPage({ params }: { params: Promise<{ id: string }
   const router = useRouter();
   const [project, setProject] = useState<Record<string, unknown> | null>(null);
   const [pkg, setPkg] = useState<PackageData | null>(null);
+  const [scripts, setScripts] = useState<{ id: number; title: string; style: string; length: string; hook: string; body: string; cta: string; caption: string; hashtags: string[]; postFirst: boolean }[]>([]);
   const [loading, setLoading] = useState(true);
   const [copiedId, setCopiedId] = useState<string | null>(null);
+  const [toolResult, setToolResult] = useState<{ name: string; data: unknown } | null>(null);
+  const [toolLoading, setToolLoading] = useState<string | null>(null);
 
   useEffect(() => { if (isLoaded && !isSignedIn) router.replace("/sign-in"); }, [isLoaded, isSignedIn, router]);
 
@@ -35,13 +38,17 @@ export default function ProjectPage({ params }: { params: Promise<{ id: string }
     Promise.allSettled([
       fetch(`/api/himalaya/projects`).then(r => r.json()),
       fetch(`/api/himalaya/projects/${id}/package`).then(r => r.json()),
-    ]).then(([pRes, pkgRes]) => {
+      fetch(`/api/himalaya/projects/${id}/scripts`).then(r => r.json()),
+    ]).then(([pRes, pkgRes, sRes]) => {
       if (pRes.status === "fulfilled" && pRes.value.ok) {
         const found = (pRes.value.projects ?? []).find((p: { id: string }) => p.id === id);
         if (found) setProject(found);
       }
       if (pkgRes.status === "fulfilled" && pkgRes.value.ok && pkgRes.value.package) {
         setPkg(pkgRes.value.package as PackageData);
+      }
+      if (sRes.status === "fulfilled" && sRes.value.ok) {
+        setScripts(sRes.value.scripts ?? []);
       }
     }).finally(() => setLoading(false));
   }, [isSignedIn, id]);
@@ -153,17 +160,49 @@ export default function ProjectPage({ params }: { params: Promise<{ id: string }
               </Section>
             )}
 
-            {/* Scripts count */}
-            {pkg.scriptCount && pkg.scriptCount > 0 && (
-              <Section title={`${pkg.scriptCount} VIDEO SCRIPTS`} icon={Play}>
-                <div className="rounded-xl bg-t-bg-card border border-t-border p-4 text-center">
-                  <p className="text-sm text-t-text-muted mb-2">{pkg.scriptCount} word-for-word scripts ready to record</p>
-                  <p className="text-xs text-t-text-faint">Open your campaign to see the full scripts with hooks, body, and CTAs</p>
-                  {campaign && (
-                    <Link href={`/campaigns/${campaign.id}`} className="inline-flex items-center gap-1.5 mt-3 text-xs font-bold text-[#f5a623]">
-                      View Scripts <Play className="w-3 h-3" />
-                    </Link>
-                  )}
+            {/* Scripts — full word-for-word */}
+            {scripts.length > 0 && (
+              <Section title={`${scripts.length} VIDEO SCRIPTS`} icon={Play}>
+                <div className="space-y-3">
+                  {scripts.map((script) => (
+                    <details key={script.id} className="group rounded-xl border border-t-border bg-t-bg-card overflow-hidden">
+                      <summary className="flex items-center justify-between cursor-pointer px-4 py-3 hover:bg-t-bg-raised transition">
+                        <div className="flex items-center gap-3">
+                          {script.postFirst && (
+                            <span className="text-[8px] font-black uppercase px-1.5 py-0.5 rounded bg-[#f5a623]/10 text-[#f5a623] border border-[#f5a623]/20">POST FIRST</span>
+                          )}
+                          <span className="text-xs font-bold text-t-text">{script.title}</span>
+                          <span className="text-[10px] text-t-text-faint">{script.length}</span>
+                        </div>
+                        <ChevronDown className="w-3.5 h-3.5 text-t-text-faint group-open:rotate-180 transition" />
+                      </summary>
+                      <div className="px-4 pb-4 space-y-3">
+                        <div>
+                          <p className="text-[10px] font-bold text-[#f5a623] mb-1">HOOK (first 3 seconds)</p>
+                          <p className="text-sm text-t-text font-bold leading-relaxed">&ldquo;{script.hook}&rdquo;</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-bold text-t-text-faint mb-1">BODY</p>
+                          <p className="text-xs text-t-text-muted leading-relaxed">{script.body}</p>
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-bold text-t-text-faint mb-1">CTA</p>
+                          <p className="text-xs text-t-text-muted">&ldquo;{script.cta}&rdquo;</p>
+                        </div>
+                        <div className="flex items-center justify-between pt-2 border-t border-t-border">
+                          <div className="flex flex-wrap gap-1">
+                            {script.hashtags.map(h => (
+                              <span key={h} className="text-[9px] text-t-text-faint">#{h}</span>
+                            ))}
+                          </div>
+                          <button onClick={() => copyText(`${script.hook}\n\n${script.body}\n\n${script.cta}`, `script-${script.id}`)}
+                            className="flex items-center gap-1 text-[10px] font-bold text-[#f5a623]/60 hover:text-[#f5a623] transition">
+                            {copiedId === `script-${script.id}` ? <><Check className="w-3 h-3" /> Copied</> : <><Copy className="w-3 h-3" /> Copy Script</>}
+                          </button>
+                        </div>
+                      </div>
+                    </details>
+                  ))}
                 </div>
               </Section>
             )}
@@ -232,28 +271,47 @@ export default function ProjectPage({ params }: { params: Promise<{ id: string }
               <button
                 key={tool.id}
                 onClick={async () => {
+                  setToolLoading(tool.id);
+                  setToolResult(null);
                   const niche = (p?.niche as string) ?? "business";
                   const name = (p?.name as string) ?? "My Business";
-                  const res = await fetch("/api/himalaya/tools", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ tool: tool.id, params: { niche, businessName: name, offer: name, audience: niche } }),
-                  });
-                  const data = await res.json();
-                  if (data.ok) {
-                    alert(`${tool.label} generated! Check the console for full output.`);
-                    console.log(`[${tool.label}]`, data.result);
-                  } else {
-                    alert(data.error ?? "Failed to generate");
-                  }
+                  try {
+                    const res = await fetch("/api/himalaya/tools", {
+                      method: "POST",
+                      headers: { "Content-Type": "application/json" },
+                      body: JSON.stringify({ tool: tool.id, params: { niche, businessName: name, offer: name, audience: niche } }),
+                    });
+                    const data = await res.json();
+                    if (data.ok) {
+                      setToolResult({ name: tool.label, data: data.result });
+                    }
+                  } catch { /* ignore */ }
+                  setToolLoading(null);
                 }}
                 className="flex flex-col items-start rounded-xl border border-t-border bg-t-bg-card px-3 py-2.5 hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.03] transition text-left"
               >
                 <span className="text-xs font-bold text-t-text">{tool.label}</span>
                 <span className="text-[10px] text-t-text-faint">{tool.desc}</span>
+                {toolLoading === tool.id && <Loader2 className="w-3 h-3 text-[#f5a623] animate-spin mt-1" />}
               </button>
             ))}
           </div>
+
+          {/* Tool result display */}
+          {toolResult && (
+            <div className="mt-4 rounded-xl border border-[#f5a623]/20 bg-[#f5a623]/[0.03] p-4">
+              <div className="flex items-center justify-between mb-3">
+                <p className="text-xs font-black text-[#f5a623]">{toolResult.name} — Generated</p>
+                <button onClick={() => { navigator.clipboard.writeText(JSON.stringify(toolResult.data, null, 2)); setCopiedId("tool-result"); setTimeout(() => setCopiedId(null), 2000); }}
+                  className="flex items-center gap-1 text-[10px] font-bold text-t-text-faint hover:text-t-text transition">
+                  {copiedId === "tool-result" ? <><Check className="w-3 h-3" /> Copied</> : <><Copy className="w-3 h-3" /> Copy</>}
+                </button>
+              </div>
+              <pre className="text-[11px] text-t-text-muted whitespace-pre-wrap leading-relaxed max-h-96 overflow-y-auto">
+                {typeof toolResult.data === "string" ? toolResult.data : JSON.stringify(toolResult.data, null, 2)}
+              </pre>
+            </div>
+          )}
         </Section>
 
         {/* No package yet */}
