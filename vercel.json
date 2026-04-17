@@ -1,7 +1,7 @@
 {
   "crons": [
     {
-      "path": "/api/cron/health-recalc",
+      "path": "/api/cron/daily-automations",
       "schedule": "0 6 * * *"
     },
     {
