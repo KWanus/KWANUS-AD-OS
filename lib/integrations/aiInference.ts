@@ -144,7 +144,10 @@ function generateWithTemplate(input: AIInput): AIResult {
   } else if (prompt.includes("proposal")) {
     content = "# Growth Proposal\n\n## Executive Summary\nAfter analyzing your current situation, we've identified 3 key opportunities to accelerate growth.\n\n## The Opportunity\nYour business has strong fundamentals but is leaving significant revenue on the table.\n\n## Our Solution\nA systematic approach to optimize your funnel, improve conversion rates, and scale your best-performing channels.\n\n## Investment\nStarting at $997/month with a satisfaction guarantee.\n\n## Next Steps\nBook a call to discuss your specific situation.";
   } else {
-    content = `[AI Generation Note: This is template-generated content. For personalized, high-quality copy, configure one of these AI providers:\n\n1. Groq (FREE): Get key at groq.com — uses Llama 3.3 70B\n2. Anthropic: Get key at console.anthropic.com — uses Claude\n3. OpenAI: Get key at platform.openai.com — uses GPT-4o\n\nPrompt used: ${input.prompt.slice(0, 200)}...]`;
+    // Extract niche/topic from prompt for better template content
+    const nicheMatch = input.prompt.match(/for\s+"?([^".\n]+)"?/i);
+    const niche = nicheMatch?.[1] ?? "your business";
+    content = `Here's a proven approach for ${niche}:\n\n1. Identify your ideal customer — who has the problem you solve?\n2. Create a clear offer — what do they get, what does it cost, what's the guarantee?\n3. Build a simple funnel — landing page → email capture → follow-up sequence\n4. Drive traffic — start with organic content (TikTok/Reels), then add $20/day paid ads\n5. Optimize — kill what doesn't work, double down on what does\n\nThe key is speed of execution. Don't overthink. Launch, measure, improve.\n\nFor more personalized content, add a free AI key:\n- Groq (FREE): console.groq.com/keys — Llama 3.3 70B\n- This takes 30 seconds and dramatically improves all generated content.`;
   }
 
   return { ok: true, content, provider: "template", model: "template-v1" };
