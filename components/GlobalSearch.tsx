@@ -131,7 +131,7 @@ export default function GlobalSearch() {
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setOpen(false)} />
 
       {/* Search dialog */}
-      <div className="relative w-full max-w-xl mx-4 bg-[#0a1020] border border-white/[0.1] rounded-2xl shadow-2xl overflow-hidden">
+      <div className="relative w-full max-w-xl mx-4 bg-t-bg-card border border-white/[0.1] rounded-2xl shadow-2xl overflow-hidden">
         {/* Search input */}
         <div className="flex items-center gap-3 px-4 py-3 border-b border-white/[0.06]">
           <Search className="w-5 h-5 text-white/25 shrink-0" />

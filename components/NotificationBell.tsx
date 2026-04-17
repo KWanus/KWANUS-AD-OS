@@ -83,7 +83,7 @@ export default function NotificationBell() {
       </button>
 
       {open && (
-        <div className="absolute top-full right-0 mt-2 w-80 rounded-2xl border border-white/[0.1] bg-[#0a1020] shadow-2xl overflow-hidden z-50">
+        <div className="absolute top-full right-0 mt-2 w-80 rounded-2xl border border-white/[0.1] bg-t-bg-card shadow-2xl overflow-hidden z-50">
           <div className="flex items-center justify-between px-4 py-3 border-b border-white/[0.06]">
             <h3 className="text-xs font-black uppercase tracking-widest text-white/30">Actions</h3>
             <span className="text-[10px] text-white/20">{totalCount} pending</span>

@@ -984,7 +984,7 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
 
           {/* Controls */}
           <Controls
-            className="!border-white/10 !bg-[#0a1020] !shadow-2xl"
+            className="!border-white/10 !bg-t-bg-card !shadow-2xl"
             showInteractive={false}
           />
 

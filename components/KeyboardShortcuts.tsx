@@ -89,7 +89,7 @@ export default function KeyboardShortcuts() {
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setShowHelp(false)} />
 
       {/* Dialog */}
-      <div className="relative w-full max-w-lg mx-4 bg-[#0a1020] border border-white/[0.1] rounded-2xl shadow-2xl overflow-hidden">
+      <div className="relative w-full max-w-lg mx-4 bg-t-bg-card border border-white/[0.1] rounded-2xl shadow-2xl overflow-hidden">
         <div className="flex items-center justify-between px-5 py-4 border-b border-white/[0.06]">
           <h2 className="text-sm font-black text-white">Keyboard Shortcuts</h2>
           <button
