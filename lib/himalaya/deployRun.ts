@@ -411,11 +411,13 @@ export async function deployRun(input: {
     const blocks: object[] = [
       {
         type: "hero",
-        data: {
-          headline,
-          subheadline,
-          ctaText,
-          ctaUrl: paymentUrl,
+        props: {
+          title: headline,
+          subtitle: subheadline,
+          buttonText: ctaText,
+          buttonUrl: paymentUrl,
+          socialProofText: sitePlaybook ? `Trusted by ${sitePlaybook.niche} professionals` : "Trusted by thousands",
+          trustItems: ["✓ Satisfaction Guaranteed", "✓ Secure Checkout", "✓ Fast Results"],
         },
       },
     ];
