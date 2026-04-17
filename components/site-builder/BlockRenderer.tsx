@@ -97,7 +97,7 @@ function HeroBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
   const bg = props.bgColor ?? (isDark
-    ? `radial-gradient(ellipse 80% 60% at 50% -10%, ${primary}22 0%, transparent 60%), #050a14`
+    ? `radial-gradient(ellipse 80% 60% at 50% -10%, ${primary}22 0%, transparent 60%), #0c0a08`
     : `radial-gradient(ellipse 80% 60% at 50% -10%, ${primary}15 0%, transparent 60%), #ffffff`);
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.55)" : "rgba(15,23,42,0.6)";
@@ -315,7 +315,7 @@ function StatsBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme 
 function TestimonialsBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark ? "#050a14" : "#f8fafc");
+  const bg = props.bgColor ?? (isDark ? "#0c0a08" : "#f8fafc");
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.65)" : "rgba(15,23,42,0.65)";
   const cardBg = isDark ? "rgba(255,255,255,0.035)" : "#ffffff";
@@ -508,7 +508,7 @@ function PricingBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
 function FAQBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark ? "#050a14" : "#ffffff");
+  const bg = props.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.6)" : "rgba(15,23,42,0.65)";
   const borderColor = isDark ? "rgba(255,255,255,0.07)" : "#e8edf2";
@@ -644,7 +644,7 @@ function CTABlock({ props, theme }: { props: Block["props"]; theme: SiteTheme })
 function GuaranteeBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark ? "#050a14" : "#ffffff");
+  const bg = props.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.6)" : "rgba(15,23,42,0.6)";
   const borderColor = isDark ? "rgba(255,255,255,0.08)" : "#e2e8f0";
@@ -787,7 +787,7 @@ function ProcessBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
 function BeforeAfterBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark ? "#050a14" : "#ffffff");
+  const bg = props.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.5)" : "rgba(15,23,42,0.55)";
   const beforeItems: string[] = props.beforeItems ?? [];
@@ -887,7 +887,7 @@ function UrgencyBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
 
 function TextBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
-  const bg = props.bgColor ?? (isDark ? "#050a14" : "#ffffff");
+  const bg = props.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
   const textColor = isDark ? "rgba(255,255,255,0.8)" : "#1e293b";
 
   return (
@@ -905,7 +905,7 @@ function TextBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
 
 function ImageBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
-  const bg = props.bgColor ?? (isDark ? "#050a14" : "#ffffff");
+  const bg = props.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
   const textColor = isDark ? "rgba(255,255,255,0.35)" : "rgba(15,23,42,0.35)";
 
   return (
@@ -932,7 +932,7 @@ function ImageBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme 
 function VideoBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark ? "#050a14" : "#ffffff");
+  const bg = props.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
 
   function getEmbedUrl(url: string) {
     try {
@@ -1206,7 +1206,7 @@ function ProductsBlock({
 }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark ? "#050a14" : "#ffffff");
+  const bg = props.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.35)" : "rgba(15,23,42,0.4)";
   const cardBg = isDark ? "rgba(255,255,255,0.03)" : "#ffffff";
@@ -1348,7 +1348,7 @@ function ProductsBlock({
 
 function DividerBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
-  const bg = props.bgColor ?? (isDark ? "#050a14" : "#ffffff");
+  const bg = props.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
   const lineColor = isDark ? "rgba(255,255,255,0.06)" : "#e8edf2";
   const height = props.height ?? 48;
 
@@ -1441,7 +1441,7 @@ function BookingBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
 function PaymentBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark ? "#050a14" : "#f0fdf4");
+  const bg = props.bgColor ?? (isDark ? "#0c0a08" : "#f0fdf4");
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const paymentUrl = props.paymentUrl ?? "#";
   const price = props.price ?? "";
@@ -1578,7 +1578,7 @@ export default function BlockRenderer({ block, theme, preview, selected, onClick
         <>
           <div style={{
             position: "absolute", top: 8, right: 8,
-            background: "#f5a623", color: "#050a14",
+            background: "#f5a623", color: "#0c0a08",
             fontSize: 10, fontWeight: 800, padding: "3px 8px",
             borderRadius: 6, textTransform: "uppercase", letterSpacing: "0.1em", pointerEvents: "none",
           }}>

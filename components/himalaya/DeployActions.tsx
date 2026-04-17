@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import DeployQAReport from "./DeployQAReport";
 import AdReviewLaunch from "./AdReviewLaunch";
+import PostBuildTour from "./PostBuildTour";
 import WorkflowSuccess from "@/components/navigation/WorkflowSuccess";
 import { track } from "@/lib/himalaya/tracking";
 import type { HimalayaResultsViewModel } from "@/lib/himalaya/types";
@@ -144,12 +145,15 @@ export default function DeployActions({ vm, autoDeploy = false, autoPublish = fa
 
         {deployed ? (
           <div>
-            <WorkflowSuccess
-              title="Your business is live"
-              description="The deploy finished successfully and your live assets are ready to review, share, and publish."
-              icon={CheckCircle}
-              className="mb-4 border-0 bg-transparent p-0"
-            />
+            {/* Post-build tour — guides user through what to do next */}
+            <div className="mb-4">
+              <PostBuildTour
+                siteUrl={(deployed.site as Record<string, string> | undefined)?.publicUrl}
+                siteId={deployed.site?.id}
+                campaignId={deployed.campaign?.id}
+                emailFlowId={deployed.emails?.id}
+              />
+            </div>
 
             {/* Public site URL — the most important thing */}
             {deployed.site?.publicUrl && (

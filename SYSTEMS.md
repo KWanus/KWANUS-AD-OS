@@ -226,3 +226,35 @@
 | Resend | Email sending | ✅ Configured |
 | Vercel | Hosting + Cron | ✅ Live |
 | TikTok | OAuth + Ads | ⏳ Pending setup |
+
+## Recent Additions (April 15-16, 2026)
+| # | System | File | Status |
+|---|--------|------|--------|
+| 115 | Campaign Package Generator | lib/himalaya/campaignPackageGenerator.ts | ✅ Live |
+| 116 | Affiliate Campaign Package | lib/himalaya/campaignPackages/affiliate.ts | ✅ Live |
+| 117 | Coaching Campaign Package | lib/himalaya/campaignPackages/coaching.ts | ✅ Live |
+| 118 | Dropshipping Campaign Package | lib/himalaya/campaignPackages/dropshipping.ts | ✅ Live |
+| 119 | Agency Campaign Package | lib/himalaya/campaignPackages/agency.ts | ✅ Live |
+| 120 | Local Service Campaign Package | lib/himalaya/campaignPackages/localService.ts | ✅ Live |
+| 121 | HTML Image Generator (zero API) | lib/integrations/htmlImageGenerator.ts | ✅ Live |
+| 122 | Daily Auto-Runner | lib/himalaya/autoRunner.ts | ✅ Live (cron) |
+| 123 | Post-Build Tour | components/himalaya/PostBuildTour.tsx | ✅ Live |
+| 124 | Universal Tools API | app/api/himalaya/tools/route.ts | ✅ Live |
+| 125 | Project Scripts API | app/api/himalaya/projects/[id]/scripts/route.ts | ✅ Live |
+| 126 | Project Package API | app/api/himalaya/projects/[id]/package/route.ts | ✅ Live |
+| 127 | Project Delete API | app/api/himalaya/projects/[id]/route.ts | ✅ Live |
+| 128 | Project Detail Page | app/project/[id]/page.tsx | ✅ Live |
+
+## API Keys Status (as of April 16, 2026)
+| Key | Status | Action Needed |
+|-----|--------|---------------|
+| Anthropic | ❌ Invalid | Get new key at console.anthropic.com |
+| OpenAI | ❌ Quota exceeded | Add billing at platform.openai.com |
+| Groq | ❌ Restricted | Get new key at console.groq.com (FREE) |
+| fal.ai | ❌ Balance exhausted | Add $5 at fal.ai/dashboard/billing |
+| Resend | ❌ Invalid key | Get new key at resend.com (FREE) |
+| Stripe | ✅ Working | Configured |
+| Meta | ✅ Working | OAuth configured |
+| Google | ✅ Working | OAuth configured |
+| Clerk | ✅ Working | Auth configured |
+| Supabase | ✅ Working | Pooler connected |
