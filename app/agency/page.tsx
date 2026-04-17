@@ -123,17 +123,17 @@ const TABS = ["Audits", "Strategy", "Proposals", "Pricing"] as const;
 type Tab = (typeof TABS)[number];
 
 const BUSINESS_TYPE_COLORS: Record<BusinessType, string> = {
-  consultant: "text-purple-400 bg-purple-500/10 border-purple-500/20",
+  consultant: "text-[#e07850] bg-purple-500/10 border-purple-500/20",
   local:      "text-green-400 bg-green-500/10 border-green-500/20",
   ecommerce:  "text-orange-400 bg-orange-500/10 border-orange-500/20",
-  saas:       "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
+  saas:       "text-[#f5a623] bg-[#f5a623]/10 border-[#f5a623]/20",
   affiliate:  "text-yellow-400 bg-yellow-500/10 border-yellow-500/20",
   agency:     "text-blue-400 bg-blue-500/10 border-blue-500/20",
 };
 
 const GRADE_COLORS: Record<string, string> = {
   A: "text-green-400 bg-green-500/10 border-green-500/20",
-  B: "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
+  B: "text-[#f5a623] bg-[#f5a623]/10 border-[#f5a623]/20",
   C: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20",
   D: "text-orange-400 bg-orange-500/10 border-orange-500/20",
   F: "text-red-400 bg-red-500/10 border-red-500/20",
@@ -147,7 +147,7 @@ const PRIORITY_COLORS: Record<string, string> = {
 
 function scoreColor(score: number) {
   if (score >= 80) return "text-green-400";
-  if (score >= 60) return "text-cyan-400";
+  if (score >= 60) return "text-[#f5a623]";
   if (score >= 40) return "text-yellow-400";
   if (score >= 20) return "text-orange-400";
   return "text-red-400";
@@ -259,17 +259,17 @@ function ExecutionTierPicker({
             onClick={() => onChange(tier.id)}
             className={`rounded-2xl border p-4 text-left transition-all ${
               active
-                ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                ? "border-[#f5a623]/40 bg-[#f5a623]/10 shadow-[0_0_20px_rgba(245,166,35,0.12)]"
                 : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
             }`}
           >
             <div className="flex items-center justify-between gap-3">
-              <span className={`text-sm font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
-              <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+              <span className={`text-sm font-black ${active ? "text-[#f5a623]" : "text-white"}`}>{tier.label}</span>
+              <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-[#f5a623]" : "text-white/20"}`}>
                 {tier.id}
               </span>
             </div>
-            <p className={`mt-2 text-xs leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+            <p className={`mt-2 text-xs leading-relaxed ${active ? "text-[#f5f0e8]/80" : "text-white/45"}`}>
               {tier.description}
             </p>
           </button>
@@ -373,31 +373,31 @@ function AuditsTab() {
         <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
         <form onSubmit={runAudit} className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <input
-            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-cyan-500/40"
+            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-[#f5a623]/40"
             placeholder="Business name *"
             value={form.businessName}
             onChange={(e) => setForm({ ...form, businessName: e.target.value })}
           />
           <input
-            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-cyan-500/40"
+            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-[#f5a623]/40"
             placeholder="Business URL (optional)"
             value={form.businessUrl}
             onChange={(e) => setForm({ ...form, businessUrl: e.target.value })}
           />
           <input
-            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-cyan-500/40"
+            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-[#f5a623]/40"
             placeholder="Niche *"
             value={form.niche}
             onChange={(e) => setForm({ ...form, niche: e.target.value })}
           />
           <input
-            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-cyan-500/40"
+            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-[#f5a623]/40"
             placeholder="Location (optional)"
             value={form.location}
             onChange={(e) => setForm({ ...form, location: e.target.value })}
           />
           <select
-            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-cyan-500/40"
+            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-[#f5a623]/40"
             value={form.businessType}
             onChange={(e) => setForm({ ...form, businessType: e.target.value as BusinessType })}
           >
@@ -411,7 +411,7 @@ function AuditsTab() {
           <button
             type="submit"
             disabled={submitting}
-            className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black px-4 py-2 rounded-xl disabled:opacity-50 flex items-center justify-center gap-2"
+            className="bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-black px-4 py-2 rounded-xl disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {submitting ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Auditing...</> : "Run Audit"}
           </button>
@@ -537,7 +537,7 @@ function AuditsTab() {
                   key={type}
                   onClick={() => generateFromAudit(selectedAudit.id, type)}
                   disabled={isGenerating || alreadyDone}
-                  className="bg-gradient-to-r from-cyan-500/10 to-purple-600/10 hover:from-cyan-500/20 hover:to-purple-600/20 border border-white/[0.08] hover:border-white/[0.15] text-white text-xs font-black px-3 py-2.5 rounded-xl transition-all disabled:opacity-40 flex items-center justify-center gap-1.5"
+                  className="bg-gradient-to-r from-cyan-500/10 to-[#e07850]/10 hover:from-cyan-500/20 hover:to-[#e07850]/20 border border-white/[0.08] hover:border-white/[0.15] text-white text-xs font-black px-3 py-2.5 rounded-xl transition-all disabled:opacity-40 flex items-center justify-center gap-1.5"
                 >
                   {isGenerating ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
                   {alreadyDone ? "Done" : `Gen ${type.charAt(0).toUpperCase() + type.slice(1)}`}
@@ -666,7 +666,7 @@ function StrategyTab() {
                 <button
                   onClick={() => generateStrategy(audit.id)}
                   disabled={generating === audit.id}
-                  className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-black px-3 py-1.5 rounded-xl disabled:opacity-50 flex items-center gap-1.5 shrink-0"
+                  className="bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-xs font-black px-3 py-1.5 rounded-xl disabled:opacity-50 flex items-center gap-1.5 shrink-0"
                 >
                   {generating === audit.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <ArrowRight className="w-3 h-3" />}
                   Generate
@@ -698,14 +698,14 @@ function StrategyTab() {
               <div className="space-y-2">
                 {phase.tasks.map((task, j) => (
                   <div key={j} className="flex items-start gap-3">
-                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border shrink-0 mt-0.5 ${task.owner === "agency" ? "text-cyan-400 bg-cyan-500/10 border-cyan-500/20" : "text-white/60 bg-white/[0.04] border-white/[0.1]"}`}>
+                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-full border shrink-0 mt-0.5 ${task.owner === "agency" ? "text-[#f5a623] bg-[#f5a623]/10 border-[#f5a623]/20" : "text-white/60 bg-white/[0.04] border-white/[0.1]"}`}>
                       {task.owner}
                     </span>
                     <div className="min-w-0">
                       <p className="text-xs text-white/80">{task.task}</p>
                       <div className="flex gap-2 mt-0.5 flex-wrap">
                         <span className="text-[10px] text-white/30">{task.timeline}</span>
-                        {task.tool && <span className="text-[10px] text-purple-400">{task.tool}</span>}
+                        {task.tool && <span className="text-[10px] text-[#e07850]">{task.tool}</span>}
                       </div>
                     </div>
                   </div>
@@ -727,9 +727,9 @@ function StrategyTab() {
             </div>
           ))}
 
-          <div className="bg-gradient-to-r from-cyan-500/10 to-purple-600/10 border border-cyan-500/20 rounded-2xl p-4 text-center">
+          <div className="bg-gradient-to-r from-cyan-500/10 to-[#e07850]/10 border border-[#f5a623]/20 rounded-2xl p-4 text-center">
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Total Projected Revenue Lift</p>
-            <p className="text-2xl font-black text-cyan-400">{selectedAudit.strategyJson.totalProjectedRevenueLift}</p>
+            <p className="text-2xl font-black text-[#f5a623]">{selectedAudit.strategyJson.totalProjectedRevenueLift}</p>
           </div>
         </Modal>
       )}
@@ -859,7 +859,7 @@ function ProposalsTab() {
                 <button
                   onClick={() => generateProposal(audit.id)}
                   disabled={generating === audit.id}
-                  className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-black px-3 py-1.5 rounded-xl disabled:opacity-50 flex items-center gap-1.5 shrink-0"
+                  className="bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-xs font-black px-3 py-1.5 rounded-xl disabled:opacity-50 flex items-center gap-1.5 shrink-0"
                 >
                   {generating === audit.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <ArrowRight className="w-3 h-3" />}
                   Generate
@@ -893,8 +893,8 @@ function ProposalsTab() {
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Engagement Options</p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
               {selectedAudit.proposalJson.engagementOptions.map((tier, i) => (
-                <div key={i} className={`bg-white/[0.02] border rounded-2xl p-4 space-y-3 ${i === 1 ? "border-cyan-500/30" : "border-white/[0.06]"}`}>
-                  {i === 1 && <span className="text-[10px] font-black text-cyan-400">RECOMMENDED</span>}
+                <div key={i} className={`bg-white/[0.02] border rounded-2xl p-4 space-y-3 ${i === 1 ? "border-[#f5a623]/30" : "border-white/[0.06]"}`}>
+                  {i === 1 && <span className="text-[10px] font-black text-[#f5a623]">RECOMMENDED</span>}
                   <p className="text-sm font-black text-white">{tier.name}</p>
                   <p className="text-xl font-black text-white">${tier.price.toLocaleString()}<span className="text-xs text-white/30 font-normal">/{tier.billingCycle}</span></p>
                   <ul className="space-y-1">
@@ -973,13 +973,13 @@ function PricingTab() {
         <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
         <form onSubmit={generate} className="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <input
-            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-cyan-500/40"
+            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-[#f5a623]/40"
             placeholder="Niche *"
             value={form.niche}
             onChange={(e) => setForm({ ...form, niche: e.target.value })}
           />
           <select
-            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-cyan-500/40"
+            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-[#f5a623]/40"
             value={form.businessType}
             onChange={(e) => setForm({ ...form, businessType: e.target.value as BusinessType })}
           >
@@ -991,7 +991,7 @@ function PricingTab() {
             <option value="agency">Agency</option>
           </select>
           <input
-            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-cyan-500/40"
+            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-[#f5a623]/40"
             placeholder="Target revenue (optional)"
             value={form.targetRevenue}
             onChange={(e) => setForm({ ...form, targetRevenue: e.target.value })}
@@ -999,7 +999,7 @@ function PricingTab() {
           <button
             type="submit"
             disabled={loading}
-            className="sm:col-span-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black px-4 py-2 rounded-xl disabled:opacity-50 flex items-center justify-center gap-2"
+            className="sm:col-span-3 bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-black px-4 py-2 rounded-xl disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Generating...</> : "Generate Pricing"}
           </button>
@@ -1022,13 +1022,13 @@ function PricingTab() {
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Market Rates</p>
             <div className="grid grid-cols-3 gap-3">
               {(["low", "mid", "premium"] as const).map((tier) => (
-                <div key={tier} className={`rounded-xl p-3 text-center border ${tier === result.recommendedPosition ? "bg-cyan-500/10 border-cyan-500/30" : "bg-white/[0.02] border-white/[0.06]"}`}>
+                <div key={tier} className={`rounded-xl p-3 text-center border ${tier === result.recommendedPosition ? "bg-[#f5a623]/10 border-[#f5a623]/30" : "bg-white/[0.02] border-white/[0.06]"}`}>
                   <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">{tier}</p>
-                  <p className={`text-lg font-black ${tier === result.recommendedPosition ? "text-cyan-400" : "text-white/60"}`}>
+                  <p className={`text-lg font-black ${tier === result.recommendedPosition ? "text-[#f5a623]" : "text-white/60"}`}>
                     ${result.marketRates[tier].toLocaleString()}
                   </p>
                   {tier === result.recommendedPosition && (
-                    <span className="text-[10px] font-black text-cyan-400">Recommended</span>
+                    <span className="text-[10px] font-black text-[#f5a623]">Recommended</span>
                   )}
                 </div>
               ))}
@@ -1083,7 +1083,7 @@ function PricingTab() {
               <ul className="space-y-2">
                 {result.pricingPsychologyTips.map((tip, i) => (
                   <li key={i} className="flex gap-2 text-sm text-white/60">
-                    <span className="text-purple-400 shrink-0">•</span>{tip}
+                    <span className="text-[#e07850] shrink-0">•</span>{tip}
                   </li>
                 ))}
               </ul>
@@ -1096,7 +1096,7 @@ function PricingTab() {
               <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Upsell Opportunities</p>
               <div className="flex flex-wrap gap-2">
                 {result.upsellOpportunities.map((u, i) => (
-                  <span key={i} className="text-xs font-black px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400">{u}</span>
+                  <span key={i} className="text-xs font-black px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-[#e07850]">{u}</span>
                 ))}
               </div>
             </div>
@@ -1115,7 +1115,7 @@ export default function AgencyPage() {
   const [activeTab, setActiveTab] = useState<Tab>("Audits");
 
   return (
-    <div className="min-h-screen bg-[#020509] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
 
       <main className="max-w-5xl mx-auto px-4 py-8 space-y-6">
@@ -1133,7 +1133,7 @@ export default function AgencyPage() {
               onClick={() => setActiveTab(tab)}
               className={`px-4 py-2 rounded-xl text-sm font-black transition-all ${
                 activeTab === tab
-                  ? "bg-gradient-to-r from-cyan-500/20 to-purple-600/20 border border-white/[0.1] text-white"
+                  ? "bg-gradient-to-r from-cyan-500/20 to-[#e07850]/20 border border-white/[0.1] text-white"
                   : "text-white/30 hover:text-white/60"
               }`}
             >

@@ -168,7 +168,7 @@ export default function NewSitePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#020509] flex flex-col items-center justify-center font-sans p-6 text-white">
+    <div className="min-h-screen bg-t-bg flex flex-col items-center justify-center font-sans p-6 text-white">
       <div className="w-full max-w-2xl">
         <button
           onClick={() => router.back()}
@@ -178,10 +178,10 @@ export default function NewSitePage() {
           Back
         </button>
 
-        <div className="rounded-[32px] border border-white/[0.08] bg-[#050a14] p-8 shadow-2xl">
+        <div className="rounded-[32px] border border-white/[0.08] bg-t-bg p-8 shadow-2xl">
           <div className="mb-8 flex items-start justify-between gap-4">
             <div>
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 text-cyan-300">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 text-[#f5a623]">
                 {mode === "generate" ? <Wand2 className="h-6 w-6" /> : <Rocket className="h-6 w-6" />}
               </div>
               <h1 className="text-3xl font-black tracking-tight">
@@ -199,7 +199,7 @@ export default function NewSitePage() {
               <button
                 onClick={() => setMode("generate")}
                 className={`rounded-2xl border px-4 py-2.5 text-sm font-bold transition ${mode === "generate"
-                    ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-200"
+                    ? "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5a623]"
                     : "border-white/[0.08] bg-white/[0.03] text-white/55"
                   }`}
               >
@@ -208,7 +208,7 @@ export default function NewSitePage() {
               <button
                 onClick={() => setMode("manual")}
                 className={`rounded-2xl border px-4 py-2.5 text-sm font-bold transition ${mode === "manual"
-                    ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-200"
+                    ? "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5a623]"
                     : "border-white/[0.08] bg-white/[0.03] text-white/55"
                   }`}
               >
@@ -226,13 +226,13 @@ export default function NewSitePage() {
                   type="button"
                   onClick={() => applyPreset(preset)}
                   className={`rounded-2xl border p-4 text-left transition ${active
-                      ? "border-cyan-500/25 bg-cyan-500/10 text-cyan-100"
-                      : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+                      ? "border-[#f5a623]/25 bg-[#f5a623]/10 text-[#f5f0e8]"
+                      : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.05]"
                     }`}
                 >
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-sm font-black">{preset.label}</p>
-                    {active ? <Check className="h-4 w-4 text-cyan-200" /> : null}
+                    {active ? <Check className="h-4 w-4 text-[#f5a623]" /> : null}
                   </div>
                   <p className="mt-2 text-xs font-bold uppercase tracking-[0.18em] text-inherit/70">{preset.niche}</p>
                   <p className="mt-2 text-xs leading-5 text-inherit/75">{preset.notes}</p>
@@ -242,9 +242,9 @@ export default function NewSitePage() {
           </div>
 
           {businessProfile && (
-            <div className="mb-8 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-4">
+            <div className="mb-8 rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-4 py-4">
               <div className="flex items-start gap-3">
-                <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-cyan-300" />
+                <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-[#f5a623]" />
                 <div>
                   <p className="text-sm font-black text-cyan-50">Business OS data detected</p>
                   <p className="mt-1 text-sm leading-6 text-cyan-50/85">
@@ -275,8 +275,8 @@ export default function NewSitePage() {
                   type="button"
                   onClick={() => setExecutionTier(value)}
                   className={`rounded-2xl border px-4 py-4 text-left transition ${executionTier === value
-                      ? "border-cyan-500/25 bg-cyan-500/10 text-cyan-100"
-                      : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+                      ? "border-[#f5a623]/25 bg-[#f5a623]/10 text-[#f5f0e8]"
+                      : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.05]"
                     }`}
                 >
                   <p className="text-sm font-black">{label}</p>
@@ -296,7 +296,7 @@ export default function NewSitePage() {
                     required
                     value={businessName}
                     onChange={(event) => setBusinessName(event.target.value)}
-                    className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.03] px-4 py-3 text-white placeholder:text-white/20 focus:border-cyan-500/50 focus:outline-none"
+                    className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.03] px-4 py-3 text-white placeholder:text-white/20 focus:border-[#f5a623]/50 focus:outline-none"
                     placeholder="Bright Smile Dental"
                   />
                 </div>
@@ -308,7 +308,7 @@ export default function NewSitePage() {
                     required
                     value={niche}
                     onChange={(event) => setNiche(event.target.value)}
-                    className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.03] px-4 py-3 text-white placeholder:text-white/20 focus:border-cyan-500/50 focus:outline-none"
+                    className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.03] px-4 py-3 text-white placeholder:text-white/20 focus:border-[#f5a623]/50 focus:outline-none"
                     placeholder="dentist, roofing, med spa, law firm"
                   />
                 </div>
@@ -322,7 +322,7 @@ export default function NewSitePage() {
                     required
                     value={location}
                     onChange={(event) => setLocation(event.target.value)}
-                    className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.03] px-4 py-3 text-white placeholder:text-white/20 focus:border-cyan-500/50 focus:outline-none"
+                    className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.03] px-4 py-3 text-white placeholder:text-white/20 focus:border-[#f5a623]/50 focus:outline-none"
                     placeholder="Austin, TX"
                   />
                 </div>
@@ -333,7 +333,7 @@ export default function NewSitePage() {
                     type="text"
                     value={tone}
                     onChange={(event) => setTone(event.target.value)}
-                    className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.03] px-4 py-3 text-white placeholder:text-white/20 focus:border-cyan-500/50 focus:outline-none"
+                    className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.03] px-4 py-3 text-white placeholder:text-white/20 focus:border-[#f5a623]/50 focus:outline-none"
                     placeholder="Clear, premium, urgent, trustworthy"
                   />
                 </div>
@@ -346,14 +346,14 @@ export default function NewSitePage() {
                   rows={4}
                   value={notes}
                   onChange={(event) => setNotes(event.target.value)}
-                  className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.03] px-4 py-3 text-white placeholder:text-white/20 focus:border-cyan-500/50 focus:outline-none"
+                  className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.03] px-4 py-3 text-white placeholder:text-white/20 focus:border-[#f5a623]/50 focus:outline-none"
                   placeholder="Optional direction: focus on booking consultations, make it feel high trust, use local relevance, emphasize emergency response..."
                 />
               </div>
 
-              <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-4">
+              <div className="rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-4 py-4">
                 <div className="flex items-start gap-3">
-                  <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-cyan-300" />
+                  <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-[#f5a623]" />
                   <p className="text-sm leading-6 text-cyan-50/90">
                     This route uses the new conversion engine: input normalization, conversion analysis, business profile, template selection, section-by-section copy, scoring, and deterministic rendering. Elite mode pushes a heavier trust, objection-handling, and conversion stack.
                   </p>
@@ -365,7 +365,7 @@ export default function NewSitePage() {
               <button
                 type="submit"
                 disabled={loading || !businessName.trim() || !niche.trim() || !location.trim()}
-                className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 py-4 font-black text-white shadow-[0_0_20px_rgba(6,182,212,0.3)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] py-4 font-black text-white shadow-[0_0_20px_rgba(245,166,35,0.3)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Wand2 className="h-5 w-5" />}
                 Generate Site
@@ -383,14 +383,14 @@ export default function NewSitePage() {
                     setName(event.target.value);
                     if (!slug) setSlug(event.target.value.toLowerCase().replace(/[^a-z0-9]+/g, "-"));
                   }}
-                  className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.03] px-4 py-3 text-white placeholder:text-white/20 focus:border-cyan-500/50 focus:outline-none"
+                  className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.03] px-4 py-3 text-white placeholder:text-white/20 focus:border-[#f5a623]/50 focus:outline-none"
                   placeholder="My Awesome Store"
                 />
               </div>
 
               <div>
                 <label className="mb-2 block text-xs font-black uppercase tracking-widest text-white/50">Web Address</label>
-                <div className="flex overflow-hidden rounded-2xl border border-white/[0.1] bg-white/[0.03] transition focus-within:border-cyan-500/50">
+                <div className="flex overflow-hidden rounded-2xl border border-white/[0.1] bg-white/[0.03] transition focus-within:border-[#f5a623]/50">
                   <input
                     type="text"
                     required
@@ -419,7 +419,7 @@ export default function NewSitePage() {
                       type="button"
                       onClick={() => setManualTemplate(value)}
                       className={`rounded-2xl border px-4 py-3 text-left transition ${manualTemplate === value
-                          ? "border-cyan-500/25 bg-cyan-500/10 text-cyan-100"
+                          ? "border-[#f5a623]/25 bg-[#f5a623]/10 text-[#f5f0e8]"
                           : "border-white/[0.08] bg-white/[0.03] text-white/55"
                         }`}
                     >
@@ -435,13 +435,13 @@ export default function NewSitePage() {
 
               {campaigns.length > 0 && (
                 <div className="border-t border-white/5 pt-4">
-                  <label className="mb-2 flex items-center gap-2 text-xs font-black uppercase tracking-widest text-cyan-400">
+                  <label className="mb-2 flex items-center gap-2 text-xs font-black uppercase tracking-widest text-[#f5a623]">
                     <Sparkles className="h-4 w-4" /> AI Auto-Generate Funnel
                   </label>
                   <select
                     value={campaignId}
                     onChange={(event) => setCampaignId(event.target.value)}
-                    className="w-full rounded-2xl border border-cyan-500/30 bg-cyan-500/10 px-4 py-3 text-cyan-100 outline-none transition focus:border-cyan-400"
+                    className="w-full rounded-2xl border border-[#f5a623]/30 bg-[#f5a623]/10 px-4 py-3 text-[#f5f0e8] outline-none transition focus:border-cyan-400"
                   >
                     <option value="">Start with blank template</option>
                     {campaigns.map((campaign) => (
@@ -461,7 +461,7 @@ export default function NewSitePage() {
               <button
                 type="submit"
                 disabled={loading || !name || !slug}
-                className="mt-4 flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 py-4 font-black text-white shadow-[0_0_20px_rgba(6,182,212,0.3)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                className="mt-4 flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] py-4 font-black text-white shadow-[0_0_20px_rgba(245,166,35,0.3)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Create Site"}
               </button>

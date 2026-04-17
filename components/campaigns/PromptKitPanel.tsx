@@ -277,7 +277,7 @@ export default function PromptKitPanel({ promptKit, businessContext, campaignId,
           </div>
         </div>
         <p className="text-xs text-white/40 mt-1">
-          Built for <span className="text-cyan-400/70">{businessContext.niche}</span> targeting <span className="text-cyan-400/70">{businessContext.audience}</span>.
+          Built for <span className="text-[#f5a623]/70">{businessContext.niche}</span> targeting <span className="text-[#f5a623]/70">{businessContext.audience}</span>.
           We auto-generate your highest-impact assets first.
         </p>
       </div>
@@ -288,13 +288,13 @@ export default function PromptKitPanel({ promptKit, businessContext, campaignId,
           onClick={() => setMode("recommended")}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition border ${
             mode === "recommended"
-              ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-300"
+              ? "border-[#f5a623]/40 bg-[#f5a623]/10 text-[#f5a623]"
               : "border-white/10 bg-white/[0.03] text-white/40 hover:border-white/20"
           }`}
         >
           Recommended
           {recommendedDone < recommendedPrompts.length && (
-            <span className="text-[10px] text-cyan-400/50">{recommendedDone}/{recommendedPrompts.length}</span>
+            <span className="text-[10px] text-[#f5a623]/50">{recommendedDone}/{recommendedPrompts.length}</span>
           )}
           {recommendedDone === recommendedPrompts.length && recommendedPrompts.length > 0 && (
             <span className="text-[10px] text-green-400">Done</span>
@@ -304,7 +304,7 @@ export default function PromptKitPanel({ promptKit, businessContext, campaignId,
           onClick={() => setMode("browse")}
           className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition border ${
             mode === "browse"
-              ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-300"
+              ? "border-[#f5a623]/40 bg-[#f5a623]/10 text-[#f5a623]"
               : "border-white/10 bg-white/[0.03] text-white/40 hover:border-white/20"
           }`}
         >
@@ -315,10 +315,10 @@ export default function PromptKitPanel({ promptKit, businessContext, campaignId,
 
       {/* ═══ Auto-Generation Progress Banner ═══ */}
       {mode === "recommended" && generating.size > 0 && (
-        <div className="rounded-xl border border-cyan-500/20 bg-cyan-500/[0.06] px-4 py-3 flex items-center gap-3">
-          <div className="animate-spin text-cyan-400 text-sm">&#10227;</div>
+        <div className="rounded-xl border border-[#f5a623]/20 bg-[#f5a623]/[0.06] px-4 py-3 flex items-center gap-3">
+          <div className="animate-spin text-[#f5a623] text-sm">&#10227;</div>
           <div className="flex-1">
-            <p className="text-xs font-semibold text-cyan-300">Auto-generating your top assets...</p>
+            <p className="text-xs font-semibold text-[#f5a623]">Auto-generating your top assets...</p>
             <p className="text-[10px] text-cyan-200/50 mt-0.5">{autoProgress} of {recommendedPrompts.length} — sit back, we&apos;re building your campaign</p>
           </div>
           <div className="w-24 h-1.5 rounded-full bg-cyan-900/40 overflow-hidden">
@@ -368,7 +368,7 @@ export default function PromptKitPanel({ promptKit, businessContext, campaignId,
           {recommendedDone >= 3 && (
             <button
               onClick={() => setMode("browse")}
-              className="w-full rounded-2xl border border-dashed border-white/10 hover:border-cyan-400/30 hover:bg-cyan-500/5 py-5 text-sm text-white/30 hover:text-cyan-400 transition"
+              className="w-full rounded-2xl border border-dashed border-white/10 hover:border-cyan-400/30 hover:bg-[#f5a623]/5 py-5 text-sm text-white/30 hover:text-[#f5a623] transition"
             >
               Want more? Browse all {totalPrompts} generators →
             </button>
@@ -391,7 +391,7 @@ export default function PromptKitPanel({ promptKit, businessContext, campaignId,
                   onClick={() => setBrowseCategory(cat.id)}
                   className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-semibold transition border ${
                     browseCategory === cat.id
-                      ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-300"
+                      ? "border-[#f5a623]/40 bg-[#f5a623]/10 text-[#f5a623]"
                       : "border-white/10 bg-white/[0.03] text-white/40 hover:border-white/20 hover:text-white/60"
                   }`}
                 >
@@ -452,7 +452,7 @@ export default function PromptKitPanel({ promptKit, businessContext, campaignId,
                 .join("\n\n---\n\n");
               copyToClipboard(allText, "all");
             }}
-            className="text-xs text-cyan-400/60 hover:text-cyan-400 transition"
+            className="text-xs text-[#f5a623]/60 hover:text-[#f5a623] transition"
           >
             {copiedId === "all" ? "Copied!" : "Export all text"}
           </button>
@@ -501,7 +501,7 @@ function PromptCard({
         result
           ? "border-green-500/20 bg-green-500/[0.03]"
           : isGenerating
-            ? "border-cyan-500/20 bg-cyan-500/[0.03]"
+            ? "border-[#f5a623]/20 bg-[#f5a623]/[0.03]"
             : "border-white/10 bg-white/[0.03] hover:border-cyan-400/20"
       }`}
     >
@@ -516,7 +516,7 @@ function PromptCard({
                 </span>
               )}
               {badge && (
-                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-400 border border-cyan-500/20">
+                <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-[#f5a623]/15 text-[#f5a623] border border-[#f5a623]/20">
                   {badge}
                 </span>
               )}
@@ -526,7 +526,7 @@ function PromptCard({
                 </span>
               )}
               {isGenerating && (
-                <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-300 border border-cyan-500/20 animate-pulse">
+                <span className="text-[10px] font-bold uppercase px-2 py-0.5 rounded bg-[#f5a623]/15 text-[#f5a623] border border-[#f5a623]/20 animate-pulse">
                   Generating...
                 </span>
               )}
@@ -544,7 +544,7 @@ function PromptCard({
               className={`shrink-0 flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black uppercase tracking-wide transition ${
                 result
                   ? "bg-white/5 text-white/40 hover:bg-white/10 border border-white/10"
-                  : "bg-cyan-500 text-[#0a0f1e] hover:bg-cyan-400 shadow-[0_0_20px_rgba(6,182,212,0.25)]"
+                  : "bg-[#f5a623] text-[#0a0f1e] hover:bg-cyan-400 shadow-[0_0_20px_rgba(245,166,35,0.25)]"
               }`}
             >
               {result ? "Redo" : "Generate"}
@@ -584,7 +584,7 @@ function PromptCard({
                 <a
                   href={`data:image/png;base64,${result.imageBase64}`}
                   download={`${promptId}.png`}
-                  className="flex-1 text-center px-3 py-2 rounded-lg bg-cyan-500 text-[#0a0f1e] text-xs font-bold hover:bg-cyan-400 transition"
+                  className="flex-1 text-center px-3 py-2 rounded-lg bg-[#f5a623] text-[#0a0f1e] text-xs font-bold hover:bg-cyan-400 transition"
                 >
                   Download
                 </a>
@@ -606,7 +606,7 @@ function PromptCard({
               <div className="flex gap-2">
                 <button
                   onClick={() => onCopy(result.content)}
-                  className="flex-1 text-center px-3 py-2 rounded-lg bg-cyan-500 text-[#0a0f1e] text-xs font-bold hover:bg-cyan-400 transition"
+                  className="flex-1 text-center px-3 py-2 rounded-lg bg-[#f5a623] text-[#0a0f1e] text-xs font-bold hover:bg-cyan-400 transition"
                 >
                   {copiedId === promptId ? "Copied!" : "Copy"}
                 </button>

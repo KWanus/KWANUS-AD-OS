@@ -85,7 +85,7 @@ export default function RunComparePicker({ onSelect }: Props) {
                 disabled={run.id === selectedB}
                 className={`w-full rounded-xl border p-3 text-left text-xs transition ${
                   selectedA === run.id
-                    ? "border-cyan-500/20 bg-cyan-500/10"
+                    ? "border-[#f5a623]/20 bg-[#f5a623]/10"
                     : run.id === selectedB
                       ? "border-white/[0.03] bg-white/[0.01] opacity-30"
                       : "border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12]"
@@ -132,7 +132,7 @@ export default function RunComparePicker({ onSelect }: Props) {
       <button
         onClick={handleCompare}
         disabled={!selectedA || !selectedB}
-        className="inline-flex items-center gap-2 rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-5 py-2.5 text-sm font-bold text-cyan-400 transition hover:bg-cyan-500/20 disabled:cursor-not-allowed disabled:opacity-30"
+        className="inline-flex items-center gap-2 rounded-xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-5 py-2.5 text-sm font-bold text-[#f5a623] transition hover:bg-[#f5a623]/20 disabled:cursor-not-allowed disabled:opacity-30"
       >
         <GitCompare className="w-4 h-4" />
         Compare Runs

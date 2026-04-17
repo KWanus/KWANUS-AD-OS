@@ -36,17 +36,17 @@ function ExecutionTierPicker({
             onClick={() => onChange(tier.id)}
             className={`rounded-2xl border p-4 text-left transition-all ${
               active
-                ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                ? "border-[#f5a623]/40 bg-[#f5a623]/10 shadow-[0_0_20px_rgba(245,166,35,0.12)]"
                 : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
             }`}
           >
             <div className="flex items-center justify-between gap-3">
-              <span className={`text-sm font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
-              <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+              <span className={`text-sm font-black ${active ? "text-[#f5a623]" : "text-white"}`}>{tier.label}</span>
+              <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-[#f5a623]" : "text-white/20"}`}>
                 {tier.id}
               </span>
             </div>
-            <p className={`mt-2 text-xs leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+            <p className={`mt-2 text-xs leading-relaxed ${active ? "text-[#f5f0e8]/80" : "text-white/45"}`}>
               {tier.description}
             </p>
           </button>
@@ -104,10 +104,10 @@ export default function ReportPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0a0f1e] text-white flex flex-col">
+    <main className="min-h-screen bg-t-bg-card text-white flex flex-col">
       <AppNav />
       <header className="px-8 py-6 border-b border-white/10">
-        <Link href="/" className="text-cyan-400 text-sm hover:underline">← Back to Dashboard</Link>
+        <Link href="/" className="text-[#f5a623] text-sm hover:underline">← Back to Dashboard</Link>
         <h1 className="text-2xl font-bold mt-2">Report Intake</h1>
         <p className="text-sm text-white/40 mt-1">Upload your reports, choose the execution lane, and hand off cleanly into strategy.</p>
       </header>
@@ -122,7 +122,7 @@ export default function ReportPage() {
             <div className="flex flex-col sm:flex-row gap-3 mt-6 justify-center">
               <Link
                 href={nextPath}
-                className="inline-flex items-center gap-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 px-6 py-3 text-sm font-semibold text-[#0a0f1e] transition"
+                className="inline-flex items-center gap-2 rounded-xl bg-[#f5a623] hover:bg-[#e07850] px-6 py-3 text-sm font-semibold text-[#0a0f1e] transition"
               >
                 ⚡ Continue to Analyze
               </Link>
@@ -145,16 +145,16 @@ export default function ReportPage() {
                 >
                   <p className="text-lg font-semibold mb-2">Guided Setup</p>
                   <p className="text-sm text-white/50 mb-4">We&apos;ll walk you through getting your reports.</p>
-                  <span className="text-xs text-cyan-400 border border-cyan-400/30 rounded-full px-3 py-1">Upload Reports →</span>
+                  <span className="text-xs text-[#f5a623] border border-cyan-400/30 rounded-full px-3 py-1">Upload Reports →</span>
                 </button>
 
                 <button
                   onClick={() => setSelected("upload")}
-                  className="rounded-2xl border border-cyan-400/30 bg-cyan-500/5 p-6 text-left hover:border-cyan-400/60 hover:bg-cyan-500/10 transition"
+                  className="rounded-2xl border border-cyan-400/30 bg-[#f5a623]/5 p-6 text-left hover:border-cyan-400/60 hover:bg-[#f5a623]/10 transition"
                 >
                   <p className="text-lg font-semibold mb-2">Upload Reports</p>
                   <p className="text-sm text-white/50 mb-4">Already have your reports? Upload them here.</p>
-                  <span className="text-xs text-cyan-400 border border-cyan-400/30 rounded-full px-3 py-1">Start Here</span>
+                  <span className="text-xs text-[#f5a623] border border-cyan-400/30 rounded-full px-3 py-1">Start Here</span>
                 </button>
               </div>
             )}
@@ -183,7 +183,7 @@ export default function ReportPage() {
                       multiple
                       accept=".pdf,.png,.jpg,.jpeg"
                       onChange={(e) => setFiles(e.target.files)}
-                      className="w-full text-sm text-white/70 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-cyan-500/20 file:text-cyan-400 hover:file:bg-cyan-500/30 file:cursor-pointer transition"
+                      className="w-full text-sm text-white/70 file:mr-4 file:py-2 file:px-4 file:rounded-lg file:border-0 file:text-sm file:font-semibold file:bg-[#f5a623]/20 file:text-[#f5a623] hover:file:bg-[#f5a623]/30 file:cursor-pointer transition"
                     />
                     {files && files.length > 0 && (
                       <p className="text-xs text-white/30 mt-2">{files.length} file{files.length > 1 ? "s" : ""} selected</p>
@@ -225,7 +225,7 @@ export default function ReportPage() {
                   <button
                     onClick={handleSubmit}
                     disabled={submitState === "submitting"}
-                    className="w-full rounded-xl bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 disabled:cursor-not-allowed px-6 py-3 text-sm font-semibold text-[#0a0f1e] transition"
+                    className="w-full rounded-xl bg-[#f5a623] hover:bg-[#e07850] disabled:opacity-50 disabled:cursor-not-allowed px-6 py-3 text-sm font-semibold text-[#0a0f1e] transition"
                   >
                     {submitState === "submitting" ? "Submitting..." : "Submit Reports"}
                   </button>

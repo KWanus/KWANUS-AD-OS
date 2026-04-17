@@ -34,7 +34,7 @@ export default function ReviewPage({ params }: { params: Promise<{ userId: strin
 
   if (submitted) {
     return (
-      <div className="min-h-screen bg-[#050a14] text-white flex items-center justify-center px-4">
+      <div className="min-h-screen bg-t-bg text-white flex items-center justify-center px-4">
         <div className="text-center max-w-sm">
           <div className="w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto mb-4">
             <Check className="w-8 h-8 text-emerald-400" />
@@ -47,7 +47,7 @@ export default function ReviewPage({ params }: { params: Promise<{ userId: strin
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white flex items-center justify-center px-4 py-10">
+    <div className="min-h-screen bg-t-bg text-white flex items-center justify-center px-4 py-10">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
           <h1 className="text-2xl font-black text-white mb-2">Share Your Experience</h1>
@@ -75,7 +75,7 @@ export default function ReviewPage({ params }: { params: Promise<{ userId: strin
             value={name}
             onChange={(e) => setName(e.target.value)}
             placeholder="Your name *"
-            className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+            className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
           />
 
           <div className="grid grid-cols-2 gap-3">
@@ -84,14 +84,14 @@ export default function ReviewPage({ params }: { params: Promise<{ userId: strin
               value={role}
               onChange={(e) => setRole(e.target.value)}
               placeholder="Your role (optional)"
-              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
             />
             <input
               type="text"
               value={company}
               onChange={(e) => setCompany(e.target.value)}
               placeholder="Company (optional)"
-              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
             />
           </div>
 
@@ -100,7 +100,7 @@ export default function ReviewPage({ params }: { params: Promise<{ userId: strin
             onChange={(e) => setQuote(e.target.value)}
             placeholder="What was your experience? What results did you see? *"
             rows={4}
-            className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition resize-none"
+            className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition resize-none"
           />
 
           <input
@@ -108,13 +108,13 @@ export default function ReviewPage({ params }: { params: Promise<{ userId: strin
             value={result}
             onChange={(e) => setResult(e.target.value)}
             placeholder="Key result (e.g. '3x more leads', '+$5k revenue')"
-            className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+            className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
           />
 
           <button
             onClick={submit}
             disabled={submitting || !name.trim() || !quote.trim()}
-            className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40"
+            className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40"
           >
             {submitting ? <><Loader2 className="w-4 h-4 animate-spin" /> Submitting...</> : "Submit Testimonial"}
           </button>

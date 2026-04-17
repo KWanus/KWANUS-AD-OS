@@ -64,7 +64,7 @@ function StepIdentity({ form, setForm }: { form: FormData; setForm: (f: FormData
           value={form.name}
           onChange={(e) => setForm({ ...form, name: e.target.value })}
           placeholder="e.g. Sarah Johnson"
-          className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+          className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
         />
       </div>
       <div className="grid grid-cols-2 gap-4">
@@ -75,7 +75,7 @@ function StepIdentity({ form, setForm }: { form: FormData; setForm: (f: FormData
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             placeholder="sarah@example.com"
-            className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+            className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
           />
         </div>
         <div>
@@ -85,7 +85,7 @@ function StepIdentity({ form, setForm }: { form: FormData; setForm: (f: FormData
             value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
             placeholder="+1 (555) 000-0000"
-            className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+            className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
           />
         </div>
       </div>
@@ -113,7 +113,7 @@ function StepBusiness({ form, setForm }: { form: FormData; setForm: (f: FormData
           value={form.company}
           onChange={(e) => setForm({ ...form, company: e.target.value })}
           placeholder="e.g. Acme Corp"
-          className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+          className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
         />
       </div>
       <div>
@@ -123,7 +123,7 @@ function StepBusiness({ form, setForm }: { form: FormData; setForm: (f: FormData
           value={form.website}
           onChange={(e) => setForm({ ...form, website: e.target.value })}
           placeholder="https://"
-          className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+          className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
         />
       </div>
       <div>
@@ -135,7 +135,7 @@ function StepBusiness({ form, setForm }: { form: FormData; setForm: (f: FormData
               onClick={() => setForm({ ...form, niche: n })}
               className={`text-xs py-2 px-3 rounded-xl border font-semibold transition ${
                 form.niche === n
-                  ? "border-cyan-500/50 bg-cyan-500/10 text-cyan-400"
+                  ? "border-[#f5a623]/50 bg-[#f5a623]/10 text-[#f5a623]"
                   : "border-white/[0.08] bg-white/[0.02] text-white/40 hover:text-white/60 hover:border-white/20"
               }`}
             >
@@ -188,11 +188,11 @@ function StepPipeline({ form, setForm }: { form: FormData; setForm: (f: FormData
               onClick={() => setForm({ ...form, executionTier: lane.id })}
               className={`rounded-xl border px-4 py-3 text-left transition ${
                 form.executionTier === lane.id
-                  ? "border-cyan-500/40 bg-cyan-500/10"
+                  ? "border-[#f5a623]/40 bg-[#f5a623]/10"
                   : "border-white/[0.07] bg-white/[0.02] hover:bg-white/[0.04]"
               }`}
             >
-              <p className={`text-sm font-bold ${form.executionTier === lane.id ? "text-cyan-300" : "text-white/70"}`}>{lane.label}</p>
+              <p className={`text-sm font-bold ${form.executionTier === lane.id ? "text-[#f5a623]" : "text-white/70"}`}>{lane.label}</p>
               <p className="mt-1 text-[11px] leading-relaxed text-white/30">{lane.desc}</p>
             </button>
           ))}
@@ -208,16 +208,16 @@ function StepPipeline({ form, setForm }: { form: FormData; setForm: (f: FormData
               onClick={() => setForm({ ...form, pipelineStage: s.value })}
               className={`w-full flex items-center gap-3 p-3 rounded-xl border text-left transition ${
                 form.pipelineStage === s.value
-                  ? "border-cyan-500/40 bg-cyan-500/10"
+                  ? "border-[#f5a623]/40 bg-[#f5a623]/10"
                   : "border-white/[0.07] bg-white/[0.02] hover:bg-white/[0.04]"
               }`}
             >
               <div className={`w-2 h-2 rounded-full shrink-0 ${form.pipelineStage === s.value ? "bg-cyan-400" : "bg-white/20"}`} />
               <div>
-                <p className={`text-sm font-bold ${form.pipelineStage === s.value ? "text-cyan-300" : "text-white/60"}`}>{s.label}</p>
+                <p className={`text-sm font-bold ${form.pipelineStage === s.value ? "text-[#f5a623]" : "text-white/60"}`}>{s.label}</p>
                 <p className="text-[11px] text-white/25">{s.desc}</p>
               </div>
-              {form.pipelineStage === s.value && <Check className="w-4 h-4 text-cyan-400 ml-auto" />}
+              {form.pipelineStage === s.value && <Check className="w-4 h-4 text-[#f5a623] ml-auto" />}
             </button>
           ))}
         </div>
@@ -231,7 +231,7 @@ function StepPipeline({ form, setForm }: { form: FormData; setForm: (f: FormData
             value={form.dealValue}
             onChange={(e) => setForm({ ...form, dealValue: e.target.value })}
             placeholder="e.g. 2500"
-            className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+            className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
           />
         </div>
         <div>
@@ -275,7 +275,7 @@ function StepTags({ form, setForm }: { form: FormData; setForm: (f: FormData) =>
           value={form.tags}
           onChange={(e) => setForm({ ...form, tags: e.target.value })}
           placeholder="vip, referral, e-commerce"
-          className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+          className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
         />
         <div className="flex flex-wrap gap-1.5 mt-2">
           {SUGGESTED_TAGS.map((t) => {
@@ -290,7 +290,7 @@ function StepTags({ form, setForm }: { form: FormData; setForm: (f: FormData) =>
                 }}
                 className={`text-[10px] font-bold px-2 py-0.5 rounded-md border transition ${
                   active
-                    ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-400"
+                    ? "border-[#f5a623]/40 bg-[#f5a623]/10 text-[#f5a623]"
                     : "border-white/[0.08] text-white/30 hover:text-white/50"
                 }`}
               >
@@ -308,7 +308,7 @@ function StepTags({ form, setForm }: { form: FormData; setForm: (f: FormData) =>
           onChange={(e) => setForm({ ...form, notes: e.target.value })}
           placeholder="Context about this client, where they came from, specific goals..."
           rows={4}
-          className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition resize-none"
+          className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition resize-none"
         />
       </div>
     </div>
@@ -387,7 +387,7 @@ function CSVImport({ onImported }: { onImported: (count: number) => void }) {
             onClick={() => setExecutionTier(lane)}
             className={`rounded-xl border px-3 py-2 text-xs font-bold uppercase tracking-[0.2em] transition ${
               executionTier === lane
-                ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-300"
+                ? "border-[#f5a623]/40 bg-[#f5a623]/10 text-[#f5a623]"
                 : "border-white/[0.08] bg-white/[0.03] text-white/35"
             }`}
           >
@@ -411,7 +411,7 @@ function CSVImport({ onImported }: { onImported: (count: number) => void }) {
           <button
             onClick={() => void handleImport()}
             disabled={importing}
-            className="mt-3 flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 text-xs font-bold hover:bg-cyan-500/30 transition disabled:opacity-40"
+            className="mt-3 flex items-center gap-2 px-4 py-2 rounded-xl bg-[#f5a623]/20 border border-[#f5a623]/30 text-[#f5a623] text-xs font-bold hover:bg-[#f5a623]/30 transition disabled:opacity-40"
           >
             {importing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
             Import {preview.length} Clients
@@ -526,20 +526,20 @@ export default function NewClientPage() {
               <div
                 className={`w-7 h-7 rounded-xl flex items-center justify-center border transition-all ${
                   i < step
-                    ? "bg-cyan-500 border-cyan-500"
+                    ? "bg-[#f5a623] border-[#f5a623]"
                     : i === step
-                    ? "bg-cyan-500/20 border-cyan-500/50"
+                    ? "bg-[#f5a623]/20 border-[#f5a623]/50"
                     : "bg-white/[0.03] border-white/[0.08]"
                 }`}
               >
                 {i < step ? (
                   <Check className="w-3.5 h-3.5 text-white" />
                 ) : (
-                  <Icon className={`w-3.5 h-3.5 ${i === step ? "text-cyan-400" : "text-white/20"}`} />
+                  <Icon className={`w-3.5 h-3.5 ${i === step ? "text-[#f5a623]" : "text-white/20"}`} />
                 )}
               </div>
               {i < STEPS.length - 1 && (
-                <div className={`flex-1 h-0.5 rounded-full ${i < step ? "bg-cyan-500/50" : "bg-white/[0.06]"}`} />
+                <div className={`flex-1 h-0.5 rounded-full ${i < step ? "bg-[#f5a623]/50" : "bg-white/[0.06]"}`} />
               )}
             </div>
           );
@@ -573,7 +573,7 @@ export default function NewClientPage() {
               <button
                 onClick={() => void handleCreate()}
                 disabled={creating || !form.name.trim()}
-                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition"
               >
                 {creating ? (
                   <><Loader2 className="w-4 h-4 animate-spin" /> Creating...</>

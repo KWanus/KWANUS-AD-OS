@@ -154,16 +154,16 @@ export default function AutomationDetailPage({ params }: { params: Promise<{ id:
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#020509] flex items-center justify-center">
+      <div className="min-h-screen bg-t-bg flex items-center justify-center">
         <Loader2 className="w-6 h-6 text-cyan-500 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#020509] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       {/* Header */}
-      <header className="h-14 bg-[#050a14] border-b border-white/[0.08] flex items-center justify-between px-6">
+      <header className="h-14 bg-t-bg border-b border-white/[0.08] flex items-center justify-between px-6">
         <div className="flex items-center gap-4">
           <Link href="/campaigns/automations" className="flex items-center gap-1.5 text-white/40 hover:text-white transition">
             <ArrowLeft className="w-4 h-4" />
@@ -183,7 +183,7 @@ export default function AutomationDetailPage({ params }: { params: Promise<{ id:
         </div>
         <div className="flex items-center gap-3">
           <button onClick={triggerManually} disabled={triggering}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:opacity-90 transition disabled:opacity-40">
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white hover:opacity-90 transition disabled:opacity-40">
             {triggering ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5" />}
             Trigger Now
           </button>
@@ -199,11 +199,11 @@ export default function AutomationDetailPage({ params }: { params: Promise<{ id:
         {stats && (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 mb-8">
             {[
-              { label: "Total Runs", value: stats.runsTotal, icon: Activity, color: "text-cyan-400" },
+              { label: "Total Runs", value: stats.runsTotal, icon: Activity, color: "text-[#f5a623]" },
               { label: "Successful", value: stats.runsSuccess, icon: CheckCircle, color: "text-emerald-400" },
               { label: "Failed", value: stats.runsFailed, icon: XCircle, color: "text-red-400" },
               { label: "Success Rate", value: `${successRate}%`, icon: BarChart3, color: "text-blue-400" },
-              { label: "Emails Sent", value: stats.totalEmailsSent, icon: Mail, color: "text-purple-400" },
+              { label: "Emails Sent", value: stats.totalEmailsSent, icon: Mail, color: "text-[#e07850]" },
               { label: "Contacts", value: stats.totalContacts, icon: Users, color: "text-amber-400" },
             ].map(({ label, value, icon: Icon, color }) => (
               <div key={label} className="rounded-2xl border border-white/[0.07] bg-white/[0.025] p-4 hover:border-white/[0.12] transition-all">

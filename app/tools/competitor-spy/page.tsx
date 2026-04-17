@@ -46,7 +46,7 @@ export default function CompetitorSpyPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
@@ -86,11 +86,11 @@ export default function CompetitorSpyPage() {
             {/* Header */}
             <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5">
               <div className="flex items-center gap-2 mb-2">
-                <Globe className="w-4 h-4 text-cyan-400/60" />
+                <Globe className="w-4 h-4 text-[#f5a623]/60" />
                 <p className="text-xs font-mono text-white/30 truncate">{result.url}</p>
               </div>
               <h2 className="text-lg font-bold text-white mb-1">{result.title}</h2>
-              {result.headline && <p className="text-sm text-cyan-300/70 italic">&ldquo;{result.headline}&rdquo;</p>}
+              {result.headline && <p className="text-sm text-[#f5a623]/70 italic">&ldquo;{result.headline}&rdquo;</p>}
               {result.pricing && (
                 <p className="text-sm text-emerald-400 font-bold mt-2">Pricing: {result.pricing}</p>
               )}
@@ -98,10 +98,10 @@ export default function CompetitorSpyPage() {
 
             {/* CTAs */}
             {result.ctas.length > 0 && (
-              <Section icon={Zap} title="Their CTAs" color="text-cyan-400/60">
+              <Section icon={Zap} title="Their CTAs" color="text-[#f5a623]/60">
                 <div className="flex flex-wrap gap-2">
                   {result.ctas.map((cta, i) => (
-                    <span key={i} className="px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-300 font-semibold">
+                    <span key={i} className="px-3 py-1.5 rounded-lg bg-[#f5a623]/10 border border-[#f5a623]/20 text-xs text-[#f5a623] font-semibold">
                       {cta}
                     </span>
                   ))}
@@ -124,7 +124,7 @@ export default function CompetitorSpyPage() {
 
             {/* Benefits */}
             {result.benefits.length > 0 && (
-              <Section icon={TrendingUp} title="Their Benefits/Claims" color="text-purple-400/60">
+              <Section icon={TrendingUp} title="Their Benefits/Claims" color="text-[#e07850]/60">
                 <ul className="space-y-1">
                   {result.benefits.map((b, i) => (
                     <li key={i} className="text-xs text-white/50">{b}</li>

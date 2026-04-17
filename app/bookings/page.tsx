@@ -87,7 +87,7 @@ export default function BookingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
 
       <main className="mx-auto max-w-5xl px-4 py-10 sm:px-6">
@@ -111,7 +111,7 @@ export default function BookingsPage() {
                   </Link>
                   <button
                     onClick={copyLink}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-2.5 text-sm font-bold text-cyan-300 transition hover:bg-cyan-500/20"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-4 py-2.5 text-sm font-bold text-[#f5a623] transition hover:bg-[#f5a623]/20"
                   >
                     {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                     {copied ? "Copied" : "Copy Link"}
@@ -155,7 +155,7 @@ export default function BookingsPage() {
                 className="rounded-3xl border-white/[0.06] bg-gradient-to-br from-white/[0.03] via-white/[0.015] to-transparent"
               >
                 <div className="mb-4 flex items-center gap-2">
-                  <CalendarDays className="h-4 w-4 text-cyan-300" />
+                  <CalendarDays className="h-4 w-4 text-[#f5a623]" />
                   <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/20">Open Windows</p>
                 </div>
                 {availabilityPreview.length === 0 ? (
@@ -190,7 +190,7 @@ export default function BookingsPage() {
                 className="rounded-3xl border-white/[0.06] bg-gradient-to-br from-white/[0.03] via-white/[0.015] to-transparent"
               >
                 <div className="mb-4 flex items-center gap-2">
-                  <Clock3 className="h-4 w-4 text-cyan-300" />
+                  <Clock3 className="h-4 w-4 text-[#f5a623]" />
                   <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/20">Calendar Feed</p>
                 </div>
                 {bookings.length === 0 ? (
@@ -235,19 +235,19 @@ export default function BookingsPage() {
                 eyebrow="Public Booking URL"
                 title="Shareable booking surface"
                 description="Use this link in generated sites, emails, chat replies, or CTA buttons so prospects can convert without leaving your system."
-                className="rounded-3xl border-cyan-500/15 bg-gradient-to-br from-cyan-500/[0.08] via-transparent to-purple-500/[0.05]"
+                className="rounded-3xl border-[#f5a623]/15 bg-gradient-to-br from-cyan-500/[0.08] via-transparent to-purple-500/[0.05]"
               >
                 <div className="mb-2 flex items-center gap-2">
-                  <UserRound className="h-4 w-4 text-cyan-300" />
-                  <p className="text-[10px] font-black uppercase tracking-[0.22em] text-cyan-100/70">Live Link</p>
+                  <UserRound className="h-4 w-4 text-[#f5a623]" />
+                  <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#f5f0e8]/70">Live Link</p>
                 </div>
-                <code className="block overflow-x-auto rounded-2xl border border-white/[0.08] bg-black/25 px-4 py-3 text-sm text-cyan-100/80">
+                <code className="block overflow-x-auto rounded-2xl border border-white/[0.08] bg-black/25 px-4 py-3 text-sm text-[#f5f0e8]/80">
                   {publicUrl}
                 </code>
                 <div className="mt-4 flex flex-col gap-2 sm:flex-row">
                   <button
                     onClick={copyLink}
-                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-2.5 text-sm font-bold text-cyan-300 transition hover:bg-cyan-500/20"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-4 py-2.5 text-sm font-bold text-[#f5a623] transition hover:bg-[#f5a623]/20"
                   >
                     {copied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
                     {copied ? "Copied" : "Copy Live Link"}

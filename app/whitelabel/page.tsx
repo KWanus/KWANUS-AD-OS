@@ -34,7 +34,7 @@ type PricingTier = {
 };
 
 export default function WhiteLabelPage() {
-  const [config, setConfig] = useState<WhiteLabelConfig>({ enabled: false, brandName: "", primaryColor: "#06b6d4", hideHimalayaBranding: false });
+  const [config, setConfig] = useState<WhiteLabelConfig>({ enabled: false, brandName: "", primaryColor: "#f5a623", hideHimalayaBranding: false });
   const [subAccounts, setSubAccounts] = useState<SubAccount[]>([]);
   const [defaultTiers, setDefaultTiers] = useState<PricingTier[]>([]);
   const [loading, setLoading] = useState(true);
@@ -87,16 +87,16 @@ export default function WhiteLabelPage() {
     setAddingClient(false);
   }
 
-  if (loading) return <div className="min-h-screen bg-[#050a14] text-white"><AppNav /><main className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 text-white/20 animate-spin" /></main></div>;
+  if (loading) return <div className="min-h-screen bg-t-bg text-white"><AppNav /><main className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 text-white/20 animate-spin" /></main></div>;
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-              <Building2 className="w-5 h-5 text-purple-400" />
+              <Building2 className="w-5 h-5 text-[#e07850]" />
             </div>
             <div>
               <h1 className="text-xl font-black text-white">White-Label</h1>
@@ -225,10 +225,10 @@ export default function WhiteLabelPage() {
             {/* Preview */}
             {config.brandName && (
               <div className="rounded-2xl border border-purple-500/15 bg-purple-500/5 p-5">
-                <p className="text-[10px] font-black uppercase tracking-widest text-purple-400/60 mb-3">Preview</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-[#e07850]/60 mb-3">Preview</p>
                 <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${config.primaryColor}30` }}>
                   <div className="h-1.5" style={{ backgroundColor: config.primaryColor }} />
-                  <div className="p-4 bg-[#0a0f1e]">
+                  <div className="p-4 bg-t-bg-card">
                     <div className="flex items-center gap-2 mb-3">
                       <div className="w-6 h-6 rounded-lg flex items-center justify-center text-[10px] font-bold text-white" style={{ backgroundColor: config.primaryColor }}>
                         {config.brandName.charAt(0)}

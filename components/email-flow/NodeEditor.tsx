@@ -41,7 +41,7 @@ function TextInput({
   rows?: number;
 }) {
   const cls =
-    "w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-xs text-white placeholder-white/20 outline-none focus:border-cyan-500/50 focus:shadow-[0_0_0_3px_rgba(6,182,212,0.08)] transition resize-none";
+    "w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-xs text-white placeholder-white/20 outline-none focus:border-[#f5a623]/50 focus:shadow-[0_0_0_3px_rgba(245,166,35,0.08)] transition resize-none";
   if (multiline) {
     return (
       <textarea
@@ -75,7 +75,7 @@ function SelectInput({
 }) {
   return (
     <select
-      className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-cyan-500/50 transition appearance-none cursor-pointer"
+      className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-[#f5a623]/50 transition appearance-none cursor-pointer"
       value={value}
       onChange={(e) => onChange(e.target.value)}
     >
@@ -229,7 +229,7 @@ function EmailEditor({
             <button key={tag} onClick={() => {
               const body = (data.body as string) ?? "";
               onChange("body", body + " " + tag);
-            }} className="text-[9px] text-cyan-400/30 hover:text-cyan-400/60 transition bg-white/[0.02] border border-white/[0.04] px-1.5 py-0.5 rounded">
+            }} className="text-[9px] text-[#f5a623]/30 hover:text-[#f5a623]/60 transition bg-white/[0.02] border border-white/[0.04] px-1.5 py-0.5 rounded">
               {tag}
             </button>
           ))}
@@ -277,7 +277,7 @@ function WaitEditor({
           <input
             type="number"
             min={1}
-            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-cyan-500/50 transition"
+            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-[#f5a623]/50 transition"
             value={(data.duration as number) ?? 1}
             onChange={(e) => onChange("duration", parseInt(e.target.value, 10) || 1)}
           />
@@ -300,7 +300,7 @@ function WaitEditor({
         <Label>Send at specific time (optional)</Label>
         <input
           type="time"
-          className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-cyan-500/50 transition"
+          className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-[#f5a623]/50 transition"
           value={(data.sendAtTime as string) ?? ""}
           onChange={(e) => onChange("sendAtTime", e.target.value)}
         />
@@ -443,7 +443,7 @@ function GoalEditor({
           <Label>Target Value</Label>
           <input
             type="number"
-            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-cyan-500/50 transition"
+            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-xs text-white outline-none focus:border-[#f5a623]/50 transition"
             value={(data.value as number) ?? ""}
             onChange={(e) => onChange("value", parseFloat(e.target.value) || 0)}
             placeholder="e.g. 100"
@@ -461,13 +461,13 @@ function GoalEditor({
 const NODE_META: Record<string, { label: string; color: string; icon: React.ReactNode }> = {
   trigger: {
     label: "Trigger",
-    color: "text-cyan-400",
-    icon: <Mail className="w-4 h-4 text-cyan-400" />,
+    color: "text-[#f5a623]",
+    icon: <Mail className="w-4 h-4 text-[#f5a623]" />,
   },
   email: {
     label: "Email",
-    color: "text-purple-400",
-    icon: <Mail className="w-4 h-4 text-purple-400" />,
+    color: "text-[#e07850]",
+    icon: <Mail className="w-4 h-4 text-[#e07850]" />,
   },
   wait: {
     label: "Wait",
@@ -547,8 +547,8 @@ export default function NodeEditor({ node, flowContext, onClose, onUpdate }: Nod
           <GoalEditor data={node.data} onChange={handleChange} />
         )}
         {nodeType === "trigger" && (
-          <div className="rounded-xl border border-cyan-500/15 bg-cyan-500/5 p-4">
-            <p className="text-xs text-cyan-400/70 font-medium">
+          <div className="rounded-xl border border-[#f5a623]/15 bg-[#f5a623]/5 p-4">
+            <p className="text-xs text-[#f5a623]/70 font-medium">
               The trigger is set when creating the flow and cannot be changed here. Use Flow Settings in the sidebar to update trigger configuration.
             </p>
           </div>

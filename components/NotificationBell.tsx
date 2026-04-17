@@ -15,8 +15,8 @@ type QuickAction = {
 };
 
 const CATEGORY_CONFIG: Record<string, { icon: React.ElementType; color: string }> = {
-  client: { icon: Users, color: "text-cyan-400" },
-  campaign: { icon: Megaphone, color: "text-purple-400" },
+  client: { icon: Users, color: "text-[#f5a623]" },
+  campaign: { icon: Megaphone, color: "text-[#e07850]" },
   scan: { icon: Zap, color: "text-emerald-400" },
   email: { icon: Mail, color: "text-pink-400" },
   site: { icon: Globe, color: "text-blue-400" },
@@ -27,7 +27,7 @@ const CATEGORY_CONFIG: Record<string, { icon: React.ElementType; color: string }
 const PRIORITY_COLORS: Record<string, string> = {
   critical: "bg-red-500",
   high: "bg-amber-500",
-  medium: "bg-cyan-500",
+  medium: "bg-[#f5a623]",
   low: "bg-white/30",
 };
 
@@ -75,7 +75,7 @@ export default function NotificationBell() {
         <Bell className="w-3.5 h-3.5" />
         {totalCount > 0 && (
           <span className={`absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full text-[8px] font-black flex items-center justify-center text-white ${
-            criticalCount > 0 ? "bg-red-500 animate-pulse" : "bg-cyan-500"
+            criticalCount > 0 ? "bg-red-500 animate-pulse" : "bg-[#f5a623]"
           }`}>
             {totalCount > 9 ? "9+" : totalCount}
           </span>

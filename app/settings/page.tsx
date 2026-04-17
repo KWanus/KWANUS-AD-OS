@@ -83,8 +83,8 @@ interface OAuthStatusResponse {
 
 const PLAN_CONFIG: Record<string, { label: string; color: string; bg: string; border: string; icon: React.ElementType }> = {
   free:  { label: "Free",  color: "text-white/50",   bg: "bg-white/5",        border: "border-white/10",       icon: Zap },
-  pro:   { label: "Pro",   color: "text-cyan-400",   bg: "bg-cyan-500/10",    border: "border-cyan-500/20",    icon: Crown },
-  elite: { label: "Elite", color: "text-purple-400", bg: "bg-purple-500/10",  border: "border-purple-500/20",  icon: Shield },
+  pro:   { label: "Pro",   color: "text-[#f5a623]",   bg: "bg-[#f5a623]/10",    border: "border-[#f5a623]/20",    icon: Crown },
+  elite: { label: "Elite", color: "text-[#e07850]", bg: "bg-purple-500/10",  border: "border-purple-500/20",  icon: Shield },
 };
 
 // ---------------------------------------------------------------------------
@@ -127,7 +127,7 @@ function Input({
       value={value ?? ""}
       onChange={(e) => onChange(e.target.value)}
       placeholder={placeholder}
-      className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+      className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
     />
   );
 }
@@ -267,7 +267,7 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] text-white">
+      <div className="min-h-screen bg-t-bg text-white">
         <AppNav />
         <div className="flex items-center justify-center py-24">
           <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
@@ -277,7 +277,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
 
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-10 space-y-6">
@@ -399,7 +399,7 @@ export default function SettingsPage() {
                     <p className="text-xs font-bold text-amber-400">No API key — emails won&apos;t send</p>
                     <p className="text-[10px] text-white/30">
                       Get a free key at{" "}
-                      <a href="https://resend.com" target="_blank" rel="noreferrer" className="text-cyan-400 hover:underline">
+                      <a href="https://resend.com" target="_blank" rel="noreferrer" className="text-[#f5a623] hover:underline">
                         resend.com
                       </a>
                     </p>
@@ -418,7 +418,7 @@ export default function SettingsPage() {
                   value={resendKey}
                   onChange={(e) => setResendKey(e.target.value)}
                   placeholder={settings.hasResendKey ? "••••••••••••••••" : "re_..."}
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 pr-10 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition font-mono"
+                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 pr-10 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition font-mono"
                 />
                 <button
                   onClick={() => setShowKey((v) => !v)}
@@ -454,7 +454,7 @@ export default function SettingsPage() {
                 sendingFromEmail: settings.sendingFromEmail,
               })}
               disabled={saving}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 text-cyan-400 text-xs font-bold transition disabled:opacity-40"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#f5a623]/20 hover:bg-[#f5a623]/30 border border-[#f5a623]/30 text-[#f5a623] text-xs font-bold transition disabled:opacity-40"
             >
               {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Mail className="w-3.5 h-3.5" />}
               Save Email Settings
@@ -463,7 +463,7 @@ export default function SettingsPage() {
             {/* Resend guide */}
             <div className="bg-white/[0.02] rounded-xl p-4 text-xs text-white/30 space-y-1.5">
               <p className="font-bold text-white/50 mb-2">Quick setup guide</p>
-              <p>1. Sign up at <a href="https://resend.com" target="_blank" rel="noreferrer" className="text-cyan-400">resend.com</a> (free — 3,000 emails/mo)</p>
+              <p>1. Sign up at <a href="https://resend.com" target="_blank" rel="noreferrer" className="text-[#f5a623]">resend.com</a> (free — 3,000 emails/mo)</p>
               <p>2. Add your domain under Domains → Verify DNS records</p>
               <p>3. Create an API key under API Keys</p>
               <p>4. Paste the key here and set your From email to your verified domain</p>
@@ -511,7 +511,7 @@ export default function SettingsPage() {
                     value={settings.metaPixelId}
                     onChange={(e) => setSettings((s) => ({ ...s, metaPixelId: e.target.value }))}
                     placeholder="123456789012345"
-                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-8 pr-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition font-mono"
+                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-8 pr-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition font-mono"
                   />
                 </div>
               </Field>
@@ -526,7 +526,7 @@ export default function SettingsPage() {
                     value={settings.tiktokPixelId}
                     onChange={(e) => setSettings((s) => ({ ...s, tiktokPixelId: e.target.value }))}
                     placeholder="C1A2B3D4E5F6G7H8I9J0"
-                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-8 pr-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition font-mono"
+                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-8 pr-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition font-mono"
                   />
                 </div>
               </Field>
@@ -541,7 +541,7 @@ export default function SettingsPage() {
                     value={settings.googleAnalyticsId}
                     onChange={(e) => setSettings((s) => ({ ...s, googleAnalyticsId: e.target.value }))}
                     placeholder="G-XXXXXXXXXX"
-                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-8 pr-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition font-mono"
+                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-8 pr-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition font-mono"
                   />
                 </div>
               </Field>
@@ -556,14 +556,14 @@ export default function SettingsPage() {
                     value={settings.googleAdsId}
                     onChange={(e) => setSettings((s) => ({ ...s, googleAdsId: e.target.value }))}
                     placeholder="AW-XXXXXXXXX"
-                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-8 pr-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition font-mono"
+                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-8 pr-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition font-mono"
                   />
                 </div>
               </Field>
             </div>
 
             <div className="bg-white/[0.02] rounded-xl p-3 text-[10px] text-white/25 flex items-start gap-2">
-              <BarChart3 className="w-3.5 h-3.5 text-cyan-400/50 shrink-0 mt-0.5" />
+              <BarChart3 className="w-3.5 h-3.5 text-[#f5a623]/50 shrink-0 mt-0.5" />
               <span>All pixels are injected into every published site page automatically. You only need to add the IDs — no manual code editing required.</span>
             </div>
 
@@ -575,7 +575,7 @@ export default function SettingsPage() {
                 googleAdsId: settings.googleAdsId,
               })}
               disabled={saving}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 text-cyan-400 text-xs font-bold transition disabled:opacity-40"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#f5a623]/20 hover:bg-[#f5a623]/30 border border-[#f5a623]/30 text-[#f5a623] text-xs font-bold transition disabled:opacity-40"
             >
               {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <TrendingUp className="w-3.5 h-3.5" />}
               Save Pixels
@@ -589,10 +589,10 @@ export default function SettingsPage() {
           sub="Connect Meta, Google, and TikTok so Himalaya can pull performance data and power the ads dashboard"
         >
           <div className="space-y-3">
-            <div className="rounded-xl border border-cyan-500/15 bg-cyan-500/10 p-4">
+            <div className="rounded-xl border border-[#f5a623]/15 bg-[#f5a623]/10 p-4">
               <div className="flex flex-wrap items-center justify-between gap-3">
                 <div>
-                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-100/70">Connection Status</p>
+                  <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f5f0e8]/70">Connection Status</p>
                   <p className="mt-2 text-sm font-black text-white">{connectedOAuthCount}/3 ad platforms connected</p>
                   <p className="mt-1 text-[11px] leading-5 text-white/40">
                     These connections are the bridge between settings and the unified ads dashboard. Once connected, this stops being static setup and becomes a live control system.
@@ -637,7 +637,7 @@ export default function SettingsPage() {
                     </div>
                     <a
                       href={status?.connectUrl ?? `/api/oauth/connect?provider=${platform.key}`}
-                      className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-2 text-xs font-bold text-cyan-300 transition hover:bg-cyan-500/20"
+                      className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-4 py-2 text-xs font-bold text-[#f5a623] transition hover:bg-[#f5a623]/20"
                     >
                       {status?.connected ? "Reconnect" : "Connect"}
                       <ExternalLink className="w-3 h-3" />
@@ -648,7 +648,7 @@ export default function SettingsPage() {
             })}
 
             <div className="rounded-xl bg-white/[0.02] p-3 text-[10px] text-white/25 flex items-start gap-2">
-              <MessageSquareText className="w-3.5 h-3.5 text-cyan-400/50 shrink-0 mt-0.5" />
+              <MessageSquareText className="w-3.5 h-3.5 text-[#f5a623]/50 shrink-0 mt-0.5" />
               <span>
                 Once connected, the unified ads dashboard can pull live spend, ROAS, and campaign totals. The current backend is ready for token-based sync, and these connections are the frontend entry point.
               </span>
@@ -699,14 +699,14 @@ export default function SettingsPage() {
               <select
                 value={settings.businessType}
                 onChange={(e) => setSettings((s) => ({ ...s, businessType: e.target.value }))}
-                className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500/50 transition appearance-none"
+                className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[#f5a623]/50 transition appearance-none"
               >
-                <option value="" className="bg-[#050a14]">Select business type…</option>
-                <option value="consultant" className="bg-[#050a14]">Consultant / Freelancer</option>
-                <option value="ecommerce" className="bg-[#050a14]">E-commerce / Product Store</option>
-                <option value="service" className="bg-[#050a14]">Local Service Business</option>
-                <option value="affiliate" className="bg-[#050a14]">Affiliate / Dropshipping</option>
-                <option value="agency" className="bg-[#050a14]">Agency / SaaS</option>
+                <option value="" className="bg-t-bg">Select business type…</option>
+                <option value="consultant" className="bg-t-bg">Consultant / Freelancer</option>
+                <option value="ecommerce" className="bg-t-bg">E-commerce / Product Store</option>
+                <option value="service" className="bg-t-bg">Local Service Business</option>
+                <option value="affiliate" className="bg-t-bg">Affiliate / Dropshipping</option>
+                <option value="agency" className="bg-t-bg">Agency / SaaS</option>
               </select>
             </Field>
 
@@ -726,7 +726,7 @@ export default function SettingsPage() {
                 businessType: settings.businessType,
               })}
               disabled={saving}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 text-purple-400 text-xs font-bold transition disabled:opacity-40"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-500/20 hover:bg-purple-500/30 border border-purple-500/30 text-[#e07850] text-xs font-bold transition disabled:opacity-40"
             >
               {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Webhook className="w-3.5 h-3.5" />}
               Save Automation Settings
@@ -759,7 +759,7 @@ export default function SettingsPage() {
             </Field>
             {settings.clickbankNickname && (
               <p className="text-[11px] text-white/30 -mt-2">
-                Hoplinks will use: <span className="text-cyan-400/70">https://{settings.clickbankNickname}.hop.clickbank.net</span>
+                Hoplinks will use: <span className="text-[#f5a623]/70">https://{settings.clickbankNickname}.hop.clickbank.net</span>
               </p>
             )}
 
@@ -798,7 +798,7 @@ export default function SettingsPage() {
             <button
               onClick={() => void saveAffiliateAccounts()}
               disabled={savingAccounts}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 text-cyan-400 text-xs font-bold transition disabled:opacity-40"
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#f5a623]/20 hover:bg-[#f5a623]/30 border border-[#f5a623]/30 text-[#f5a623] text-xs font-bold transition disabled:opacity-40"
             >
               {savingAccounts ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Check className="w-3.5 h-3.5" />}
               {savingAccounts ? "Saving..." : "Save Accounts"}
@@ -841,7 +841,7 @@ export default function SettingsPage() {
                   status === "active"
                     ? "text-green-400 bg-green-500/10 border-green-500/20"
                     : status === "upgrade"
-                    ? "text-purple-400 bg-purple-500/10 border-purple-500/20"
+                    ? "text-[#e07850] bg-purple-500/10 border-purple-500/20"
                     : "text-white/20 bg-white/5 border-white/10"
                 }`}>
                   {status === "active" ? "Active" : status === "upgrade" ? "Elite" : "Soon"}
@@ -956,7 +956,7 @@ function OptInFormsManager() {
           <div className="mb-3 flex flex-wrap items-center gap-2">
             <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.2em] ${
               (form.executionTier ?? "elite") === "elite"
-                ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
+                ? "border-[#f5a623]/30 bg-[#f5a623]/10 text-[#f5a623]"
                 : "border-white/10 bg-white/5 text-white/45"
             }`}>
               {(form.executionTier ?? "elite")}
@@ -967,7 +967,7 @@ function OptInFormsManager() {
             <span><span className="font-bold text-white/50">{form.views}</span> views</span>
             <span><span className="font-bold text-white/50">{form.submissions}</span> submissions</span>
             {form.submissions > 0 && form.views > 0 && (
-              <span><span className="font-bold text-cyan-400">{Math.round((form.submissions / form.views) * 100)}%</span> conversion</span>
+              <span><span className="font-bold text-[#f5a623]">{Math.round((form.submissions / form.views) * 100)}%</span> conversion</span>
             )}
           </div>
 
@@ -1027,7 +1027,7 @@ function OptInFormsManager() {
                 value={newForm[field as keyof typeof newForm]}
                 onChange={(e) => setNewForm((f) => ({ ...f, [field]: e.target.value }))}
                 placeholder={placeholder}
-                className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+                className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
               />
             </div>
           ))}
@@ -1046,17 +1046,17 @@ function OptInFormsManager() {
                     onClick={() => setNewForm((f) => ({ ...f, executionTier: tier.id }))}
                     className={`rounded-xl border p-3 text-left transition-all ${
                       active
-                        ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                        ? "border-[#f5a623]/40 bg-[#f5a623]/10 shadow-[0_0_20px_rgba(245,166,35,0.12)]"
                         : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-3">
-                      <span className={`text-xs font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
-                      <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+                      <span className={`text-xs font-black ${active ? "text-[#f5a623]" : "text-white"}`}>{tier.label}</span>
+                      <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-[#f5a623]" : "text-white/20"}`}>
                         {tier.id}
                       </span>
                     </div>
-                    <p className={`mt-2 text-[11px] leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+                    <p className={`mt-2 text-[11px] leading-relaxed ${active ? "text-[#f5f0e8]/80" : "text-white/45"}`}>
                       {tier.description}
                     </p>
                   </button>
@@ -1071,7 +1071,7 @@ function OptInFormsManager() {
             <button
               onClick={() => void handleCreate()}
               disabled={creating || !newForm.name.trim()}
-              className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 text-xs font-bold hover:bg-cyan-500/30 transition disabled:opacity-40"
+              className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-[#f5a623]/20 border border-[#f5a623]/30 text-[#f5a623] text-xs font-bold hover:bg-[#f5a623]/30 transition disabled:opacity-40"
             >
               {creating ? <Loader2 className="w-3 h-3 animate-spin" /> : <Check className="w-3 h-3" />}
               Create

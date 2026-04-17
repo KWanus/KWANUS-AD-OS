@@ -89,7 +89,7 @@ const SCORE_BG = (s: number) =>
 
 function verdictTone(status?: string) {
   if (status === "healthy") return "border-emerald-500/20 bg-emerald-500/10 text-emerald-200";
-  if (status === "stale") return "border-cyan-500/20 bg-cyan-500/10 text-cyan-100";
+  if (status === "stale") return "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5f0e8]";
   return "border-amber-500/20 bg-amber-500/10 text-amber-100";
 }
 
@@ -116,7 +116,7 @@ function getActions(mode: ScanMode, _result: ScanResult): BuildAction[] {
         label: "Generate Ad Campaign",
         sublabel: "Hooks + scripts for their product",
         skillSlug: "ad-campaign",
-        gradient: "from-cyan-500/20 to-teal-500/20 border-cyan-500/25",
+        gradient: "from-cyan-500/20 to-teal-500/20 border-[#f5a623]/25",
       },
       {
         icon: <Sparkles className="w-4 h-4" />,
@@ -142,7 +142,7 @@ function getActions(mode: ScanMode, _result: ScanResult): BuildAction[] {
       label: "Launch Ad Campaign",
       sublabel: "7 hooks + scripts for this product",
       skillSlug: "ad-campaign",
-      gradient: "from-cyan-500/20 to-purple-500/20 border-cyan-500/25",
+      gradient: "from-cyan-500/20 to-purple-500/20 border-[#f5a623]/25",
     },
     {
       icon: <Globe className="w-4 h-4" />,
@@ -250,7 +250,7 @@ function BatchScanPanel({ mode }: { mode: string }) {
 
   if (!open) {
     return (
-      <button onClick={() => setOpen(true)} className="mb-4 text-xs text-white/25 hover:text-cyan-400/60 transition">
+      <button onClick={() => setOpen(true)} className="mb-4 text-xs text-white/25 hover:text-[#f5a623]/60 transition">
         Scan multiple URLs at once →
       </button>
     );
@@ -267,12 +267,12 @@ function BatchScanPanel({ mode }: { mode: string }) {
         onChange={e => setUrls(e.target.value)}
         placeholder={"https://example1.com\nhttps://example2.com\nhttps://example3.com"}
         rows={4}
-        className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/40 transition resize-none mb-3 font-mono"
+        className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/40 transition resize-none mb-3 font-mono"
       />
       <button
         onClick={() => void runBatch()}
         disabled={running || !urls.trim()}
-        className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 disabled:opacity-30 transition"
+        className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-xs font-bold hover:opacity-90 disabled:opacity-30 transition"
       >
         {running ? "Scanning..." : `Scan ${urls.split("\n").filter(u => u.trim()).length} URLs`}
       </button>
@@ -330,7 +330,7 @@ function ScanProgress() {
             {i < stage ? (
               <CheckCircle className="w-3.5 h-3.5 text-emerald-400/60 shrink-0" />
             ) : i === stage ? (
-              <Loader2 className="w-3.5 h-3.5 text-cyan-400 animate-spin shrink-0" />
+              <Loader2 className="w-3.5 h-3.5 text-[#f5a623] animate-spin shrink-0" />
             ) : (
               <div className="w-3.5 h-3.5 shrink-0" />
             )}
@@ -518,18 +518,18 @@ function ScanPageInner() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <ScanSubNav />
 
       <div className="max-w-3xl mx-auto px-4 pt-10 pb-20">
         {/* Himalaya redirect banner */}
-        <div className="mb-6 rounded-2xl border border-cyan-500/15 bg-gradient-to-r from-cyan-500/[0.06] to-purple-500/[0.04] p-4 flex items-center justify-between gap-4">
+        <div className="mb-6 rounded-2xl border border-[#f5a623]/15 bg-gradient-to-r from-cyan-500/[0.06] to-purple-500/[0.04] p-4 flex items-center justify-between gap-4">
           <div>
             <p className="text-xs font-bold text-white/50">Want the full experience?</p>
             <p className="text-[10px] text-white/30">Himalaya scans competitors, builds your assets, deploys everything, and tracks results.</p>
           </div>
-          <Link href="/himalaya" className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition">
+          <Link href="/himalaya" className="shrink-0 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-xs font-bold hover:opacity-90 transition">
             <Sparkles className="w-3 h-3" /> Use Himalaya
           </Link>
         </div>
@@ -572,7 +572,7 @@ function ScanPageInner() {
                     <button
                       onClick={() => void refreshBusinessSystem()}
                       disabled={refreshingRecommendations}
-                      className="inline-flex items-center gap-2 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-5 py-3 text-sm font-bold text-cyan-100 disabled:cursor-not-allowed disabled:opacity-60"
+                      className="inline-flex items-center gap-2 rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-5 py-3 text-sm font-bold text-[#f5f0e8] disabled:cursor-not-allowed disabled:opacity-60"
                     >
                       {refreshingRecommendations ? "Refreshing..." : "Refresh Recommendations"}
                     </button>
@@ -583,10 +583,10 @@ function ScanPageInner() {
 
             <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="mb-6" />
 
-            <div className="mb-6 rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] to-purple-600/[0.03] p-6">
+            <div className="mb-6 rounded-[28px] border border-[#f5a623]/20 bg-gradient-to-br from-cyan-500/[0.08] to-[#e07850]/[0.03] p-6">
               <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                 <div className="max-w-3xl">
-                  <p className="text-[10px] font-black uppercase tracking-[0.26em] text-cyan-200/70">Recommended Scan Move</p>
+                  <p className="text-[10px] font-black uppercase tracking-[0.26em] text-[#f5a623]/70">Recommended Scan Move</p>
                   <h2 className="mt-2 text-2xl font-black text-white">
                     {businessProfile.businessType === "local_service" || businessProfile.businessType === "agency"
                       ? "Scan a weak site and rebuild the better version"
@@ -606,7 +606,7 @@ function ScanPageInner() {
                         ? "consultant"
                         : "operator"
                     )}
-                    className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)]"
+                    className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(245,166,35,0.22)]"
                   >
                     <Sparkles className="w-4 h-4" />
                     Set Recommended Mode
@@ -663,7 +663,7 @@ function ScanPageInner() {
               onClick={() => { setMode("consultant"); setResult(null); }}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-bold transition-all ${
                 mode === "consultant"
-                  ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-300"
+                  ? "bg-[#f5a623]/10 border-[#f5a623]/30 text-[#f5a623]"
                   : "border-white/[0.08] text-white/35 hover:text-white/60 hover:border-white/15"
               }`}
             >
@@ -695,8 +695,8 @@ function ScanPageInner() {
                 onClick={() => setExecutionTier(value)}
                 className={`rounded-2xl border px-4 py-3 text-left transition ${
                   executionTier === value
-                    ? "border-cyan-500/25 bg-cyan-500/10 text-cyan-100"
-                    : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+                    ? "border-[#f5a623]/25 bg-[#f5a623]/10 text-[#f5f0e8]"
+                    : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.05]"
                 }`}
               >
                 <p className="text-sm font-black">{label}</p>
@@ -716,13 +716,13 @@ function ScanPageInner() {
                 onChange={(e) => setUrl(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && void runScan()}
                 placeholder={mode === "consultant" ? "https://localbusiness.com" : "https://amazon.com/dp/B0..."}
-                className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/25 focus:outline-none focus:border-cyan-500/40 transition"
+                className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/25 focus:outline-none focus:border-[#f5a623]/40 transition"
               />
             </div>
             <button
               onClick={() => void runScan()}
               disabled={!url.trim() || loading}
-              className="px-5 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed transition flex items-center gap-2"
+              className="px-5 py-3 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed transition flex items-center gap-2"
             >
               {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
               {loading ? "Scanning…" : "Scan"}
@@ -734,7 +734,7 @@ function ScanPageInner() {
               : "Paste the product listing, landing page, or sales page URL."}
           </p>
           {memoryLoaded && url && (
-            <p className="text-[10px] text-purple-400/40 mt-1 pl-1">Loaded from your last session</p>
+            <p className="text-[10px] text-[#e07850]/40 mt-1 pl-1">Loaded from your last session</p>
           )}
         </div>
 
@@ -783,7 +783,7 @@ function ScanPageInner() {
                   <span
                     className={`inline-flex items-center rounded-full border px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.18em] ${
                       (analysis.executionTier ?? executionTier) === "elite"
-                        ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-100"
+                        ? "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5f0e8]"
                         : "border-white/[0.08] bg-white/[0.05] text-white/55"
                     }`}
                   >
@@ -851,10 +851,10 @@ function ScanPageInner() {
 
             {/* Recommended path */}
             {opp?.recommendedPath && (
-              <div className="bg-cyan-500/[0.06] border border-cyan-500/20 rounded-xl p-4 flex items-start gap-3">
-                <Zap className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+              <div className="bg-[#f5a623]/[0.06] border border-[#f5a623]/20 rounded-xl p-4 flex items-start gap-3">
+                <Zap className="w-4 h-4 text-[#f5a623] shrink-0 mt-0.5" />
                 <div>
-                  <p className="text-xs font-black text-cyan-400 mb-0.5">Recommended Path</p>
+                  <p className="text-xs font-black text-[#f5a623] mb-0.5">Recommended Path</p>
                   <p className="text-xs text-white/60">{opp.recommendedPath}</p>
                 </div>
               </div>
@@ -866,7 +866,7 @@ function ScanPageInner() {
                 {result.truthEngine.breakdown.map((b) => {
                   const colors: Record<string, string> = {
                     A: "bg-emerald-500/15 text-emerald-400 border-emerald-500/25",
-                    B: "bg-cyan-500/15 text-cyan-400 border-cyan-500/25",
+                    B: "bg-[#f5a623]/15 text-[#f5a623] border-[#f5a623]/25",
                     C: "bg-amber-500/15 text-amber-400 border-amber-500/25",
                     D: "bg-orange-500/15 text-orange-400 border-orange-500/25",
                     F: "bg-red-500/15 text-red-400 border-red-500/25",
@@ -907,10 +907,10 @@ function ScanPageInner() {
                 </div>
                 {result.truthEngine.actionPlan.length > 0 && (
                   <div className="mt-3 pt-3 border-t border-white/[0.05]">
-                    <p className="text-[10px] font-black text-cyan-400/60 uppercase tracking-wider mb-1.5">Action Plan</p>
+                    <p className="text-[10px] font-black text-[#f5a623]/60 uppercase tracking-wider mb-1.5">Action Plan</p>
                     {result.truthEngine.actionPlan.slice(0, 3).map((a, i) => (
                       <p key={i} className="text-xs text-white/50 flex items-start gap-2 mb-1">
-                        <span className="text-cyan-400 font-black">{i + 1}.</span> {a}
+                        <span className="text-[#f5a623] font-black">{i + 1}.</span> {a}
                       </p>
                     ))}
                   </div>
@@ -965,7 +965,7 @@ function ScanPageInner() {
                 {analysis.id && (
                   <Link
                     href={`/analyses/${analysis.id}`}
-                    className="flex items-center gap-1.5 text-xs font-bold text-purple-400/70 hover:text-purple-400 transition"
+                    className="flex items-center gap-1.5 text-xs font-bold text-[#e07850]/70 hover:text-[#e07850] transition"
                   >
                     View Full Report <ChevronRight className="w-3 h-3" />
                   </Link>
@@ -979,7 +979,7 @@ function ScanPageInner() {
               </div>
               <Link
                 href={`/copilot?prefill=${encodeURIComponent(`I scanned ${analysis.inputUrl} and got a score of ${analysis.score}/100 (${analysis.verdict}). What should I do next?`)}`}
-                className="flex items-center gap-1.5 text-xs font-bold text-cyan-400/70 hover:text-cyan-400 transition"
+                className="flex items-center gap-1.5 text-xs font-bold text-[#f5a623]/70 hover:text-[#f5a623] transition"
               >
                 Ask Himalaya Copilot <ChevronRight className="w-3 h-3" />
               </Link>
@@ -993,7 +993,7 @@ function ScanPageInner() {
             <Search className="w-10 h-10 mx-auto mb-3 opacity-20" />
             <p className="text-sm">Enter a URL above to get started</p>
             <p className="text-xs mt-1 opacity-60">Works on any public website — business, product, ecommerce, landing page</p>
-            <Link href="/analyses" className="inline-flex items-center gap-1.5 text-xs text-white/25 hover:text-cyan-400/60 transition mt-4">
+            <Link href="/analyses" className="inline-flex items-center gap-1.5 text-xs text-white/25 hover:text-[#f5a623]/60 transition mt-4">
               View past scans <ChevronRight className="w-3 h-3" />
             </Link>
           </div>
@@ -1008,7 +1008,7 @@ export default function ScanPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#050a14] text-white">
+        <div className="min-h-screen bg-t-bg text-white">
           <AppNav />
           <div className="flex items-center justify-center py-24">
             <Loader2 className="w-6 h-6 animate-spin text-white/20" />

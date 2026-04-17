@@ -28,14 +28,14 @@ export default function TestimonialWallPage({ params }: { params: Promise<{ user
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] text-white flex items-center justify-center">
+      <div className="min-h-screen bg-t-bg text-white flex items-center justify-center">
         <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <div className="max-w-4xl mx-auto px-4 py-16">
         <div className="text-center mb-12">
           <h1 className="text-3xl font-black text-white mb-2">What People Are Saying</h1>

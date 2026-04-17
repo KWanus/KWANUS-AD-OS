@@ -257,7 +257,7 @@ function SystemCard({
   const statusTone = active
     ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-300"
     : liveInstalled
-      ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-200"
+      ? "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5a623]"
       : "border-red-500/20 bg-red-500/10 text-red-300";
   const statusLabel = active ? "Active ✓" : liveInstalled ? "Live In Workspace" : "Not Set Up";
 
@@ -265,8 +265,8 @@ function SystemCard({
     <div
       className={`rounded-[28px] border p-5 transition duration-300 ${
         highlighted
-          ? "border-cyan-500/30 bg-cyan-500/10 shadow-[0_0_32px_rgba(6,182,212,0.08)]"
-          : "border-white/[0.08] bg-white/[0.03] hover:border-cyan-500/30 hover:shadow-[0_0_32px_rgba(6,182,212,0.08)]"
+          ? "border-[#f5a623]/30 bg-[#f5a623]/10 shadow-[0_0_32px_rgba(245,166,35,0.08)]"
+          : "border-white/[0.08] bg-white/[0.03] hover:border-[#f5a623]/30 hover:shadow-[0_0_32px_rgba(245,166,35,0.08)]"
       }`}
     >
       <div className="mb-4 flex items-start justify-between gap-3">
@@ -284,7 +284,7 @@ function SystemCard({
       <div className="mt-4 grid gap-3 sm:grid-cols-2">
         <div className="rounded-2xl border border-white/[0.06] bg-black/20 px-4 py-3">
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/25">Estimated Impact</p>
-          <p className="mt-2 text-sm font-bold text-cyan-200">{system.estimatedImpact}</p>
+          <p className="mt-2 text-sm font-bold text-[#f5a623]">{system.estimatedImpact}</p>
         </div>
         <div className="rounded-2xl border border-white/[0.06] bg-black/20 px-4 py-3">
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/25">Time To Activate</p>
@@ -304,8 +304,8 @@ function SystemCard({
             active
               ? "border border-white/[0.1] bg-white/[0.04] text-white/75"
               : liveInstalled
-                ? "border border-cyan-500/20 bg-cyan-500/10 text-cyan-100"
-              : "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-[0_0_26px_rgba(6,182,212,0.24)]"
+                ? "border border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5f0e8]"
+              : "bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white shadow-[0_0_26px_rgba(245,166,35,0.24)]"
           }`}
         >
           {active ? "Keep Active" : liveInstalled ? "Mark Active In OS" : essential ? "Activate" : "Activate System"}
@@ -339,7 +339,7 @@ function StatusChip({
       ? "border-amber-500/20 bg-amber-500/10 text-amber-100"
       : tone === "emerald"
         ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-100"
-        : "border-cyan-500/20 bg-cyan-500/10 text-cyan-100";
+        : "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5f0e8]";
 
   return (
     <div className={`rounded-[24px] border p-4 ${toneClasses}`}>
@@ -608,10 +608,10 @@ export default function MySystemPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[#050a14] text-white">
+      <main className="min-h-screen bg-t-bg text-white">
         <AppNav />
         <div className="flex min-h-[70vh] items-center justify-center">
-          <Loader2 className="h-7 w-7 animate-spin text-cyan-300" />
+          <Loader2 className="h-7 w-7 animate-spin text-[#f5a623]" />
         </div>
       </main>
     );
@@ -619,12 +619,12 @@ export default function MySystemPage() {
 
   if (!profile) {
     return (
-      <main className="min-h-screen bg-[#050a14] text-white">
+      <main className="min-h-screen bg-t-bg text-white">
         <AppNav />
         <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
           <div className="rounded-[32px] border border-white/[0.08] bg-white/[0.03] p-8">
             <div className="flex items-center gap-3">
-              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-300">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#f5a623]/10 text-[#f5a623]">
                 <LayoutDashboard className="h-6 w-6" />
               </div>
               <div>
@@ -643,7 +643,7 @@ export default function MySystemPage() {
                 <select
                   value={quickProfile.businessType}
                   onChange={(event) => setQuickProfile((prev) => ({ ...prev, businessType: event.target.value as BusinessType }))}
-                  className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-500/40"
+                  className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm text-white outline-none transition focus:border-[#f5a623]/40"
                 >
                   {BUSINESS_TYPE_OPTIONS.map((option) => (
                     <option key={option.value} value={option.value} className="bg-[#09111f]">
@@ -659,7 +659,7 @@ export default function MySystemPage() {
                   value={quickProfile.niche}
                   onChange={(event) => setQuickProfile((prev) => ({ ...prev, niche: event.target.value }))}
                   placeholder="e.g. HVAC, Business Coach, Pet Products"
-                  className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-white/20 outline-none transition focus:border-cyan-500/40"
+                  className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-white/20 outline-none transition focus:border-[#f5a623]/40"
                 />
               </label>
 
@@ -668,7 +668,7 @@ export default function MySystemPage() {
                 <select
                   value={quickProfile.mainGoal}
                   onChange={(event) => setQuickProfile((prev) => ({ ...prev, mainGoal: event.target.value }))}
-                  className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-500/40"
+                  className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm text-white outline-none transition focus:border-[#f5a623]/40"
                 >
                   {GOAL_OPTIONS.map((option) => (
                     <option key={option.value} value={option.value} className="bg-[#09111f]">
@@ -685,7 +685,7 @@ export default function MySystemPage() {
               <button
                 onClick={saveQuickProfile}
                 disabled={saving}
-                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.24)] disabled:cursor-not-allowed disabled:opacity-60"
+                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(245,166,35,0.24)] disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                 Create My Business OS
@@ -705,23 +705,23 @@ export default function MySystemPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#050a14] text-white">
+    <main className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
         <div className="grid gap-8">
-          <section className="rounded-[32px] border border-white/[0.08] bg-[linear-gradient(145deg,rgba(6,182,212,0.08),rgba(255,255,255,0.03))] p-8">
+          <section className="rounded-[32px] border border-white/[0.08] bg-[linear-gradient(145deg,rgba(245,166,35,0.08),rgba(255,255,255,0.03))] p-8">
             <div className="flex flex-col gap-8 lg:flex-row lg:items-center lg:justify-between">
               <div className="max-w-3xl">
-                <p className="text-[10px] font-black uppercase tracking-[0.28em] text-cyan-200/70">Your Business OS</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.28em] text-[#f5a623]/70">Your Business OS</p>
                 <h1 className="mt-3 text-4xl font-black tracking-tight text-white sm:text-5xl">Your recommended growth system based on your business type and goals</h1>
                 <p className="mt-4 text-sm leading-7 text-white/60">
                   This is the operating system Himalaya thinks you should run right now based on your business type, stage, niche, and growth goal.
                 </p>
-                <Link href="/himalaya" className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition">
+                <Link href="/himalaya" className="mt-4 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-xs font-bold hover:opacity-90 transition">
                   <Sparkles className="w-3.5 h-3.5" /> Run Himalaya to build this system →
                 </Link>
                 <div className="mt-6 flex flex-wrap items-center gap-3">
-                  <span className="inline-flex items-center rounded-full border border-cyan-500/20 bg-cyan-500/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-cyan-200">
+                  <span className="inline-flex items-center rounded-full border border-[#f5a623]/20 bg-[#f5a623]/10 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-[#f5a623]">
                     {archetype.emoji} {archetype.label}
                   </span>
                   {profile.niche && (
@@ -741,7 +741,7 @@ export default function MySystemPage() {
                   <button
                     onClick={recalculateRecommendation}
                     disabled={recalculating}
-                    className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.24)] disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-4 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(245,166,35,0.24)] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {recalculating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
                     Recalculate System
@@ -751,7 +751,7 @@ export default function MySystemPage() {
 
               <div className="flex flex-col items-center gap-4 rounded-[28px] border border-white/[0.08] bg-black/20 px-8 py-6">
                 <ScoreRing score={liveSystemScore} />
-                <span className="inline-flex items-center rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-cyan-100">
+                <span className="inline-flex items-center rounded-full border border-[#f5a623]/20 bg-[#f5a623]/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-[#f5f0e8]">
                   {formatRelativeTime(profile.recommendedAt)}
                 </span>
                 <p className="text-center text-sm leading-6 text-white/55">
@@ -794,7 +794,7 @@ export default function MySystemPage() {
                 <button
                   onClick={recalculateRecommendation}
                   disabled={recalculating}
-                  className="inline-flex items-center gap-2 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-3 text-sm font-bold text-cyan-100 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex items-center gap-2 rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-4 py-3 text-sm font-bold text-[#f5f0e8] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   <Wand2 className="h-4 w-4" />
                   {recalculating ? "Refreshing..." : "Refresh Recommendations"}
@@ -909,7 +909,7 @@ export default function MySystemPage() {
                     workspaceLiveSystems.map((slug) => (
                       <span
                         key={slug}
-                        className="inline-flex items-center rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-cyan-100"
+                        className="inline-flex items-center rounded-full border border-[#f5a623]/20 bg-[#f5a623]/10 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] text-[#f5f0e8]"
                       >
                         {slug.replace(/_/g, " ")}
                       </span>
@@ -960,7 +960,7 @@ export default function MySystemPage() {
                 <button
                   onClick={() => activateBatch(prioritizedSystems.essential.map(({ system }) => system.slug))}
                   disabled={saving}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.24)] disabled:cursor-not-allowed disabled:opacity-60"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(245,166,35,0.24)] disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Sparkles className="h-4 w-4" />}
                   Activate Essential Stack
@@ -1019,7 +1019,7 @@ export default function MySystemPage() {
                       {active ? "active now" : "recommended next"}
                     </p>
                     {index < workflowSystems.length - 1 && (
-                      <div className="pointer-events-none absolute -right-2 top-8 hidden h-px w-4 bg-cyan-500/40 lg:block" />
+                      <div className="pointer-events-none absolute -right-2 top-8 hidden h-px w-4 bg-[#f5a623]/40 lg:block" />
                     )}
                   </div>
                 );
@@ -1029,7 +1029,7 @@ export default function MySystemPage() {
 
           <section className="rounded-[30px] border border-white/[0.08] bg-white/[0.03] p-6">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-cyan-500/10 text-cyan-300">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#f5a623]/10 text-[#f5a623]">
                 <Rocket className="h-5 w-5" />
               </div>
               <div>
@@ -1043,8 +1043,8 @@ export default function MySystemPage() {
                 `Your ${archetype.label.toLowerCase()} should start with the essential systems that create trust, capture demand, and keep follow-up moving automatically. Once the foundation is live, layer in the recommended systems that increase efficiency and scale.`}
             </p>
 
-            <div className="mt-6 rounded-[24px] border border-cyan-500/20 bg-cyan-500/10 px-5 py-4">
-              <p className="text-[10px] font-black uppercase tracking-[0.28em] text-cyan-200/75">Start Here Today</p>
+            <div className="mt-6 rounded-[24px] border border-[#f5a623]/20 bg-[#f5a623]/10 px-5 py-4">
+              <p className="text-[10px] font-black uppercase tracking-[0.28em] text-[#f5a623]/75">Start Here Today</p>
               <p className="mt-2 text-sm font-bold leading-7 text-white">
                 {profile.recommendedSystems?.firstAction ||
                   `Activate ${prioritizedSystems.essential[0]?.system.name || "your website"} so your ${profile.niche || archetype.label.toLowerCase()} business has a live conversion path before anything else.`}
@@ -1175,7 +1175,7 @@ export default function MySystemPage() {
             </div>
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
               {[
-                { title: "Find Leads Now", href: "/leads", icon: Zap, tone: "from-cyan-500/20 to-cyan-500/5 border-cyan-500/20" },
+                { title: "Find Leads Now", href: "/leads", icon: Zap, tone: "from-cyan-500/20 to-cyan-500/5 border-[#f5a623]/20" },
                 { title: "Build Your Website", href: "/websites/new", icon: Globe, tone: "from-blue-500/20 to-blue-500/5 border-blue-500/20" },
                 { title: "Create Your First Campaign", href: "/campaigns/new", icon: CheckCircle2, tone: "from-emerald-500/20 to-emerald-500/5 border-emerald-500/20" },
                 {
@@ -1190,7 +1190,7 @@ export default function MySystemPage() {
                   <Link
                     key={action.title}
                     href={action.href}
-                    className={`rounded-[28px] border bg-gradient-to-br ${action.tone} p-5 transition hover:border-cyan-400/30 hover:shadow-[0_0_28px_rgba(6,182,212,0.08)]`}
+                    className={`rounded-[28px] border bg-gradient-to-br ${action.tone} p-5 transition hover:border-cyan-400/30 hover:shadow-[0_0_28px_rgba(245,166,35,0.08)]`}
                   >
                     <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/[0.08] bg-black/20 text-white">
                       <Icon className="h-5 w-5" />

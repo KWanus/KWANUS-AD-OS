@@ -132,7 +132,7 @@ function TopFlowsTable({ flows }: { flows: EmailFlow[] }) {
                     <p className="truncate text-white/70 font-semibold">{flow.name}</p>
                     <span className={`mt-1 inline-flex items-center rounded-full border px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.18em] ${
                       executionTier === "elite"
-                        ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
+                        ? "border-[#f5a623]/30 bg-[#f5a623]/10 text-[#f5a623]"
                         : "border-white/10 bg-white/5 text-white/45"
                     }`}>
                       {executionTier}
@@ -148,8 +148,8 @@ function TopFlowsTable({ flows }: { flows: EmailFlow[] }) {
                     </span>
                   </td>
                   <td className="px-5 py-3 text-white/60">{flow.enrolled.toLocaleString()}</td>
-                  <td className="px-5 py-3 text-cyan-400 font-bold">{openRate > 0 ? `${openRate}%` : "—"}</td>
-                  <td className="px-5 py-3 text-purple-400 font-bold">{clickRate > 0 ? `${clickRate}%` : "—"}</td>
+                  <td className="px-5 py-3 text-[#f5a623] font-bold">{openRate > 0 ? `${openRate}%` : "—"}</td>
+                  <td className="px-5 py-3 text-[#e07850] font-bold">{clickRate > 0 ? `${clickRate}%` : "—"}</td>
                   <td className="px-5 py-3 text-green-400 font-bold">
                     {flow.revenue > 0 ? `$${flow.revenue.toLocaleString()}` : "—"}
                   </td>
@@ -201,7 +201,7 @@ function TopBroadcastsTable({ broadcasts }: { broadcasts: EmailBroadcast[] }) {
                     <p className="text-[10px] text-white/25 truncate">{b.subject}</p>
                     <span className={`mt-1 inline-flex items-center rounded-full border px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.18em] ${
                       executionTier === "elite"
-                        ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
+                        ? "border-[#f5a623]/30 bg-[#f5a623]/10 text-[#f5a623]"
                         : "border-white/10 bg-white/5 text-white/45"
                     }`}>
                       {executionTier}
@@ -211,8 +211,8 @@ function TopBroadcastsTable({ broadcasts }: { broadcasts: EmailBroadcast[] }) {
                     {b.sentAt ? new Date(b.sentAt).toLocaleDateString() : "—"}
                   </td>
                   <td className="px-5 py-3 text-white/60">{b.recipients.toLocaleString()}</td>
-                  <td className="px-5 py-3 text-cyan-400 font-bold">{openRate}%</td>
-                  <td className="px-5 py-3 text-purple-400 font-bold">{clickRate > 0 ? `${clickRate}%` : "—"}</td>
+                  <td className="px-5 py-3 text-[#f5a623] font-bold">{openRate}%</td>
+                  <td className="px-5 py-3 text-[#e07850] font-bold">{clickRate > 0 ? `${clickRate}%` : "—"}</td>
                   <td className="px-5 py-3">
                     <span className={bounceRate > 2 ? "text-red-400 font-bold" : "text-white/40"}>
                       {bounceRate > 0 ? `${bounceRate}%` : "—"}
@@ -243,7 +243,7 @@ function ContactSourceChart({ contacts }: { contacts: EmailContact[] }) {
   if (total === 0) return null;
 
   const items = Object.entries(sources).sort((a, b) => b[1] - a[1]);
-  const colors = ["bg-cyan-500", "bg-purple-500", "bg-green-500", "bg-amber-500", "bg-rose-500"];
+  const colors = ["bg-[#f5a623]", "bg-purple-500", "bg-green-500", "bg-amber-500", "bg-rose-500"];
 
   return (
     <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5">
@@ -331,7 +331,7 @@ export default function EmailAnalyticsPage() {
   const overallClickRate = allOpens > 0 ? Math.round((allClicks / allOpens) * 100) : null;
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <CampaignSubNav />
 
@@ -350,32 +350,32 @@ export default function EmailAnalyticsPage() {
           <div className="space-y-8">
             {/* Top metrics */}
             <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
-              <MetricCard label="Total Contacts" value={totalContacts.toLocaleString()} icon={Users} color="text-cyan-400" />
+              <MetricCard label="Total Contacts" value={totalContacts.toLocaleString()} icon={Users} color="text-[#f5a623]" />
               <MetricCard label="Subscribed" value={subscribedContacts.toLocaleString()} icon={Activity} color="text-green-400" />
-              <MetricCard label="Active Flows" value={activeFlows} icon={Zap} color="text-purple-400" />
+              <MetricCard label="Active Flows" value={activeFlows} icon={Zap} color="text-[#e07850]" />
               <MetricCard label="Flow Enrolled" value={totalEnrolled.toLocaleString()} icon={TrendingUp} color="text-amber-400" />
               <MetricCard
                 label="Avg Open Rate"
                 value={overallOpenRate != null ? `${overallOpenRate}%` : "—"}
                 icon={Eye}
-                color="text-cyan-400"
+                color="text-[#f5a623]"
               />
               <MetricCard
                 label="Avg Click Rate"
                 value={overallClickRate != null ? `${overallClickRate}%` : "—"}
                 icon={MousePointer}
-                color="text-purple-400"
+                color="text-[#e07850]"
               />
             </div>
 
             {/* Secondary row */}
             <div className="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-6 gap-4">
               <MetricCard label="Emails Sent" value={allSentEmails.toLocaleString()} icon={Send} color="text-white/50" />
-              <MetricCard label="Total Opens" value={allOpens.toLocaleString()} icon={Eye} color="text-cyan-400" />
-              <MetricCard label="Total Clicks" value={allClicks.toLocaleString()} icon={MousePointer} color="text-purple-400" />
+              <MetricCard label="Total Opens" value={allOpens.toLocaleString()} icon={Eye} color="text-[#f5a623]" />
+              <MetricCard label="Total Clicks" value={allClicks.toLocaleString()} icon={MousePointer} color="text-[#e07850]" />
               <MetricCard label="Flow Revenue" value={totalRevenue > 0 ? `$${totalRevenue.toLocaleString()}` : "—"} icon={DollarSign} color="text-green-400" />
-              <MetricCard label="Elite Flows" value={eliteFlows.toLocaleString()} icon={Zap} color="text-cyan-400" />
-              <MetricCard label="Elite Contacts" value={eliteContacts.toLocaleString()} icon={Users} color="text-cyan-400" />
+              <MetricCard label="Elite Flows" value={eliteFlows.toLocaleString()} icon={Zap} color="text-[#f5a623]" />
+              <MetricCard label="Elite Contacts" value={eliteContacts.toLocaleString()} icon={Users} color="text-[#f5a623]" />
             </div>
 
             {/* Tables */}

@@ -184,7 +184,7 @@ export default function ContactsPage() {
   const eliteContacts = contacts.filter(c => (c.executionTier ?? "elite") === "elite").length;
 
   return (
-    <main className="min-h-screen bg-[#050a14] text-white flex flex-col">
+    <main className="min-h-screen bg-t-bg text-white flex flex-col">
       <div className="fixed inset-0 opacity-[0.02] pointer-events-none"
         style={{ backgroundImage: "radial-gradient(#fff 1px,transparent 1px)", backgroundSize: "28px 28px" }} />
 
@@ -214,7 +214,7 @@ export default function ContactsPage() {
               <Upload className="w-3.5 h-3.5" /> Import
             </button>
             <button onClick={() => setShowAdd(true)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-[#050a14] text-xs font-black transition">
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#f5a623] hover:bg-[#e07850] text-[#050a14] text-xs font-black transition">
               <Plus className="w-3.5 h-3.5" /> Add Contact
             </button>
           </div>
@@ -226,7 +226,7 @@ export default function ContactsPage() {
             { label: "Total", value: total.toLocaleString(), icon: Users, color: "text-white" },
             { label: "Subscribed", value: contacts.filter(c=>c.status==="subscribed").length.toLocaleString(), icon: CheckCircle, color: "text-green-400" },
             { label: "Unsubscribed", value: contacts.filter(c=>c.status==="unsubscribed").length.toLocaleString(), icon: XCircle, color: "text-red-400" },
-            { label: "Elite Lane", value: eliteContacts.toLocaleString(), icon: Tag, color: "text-cyan-400" },
+            { label: "Elite Lane", value: eliteContacts.toLocaleString(), icon: Tag, color: "text-[#f5a623]" },
           ].map(({ label, value, icon: Icon, color }) => (
             <div key={label} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4 flex items-center gap-3">
               <Icon className={`w-5 h-5 shrink-0 ${color}`} />
@@ -243,17 +243,17 @@ export default function ContactsPage() {
           <div className="relative flex-1 max-w-sm">
             <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-white/20" />
             <input value={search} onChange={e => setSearch(e.target.value)} placeholder="Search email, name..."
-              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-9 pr-4 py-2 text-xs outline-none focus:border-cyan-500/40 transition placeholder-white/20" />
+              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-9 pr-4 py-2 text-xs outline-none focus:border-[#f5a623]/40 transition placeholder-white/20" />
           </div>
           {allTags.length > 0 && (
             <select value={filterTag} onChange={e => setFilterTag(e.target.value)}
-              className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white/60 outline-none focus:border-cyan-500/40 transition">
+              className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white/60 outline-none focus:border-[#f5a623]/40 transition">
               <option value="">All Tags</option>
               {allTags.map(t => <option key={t} value={t}>{t}</option>)}
             </select>
           )}
           <select value={filterStatus} onChange={e => setFilterStatus(e.target.value)}
-            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white/60 outline-none focus:border-cyan-500/40 transition">
+            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white/60 outline-none focus:border-[#f5a623]/40 transition">
             <option value="">All Status</option>
             <option value="subscribed">Subscribed</option>
             <option value="unsubscribed">Unsubscribed</option>
@@ -278,7 +278,7 @@ export default function ContactsPage() {
               <p className="text-sm text-white/25 max-w-xs">Add contacts manually or import a CSV to get started.</p>
             </div>
             <button onClick={() => setShowAdd(true)}
-              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-[#050a14] text-sm font-black transition">
+              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#f5a623] hover:bg-[#e07850] text-[#050a14] text-sm font-black transition">
               <Plus className="w-4 h-4" /> Add Your First Contact
             </button>
           </div>
@@ -300,7 +300,7 @@ export default function ContactsPage() {
             {/* Rows */}
             {contacts.map(contact => (
               <div key={contact.id}
-                className={`grid grid-cols-[32px_1fr_1fr_1fr_120px_100px] gap-4 px-4 py-3 border-b border-white/[0.04] hover:bg-white/[0.02] transition items-center ${selected.has(contact.id) ? "bg-cyan-500/5" : ""}`}>
+                className={`grid grid-cols-[32px_1fr_1fr_1fr_120px_100px] gap-4 px-4 py-3 border-b border-white/[0.04] hover:bg-white/[0.02] transition items-center ${selected.has(contact.id) ? "bg-[#f5a623]/5" : ""}`}>
                 <div>
                   <input type="checkbox" checked={selected.has(contact.id)}
                     onChange={() => toggleSelect(contact.id)} className="rounded" />
@@ -319,14 +319,14 @@ export default function ContactsPage() {
                 <div className="flex flex-wrap gap-1">
                   <span className={`text-[9px] px-1.5 py-0.5 rounded border font-medium ${
                     (contact.executionTier ?? "elite") === "elite"
-                      ? "border-cyan-500/20 bg-cyan-500/5 text-cyan-400"
+                      ? "border-[#f5a623]/20 bg-[#f5a623]/5 text-[#f5a623]"
                       : "border-white/10 bg-white/5 text-white/45"
                   }`}>
                     {contact.executionTier ?? "elite"}
                   </span>
                   {contact.tags.length > 0 ? contact.tags.slice(0, 3).map(tag => (
                     <span key={tag}
-                      className="text-[9px] px-1.5 py-0.5 rounded border border-cyan-500/20 bg-cyan-500/5 text-cyan-400 font-medium cursor-pointer hover:bg-cyan-500/10 transition"
+                      className="text-[9px] px-1.5 py-0.5 rounded border border-[#f5a623]/20 bg-[#f5a623]/5 text-[#f5a623] font-medium cursor-pointer hover:bg-[#f5a623]/10 transition"
                       onClick={() => setFilterTag(tag)}>
                       {tag}
                     </span>
@@ -398,7 +398,7 @@ export default function ContactsPage() {
                         onClick={() => setNewExecutionTier(option.value)}
                         className={`rounded-xl border px-3 py-3 text-left transition-all ${
                           active
-                            ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-100 shadow-[0_0_24px_rgba(6,182,212,0.12)]"
+                            ? "border-[#f5a623]/40 bg-[#f5a623]/10 text-[#f5f0e8] shadow-[0_0_24px_rgba(245,166,35,0.12)]"
                             : "border-white/[0.08] bg-white/[0.03] text-white/55 hover:bg-white/[0.05]"
                         }`}
                       >
@@ -414,7 +414,7 @@ export default function ContactsPage() {
               <button onClick={() => setShowAdd(false)}
                 className="flex-1 py-2.5 rounded-xl border border-white/10 text-sm text-white/50 hover:text-white transition">Cancel</button>
               <button onClick={() => void addContact()} disabled={adding || !newEmail.trim()}
-                className="flex-1 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-[#050a14] text-sm font-black disabled:opacity-40 transition">
+                className="flex-1 py-2.5 rounded-xl bg-[#f5a623] hover:bg-[#e07850] text-[#050a14] text-sm font-black disabled:opacity-40 transition">
                 {adding ? "Adding..." : "Add Contact"}
               </button>
             </div>
@@ -441,7 +441,7 @@ export default function ContactsPage() {
                     onClick={() => setImportExecutionTier(option.value)}
                     className={`rounded-xl border px-3 py-3 text-left transition-all ${
                       active
-                        ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-100 shadow-[0_0_24px_rgba(6,182,212,0.12)]"
+                        ? "border-[#f5a623]/40 bg-[#f5a623]/10 text-[#f5f0e8] shadow-[0_0_24px_rgba(245,166,35,0.12)]"
                         : "border-white/[0.08] bg-white/[0.03] text-white/55 hover:bg-white/[0.05]"
                     }`}
                   >
@@ -464,7 +464,7 @@ export default function ContactsPage() {
               <button onClick={() => { setShowImport(false); setImportResult(null); setImportText(""); }}
                 className="flex-1 py-2.5 rounded-xl border border-white/10 text-sm text-white/50 hover:text-white transition">Close</button>
               <button onClick={() => void handleBulkImport()} disabled={importing || !importText.trim()}
-                className="flex-1 py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-[#050a14] text-sm font-black disabled:opacity-40 transition">
+                className="flex-1 py-2.5 rounded-xl bg-[#f5a623] hover:bg-[#e07850] text-[#050a14] text-sm font-black disabled:opacity-40 transition">
                 {importing ? "Importing..." : "Import Contacts"}
               </button>
             </div>

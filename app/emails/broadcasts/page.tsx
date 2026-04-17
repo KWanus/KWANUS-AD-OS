@@ -139,7 +139,7 @@ function BroadcastCard({
             </span>
             <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.2em] ${
               executionTier === "elite"
-                ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
+                ? "border-[#f5a623]/30 bg-[#f5a623]/10 text-[#f5a623]"
                 : "border-white/10 bg-white/5 text-white/45"
             }`}>
               {executionTier}
@@ -173,7 +173,7 @@ function BroadcastCard({
               <button
                 onClick={(e) => void handleSend(e)}
                 disabled={sending}
-                className="p-1.5 rounded-lg hover:bg-cyan-500/10 text-white/25 hover:text-cyan-400 transition"
+                className="p-1.5 rounded-lg hover:bg-[#f5a623]/10 text-white/25 hover:text-[#f5a623] transition"
                 title="Send Now"
               >
                 {sending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
@@ -195,8 +195,8 @@ function BroadcastCard({
         <div className="grid grid-cols-4 gap-2">
           {[
             { icon: Users, label: "Sent", value: broadcast.recipients.toLocaleString(), color: "text-white/60" },
-            { icon: Eye, label: "Opens", value: openRate != null ? `${openRate}%` : "—", color: "text-cyan-400" },
-            { icon: MousePointer, label: "Clicks", value: clickRate != null ? `${clickRate}%` : "—", color: "text-purple-400" },
+            { icon: Eye, label: "Opens", value: openRate != null ? `${openRate}%` : "—", color: "text-[#f5a623]" },
+            { icon: MousePointer, label: "Clicks", value: clickRate != null ? `${clickRate}%` : "—", color: "text-[#e07850]" },
             { icon: BarChart2, label: "Bounces", value: broadcast.bounces > 0 ? broadcast.bounces : "—", color: "text-red-400/70" },
           ].map(({ icon: Icon, label, value, color }) => (
             <div key={label} className="bg-white/[0.03] rounded-xl p-2.5 text-center">
@@ -238,7 +238,7 @@ function BroadcastCard({
           <button
             onClick={(e) => void handleSend(e)}
             disabled={sending}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-gradient-to-r from-cyan-500/20 to-purple-600/20 hover:from-cyan-500/30 hover:to-purple-600/30 border border-cyan-500/30 hover:border-cyan-400/50 text-cyan-300 hover:text-white text-[11px] font-bold transition-all disabled:opacity-40"
+            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-gradient-to-r from-cyan-500/20 to-[#e07850]/20 hover:from-cyan-500/30 hover:to-[#e07850]/30 border border-[#f5a623]/30 hover:border-cyan-400/50 text-[#f5a623] hover:text-white text-[11px] font-bold transition-all disabled:opacity-40"
           >
             {sending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />}
             {sending ? "Sending..." : "Send Now"}
@@ -417,7 +417,7 @@ function ComposeModal({
                     onClick={() => setExecutionTier(option.value)}
                     className={`rounded-xl border px-4 py-3 text-left transition-all ${
                       active
-                        ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-100 shadow-[0_0_24px_rgba(6,182,212,0.12)]"
+                        ? "border-[#f5a623]/40 bg-[#f5a623]/10 text-[#f5f0e8] shadow-[0_0_24px_rgba(245,166,35,0.12)]"
                         : "border-white/[0.08] bg-white/[0.03] text-white/55 hover:bg-white/[0.05]"
                     }`}
                   >
@@ -433,7 +433,7 @@ function ComposeModal({
           <button
             onClick={() => void handleAIGenerate()}
             disabled={generating}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-purple-600/20 to-cyan-600/20 border border-purple-500/30 hover:border-purple-400/50 text-sm font-bold text-purple-300 hover:text-white transition disabled:opacity-40"
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[#e07850]/20 to-cyan-600/20 border border-purple-500/30 hover:border-purple-400/50 text-sm font-bold text-purple-300 hover:text-white transition disabled:opacity-40"
           >
             <Sparkles className="w-4 h-4" />
             {generating ? "Generating content..." : `AI Generate ${executionTier === "elite" ? "Elite" : "Core"} Content`}
@@ -447,7 +447,7 @@ function ComposeModal({
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="e.g. Spring Sale Announcement"
-                className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+                className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
               />
             </div>
             <div className="col-span-2">
@@ -457,7 +457,7 @@ function ComposeModal({
                 value={subject}
                 onChange={(e) => setSubject(e.target.value)}
                 placeholder="Your subject line..."
-                className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+                className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
               />
             </div>
             <div className="col-span-2">
@@ -467,7 +467,7 @@ function ComposeModal({
                 value={previewText}
                 onChange={(e) => setPreviewText(e.target.value)}
                 placeholder="Shown in inbox preview..."
-                className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+                className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
               />
             </div>
             <div>
@@ -477,7 +477,7 @@ function ComposeModal({
                 value={fromName}
                 onChange={(e) => setFromName(e.target.value)}
                 placeholder="Your Name"
-                className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+                className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
               />
             </div>
             <div>
@@ -487,7 +487,7 @@ function ComposeModal({
                 value={fromEmail}
                 onChange={(e) => setFromEmail(e.target.value)}
                 placeholder="you@domain.com"
-                className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+                className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
               />
             </div>
             <div className="col-span-2">
@@ -500,7 +500,7 @@ function ComposeModal({
                 value={segmentTags}
                 onChange={(e) => setSegmentTags(e.target.value)}
                 placeholder="e.g. buyer, vip, newsletter"
-                className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+                className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
               />
             </div>
             <div className="col-span-2">
@@ -510,7 +510,7 @@ function ComposeModal({
                 onChange={(e) => setBody(e.target.value)}
                 placeholder="Write your email content here..."
                 rows={10}
-                className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition resize-none"
+                className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition resize-none"
               />
             </div>
           </div>
@@ -531,7 +531,7 @@ function ComposeModal({
           <button
             onClick={() => void handleSave()}
             disabled={saving || !name.trim() || !subject.trim()}
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition"
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition"
           >
             {saving ? (
               <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</>
@@ -554,7 +554,7 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
     <div className="flex flex-col items-center justify-center py-16 text-center">
       <div className="relative mb-6">
         <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-purple-500/20 to-cyan-600/20 border border-white/10 flex items-center justify-center">
-          <Send className="w-9 h-9 text-purple-400/70" />
+          <Send className="w-9 h-9 text-[#e07850]/70" />
         </div>
       </div>
       <h2 className="text-xl font-black text-white mb-2">No Broadcasts Yet</h2>
@@ -573,7 +573,7 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
           <button
             key={tpl.label}
             onClick={onCreateClick}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/30 hover:bg-cyan-500/5 text-left transition"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/30 hover:bg-[#f5a623]/5 text-left transition"
           >
             <span className="text-lg">{tpl.icon}</span>
             <div>
@@ -586,7 +586,7 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
 
       <button
         onClick={onCreateClick}
-        className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition-opacity"
+        className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition-opacity"
       >
         <Plus className="w-4 h-4" />
         Start from Scratch
@@ -664,7 +664,7 @@ export default function BroadcastsPage() {
       : null;
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <CampaignSubNav />
 
@@ -678,7 +678,7 @@ export default function BroadcastsPage() {
           {broadcasts.length > 0 && (
             <button
               onClick={openCreate}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition-opacity"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition-opacity"
             >
               <Plus className="w-4 h-4" />
               New Broadcast
@@ -690,8 +690,8 @@ export default function BroadcastsPage() {
         {sentBroadcasts.length > 0 && (
           <div className="flex gap-3 flex-wrap mb-8">
             {[
-              { label: "Total Sent", value: totalSent.toLocaleString(), icon: Send, color: "text-cyan-400" },
-              { label: "Avg Open Rate", value: avgOpenRate != null ? `${avgOpenRate}%` : "—", icon: Eye, color: "text-purple-400" },
+              { label: "Total Sent", value: totalSent.toLocaleString(), icon: Send, color: "text-[#f5a623]" },
+              { label: "Avg Open Rate", value: avgOpenRate != null ? `${avgOpenRate}%` : "—", icon: Eye, color: "text-[#e07850]" },
               { label: "Sent Campaigns", value: sentBroadcasts.length, icon: CheckCircle, color: "text-green-400" },
               { label: "Scheduled", value: broadcasts.filter((b) => b.status === "scheduled").length, icon: Clock, color: "text-blue-400" },
             ].map(({ label, value, icon: Icon, color }) => (

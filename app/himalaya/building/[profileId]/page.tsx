@@ -107,13 +107,13 @@ export default function HimalayaBuildingPage({ params }: { params: Promise<{ pro
   const progress = (completedCount / stages.length) * 100;
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <HimalayaNav />
       <main className="mx-auto max-w-lg px-4 py-16 sm:px-6">
         {/* Header */}
-        <div className="mb-10 rounded-3xl border border-cyan-500/12 bg-gradient-to-br from-cyan-500/[0.06] via-transparent to-purple-500/[0.05] px-5 py-8 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600">
+        <div className="mb-10 rounded-3xl border border-[#f5a623]/12 bg-gradient-to-br from-cyan-500/[0.06] via-transparent to-purple-500/[0.05] px-5 py-8 text-center">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#f5a623] to-[#e07850]">
             <Mountain className="w-7 h-7 text-white" />
           </div>
           <h1 className="text-xl font-black text-white mb-2">
@@ -132,7 +132,7 @@ export default function HimalayaBuildingPage({ params }: { params: Promise<{ pro
         <div className="mb-8">
           <div className="h-1.5 bg-white/[0.05] rounded-full overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all duration-700 ${error ? "bg-red-500" : "bg-gradient-to-r from-cyan-500 to-purple-600"}`}
+              className={`h-full rounded-full transition-all duration-700 ${error ? "bg-red-500" : "bg-gradient-to-r from-[#f5a623] to-[#e07850]"}`}
               style={{ width: `${Math.max(progress, 3)}%` }}
             />
           </div>
@@ -147,14 +147,14 @@ export default function HimalayaBuildingPage({ params }: { params: Promise<{ pro
                 stage.status === "done"
                   ? "bg-emerald-500/[0.04] border-emerald-500/10"
                   : stage.status === "running"
-                    ? "bg-cyan-500/[0.04] border-cyan-500/15"
+                    ? "bg-[#f5a623]/[0.04] border-[#f5a623]/15"
                     : stage.status === "failed"
                       ? "bg-red-500/[0.04] border-red-500/15"
                       : "bg-white/[0.01] border-white/[0.04]"
               }`}
             >
               {stage.status === "done" && <CheckCircle className="w-5 h-5 text-emerald-400 shrink-0" />}
-              {stage.status === "running" && <Loader2 className="w-5 h-5 text-cyan-400 animate-spin shrink-0" />}
+              {stage.status === "running" && <Loader2 className="w-5 h-5 text-[#f5a623] animate-spin shrink-0" />}
               {stage.status === "failed" && <XCircle className="w-5 h-5 text-red-400 shrink-0" />}
               {stage.status === "pending" && <div className="w-5 h-5 rounded-full border border-white/[0.1] shrink-0" />}
 

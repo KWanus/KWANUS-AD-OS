@@ -317,7 +317,7 @@ function ProfileTab({ lead }: { lead: Lead }) {
         <div className="grid grid-cols-2 gap-4 mb-4">
           <div>
             <p className="text-[10px] text-white/25 mb-1">Primary CTA</p>
-            <p className="text-sm font-bold text-cyan-400">{p.conversion_strategy?.primary_cta ?? "—"}</p>
+            <p className="text-sm font-bold text-[#f5a623]">{p.conversion_strategy?.primary_cta ?? "—"}</p>
           </div>
           <div>
             <p className="text-[10px] text-white/25 mb-1">Secondary CTA</p>
@@ -344,7 +344,7 @@ function ProfileTab({ lead }: { lead: Lead }) {
               <ul className="space-y-1.5">
                 {p.content_strategy.top_hooks?.map((h, i) => (
                   <li key={i} className="flex items-start gap-2 text-xs text-white/60 group">
-                    <span className="text-cyan-400/50 shrink-0 mt-0.5">{i + 1}.</span>{h}
+                    <span className="text-[#f5a623]/50 shrink-0 mt-0.5">{i + 1}.</span>{h}
                     <CopyButton text={h} />
                   </li>
                 ))}
@@ -392,7 +392,7 @@ function WebsiteTab({ lead }: { lead: Lead }) {
       {w.seo && (
         <div className="p-4 bg-white/[0.025] border border-white/[0.07] rounded-2xl">
           <p className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-3">SEO</p>
-          <p className="text-sm font-bold text-cyan-400">{w.seo.title}</p>
+          <p className="text-sm font-bold text-[#f5a623]">{w.seo.title}</p>
           <p className="text-xs text-white/40 mt-1">{w.seo.meta_description}</p>
         </div>
       )}
@@ -404,7 +404,7 @@ function WebsiteTab({ lead }: { lead: Lead }) {
           <p className="text-xl font-black text-white mb-2">{w.hero.headline}</p>
           <p className="text-sm text-white/55 mb-4">{w.hero.subheadline}</p>
           <div className="flex flex-wrap gap-2">
-            {w.hero.primary_cta && <div className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500/25 to-purple-500/25 border border-cyan-500/25 text-sm font-bold text-white">{w.hero.primary_cta}</div>}
+            {w.hero.primary_cta && <div className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500/25 to-purple-500/25 border border-[#f5a623]/25 text-sm font-bold text-white">{w.hero.primary_cta}</div>}
             {w.hero.secondary_cta && <div className="px-4 py-2 rounded-xl border border-white/10 text-sm text-white/50">{w.hero.secondary_cta}</div>}
           </div>
         </div>
@@ -419,7 +419,7 @@ function WebsiteTab({ lead }: { lead: Lead }) {
           </div>
           {section.body && <p className="text-xs text-white/50 leading-relaxed mb-2">{section.body}</p>}
           {section.items && <ul className="space-y-1">{section.items.map((x, j) => <li key={j} className="text-xs text-white/55 flex gap-1.5"><CheckCircle className="w-3 h-3 text-emerald-400/50 shrink-0 mt-0.5" />{typeof x === "string" ? x : x.question}</li>)}</ul>}
-          {section.steps && <ol className="space-y-1">{section.steps.map((x, j) => <li key={j} className="text-xs text-white/55 flex gap-2"><span className="text-cyan-400/60 font-bold shrink-0">{j + 1}.</span>{x}</li>)}</ol>}
+          {section.steps && <ol className="space-y-1">{section.steps.map((x, j) => <li key={j} className="text-xs text-white/55 flex gap-2"><span className="text-[#f5a623]/60 font-bold shrink-0">{j + 1}.</span>{x}</li>)}</ol>}
         </div>
       ))}
 
@@ -454,7 +454,7 @@ function WebsiteTab({ lead }: { lead: Lead }) {
           <button
             onClick={handleDeploy}
             disabled={deploying}
-            className="w-full flex items-center gap-2 p-4 rounded-2xl bg-cyan-500/[0.06] border border-cyan-500/20 text-cyan-400 text-sm font-bold hover:bg-cyan-500/[0.1] transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center gap-2 p-4 rounded-2xl bg-[#f5a623]/[0.06] border border-[#f5a623]/20 text-[#f5a623] text-sm font-bold hover:bg-[#f5a623]/[0.1] transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {deploying ? (
               <Loader2 className="w-4 h-4 animate-spin" />
@@ -691,7 +691,7 @@ function OutreachTab({ lead, onSent }: { lead: Lead; onSent: () => void }) {
   return (
     <div className="space-y-5">
       {lead.outreachSentAt && (
-        <div className="flex items-center gap-2 p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs text-cyan-400 font-bold">
+        <div className="flex items-center gap-2 p-3 rounded-xl bg-[#f5a623]/10 border border-[#f5a623]/20 text-xs text-[#f5a623] font-bold">
           <CheckCircle className="w-4 h-4" />
           Outreach sent {new Date(lead.outreachSentAt).toLocaleString()}
           {lead.emailReplied && <span className="ml-2 px-2 py-0.5 bg-emerald-500/20 rounded text-emerald-400">Replied!</span>}
@@ -720,7 +720,7 @@ function OutreachTab({ lead, onSent }: { lead: Lead; onSent: () => void }) {
             value={customBody}
             onChange={(e) => setCustomBody(e.target.value)}
             rows={8}
-            className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-4 py-3 text-xs text-white/70 focus:outline-none focus:border-cyan-500/30 transition resize-none leading-relaxed"
+            className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-4 py-3 text-xs text-white/70 focus:outline-none focus:border-[#f5a623]/30 transition resize-none leading-relaxed"
           />
         </div>
 
@@ -822,14 +822,14 @@ export default function LeadDetailPage() {
   }
 
   if (loading) return (
-    <div className="min-h-screen bg-[#050a14] text-white flex flex-col">
+    <div className="min-h-screen bg-t-bg text-white flex flex-col">
       <AppNav />
       <div className="flex-1 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-white/20" /></div>
     </div>
   );
 
   if (!lead) return (
-    <div className="min-h-screen bg-[#050a14] text-white flex flex-col">
+    <div className="min-h-screen bg-t-bg text-white flex flex-col">
       <AppNav />
       <div className="flex-1 flex items-center justify-center px-4">
         <div className="w-full max-w-3xl space-y-4">
@@ -837,7 +837,7 @@ export default function LeadDetailPage() {
           <div className="flex flex-col items-center justify-center gap-3 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8">
             <AlertCircle className="w-8 h-8 text-red-400" />
             <p className="text-white/40">{databaseUnavailable ? "Lead data is temporarily unavailable" : "Lead not found"}</p>
-            <Link href="/leads" className="text-cyan-400 text-sm hover:underline">← Back to Leads</Link>
+            <Link href="/leads" className="text-[#f5a623] text-sm hover:underline">← Back to Leads</Link>
           </div>
         </div>
       </div>
@@ -857,7 +857,7 @@ export default function LeadDetailPage() {
   const scoreColor = !lead.score ? "text-white/30" : lead.score >= 70 ? "text-emerald-400" : lead.score >= 45 ? "text-amber-400" : "text-red-400";
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <CRMSubNav />
       <div className="max-w-4xl mx-auto px-4 pt-8 pb-20">
@@ -897,7 +897,7 @@ export default function LeadDetailPage() {
               {lead.phone && <span className="flex items-center gap-1 text-xs text-white/35"><Phone className="w-3 h-3" />{lead.phone}</span>}
               {lead.rating && <span className="flex items-center gap-1 text-xs text-amber-400/60"><Star className="w-3 h-3" />{lead.rating} ({lead.reviewCount})</span>}
               {lead.website && (
-                <a href={lead.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-cyan-400/60 hover:text-cyan-400 transition">
+                <a href={lead.website} target="_blank" rel="noopener noreferrer" className="flex items-center gap-1 text-xs text-[#f5a623]/60 hover:text-[#f5a623] transition">
                   <Globe className="w-3 h-3" />{lead.website.replace(/https?:\/\/(www\.)?/, "").slice(0, 35)}
                   <ExternalLink className="w-2.5 h-2.5" />
                 </a>
@@ -918,7 +918,7 @@ export default function LeadDetailPage() {
           )}
           {(lead.status === "analyzed" || lead.status === "ready") && (
             <button onClick={() => void generate()} disabled={generating || isProcessing}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 text-sm font-bold hover:bg-purple-500/20 transition disabled:opacity-40">
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-500/10 border border-purple-500/20 text-[#e07850] text-sm font-bold hover:bg-purple-500/20 transition disabled:opacity-40">
               {generating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Zap className="w-3.5 h-3.5" />}
               {generating ? "Running 4 Skills…" : lead.status === "ready" ? "Regenerate Assets" : "Generate Assets"}
             </button>
@@ -931,7 +931,7 @@ export default function LeadDetailPage() {
           )}
           {lead.website && (
             <Link href={`/scan?url=${encodeURIComponent(lead.website)}&mode=consultant`}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-bold hover:bg-cyan-500/20 transition">
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#f5a623]/10 border border-[#f5a623]/20 text-[#f5a623] text-sm font-bold hover:bg-[#f5a623]/20 transition">
               <Search className="w-3.5 h-3.5" /> Deep Scan
             </Link>
           )}

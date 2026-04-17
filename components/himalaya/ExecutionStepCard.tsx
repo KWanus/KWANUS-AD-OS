@@ -64,13 +64,13 @@ export default function ExecutionStepCard({ step, index, runId, onToggle }: Prop
           {isDone ? (
             <CheckCircle2 className="w-6 h-6 text-emerald-400" />
           ) : (
-            <Circle className="w-6 h-6 text-white/15 hover:text-cyan-400/50 transition" />
+            <Circle className="w-6 h-6 text-white/15 hover:text-[#f5a623]/50 transition" />
           )}
         </button>
 
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2">
-            <span className={`text-xs font-black w-5 ${isDone ? "text-emerald-400/40" : "text-cyan-400/40"}`}>{index + 1}</span>
+            <span className={`text-xs font-black w-5 ${isDone ? "text-emerald-400/40" : "text-[#f5a623]/40"}`}>{index + 1}</span>
             <h3 className={`text-sm font-bold ${isDone ? "text-white/30 line-through" : "text-white/80"}`}>
               {step.title}
             </h3>
@@ -81,7 +81,7 @@ export default function ExecutionStepCard({ step, index, runId, onToggle }: Prop
           <button
             onClick={(e) => { e.stopPropagation(); void handleDeploy(); }}
             disabled={deploying}
-            className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-[10px] font-bold text-cyan-400 transition hover:bg-cyan-500/20 disabled:opacity-40"
+            className="shrink-0 inline-flex items-center gap-1.5 rounded-lg border border-[#f5a623]/20 bg-[#f5a623]/10 px-3 py-2 text-[10px] font-bold text-[#f5a623] transition hover:bg-[#f5a623]/20 disabled:opacity-40"
           >
             {deploying ? <Loader2 className="w-3 h-3 animate-spin" /> : <Rocket className="w-3 h-3" />}
             Deploy
@@ -111,7 +111,7 @@ export default function ExecutionStepCard({ step, index, runId, onToggle }: Prop
                 <ul className="space-y-1.5">
                   {(step.content.data as string[]).map((item, i) => (
                     <li key={i} className="text-xs text-white/55 flex items-start gap-2">
-                      <span className="text-cyan-400/40 font-mono text-[10px] shrink-0 mt-px">{i + 1}</span>
+                      <span className="text-[#f5a623]/40 font-mono text-[10px] shrink-0 mt-px">{i + 1}</span>
                       <span>{item}</span>
                     </li>
                   ))}
@@ -121,7 +121,7 @@ export default function ExecutionStepCard({ step, index, runId, onToggle }: Prop
                 <div className="space-y-2">
                   {(step.content.data as { label: string; value: string }[]).map(({ label, value }, i) => (
                     <div key={i}>
-                      <p className="text-[9px] font-bold text-cyan-400/30 uppercase">{label}</p>
+                      <p className="text-[9px] font-bold text-[#f5a623]/30 uppercase">{label}</p>
                       <p className="text-xs text-white/55">{value}</p>
                     </div>
                   ))}

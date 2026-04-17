@@ -43,7 +43,7 @@ export default function ROITrackerPage() {
   const isProfitable = totalRevenue > totalSpend;
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
@@ -105,7 +105,7 @@ export default function ROITrackerPage() {
             </tbody>
           </table>
           <div className="px-4 py-2">
-            <button onClick={addMonth} className="text-[10px] text-cyan-400/60 hover:text-cyan-400 transition">+ Add month</button>
+            <button onClick={addMonth} className="text-[10px] text-[#f5a623]/60 hover:text-[#f5a623] transition">+ Add month</button>
           </div>
         </div>
 

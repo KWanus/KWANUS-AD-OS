@@ -131,11 +131,11 @@ const STATUS_OPTIONS = ["draft", "testing", "live", "winner", "dead"] as const;
 const STATUS_STYLES: Record<string, string> = {
   draft: "border-white/10 text-white/40 bg-white/5",
   testing: "border-yellow-500/40 text-yellow-300 bg-yellow-500/10",
-  live: "border-cyan-500/40 text-cyan-300 bg-cyan-500/10",
+  live: "border-[#f5a623]/40 text-[#f5a623] bg-[#f5a623]/10",
   winner: "border-green-500/40 text-green-300 bg-green-500/10",
   dead: "border-red-500/30 text-red-400/60 bg-red-500/5",
-  ready: "border-cyan-500/40 text-cyan-300 bg-cyan-500/10",
-  active: "border-cyan-500/40 text-cyan-400 bg-cyan-500/10",
+  ready: "border-[#f5a623]/40 text-[#f5a623] bg-[#f5a623]/10",
+  active: "border-[#f5a623]/40 text-[#f5a623] bg-[#f5a623]/10",
   scaling: "border-green-500/40 text-green-400 bg-green-500/10",
 };
 
@@ -183,13 +183,13 @@ function NavItem({
       onClick={onClick}
       className={`w-full text-left px-3 py-2 rounded-lg text-sm transition flex items-center justify-between ${
         active
-          ? "bg-cyan-500/10 text-cyan-300 font-medium"
+          ? "bg-[#f5a623]/10 text-[#f5a623] font-medium"
           : "text-white/40 hover:text-white/70 hover:bg-white/5"
       }`}
     >
       <span>{label}</span>
       {count !== undefined && count !== null && (
-        <span className={`text-xs ${active ? "text-cyan-400" : "text-white/20"}`}>{count}</span>
+        <span className={`text-xs ${active ? "text-[#f5a623]" : "text-white/20"}`}>{count}</span>
       )}
     </button>
   );
@@ -224,17 +224,17 @@ function ExecutionTierPicker({
             onClick={() => onChange(tier.id)}
             className={`rounded-2xl border p-4 text-left transition-all ${
               active
-                ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                ? "border-[#f5a623]/40 bg-[#f5a623]/10 shadow-[0_0_20px_rgba(245,166,35,0.12)]"
                 : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
             }`}
           >
             <div className="flex items-center justify-between gap-3">
-              <span className={`text-sm font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
-              <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+              <span className={`text-sm font-black ${active ? "text-[#f5a623]" : "text-white"}`}>{tier.label}</span>
+              <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-[#f5a623]" : "text-white/20"}`}>
                 {tier.id}
               </span>
             </div>
-            <p className={`mt-2 text-xs leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+            <p className={`mt-2 text-xs leading-relaxed ${active ? "text-[#f5f0e8]/80" : "text-white/45"}`}>
               {tier.description}
             </p>
           </button>
@@ -626,7 +626,7 @@ export default function CampaignWorkspace() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[#0a0f1e] text-white flex items-center justify-center">
+      <main className="min-h-screen bg-t-bg-card text-white flex items-center justify-center">
         <p className="text-white/30 text-sm">Loading workspace...</p>
       </main>
     );
@@ -634,12 +634,12 @@ export default function CampaignWorkspace() {
 
   if (!campaign) {
     return (
-      <main className="min-h-screen bg-[#0a0f1e] px-4 text-white flex items-center justify-center">
+      <main className="min-h-screen bg-t-bg-card px-4 text-white flex items-center justify-center">
         <div className="w-full max-w-3xl space-y-4">
           <DatabaseFallbackNotice visible={databaseUnavailable} />
           <div className="text-center rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8">
           <p className="text-white/40 mb-4">{databaseUnavailable ? "Campaign data is temporarily unavailable." : "Campaign not found."}</p>
-          <Link href="/campaigns" className="text-cyan-400 hover:underline text-sm">← Back to campaigns</Link>
+          <Link href="/campaigns" className="text-[#f5a623] hover:underline text-sm">← Back to campaigns</Link>
           </div>
         </div>
       </main>
@@ -660,14 +660,14 @@ export default function CampaignWorkspace() {
     : landingEdits;
 
   return (
-    <main className="flex h-screen bg-[#0a0f1e] text-white overflow-hidden">
+    <main className="flex h-screen bg-t-bg-card text-white overflow-hidden">
 
       {/* LEFT SIDEBAR (fixed, 220px) */}
       <aside className="w-[220px] shrink-0 border-r border-white/10 flex flex-col">
 
         {/* Campaign info */}
         <div className="p-4 border-b border-white/10">
-          <Link href="/campaigns" className="text-xs text-cyan-400/60 hover:text-cyan-400 transition">
+          <Link href="/campaigns" className="text-xs text-[#f5a623]/60 hover:text-[#f5a623] transition">
             ← Campaigns
           </Link>
           <h2 className="font-bold text-sm mt-2 leading-tight text-white">{campaign.name}</h2>
@@ -678,10 +678,10 @@ export default function CampaignWorkspace() {
               className={`text-xs px-2 py-0.5 rounded-full border cursor-pointer bg-transparent outline-none ${STATUS_STYLES[campaign.status] ?? ""}`}
             >
               {CAMPAIGN_STATUS_OPTIONS.map((s) => (
-                <option key={s} value={s} className="bg-[#0a0f1e]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+                <option key={s} value={s} className="bg-t-bg-card">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
               ))}
             </select>
-            <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300">
+            <span className="rounded-full border border-[#f5a623]/20 bg-[#f5a623]/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.22em] text-[#f5a623]">
               {executionTier}
             </span>
             {saving && <span className="text-[10px] text-white/20">saving...</span>}
@@ -702,16 +702,16 @@ export default function CampaignWorkspace() {
                   key={phase}
                   className={`flex-1 h-1.5 rounded-full transition-all ${
                     i < (campaign.currentPhase ?? 1)
-                      ? "bg-cyan-500"
+                      ? "bg-[#f5a623]"
                       : i === (campaign.currentPhase ?? 1) - 1
-                      ? "bg-cyan-500/50"
+                      ? "bg-[#f5a623]/50"
                       : "bg-white/[0.06]"
                   }`}
                   title={phase}
                 />
               ))}
             </div>
-            <p className="text-[9px] text-cyan-400/50 mt-1 font-bold">
+            <p className="text-[9px] text-[#f5a623]/50 mt-1 font-bold">
               {["Source", "Audit", "Strategy", "Produce", "Deploy"][(campaign.currentPhase ?? 1) - 1]}
             </p>
           </div>
@@ -788,7 +788,7 @@ export default function CampaignWorkspace() {
           {productUrl && (
             <Link
               href={`/analyze?url=${encodeURIComponent(productUrl)}`}
-              className="block px-3 py-2 rounded-lg text-xs text-cyan-400/60 hover:text-cyan-400 hover:bg-cyan-500/5 transition"
+              className="block px-3 py-2 rounded-lg text-xs text-[#f5a623]/60 hover:text-[#f5a623] hover:bg-[#f5a623]/5 transition"
             >
               Re-analyze →
             </Link>
@@ -804,10 +804,10 @@ export default function CampaignWorkspace() {
           {activeTab === "overview" && (
             <div className="space-y-4">
               {businessProfile && (
-                <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/[0.06] p-6">
+                <div className="rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/[0.06] p-6">
                   <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
                     <div className="max-w-2xl">
-                      <p className="text-xs uppercase tracking-widest text-cyan-200/70 mb-3">Business Context</p>
+                      <p className="text-xs uppercase tracking-widest text-[#f5a623]/70 mb-3">Business Context</p>
                       <h3 className="text-xl font-bold text-white">
                         {businessProfile.businessName || campaign.productName || campaign.name}
                       </h3>
@@ -817,7 +817,7 @@ export default function CampaignWorkspace() {
                     </div>
                     <Link
                       href="/my-system"
-                      className="inline-flex items-center gap-2 rounded-xl border border-cyan-400/20 bg-black/20 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-cyan-200 transition hover:bg-black/30"
+                      className="inline-flex items-center gap-2 rounded-xl border border-cyan-400/20 bg-black/20 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-[#f5a623] transition hover:bg-black/30"
                     >
                       Open My System →
                     </Link>
@@ -895,7 +895,7 @@ export default function CampaignWorkspace() {
                   />
                 </div>
 
-                <div className="mt-4 rounded-xl border border-cyan-500/15 bg-cyan-500/[0.05] px-4 py-3 text-xs leading-relaxed text-cyan-100/80">
+                <div className="mt-4 rounded-xl border border-[#f5a623]/15 bg-[#f5a623]/[0.05] px-4 py-3 text-xs leading-relaxed text-[#f5f0e8]/80">
                   Regenerate assets after switching if you want the current workspace to reflect the new execution lane immediately.
                 </div>
               </div>
@@ -953,7 +953,7 @@ export default function CampaignWorkspace() {
                     <button
                       onClick={() => void regenerateAssets("briefs")}
                       disabled={regenerating !== null}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-cyan-500/30 bg-cyan-500/5 hover:bg-cyan-500/10 text-cyan-400 text-xs font-bold transition disabled:opacity-40"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#f5a623]/30 bg-[#f5a623]/5 hover:bg-[#f5a623]/10 text-[#f5a623] text-xs font-bold transition disabled:opacity-40"
                     >
                       {regenerating === "briefs" ? "⟳ Regenerating..." : "⟳ Regenerate"}
                     </button>
@@ -977,18 +977,18 @@ export default function CampaignWorkspace() {
                         <div className="p-5">
                           <div className="flex items-start justify-between gap-4 mb-3">
                             <div className="flex items-center gap-2 flex-wrap">
-                              {!!c.platform && <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-400 border border-cyan-500/20">{String(c.platform)}</span>}
+                              {!!c.platform && <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-[#f5a623]/15 text-[#f5a623] border border-[#f5a623]/20">{String(c.platform)}</span>}
                               {!!c.duration && <span className="text-[10px] text-white/30 border border-white/10 px-2 py-0.5 rounded font-mono">{String(c.duration)}</span>}
                               <span className={`text-[10px] px-2 py-0.5 rounded-full border font-medium ${
                                 v.status === "winner" ? "border-green-500/30 text-green-400 bg-green-500/10" :
-                                v.status === "live" ? "border-cyan-500/30 text-cyan-400 bg-cyan-500/10" :
+                                v.status === "live" ? "border-[#f5a623]/30 text-[#f5a623] bg-[#f5a623]/10" :
                                 "border-white/10 text-white/30 bg-white/5"
                               }`}>{v.status.charAt(0).toUpperCase() + v.status.slice(1)}</span>
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
                               <select value={v.status} onChange={(e) => void updateVariationStatus(v.id, e.target.value)}
                                 className="text-[10px] px-2 py-1 rounded-lg border border-white/10 bg-transparent text-white/40 outline-none cursor-pointer">
-                                {["draft","testing","live","winner","dead"].map(s => <option key={s} value={s} className="bg-[#0a0f1e]">{s.charAt(0).toUpperCase()+s.slice(1)}</option>)}
+                                {["draft","testing","live","winner","dead"].map(s => <option key={s} value={s} className="bg-t-bg-card">{s.charAt(0).toUpperCase()+s.slice(1)}</option>)}
                               </select>
                               <button onClick={() => void deleteVariation(v.id)} className="text-xs text-white/15 hover:text-red-400 transition">✕</button>
                             </div>
@@ -998,7 +998,7 @@ export default function CampaignWorkspace() {
                           <div className="flex items-center gap-3">
                             <button
                               onClick={() => openStudio(v)}
-                              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-[#0a0f1e] text-xs font-black uppercase tracking-wide transition shadow-[0_0_20px_rgba(6,182,212,0.25)]"
+                              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#f5a623] hover:bg-[#e07850] text-[#0a0f1e] text-xs font-black uppercase tracking-wide transition shadow-[0_0_20px_rgba(245,166,35,0.25)]"
                             >
                               ✦ Open in Studio
                             </button>
@@ -1024,14 +1024,14 @@ export default function CampaignWorkspace() {
                     <button
                       onClick={() => void regenerateAssets("hooks")}
                       disabled={regenerating !== null}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-cyan-500/30 bg-cyan-500/5 hover:bg-cyan-500/10 text-cyan-400 text-xs font-bold transition disabled:opacity-40"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#f5a623]/30 bg-[#f5a623]/5 hover:bg-[#f5a623]/10 text-[#f5a623] text-xs font-bold transition disabled:opacity-40"
                     >
                       {regenerating === "hooks" ? "⟳ Regenerating..." : "⟳ Hooks"}
                     </button>
                     <button
                       onClick={() => void regenerateAssets("scripts")}
                       disabled={regenerating !== null}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-purple-500/30 bg-purple-500/5 hover:bg-purple-500/10 text-purple-400 text-xs font-bold transition disabled:opacity-40"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-purple-500/30 bg-purple-500/5 hover:bg-purple-500/10 text-[#e07850] text-xs font-bold transition disabled:opacity-40"
                     >
                       {regenerating === "scripts" ? "⟳ Regenerating..." : "⟳ Scripts"}
                     </button>
@@ -1101,8 +1101,8 @@ export default function CampaignWorkspace() {
               )}
 
               {/* AI Quick Generate buttons */}
-              <div className="rounded-2xl border border-cyan-500/15 bg-cyan-500/[0.04] p-5">
-                <p className="text-xs font-semibold text-cyan-300/70 uppercase tracking-widest mb-3">Quick Generate with AI</p>
+              <div className="rounded-2xl border border-[#f5a623]/15 bg-[#f5a623]/[0.04] p-5">
+                <p className="text-xs font-semibold text-[#f5a623]/70 uppercase tracking-widest mb-3">Quick Generate with AI</p>
                 <p className="text-xs text-white/40 mb-4">One click — we write it using your business data. No prompts needed.</p>
                 <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                   {[
@@ -1117,7 +1117,7 @@ export default function CampaignWorkspace() {
                       key={item.label}
                       onClick={() => void aiQuickGenerate(item.type, item.platform)}
                       disabled={aiGenerating}
-                      className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-cyan-500/20 bg-cyan-500/5 hover:bg-cyan-500/10 text-cyan-300 text-xs font-bold transition disabled:opacity-40 disabled:cursor-wait"
+                      className="flex items-center justify-center gap-1.5 px-3 py-2.5 rounded-xl border border-[#f5a623]/20 bg-[#f5a623]/5 hover:bg-[#f5a623]/10 text-[#f5a623] text-xs font-bold transition disabled:opacity-40 disabled:cursor-wait"
                     >
                       {aiGenerating ? "Generating..." : item.label}
                     </button>
@@ -1130,14 +1130,14 @@ export default function CampaignWorkspace() {
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-5 space-y-3">
                   <p className="text-xs font-semibold text-white/60 uppercase tracking-widest">Write Your Own</p>
                   <div className="flex gap-2">
-                    <button onClick={() => setAddType("hook")} className={`flex-1 rounded-xl border px-3 py-2 text-xs font-semibold transition ${addType === "hook" ? "border-cyan-400/50 bg-cyan-500/10 text-cyan-300" : "border-white/10 text-white/40"}`}>Hook</button>
-                    <button onClick={() => setAddType("script")} className={`flex-1 rounded-xl border px-3 py-2 text-xs font-semibold transition ${addType === "script" ? "border-cyan-400/50 bg-cyan-500/10 text-cyan-300" : "border-white/10 text-white/40"}`}>Script</button>
+                    <button onClick={() => setAddType("hook")} className={`flex-1 rounded-xl border px-3 py-2 text-xs font-semibold transition ${addType === "hook" ? "border-cyan-400/50 bg-[#f5a623]/10 text-[#f5a623]" : "border-white/10 text-white/40"}`}>Hook</button>
+                    <button onClick={() => setAddType("script")} className={`flex-1 rounded-xl border px-3 py-2 text-xs font-semibold transition ${addType === "script" ? "border-cyan-400/50 bg-[#f5a623]/10 text-[#f5a623]" : "border-white/10 text-white/40"}`}>Script</button>
                   </div>
                   <input value={addName} onChange={(e) => setAddName(e.target.value)} placeholder="Label (e.g. Pain Hook v2)" className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-cyan-400/40 transition" />
                   <textarea value={addContent} onChange={(e) => setAddContent(e.target.value)} placeholder={addType === "hook" ? "Write your hook copy here..." : "Write your script here..."} rows={3} className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-cyan-400/40 resize-none transition" />
                   <input value={addPlatform} onChange={(e) => setAddPlatform(e.target.value)} placeholder="Platform (optional — TikTok, Facebook...)" className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-cyan-400/40 transition" />
                   <div className="flex gap-2">
-                    <button onClick={() => void addVariation()} disabled={adding || !addContent.trim()} className="flex-1 rounded-xl bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 px-4 py-2.5 text-sm font-semibold text-[#0a0f1e] transition">{adding ? "Adding..." : "Add Variation"}</button>
+                    <button onClick={() => void addVariation()} disabled={adding || !addContent.trim()} className="flex-1 rounded-xl bg-[#f5a623] hover:bg-[#e07850] disabled:opacity-50 px-4 py-2.5 text-sm font-semibold text-[#0a0f1e] transition">{adding ? "Adding..." : "Add Variation"}</button>
                     <button onClick={() => { setShowAddForm(false); setAddName(""); setAddContent(""); setAddPlatform(""); }} className="rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-4 py-2.5 text-sm text-white/50 transition">Cancel</button>
                   </div>
                 </div>
@@ -1191,7 +1191,7 @@ export default function CampaignWorkspace() {
                       className={`text-xs px-2 py-1 rounded-full border cursor-pointer bg-transparent outline-none ${STATUS_STYLES[campaign.landingDraft.status] ?? ""}`}
                     >
                       {["draft", "ready", "live"].map((s) => (
-                        <option key={s} value={s} className="bg-[#0a0f1e]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+                        <option key={s} value={s} className="bg-t-bg-card">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
                       ))}
                     </select>
                   </div>
@@ -1416,7 +1416,7 @@ export default function CampaignWorkspace() {
                   <button
                     onClick={() => void regenerateAssets("emails")}
                     disabled={regenerating !== null}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-purple-500/30 bg-purple-500/5 hover:bg-purple-500/10 text-purple-400 text-xs font-bold transition disabled:opacity-40"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-purple-500/30 bg-purple-500/5 hover:bg-purple-500/10 text-[#e07850] text-xs font-bold transition disabled:opacity-40"
                   >
                     {regenerating === "emails" ? "⟳ Regenerating..." : "⟳ Regenerate All"}
                   </button>
@@ -1444,9 +1444,9 @@ export default function CampaignWorkspace() {
                               {/* Sequence header — flow arrow style */}
                               <div className="flex items-center gap-2 mb-4">
                                 <div className="h-px flex-1 bg-gradient-to-r from-transparent to-cyan-500/30" />
-                                <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-500/20 bg-cyan-500/5">
+                                <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#f5a623]/20 bg-[#f5a623]/5">
                                   <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
-                                  <span className="text-xs font-semibold text-cyan-300">{EMAIL_SEQ_LABELS[seq]}</span>
+                                  <span className="text-xs font-semibold text-[#f5a623]">{EMAIL_SEQ_LABELS[seq]}</span>
                                   <span className="text-xs text-white/30">· {emails.length} email{emails.length !== 1 ? "s" : ""}</span>
                                 </div>
                                 <div className="h-px flex-1 bg-gradient-to-l from-transparent to-cyan-500/30" />
@@ -1528,7 +1528,7 @@ export default function CampaignWorkspace() {
                   <ol className="space-y-1.5 text-xs text-white/50">
                     <li><span className="text-white/70">1.</span> Copy each email into Klaviyo, Mailchimp, or your email tool</li>
                     <li><span className="text-white/70">2.</span> Customize [First Name], [Product Name], and dates</li>
-                    <li><span className="text-white/70">3.</span> Mark each one <span className="text-cyan-300">Live</span> as you set it up</li>
+                    <li><span className="text-white/70">3.</span> Mark each one <span className="text-[#f5a623]">Live</span> as you set it up</li>
                     <li><span className="text-white/70">4.</span> Start with the Welcome sequence first, then Abandoned Cart, then Post-Purchase</li>
                   </ol>
                 </div>
@@ -1573,7 +1573,7 @@ export default function CampaignWorkspace() {
                                   ? "border-red-500/20 bg-red-500/5 hover:border-red-500/30"
                                   : isScaling
                                   ? "border-green-500/20 bg-green-500/5 hover:border-green-500/30"
-                                  : "border-white/10 bg-white/5 hover:border-cyan-400/20 hover:bg-cyan-500/5"
+                                  : "border-white/10 bg-white/5 hover:border-cyan-400/20 hover:bg-[#f5a623]/5"
                               }`}
                             >
                               <input
@@ -1624,10 +1624,10 @@ function ContextChip({ label, value }: { label: string; value: string }) {
 
 function AssetStatusCard({ label, count, live, onNav }: { label: string; count: number; live: number; onNav: () => void }) {
   return (
-    <button onClick={onNav} className="rounded-xl border border-white/10 bg-white/5 hover:border-cyan-400/20 hover:bg-cyan-500/5 p-4 text-left transition">
+    <button onClick={onNav} className="rounded-xl border border-white/10 bg-white/5 hover:border-cyan-400/20 hover:bg-[#f5a623]/5 p-4 text-left transition">
       <p className="text-xs text-white/30 mb-1">{label}</p>
       <p className="text-xl font-bold text-white">{count}</p>
-      {live > 0 && <p className="text-xs text-cyan-400 mt-0.5">{live} active</p>}
+      {live > 0 && <p className="text-xs text-[#f5a623] mt-0.5">{live} active</p>}
     </button>
   );
 }
@@ -1659,7 +1659,7 @@ function UTMLinksSection({
           <div key={i} className="flex items-center gap-2 p-2.5 rounded-xl bg-black/20 border border-white/[0.06]">
             <div className="flex-1 min-w-0">
               <p className="text-[10px] text-white/40 truncate">{link.name}</p>
-              <p className="text-[10px] text-cyan-400/50 font-mono truncate">{link.url}</p>
+              <p className="text-[10px] text-[#f5a623]/50 font-mono truncate">{link.url}</p>
             </div>
             <button
               onClick={() => {
@@ -1787,7 +1787,7 @@ function VariationCard({
 
   const borderClass = variation.status === "winner" ? "border-green-500/30 bg-green-500/5" :
     variation.status === "dead" ? "border-red-500/10 bg-red-500/5 opacity-60" :
-    variation.status === "live" || variation.status === "testing" ? "border-cyan-500/20 bg-cyan-500/5" :
+    variation.status === "live" || variation.status === "testing" ? "border-[#f5a623]/20 bg-[#f5a623]/5" :
     "border-white/10 bg-white/5";
 
   return (
@@ -1797,7 +1797,7 @@ function VariationCard({
           <div className="flex items-center gap-2 flex-wrap">
             <span className={`font-semibold text-white/60 ${isBrief ? "text-sm" : "text-xs"}`}>{variation.name}</span>
             {isBrief && !!content.platform && (
-              <span className="text-xs text-cyan-400/60 border border-cyan-400/20 px-1.5 py-0.5 rounded">{String(content.platform)}</span>
+              <span className="text-xs text-[#f5a623]/60 border border-cyan-400/20 px-1.5 py-0.5 rounded">{String(content.platform)}</span>
             )}
             {isBrief && !!content.duration && (
               <span className="text-xs text-white/30 border border-white/10 px-1.5 py-0.5 rounded">{String(content.duration)}</span>
@@ -1813,7 +1813,7 @@ function VariationCard({
               className={`text-xs px-2 py-0.5 rounded-full border cursor-pointer bg-transparent outline-none ${STATUS_STYLES[variation.status] ?? ""}`}
             >
               {STATUS_OPTIONS.map((s) => (
-                <option key={s} value={s} className="bg-[#0a0f1e]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+                <option key={s} value={s} className="bg-t-bg-card">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
               ))}
             </select>
             <button onClick={onDelete} className="text-xs text-white/20 hover:text-red-400 transition">✕</button>
@@ -1836,7 +1836,7 @@ function VariationCard({
                   <a
                     href={`data:image/png;base64,${String(content.imageBase64)}`}
                     download={`${variation.name.replace(/\s+/g, "-").toLowerCase()}.png`}
-                    className="text-[10px] px-2 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 font-bold hover:bg-cyan-500/20 transition"
+                    className="text-[10px] px-2 py-1 rounded-lg bg-[#f5a623]/10 border border-[#f5a623]/20 text-[#f5a623] font-bold hover:bg-[#f5a623]/20 transition"
                   >
                     Download Image
                   </a>
@@ -1863,7 +1863,7 @@ function VariationCard({
                 </span>
               </div>
             )}
-            <button onClick={() => setExpanded(!expanded)} className="text-xs text-cyan-400/60 hover:text-cyan-400 transition">
+            <button onClick={() => setExpanded(!expanded)} className="text-xs text-[#f5a623]/60 hover:text-[#f5a623] transition">
               {expanded ? "Hide script ↑" : "View script ↓"}
             </button>
           </div>
@@ -1873,7 +1873,7 @@ function VariationCard({
           <div className="mt-3 space-y-2">
             {(content.sections as { timestamp: string; direction: string; copy: string }[] ?? []).map((s, i) => (
               <div key={i} className="flex gap-3 text-xs">
-                <span className="text-cyan-400 font-bold shrink-0 w-10">{s.timestamp}</span>
+                <span className="text-[#f5a623] font-bold shrink-0 w-10">{s.timestamp}</span>
                 <div>
                   <p className="text-white/30 mb-0.5">{s.direction}</p>
                   <p className="text-white/70">{s.copy}</p>
@@ -1887,11 +1887,11 @@ function VariationCard({
           <>
             {content.concept && (
               <div className="mt-2 mb-3 p-3 rounded-lg bg-black/30 border border-white/5">
-                <p className="text-[10px] font-semibold text-cyan-400/70 uppercase tracking-wide mb-1">Creative Concept</p>
+                <p className="text-[10px] font-semibold text-[#f5a623]/70 uppercase tracking-wide mb-1">Creative Concept</p>
                 <p className="text-sm text-white/70 leading-relaxed italic">&ldquo;{String(content.concept)}&rdquo;</p>
               </div>
             )}
-            <button onClick={() => setExpanded(!expanded)} className="text-xs text-cyan-400/60 hover:text-cyan-400 transition">
+            <button onClick={() => setExpanded(!expanded)} className="text-xs text-[#f5a623]/60 hover:text-[#f5a623] transition">
               {expanded ? "Hide full brief ↑" : "View full brief ↓"}
             </button>
 
@@ -1904,7 +1904,7 @@ function VariationCard({
                       {briefScenes.map((scene, i) => (
                         <div key={i} className="rounded-lg border border-white/8 bg-black/20 p-3 space-y-1.5">
                           <div className="flex items-center gap-2">
-                            <span className="text-cyan-400 font-bold text-xs shrink-0 w-12">{scene.timestamp}</span>
+                            <span className="text-[#f5a623] font-bold text-xs shrink-0 w-12">{scene.timestamp}</span>
                             <span className="text-xs text-white/40 border border-white/10 px-1.5 py-0.5 rounded">{scene.shotType}</span>
                           </div>
                           <p className="text-xs text-white/70 ml-14">{scene.visual}</p>
@@ -1953,7 +1953,7 @@ function VariationCard({
                       <p className="text-sm font-bold text-white">{briefImageAd.headline}</p>
                       <p className="text-xs text-white/50 leading-relaxed">{briefImageAd.bodyCopy}</p>
                       <p className="text-xs text-white/30 italic">{briefImageAd.visualDirection}</p>
-                      <span className="inline-block rounded-lg border border-cyan-400/30 bg-cyan-500/10 text-cyan-300 text-xs px-3 py-1 font-semibold">{briefImageAd.cta}</span>
+                      <span className="inline-block rounded-lg border border-cyan-400/30 bg-[#f5a623]/10 text-[#f5a623] text-xs px-3 py-1 font-semibold">{briefImageAd.cta}</span>
                     </div>
                   </div>
                 )}
@@ -2001,7 +2001,7 @@ function MetricsBar({ metrics }: { metrics: VariationMetrics | null }) {
       {metrics.ctr != null && (
         <div>
           <p className="text-[8px] font-bold text-white/20 uppercase tracking-widest">CTR</p>
-          <p className="text-sm font-black text-cyan-400">{metrics.ctr}</p>
+          <p className="text-sm font-black text-[#f5a623]">{metrics.ctr}</p>
         </div>
       )}
       {metrics.spend != null && (
@@ -2052,11 +2052,11 @@ function EmailEditorCard({
 
   if (isEditing) {
     return (
-      <div className="rounded-xl border border-cyan-500/30 bg-[#070c1a] overflow-hidden shadow-[0_0_30px_rgba(6,182,212,0.08)]">
+      <div className="rounded-xl border border-[#f5a623]/30 bg-[#070c1a] overflow-hidden shadow-[0_0_30px_rgba(245,166,35,0.08)]">
         <div className="p-5 space-y-3">
           {/* Edit mode header */}
           <div className="flex items-center justify-between mb-1">
-            <span className="text-xs font-semibold text-cyan-400 uppercase tracking-widest">Editing Email #{email.position}</span>
+            <span className="text-xs font-semibold text-[#f5a623] uppercase tracking-widest">Editing Email #{email.position}</span>
             <div className="flex items-center gap-2">
               <button
                 onClick={onCancel}
@@ -2066,7 +2066,7 @@ function EmailEditorCard({
               </button>
               <button
                 onClick={onSave}
-                className="px-3 py-1 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-xs font-semibold text-[#0a0f1e] transition"
+                className="px-3 py-1 rounded-lg bg-[#f5a623] hover:bg-[#e07850] text-xs font-semibold text-[#0a0f1e] transition"
               >
                 Save
               </button>
@@ -2127,7 +2127,7 @@ function EmailEditorCard({
               className="rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none focus:border-cyan-400/50 transition cursor-pointer"
             >
               {["draft", "ready", "live"].map((s) => (
-                <option key={s} value={s} className="bg-[#0a0f1e]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+                <option key={s} value={s} className="bg-t-bg-card">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
               ))}
             </select>
           </div>
@@ -2144,7 +2144,7 @@ function EmailEditorCard({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-1">
               {email.timing && (
-                <span className="text-xs font-bold text-cyan-400 shrink-0">{email.timing}</span>
+                <span className="text-xs font-bold text-[#f5a623] shrink-0">{email.timing}</span>
               )}
               <span className={`text-[10px] px-2 py-0.5 rounded-full border font-medium shrink-0 ${statusStyle}`}>
                 {email.status.charAt(0).toUpperCase() + email.status.slice(1)}
@@ -2162,12 +2162,12 @@ function EmailEditorCard({
               className={`text-xs px-2 py-0.5 rounded-full border cursor-pointer bg-transparent outline-none ${statusStyle}`}
             >
               {["draft", "ready", "live"].map((s) => (
-                <option key={s} value={s} className="bg-[#0a0f1e]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+                <option key={s} value={s} className="bg-t-bg-card">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
               ))}
             </select>
             <button
               onClick={onEdit}
-              className="px-3 py-1 rounded-lg border border-white/10 text-xs text-white/40 hover:text-cyan-300 hover:border-cyan-500/30 hover:bg-cyan-500/5 transition"
+              className="px-3 py-1 rounded-lg border border-white/10 text-xs text-white/40 hover:text-[#f5a623] hover:border-[#f5a623]/30 hover:bg-[#f5a623]/5 transition"
             >
               Edit
             </button>
@@ -2220,7 +2220,7 @@ function EmailFlowDiagram({ emails }: { emails: EmailDraft[] }) {
           const dayLabel = extractDay(email.timing, i);
           const isLast = i === sorted.length - 1;
           const seqColor = email.sequence === "welcome"
-            ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
+            ? "border-[#f5a623]/30 bg-[#f5a623]/10 text-[#f5a623]"
             : email.sequence === "cart"
             ? "border-yellow-500/30 bg-yellow-500/10 text-yellow-300"
             : "border-purple-500/30 bg-purple-500/10 text-purple-300";
@@ -2465,7 +2465,7 @@ function LandingPreview({ landing }: { landing: Partial<LandingDraft> }) {
           <ul className="space-y-2">
             {bullets.map((b, i) => (
               <li key={i} className="flex items-start gap-2 text-xs text-white/70">
-                <span className="text-cyan-400 mt-0.5 shrink-0">✓</span>
+                <span className="text-[#f5a623] mt-0.5 shrink-0">✓</span>
                 <span>{b}</span>
               </li>
             ))}
@@ -2475,11 +2475,11 @@ function LandingPreview({ landing }: { landing: Partial<LandingDraft> }) {
         {/* CTA */}
         <div>
           {landing.ctaCopy ? (
-            <button className="w-full py-3 rounded-xl bg-cyan-500 text-[#0a0f1e] text-sm font-black uppercase tracking-wide shadow-[0_0_24px_rgba(6,182,212,0.3)] hover:bg-cyan-400 transition">
+            <button className="w-full py-3 rounded-xl bg-[#f5a623] text-[#0a0f1e] text-sm font-black uppercase tracking-wide shadow-[0_0_24px_rgba(245,166,35,0.3)] hover:bg-[#e07850] transition">
               {landing.ctaCopy}
             </button>
           ) : (
-            <div className="h-10 rounded-xl bg-cyan-500/20 border border-cyan-500/20" />
+            <div className="h-10 rounded-xl bg-[#f5a623]/20 border border-[#f5a623]/20" />
           )}
         </div>
 

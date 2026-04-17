@@ -74,7 +74,7 @@ export default function ProposalGeneratorPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center justify-between mb-8">
@@ -94,7 +94,7 @@ export default function ProposalGeneratorPage() {
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
                 placeholder="e.g. Green Valley Dental"
-                className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+                className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
               />
             </div>
 
@@ -113,7 +113,7 @@ export default function ProposalGeneratorPage() {
                       onClick={() => setSelectedRunId(a.id)}
                       className={`w-full flex items-center justify-between p-3 rounded-xl border transition text-left ${
                         selectedRunId === a.id
-                          ? "border-cyan-500/30 bg-cyan-500/10"
+                          ? "border-[#f5a623]/30 bg-[#f5a623]/10"
                           : "border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12]"
                       }`}
                     >
@@ -124,7 +124,7 @@ export default function ProposalGeneratorPage() {
                         </p>
                       </div>
                       {selectedRunId === a.id && (
-                        <Check className="w-4 h-4 text-cyan-400 shrink-0" />
+                        <Check className="w-4 h-4 text-[#f5a623] shrink-0" />
                       )}
                     </button>
                   ))}
@@ -138,7 +138,7 @@ export default function ProposalGeneratorPage() {
             <button
               onClick={generateProposal}
               disabled={generating}
-              className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40"
+              className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40"
             >
               {generating ? (
                 <><Loader2 className="w-4 h-4 animate-spin" /> Generating proposal...</>
@@ -153,7 +153,7 @@ export default function ProposalGeneratorPage() {
             <div className="flex items-center gap-2">
               <button
                 onClick={copyAll}
-                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-500 text-[#0a0f1e] text-xs font-bold hover:bg-cyan-400 transition"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#f5a623] text-[#0a0f1e] text-xs font-bold hover:bg-[#e07850] transition"
               >
                 {copied ? <><Check className="w-3.5 h-3.5" /> Copied!</> : <><Copy className="w-3.5 h-3.5" /> Copy All</>}
               </button>

@@ -50,12 +50,12 @@ Score 0-100 for overall viability. Be realistic with income estimates. Sort by s
   const compColors = { high: "text-red-400", medium: "text-amber-400", low: "text-emerald-400" };
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-            <Compass className="w-5 h-5 text-cyan-400" />
+          <div className="w-10 h-10 rounded-xl bg-[#f5a623]/10 border border-[#f5a623]/20 flex items-center justify-center">
+            <Compass className="w-5 h-5 text-[#f5a623]" />
           </div>
           <div>
             <h1 className="text-xl font-black text-white">Niche Finder</h1>
@@ -67,7 +67,7 @@ Score 0-100 for overall viability. Be realistic with income estimates. Sort by s
           <div className="space-y-4 max-w-md mx-auto">
             <input type="text" value={interests} onChange={(e) => setInterests(e.target.value)}
               placeholder="Your interests (e.g. cooking, tech, fitness, personal finance)"
-              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition" />
+              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition" />
             <input type="text" value={skills} onChange={(e) => setSkills(e.target.value)}
               placeholder="Your skills (optional — e.g. writing, video, design, teaching)"
               className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none transition" />
@@ -76,14 +76,14 @@ Score 0-100 for overall viability. Be realistic with income estimates. Sort by s
               <div className="flex gap-2">
                 {(["low", "medium", "high"] as const).map((b) => (
                   <button key={b} onClick={() => setBudget(b)}
-                    className={`flex-1 px-3 py-2 rounded-lg text-xs font-bold transition border ${budget === b ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-300" : "border-white/10 text-white/30"}`}>
+                    className={`flex-1 px-3 py-2 rounded-lg text-xs font-bold transition border ${budget === b ? "border-[#f5a623]/40 bg-[#f5a623]/10 text-[#f5a623]" : "border-white/10 text-white/30"}`}>
                     {b === "low" ? "$0-$100" : b === "medium" ? "$100-$1k" : "$1k+"}
                   </button>
                 ))}
               </div>
             </div>
             <button onClick={find} disabled={generating || !interests.trim()}
-              className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40">
+              className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40">
               {generating ? <><Loader2 className="w-4 h-4 animate-spin" /> Finding niches...</> : <><Compass className="w-4 h-4" /> Find My Niche</>}
             </button>
           </div>
@@ -91,7 +91,7 @@ Score 0-100 for overall viability. Be realistic with income estimates. Sort by s
           <div className="space-y-4">
             <button onClick={() => setResult(null)} className="text-xs text-white/30 hover:text-white/60 transition">← Search again</button>
             {result.niches.map((n, i) => {
-              const scoreColor = n.score >= 80 ? "text-emerald-400" : n.score >= 60 ? "text-cyan-400" : "text-amber-400";
+              const scoreColor = n.score >= 80 ? "text-emerald-400" : n.score >= 60 ? "text-[#f5a623]" : "text-amber-400";
               return (
                 <div key={i} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 hover:border-cyan-400/20 transition">
                   <div className="flex items-start justify-between gap-3 mb-3">
@@ -122,7 +122,7 @@ Score 0-100 for overall viability. Be realistic with income estimates. Sort by s
                     </div>
                     <div className="p-2.5 rounded-lg bg-white/[0.03] border border-white/[0.06]">
                       <div className="flex items-center gap-1 mb-1">
-                        <Users className="w-3 h-3 text-cyan-400/50" />
+                        <Users className="w-3 h-3 text-[#f5a623]/50" />
                         <p className="text-[9px] text-white/25 uppercase">Ideal Customer</p>
                       </div>
                       <p className="text-xs text-white/50">{n.idealCustomer}</p>
@@ -133,9 +133,9 @@ Score 0-100 for overall viability. Be realistic with income estimates. Sort by s
                     <p className="text-[9px] text-white/25 uppercase mb-1">How to monetize</p>
                     <p className="text-xs text-white/50">{n.monetization}</p>
                   </div>
-                  <div className="mt-2 p-2.5 rounded-lg bg-cyan-500/5 border border-cyan-500/10">
-                    <p className="text-[9px] text-cyan-400/50 uppercase mb-1">First step</p>
-                    <p className="text-xs text-cyan-300/70">{n.entryStrategy}</p>
+                  <div className="mt-2 p-2.5 rounded-lg bg-[#f5a623]/5 border border-[#f5a623]/10">
+                    <p className="text-[9px] text-[#f5a623]/50 uppercase mb-1">First step</p>
+                    <p className="text-xs text-[#f5a623]/70">{n.entryStrategy}</p>
                   </div>
                 </div>
               );

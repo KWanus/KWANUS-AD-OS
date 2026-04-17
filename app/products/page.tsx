@@ -76,9 +76,9 @@ const PLATFORM_CONFIG: Record<string, { emoji: string; label: string; color: str
   amazon:      { emoji: "📦", label: "Amazon",       color: "text-orange-400 bg-orange-500/10 border-orange-500/20" },
   aliexpress:  { emoji: "🏪", label: "AliExpress",   color: "text-red-400 bg-red-500/10 border-red-500/20" },
   jvzoo:       { emoji: "🎯", label: "JVZoo",        color: "text-blue-400 bg-blue-500/10 border-blue-500/20" },
-  warriorplus: { emoji: "⚔️", label: "WarriorPlus",  color: "text-purple-400 bg-purple-500/10 border-purple-500/20" },
+  warriorplus: { emoji: "⚔️", label: "WarriorPlus",  color: "text-[#e07850] bg-purple-500/10 border-purple-500/20" },
   cj:          { emoji: "🔗", label: "CJ/ShareASale", color: "text-indigo-400 bg-indigo-500/10 border-indigo-500/20" },
-  dropship:    { emoji: "🚢", label: "Dropship",     color: "text-cyan-400 bg-cyan-500/10 border-cyan-500/20" },
+  dropship:    { emoji: "🚢", label: "Dropship",     color: "text-[#f5a623] bg-[#f5a623]/10 border-[#f5a623]/20" },
   custom:      { emoji: "🔗", label: "Custom",       color: "text-white/40 bg-white/[0.05] border-white/[0.08]" },
 };
 
@@ -120,7 +120,7 @@ function ProductCard({ product, onDelete }: { product: Product; onDelete: (id: s
             <span
               className={`text-[10px] font-black uppercase tracking-[0.16em] px-2 py-0.5 rounded-lg border ${
                 executionTier === "elite"
-                  ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-100"
+                  ? "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5f0e8]"
                   : "border-white/[0.08] bg-white/[0.05] text-white/50"
               }`}
             >
@@ -171,13 +171,13 @@ function ProductCard({ product, onDelete }: { product: Product; onDelete: (id: s
       <div className="flex gap-2 pt-3 border-t border-white/[0.05]">
         <Link
           href={launchUrl("ad-campaign")}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-[11px] font-bold hover:bg-cyan-500/15 transition"
+          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-[#f5a623]/10 border border-[#f5a623]/20 text-[#f5a623] text-[11px] font-bold hover:bg-[#f5a623]/15 transition"
         >
           <Megaphone className="w-3 h-3" /> Ad Campaign
         </Link>
         <Link
           href={launchUrl("landing-page")}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 text-[11px] font-bold hover:bg-purple-500/15 transition"
+          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-purple-500/10 border border-purple-500/20 text-[#e07850] text-[11px] font-bold hover:bg-purple-500/15 transition"
         >
           <Globe className="w-3 h-3" /> Build Site
         </Link>
@@ -194,7 +194,7 @@ function ProductCard({ product, onDelete }: { product: Product; onDelete: (id: s
 
 function verdictTone(status?: string) {
   if (status === "healthy") return "border-emerald-500/20 bg-emerald-500/10 text-emerald-200";
-  if (status === "stale") return "border-cyan-500/20 bg-cyan-500/10 text-cyan-100";
+  if (status === "stale") return "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5f0e8]";
   return "border-amber-500/20 bg-amber-500/10 text-amber-100";
 }
 
@@ -316,7 +316,7 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <WorkspaceShell maxWidth="max-w-5xl">
         <WorkspaceHero
@@ -333,7 +333,7 @@ export default function ProductsPage() {
               </Link>
               <button
                 onClick={() => setTab("add")}
-                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition"
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition"
               >
                 <Plus className="w-4 h-4" /> Add Product
               </button>
@@ -342,7 +342,7 @@ export default function ProductsPage() {
           stats={products.length > 0 ? [
             { label: "Saved Products", value: products.length.toString() },
             { label: "Affiliate Ready", value: products.filter((product) => Boolean(product.affiliateUrl)).length.toString(), tone: "text-emerald-300" },
-            { label: "Scanned This Session", value: scanResult ? "1" : "0", tone: "text-cyan-300" },
+            { label: "Scanned This Session", value: scanResult ? "1" : "0", tone: "text-[#f5a623]" },
           ] : undefined}
         />
 
@@ -382,7 +382,7 @@ export default function ProductsPage() {
                   <button
                     onClick={() => void refreshBusinessSystem()}
                     disabled={refreshingRecommendations}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-5 py-3 text-sm font-bold text-cyan-100 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex items-center gap-2 rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-5 py-3 text-sm font-bold text-[#f5f0e8] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {refreshingRecommendations ? "Refreshing..." : "Refresh Recommendations"}
                   </button>
@@ -395,10 +395,10 @@ export default function ProductsPage() {
         <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="mb-6" />
 
         {businessProfile && (
-          <div className="mb-6 rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] to-purple-600/[0.03] p-6">
+          <div className="mb-6 rounded-[28px] border border-[#f5a623]/20 bg-gradient-to-br from-cyan-500/[0.08] to-[#e07850]/[0.03] p-6">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-3xl">
-                <p className="text-[10px] font-black uppercase tracking-[0.26em] text-cyan-200/70">Recommended Product Move</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.26em] text-[#f5a623]/70">Recommended Product Move</p>
                 <h2 className="mt-2 text-2xl font-black text-white">
                   {businessProfile.mainGoal === "more_sales" ? "Scan and launch your next revenue offer" : "Save a product and connect it to campaigns"}
                 </h2>
@@ -412,7 +412,7 @@ export default function ProductsPage() {
               <div className="flex flex-wrap gap-3">
                 <button
                   onClick={() => setTab("add")}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)]"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(245,166,35,0.22)]"
                 >
                   <Plus className="w-4 h-4" />
                   Add Product
@@ -465,8 +465,8 @@ export default function ProductsPage() {
                     onClick={() => setExecutionTier(value)}
                     className={`rounded-2xl border px-4 py-3 text-left transition ${
                       executionTier === value
-                        ? "border-cyan-500/25 bg-cyan-500/10 text-cyan-100"
-                        : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+                        ? "border-[#f5a623]/25 bg-[#f5a623]/10 text-[#f5f0e8]"
+                        : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.05]"
                     }`}
                   >
                     <p className="text-sm font-black">{label}</p>
@@ -481,12 +481,12 @@ export default function ProductsPage() {
                   onChange={(e) => setUrl(e.target.value)}
                   onKeyDown={(e) => e.key === "Enter" && void scanProduct()}
                   placeholder="https://clickbank.com/product... or https://amazon.com/dp/..."
-                  className="flex-1 bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/25 focus:outline-none focus:border-cyan-500/40 transition"
+                  className="flex-1 bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/25 focus:outline-none focus:border-[#f5a623]/40 transition"
                 />
                 <button
                   onClick={() => void scanProduct()}
                   disabled={!url.trim() || scanning}
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 disabled:opacity-30 transition flex items-center gap-2"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 disabled:opacity-30 transition flex items-center gap-2"
                 >
                   {scanning ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
                   {scanning ? "Scanning…" : "Scan"}
@@ -502,7 +502,7 @@ export default function ProductsPage() {
                   <span
                     className={`text-[10px] font-black uppercase tracking-[0.16em] px-2 py-0.5 rounded-lg border ${
                       (scanResult.executionTier ?? executionTier) === "elite"
-                        ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-100"
+                        ? "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5f0e8]"
                         : "border-white/[0.08] bg-white/[0.05] text-white/50"
                     }`}
                   >
@@ -542,7 +542,7 @@ export default function ProductsPage() {
                       <span className="text-emerald-400/80"><span className="text-white/25">Commission:</span> {scanResult.product.commission}</span>
                     )}
                     {scanResult.product.niche && (
-                      <span className="text-cyan-400/70 capitalize"><span className="text-white/25">Niche:</span> {scanResult.product.niche}</span>
+                      <span className="text-[#f5a623]/70 capitalize"><span className="text-white/25">Niche:</span> {scanResult.product.niche}</span>
                     )}
                   </div>
                 </div>
@@ -553,7 +553,7 @@ export default function ProductsPage() {
                     <ul className="space-y-1">
                       {scanResult.product.hooks.slice(0, 3).map((h, i) => (
                         <li key={i} className="text-xs text-white/55 flex items-start gap-1.5">
-                          <span className="text-cyan-400/50 shrink-0">{i + 1}.</span>{h}
+                          <span className="text-[#f5a623]/50 shrink-0">{i + 1}.</span>{h}
                         </li>
                       ))}
                     </ul>
@@ -564,14 +564,14 @@ export default function ProductsPage() {
                   <button
                     onClick={() => void saveProduct()}
                     disabled={saving || saved}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 disabled:opacity-40 transition"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 disabled:opacity-40 transition"
                   >
                     {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <CheckCircle className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                     {saved ? "Saved!" : "Save to Library"}
                   </button>
                   <Link
                     href={`/skills?skill=ad-campaign&prefill_url=${encodeURIComponent(scanResult.affiliateUrl ?? url)}&prefill_mode=operator&execution_tier=${scanResult.executionTier ?? executionTier}`}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-bold hover:bg-cyan-500/15 transition"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#f5a623]/10 border border-[#f5a623]/20 text-[#f5a623] text-sm font-bold hover:bg-[#f5a623]/15 transition"
                   >
                     <Megaphone className="w-4 h-4" /> Build Campaign Now
                     <ArrowRight className="w-4 h-4" />
@@ -603,7 +603,7 @@ export default function ProductsPage() {
                 <p className="text-xs mt-1 opacity-60">Add your first product using the "Add Product" tab</p>
                 <button
                   onClick={() => setTab("add")}
-                  className="mt-4 flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-sm font-bold hover:bg-cyan-500/15 transition mx-auto"
+                  className="mt-4 flex items-center gap-2 px-4 py-2 rounded-xl bg-[#f5a623]/10 border border-[#f5a623]/20 text-[#f5a623] text-sm font-bold hover:bg-[#f5a623]/15 transition mx-auto"
                 >
                   <Plus className="w-4 h-4" /> Add First Product
                 </button>

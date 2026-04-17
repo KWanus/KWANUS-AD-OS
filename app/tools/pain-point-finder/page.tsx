@@ -72,7 +72,7 @@ Include 6 pain points (2 critical, 2 high, 2 medium) and 4 desires. Be extremely
   const severityColors = { critical: "border-red-500/20 bg-red-500/5 text-red-400", high: "border-amber-500/20 bg-amber-500/5 text-amber-400", medium: "border-blue-500/20 bg-blue-500/5 text-blue-400" };
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
@@ -101,7 +101,7 @@ Include 6 pain points (2 critical, 2 high, 2 medium) and 4 desires. Be extremely
         ) : (
           <div className="space-y-4">
             <div className="flex gap-2">
-              <button onClick={copyAll} className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-500 text-[#0a0f1e] text-xs font-bold hover:bg-cyan-400 transition">
+              <button onClick={copyAll} className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#f5a623] text-[#0a0f1e] text-xs font-bold hover:bg-[#e07850] transition">
                 {copied ? <><Check className="w-3.5 h-3.5" /> Copied!</> : <><Copy className="w-3.5 h-3.5" /> Copy All</>}
               </button>
               <button onClick={() => setResult(null)} className="px-4 py-2 rounded-xl border border-white/10 bg-white/[0.03] text-xs font-bold text-white/40 transition">New Research</button>
@@ -138,18 +138,18 @@ Include 6 pain points (2 critical, 2 high, 2 medium) and 4 desires. Be extremely
             </div>
 
             {/* Opportunities */}
-            <div className="rounded-2xl border border-cyan-500/15 bg-cyan-500/5 p-5">
-              <p className="text-[10px] font-black uppercase tracking-widest text-cyan-400/60 mb-2">Business Opportunities</p>
+            <div className="rounded-2xl border border-[#f5a623]/15 bg-[#f5a623]/5 p-5">
+              <p className="text-[10px] font-black uppercase tracking-widest text-[#f5a623]/60 mb-2">Business Opportunities</p>
               {result.opportunities.map((o, i) => (
                 <p key={i} className="text-xs text-white/50 mb-1.5 flex items-start gap-2">
-                  <TrendingUp className="w-3 h-3 text-cyan-400 shrink-0 mt-0.5" /> {o}
+                  <TrendingUp className="w-3 h-3 text-[#f5a623] shrink-0 mt-0.5" /> {o}
                 </p>
               ))}
             </div>
 
             {/* Hook Angles */}
             <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5">
-              <p className="text-[10px] font-black uppercase tracking-widest text-purple-400/60 mb-3">Ad Hook Angles</p>
+              <p className="text-[10px] font-black uppercase tracking-widest text-[#e07850]/60 mb-3">Ad Hook Angles</p>
               {result.hookAngles.map((h, i) => (
                 <p key={i} className="text-xs text-white/60 mb-2 p-2 rounded-lg bg-purple-500/5 border border-purple-500/10">
                   &ldquo;{h}&rdquo;

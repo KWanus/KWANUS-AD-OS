@@ -70,7 +70,7 @@ export default function CompetitorCards({ vm }: { vm: HimalayaResultsViewModel }
       {/* Market analysis */}
       {marketGroup && marketGroup.type === "kv" && (
         <div className="mb-4 rounded-xl border border-white/[0.04] bg-black/20 p-4">
-          <h3 className="mb-3 text-[9px] font-black uppercase tracking-widest text-cyan-400/40">Market Analysis</h3>
+          <h3 className="mb-3 text-[9px] font-black uppercase tracking-widest text-[#f5a623]/40">Market Analysis</h3>
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             {(marketGroup.content as { label: string; value: string }[]).map(({ label, value }, i) => (
               <div key={i} className="rounded-lg border border-white/[0.04] bg-white/[0.02] px-3 py-3">

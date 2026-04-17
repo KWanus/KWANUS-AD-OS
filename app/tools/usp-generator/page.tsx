@@ -52,7 +52,7 @@ Return ONLY the JSON array.`,
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">

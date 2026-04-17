@@ -124,7 +124,7 @@ export default function PresetPicker({ onSelect }: Props) {
               onClick={() => handleSelect(p)}
               className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition border ${
                 selectedId === p.id
-                  ? "bg-cyan-500/10 border-cyan-500/20 text-cyan-400"
+                  ? "bg-[#f5a623]/10 border-[#f5a623]/20 text-[#f5a623]"
                   : "bg-white/[0.02] border-white/[0.06] text-white/30 hover:text-white/50"
               }`}
             >
@@ -142,7 +142,7 @@ export default function PresetPicker({ onSelect }: Props) {
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             placeholder="Preset name..."
-            className="w-full px-3 py-2 rounded-lg bg-white/[0.04] border border-white/[0.1] text-xs text-white/60 focus:outline-none focus:border-cyan-500/30"
+            className="w-full px-3 py-2 rounded-lg bg-white/[0.04] border border-white/[0.1] text-xs text-white/60 focus:outline-none focus:border-[#f5a623]/30"
             autoFocus
           />
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
@@ -163,7 +163,7 @@ export default function PresetPicker({ onSelect }: Props) {
                     value={newConfig[f.key] ?? ""}
                     onChange={(e) => setNewConfig({ ...newConfig, [f.key]: e.target.value })}
                     placeholder={f.placeholder}
-                    className="w-full px-2 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.08] text-[11px] text-white/50 focus:outline-none focus:border-cyan-500/30"
+                    className="w-full px-2 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.08] text-[11px] text-white/50 focus:outline-none focus:border-[#f5a623]/30"
                   />
                 )}
               </div>

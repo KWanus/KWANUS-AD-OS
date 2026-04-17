@@ -87,15 +87,15 @@ const SEVERITY_COLORS: Record<string, string> = {
 
 const TIER_COLORS: Record<string, string> = {
   basic: "text-white/50 bg-white/5 border-white/10",
-  pro:   "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
-  elite: "text-purple-400 bg-purple-500/10 border-purple-500/20",
+  pro:   "text-[#f5a623] bg-[#f5a623]/10 border-[#f5a623]/20",
+  elite: "text-[#e07850] bg-purple-500/10 border-purple-500/20",
 };
 
 const INTENT_COLORS: Record<string, string> = {
   commercial:    "text-green-400 bg-green-500/10",
   informational: "text-blue-400 bg-blue-500/10",
-  navigational:  "text-purple-400 bg-purple-500/10",
-  transactional: "text-cyan-400 bg-cyan-500/10",
+  navigational:  "text-[#e07850] bg-purple-500/10",
+  transactional: "text-[#f5a623] bg-[#f5a623]/10",
 };
 
 const DIFFICULTY_COLORS: Record<string, string> = {
@@ -130,7 +130,7 @@ function InputField({
       placeholder={placeholder}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-cyan-500/40 transition w-full"
+      className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-[#f5a623]/40 transition w-full"
     />
   );
 }
@@ -142,7 +142,7 @@ function PrimaryButton({ onClick, disabled, loading, children }: {
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black px-4 py-2 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
+      className="flex items-center gap-2 bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-black px-4 py-2 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
     >
       {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
       {children}
@@ -237,17 +237,17 @@ function ExecutionTierPicker({
             onClick={() => onChange(tier.id)}
             className={`rounded-2xl border p-4 text-left transition-all ${
               active
-                ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                ? "border-[#f5a623]/40 bg-[#f5a623]/10 shadow-[0_0_20px_rgba(245,166,35,0.12)]"
                 : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
             }`}
           >
             <div className="flex items-center justify-between gap-3">
-              <span className={`text-sm font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
-              <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+              <span className={`text-sm font-black ${active ? "text-[#f5a623]" : "text-white"}`}>{tier.label}</span>
+              <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-[#f5a623]" : "text-white/20"}`}>
                 {tier.id}
               </span>
             </div>
-            <p className={`mt-2 text-xs leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+            <p className={`mt-2 text-xs leading-relaxed ${active ? "text-[#f5f0e8]/80" : "text-white/45"}`}>
               {tier.description}
             </p>
           </button>
@@ -292,13 +292,13 @@ function AuditModal({
         <div className="flex gap-2 mb-5 flex-wrap">
           <button
             onClick={() => onAction("packages", audit.id)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold hover:bg-cyan-500/20 transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#f5a623]/10 border border-[#f5a623]/20 text-[#f5a623] text-xs font-bold hover:bg-[#f5a623]/20 transition"
           >
             <Package className="w-3 h-3" /> Generate Packages
           </button>
           <button
             onClick={() => onAction("gmb", audit.id)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-bold hover:bg-purple-500/20 transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-[#e07850] text-xs font-bold hover:bg-purple-500/20 transition"
           >
             <MapPin className="w-3 h-3" /> GMB Posts
           </button>
@@ -570,7 +570,7 @@ function PackagesTab() {
               </div>
               <h3 className="text-sm font-black text-white mb-1">{pkg.name}</h3>
               <div className="flex items-baseline gap-1 mb-3">
-                <span className="text-lg font-black text-cyan-400">${pkg.price.toLocaleString()}</span>
+                <span className="text-lg font-black text-[#f5a623]">${pkg.price.toLocaleString()}</span>
                 {pkg.billingCycle && <span className="text-xs text-white/30">/ {pkg.billingCycle}</span>}
               </div>
               <p className="text-[10px] font-black uppercase tracking-widest text-white/25 mb-2">
@@ -579,7 +579,7 @@ function PackagesTab() {
               <ul className="space-y-1">
                 {pkg.deliverables.slice(0, 5).map((d, i) => (
                   <li key={i} className="flex items-start gap-2 text-xs text-white/45">
-                    <span className="w-1 h-1 rounded-full bg-cyan-500/50 mt-1.5 shrink-0" />
+                    <span className="w-1 h-1 rounded-full bg-[#f5a623]/50 mt-1.5 shrink-0" />
                     {d}
                   </li>
                 ))}
@@ -718,10 +718,10 @@ function GmbTab({ audits }: { audits: LocalAudit[] }) {
   }
 
   const POST_TYPE_COLORS: Record<string, string> = {
-    offer:       "text-cyan-400 bg-cyan-500/10",
+    offer:       "text-[#f5a623] bg-[#f5a623]/10",
     educational: "text-blue-400 bg-blue-500/10",
     testimonial: "text-green-400 bg-green-500/10",
-    event:       "text-purple-400 bg-purple-500/10",
+    event:       "text-[#e07850] bg-purple-500/10",
     update:      "text-white/50 bg-white/5",
   };
 
@@ -747,7 +747,7 @@ function GmbTab({ audits }: { audits: LocalAudit[] }) {
                 onClick={() => setRevPlatform(p)}
                 className={`flex-1 py-2 rounded-xl text-sm font-bold border transition ${
                   revPlatform === p
-                    ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400"
+                    ? "bg-[#f5a623]/10 border-[#f5a623]/30 text-[#f5a623]"
                     : "border-white/[0.08] text-white/35 hover:text-white/60"
                 }`}
               >
@@ -774,7 +774,7 @@ function GmbTab({ audits }: { audits: LocalAudit[] }) {
       {/* GMB Post Calendar */}
       <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5">
         <div className="flex items-center gap-2 mb-4">
-          <Calendar className="w-4 h-4 text-purple-400" />
+          <Calendar className="w-4 h-4 text-[#e07850]" />
           <h3 className="text-sm font-black text-white">GMB Post Calendar</h3>
         </div>
         <div className="space-y-3">
@@ -802,7 +802,7 @@ function GmbTab({ audits }: { audits: LocalAudit[] }) {
                 </div>
                 <p className="text-xs font-bold text-white/80 mb-1">{post.title}</p>
                 <p className="text-xs text-white/45 leading-relaxed mb-1">{post.body}</p>
-                {post.cta && <p className="text-[10px] text-cyan-400/60">CTA: {post.cta}</p>}
+                {post.cta && <p className="text-[10px] text-[#f5a623]/60">CTA: {post.cta}</p>}
               </div>
             ))}
           </div>
@@ -823,7 +823,7 @@ function GmbTab({ audits }: { audits: LocalAudit[] }) {
             <select
               value={seoAuditId}
               onChange={(e) => setSeoAuditId(e.target.value)}
-              className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-cyan-500/40 transition w-full"
+              className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-[#f5a623]/40 transition w-full"
             >
               <option value="" className="bg-[#0b1120]">Select an audit...</option>
               {audits.map((a) => (
@@ -930,7 +930,7 @@ function KeywordsTab() {
               onClick={() => setRadius(r)}
               className={`flex-1 py-2 rounded-xl text-sm font-bold border transition ${
                 radius === r
-                  ? "bg-cyan-500/10 border-cyan-500/30 text-cyan-400"
+                  ? "bg-[#f5a623]/10 border-[#f5a623]/30 text-[#f5a623]"
                   : "border-white/[0.08] text-white/35 hover:text-white/60"
               }`}
             >
@@ -993,7 +993,7 @@ function KeywordsTab() {
               <SectionLabel>Near Me Keywords</SectionLabel>
               <div className="flex flex-wrap gap-2">
                 {results.nearMe.map((kw, i) => (
-                  <span key={i} className="px-3 py-1.5 bg-cyan-500/5 border border-cyan-500/15 rounded-xl text-xs text-cyan-400/70 font-medium">
+                  <span key={i} className="px-3 py-1.5 bg-[#f5a623]/5 border border-[#f5a623]/15 rounded-xl text-xs text-[#f5a623]/70 font-medium">
                     {kw}
                   </span>
                 ))}
@@ -1042,14 +1042,14 @@ export default function LocalPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <div className="max-w-5xl mx-auto px-4 pt-10 pb-20">
 
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-1">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#f5a623] to-[#e07850] flex items-center justify-center">
               <MapPin className="w-4 h-4 text-white" />
             </div>
             <h1 className="text-xl font-black text-white">Local OS</h1>
@@ -1065,7 +1065,7 @@ export default function LocalPage() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-bold border-b-2 transition -mb-px ${
                 activeTab === tab.id
-                  ? "border-cyan-500 text-white"
+                  ? "border-[#f5a623] text-white"
                   : "border-transparent text-white/35 hover:text-white/60"
               }`}
             >

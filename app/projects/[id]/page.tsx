@@ -135,8 +135,8 @@ export default function ProjectWorkspace() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex flex-col items-center justify-center gap-4">
-        <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+      <div className="min-h-screen bg-t-bg flex flex-col items-center justify-center gap-4">
+        <div className="w-12 h-12 rounded-2xl bg-[#f5a623]/10 border border-[#f5a623]/20 flex items-center justify-center">
           <Loader2 className="w-6 h-6 text-cyan-500 animate-spin" />
         </div>
         <p className="text-[10px] font-black uppercase text-white/30 tracking-[0.3em]">
@@ -148,7 +148,7 @@ export default function ProjectWorkspace() {
 
   if (error || !project) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex flex-col items-center justify-center gap-6">
+      <div className="min-h-screen bg-t-bg flex flex-col items-center justify-center gap-6">
         <div className="w-16 h-16 rounded-3xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">
           <AlertTriangle className="w-8 h-8 text-red-400" />
         </div>
@@ -182,14 +182,14 @@ export default function ProjectWorkspace() {
   const executionTier: ExecutionTier = project.workflowState?.executionTier === "core" ? "core" : "elite";
 
   return (
-    <main className="min-h-screen bg-[#050a14] text-white flex flex-col font-inter">
+    <main className="min-h-screen bg-t-bg text-white flex flex-col font-inter">
       {/* Dot grid background */}
       <div
         className="fixed inset-0 opacity-[0.025] pointer-events-none"
         style={{ backgroundImage: "radial-gradient(#fff 1px,transparent 1px)", backgroundSize: "28px 28px" }}
       />
       {/* Ambient glows */}
-      <div className="fixed top-0 left-1/4 w-[600px] h-[600px] bg-cyan-500/[0.04] blur-[140px] rounded-full pointer-events-none" />
+      <div className="fixed top-0 left-1/4 w-[600px] h-[600px] bg-[#f5a623]/[0.04] blur-[140px] rounded-full pointer-events-none" />
       <div className="fixed bottom-0 right-1/4 w-[600px] h-[600px] bg-purple-500/[0.04] blur-[140px] rounded-full pointer-events-none" />
 
       {/* Header */}
@@ -203,7 +203,7 @@ export default function ProjectWorkspace() {
           </Link>
           <div>
             <div className="flex items-center gap-2">
-              <span className="text-[9px] font-black tracking-[0.25em] text-cyan-400/70 uppercase">
+              <span className="text-[9px] font-black tracking-[0.25em] text-[#f5a623]/70 uppercase">
                 Mission Control
               </span>
               <span className="text-white/15">·</span>
@@ -234,7 +234,7 @@ export default function ProjectWorkspace() {
                   }}
                   className={`rounded-lg px-3 py-1 text-[9px] font-black uppercase tracking-[0.2em] transition ${
                     active
-                      ? "bg-cyan-500/15 text-cyan-300"
+                      ? "bg-[#f5a623]/15 text-[#f5a623]"
                       : "text-white/30 hover:bg-white/[0.05] hover:text-white/70"
                   }`}
                 >
@@ -271,7 +271,7 @@ export default function ProjectWorkspace() {
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
     draft: "bg-white/5 border-white/10 text-white/30",
-    active: "bg-cyan-500/10 border-cyan-500/30 text-cyan-400",
+    active: "bg-[#f5a623]/10 border-[#f5a623]/30 text-[#f5a623]",
     testing: "bg-yellow-500/10 border-yellow-500/30 text-yellow-400",
     scaling: "bg-green-500/10 border-green-500/30 text-green-400",
     dead: "bg-red-500/5 border-red-500/20 text-red-400/50",
@@ -298,8 +298,8 @@ function SourcePhase({
 
   const sourceTypeColors: Record<string, string> = {
     winner: "bg-orange-500/20 border-orange-500/40 text-orange-400",
-    url: "bg-cyan-500/20 border-cyan-500/40 text-cyan-400",
-    niche: "bg-purple-500/20 border-purple-500/40 text-purple-400",
+    url: "bg-[#f5a623]/20 border-[#f5a623]/40 text-[#f5a623]",
+    niche: "bg-purple-500/20 border-purple-500/40 text-[#e07850]",
   };
   const sourceType = project.sourceType ?? "url";
   const badgeClass = sourceTypeColors[sourceType] ?? sourceTypeColors.url;
@@ -370,16 +370,16 @@ function SourcePhase({
     <div className="max-w-3xl mx-auto px-6 py-16 flex flex-col items-center gap-10">
       {/* Phase Icon */}
       <div className="relative">
-        <div className="w-24 h-24 rounded-3xl bg-cyan-500/10 border-2 border-cyan-500/20 flex items-center justify-center shadow-[0_0_60px_rgba(6,182,212,0.1)]">
-          <Target className="w-12 h-12 text-cyan-400" />
+        <div className="w-24 h-24 rounded-3xl bg-[#f5a623]/10 border-2 border-[#f5a623]/20 flex items-center justify-center shadow-[0_0_60px_rgba(245,166,35,0.1)]">
+          <Target className="w-12 h-12 text-[#f5a623]" />
         </div>
-        <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-xl bg-[#050a14] border border-cyan-500/40 flex items-center justify-center">
-          <span className="text-[9px] font-black text-cyan-400">01</span>
+        <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-xl bg-t-bg border border-[#f5a623]/40 flex items-center justify-center">
+          <span className="text-[9px] font-black text-[#f5a623]">01</span>
         </div>
       </div>
 
       <div className="text-center">
-        <p className="text-[10px] font-black tracking-[0.3em] text-cyan-400/60 uppercase mb-2">
+        <p className="text-[10px] font-black tracking-[0.3em] text-[#f5a623]/60 uppercase mb-2">
           Phase 1 — Source Intake
         </p>
         <h2 className="text-4xl font-black text-white uppercase tracking-tight leading-tight">
@@ -449,11 +449,11 @@ function SourcePhase({
       {/* CTA */}
       {analyzing ? (
         <div className="flex flex-col items-center gap-4">
-          <div className="w-16 h-16 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
+          <div className="w-16 h-16 rounded-2xl bg-[#f5a623]/10 border border-[#f5a623]/20 flex items-center justify-center">
             <Loader2 className="w-8 h-8 text-cyan-500 animate-spin" />
           </div>
           <div className="text-center">
-            <p className="text-xs font-black text-cyan-400 uppercase tracking-widest">
+            <p className="text-xs font-black text-[#f5a623] uppercase tracking-widest">
               {ANALYZE_PROGRESS_MESSAGES[progressIdx]}
             </p>
             <p className="text-[10px] text-white/20 mt-1">This takes 10–20 seconds</p>
@@ -461,7 +461,7 @@ function SourcePhase({
           {/* Progress bar */}
           <div className="w-64 h-1 bg-white/5 rounded-full overflow-hidden">
             <div
-              className="h-full bg-cyan-500 rounded-full transition-all duration-700"
+              className="h-full bg-[#f5a623] rounded-full transition-all duration-700"
               style={{ width: `${((progressIdx + 1) / ANALYZE_PROGRESS_MESSAGES.length) * 100}%` }}
             />
           </div>
@@ -470,7 +470,7 @@ function SourcePhase({
         <button
           onClick={handleAnalyze}
           disabled={!project.sourceUrl}
-          className="px-10 py-4 rounded-2xl bg-cyan-500 hover:bg-cyan-400 disabled:opacity-30 disabled:cursor-not-allowed text-[#050a14] font-black uppercase tracking-[0.2em] transition-all duration-200 flex items-center gap-3 shadow-[0_0_40px_rgba(6,182,212,0.25)] hover:shadow-[0_0_60px_rgba(6,182,212,0.4)] group"
+          className="px-10 py-4 rounded-2xl bg-[#f5a623] hover:bg-[#e07850] disabled:opacity-30 disabled:cursor-not-allowed text-[#050a14] font-black uppercase tracking-[0.2em] transition-all duration-200 flex items-center gap-3 shadow-[0_0_40px_rgba(245,166,35,0.25)] hover:shadow-[0_0_60px_rgba(245,166,35,0.4)] group"
         >
           <Zap className="w-5 h-5" />
           Analyze This
@@ -515,7 +515,7 @@ function AuditPhase({
 
   const verdictStyles: Record<string, { bg: string; border: string; text: string; glow: string }> = {
     "Strong Buy": { bg: "bg-green-500/10", border: "border-green-500/30", text: "text-green-400", glow: "shadow-[0_0_40px_rgba(34,197,94,0.15)]" },
-    Buy: { bg: "bg-cyan-500/10", border: "border-cyan-500/30", text: "text-cyan-400", glow: "shadow-[0_0_40px_rgba(6,182,212,0.15)]" },
+    Buy: { bg: "bg-[#f5a623]/10", border: "border-[#f5a623]/30", text: "text-[#f5a623]", glow: "shadow-[0_0_40px_rgba(245,166,35,0.15)]" },
     Caution: { bg: "bg-yellow-500/10", border: "border-yellow-500/30", text: "text-yellow-400", glow: "shadow-[0_0_40px_rgba(234,179,8,0.15)]" },
     Reject: { bg: "bg-red-500/10", border: "border-red-500/30", text: "text-red-400", glow: "shadow-[0_0_40px_rgba(239,68,68,0.15)]" },
   };
@@ -533,7 +533,7 @@ function AuditPhase({
       {/* Header */}
       <div className="flex items-start justify-between gap-6">
         <div>
-          <p className="text-[9px] font-black tracking-[0.3em] text-cyan-400/60 uppercase mb-2">
+          <p className="text-[9px] font-black tracking-[0.3em] text-[#f5a623]/60 uppercase mb-2">
             Phase 2 — Competitive Audit
           </p>
           <h2 className="text-3xl font-black text-white uppercase tracking-tight">Analysis Results</h2>
@@ -619,7 +619,7 @@ function AuditPhase({
         <button
           onClick={handleAdvance}
           disabled={advancing}
-          className="px-10 py-4 rounded-2xl bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 text-[#050a14] font-black uppercase tracking-[0.2em] transition-all duration-200 flex items-center gap-3 shadow-[0_0_40px_rgba(6,182,212,0.2)] hover:shadow-[0_0_60px_rgba(6,182,212,0.35)] group"
+          className="px-10 py-4 rounded-2xl bg-[#f5a623] hover:bg-[#e07850] disabled:opacity-50 text-[#050a14] font-black uppercase tracking-[0.2em] transition-all duration-200 flex items-center gap-3 shadow-[0_0_40px_rgba(245,166,35,0.2)] hover:shadow-[0_0_60px_rgba(245,166,35,0.35)] group"
         >
           {advancing ? (
             <Loader2 className="w-5 h-5 animate-spin" />
@@ -666,7 +666,7 @@ function StrategyPhase({
     <div className="max-w-4xl mx-auto px-6 py-12 flex flex-col gap-10">
       {/* Header */}
       <div>
-        <p className="text-[9px] font-black tracking-[0.3em] text-cyan-400/60 uppercase mb-2">
+        <p className="text-[9px] font-black tracking-[0.3em] text-[#f5a623]/60 uppercase mb-2">
           Phase 3 — Strategy
         </p>
         <h2 className="text-3xl font-black text-white uppercase tracking-tight">Your Ad Arsenal</h2>
@@ -688,10 +688,10 @@ function StrategyPhase({
             {hooks.map((hook, i) => (
               <div
                 key={i}
-                className="group rounded-xl bg-white/[0.025] border border-white/[0.07] hover:border-cyan-500/20 transition-all duration-300 p-5 flex flex-col gap-3"
+                className="group rounded-xl bg-white/[0.025] border border-white/[0.07] hover:border-[#f5a623]/20 transition-all duration-300 p-5 flex flex-col gap-3"
               >
                 <div className="flex items-center justify-between">
-                  <span className="px-2.5 py-1 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-[9px] font-black text-cyan-400 uppercase tracking-widest">
+                  <span className="px-2.5 py-1 rounded-lg bg-[#f5a623]/10 border border-[#f5a623]/20 text-[9px] font-black text-[#f5a623] uppercase tracking-widest">
                     {hook.format}
                   </span>
                   <button
@@ -736,7 +736,7 @@ function StrategyPhase({
                     <p className="text-sm font-black text-white/80 uppercase tracking-tight">{brief.title}</p>
                     <div className="flex items-center gap-2 mt-1.5">
                       {brief.format && (
-                        <span className="px-2 py-0.5 rounded bg-purple-500/15 border border-purple-500/20 text-[9px] font-black text-purple-400 uppercase tracking-widest">
+                        <span className="px-2 py-0.5 rounded bg-purple-500/15 border border-purple-500/20 text-[9px] font-black text-[#e07850] uppercase tracking-widest">
                           {brief.format}
                         </span>
                       )}
@@ -762,7 +762,7 @@ function StrategyPhase({
         <button
           onClick={handleAdvance}
           disabled={advancing}
-          className="px-10 py-4 rounded-2xl bg-gradient-to-r from-purple-600 to-cyan-500 hover:from-purple-500 hover:to-cyan-400 disabled:opacity-50 text-white font-black uppercase tracking-[0.2em] transition-all duration-200 flex items-center gap-3 shadow-[0_0_40px_rgba(139,92,246,0.2)] hover:shadow-[0_0_60px_rgba(139,92,246,0.35)] group"
+          className="px-10 py-4 rounded-2xl bg-gradient-to-r from-[#e07850] to-cyan-500 hover:from-purple-500 hover:to-cyan-400 disabled:opacity-50 text-white font-black uppercase tracking-[0.2em] transition-all duration-200 flex items-center gap-3 shadow-[0_0_40px_rgba(139,92,246,0.2)] hover:shadow-[0_0_60px_rgba(139,92,246,0.35)] group"
         >
           {advancing ? (
             <Loader2 className="w-5 h-5 animate-spin" />
@@ -833,7 +833,7 @@ function ProducePhase({
     <div className="max-w-4xl mx-auto px-6 py-12 flex flex-col gap-8">
       {/* Header */}
       <div>
-        <p className="text-[9px] font-black tracking-[0.3em] text-purple-400/60 uppercase mb-2">
+        <p className="text-[9px] font-black tracking-[0.3em] text-[#e07850]/60 uppercase mb-2">
           Phase 4 — Creative Production
         </p>
         <h2 className="text-3xl font-black text-white uppercase tracking-tight">Creative Studio</h2>
@@ -849,7 +849,7 @@ function ProducePhase({
       >
         <div className="flex items-center gap-5">
           <div className="w-16 h-16 rounded-2xl bg-purple-500/15 border border-purple-500/20 flex items-center justify-center group-hover:border-purple-500/40 transition">
-            <ImageIcon className="w-8 h-8 text-purple-400" />
+            <ImageIcon className="w-8 h-8 text-[#e07850]" />
           </div>
           <div className="text-left">
             <p className="text-lg font-black text-white uppercase tracking-tight">Open Creative Studio</p>
@@ -912,7 +912,7 @@ function ProducePhase({
                     {creative.state?.executionTier && (
                       <span className={`shrink-0 rounded-full px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.18em] ${
                         creative.state.executionTier === "elite"
-                          ? "border border-cyan-400/30 bg-cyan-500/10 text-cyan-300"
+                          ? "border border-cyan-400/30 bg-[#f5a623]/10 text-[#f5a623]"
                           : "border border-white/10 bg-white/5 text-white/45"
                       }`}>
                         {creative.state.executionTier}
@@ -932,7 +932,7 @@ function ProducePhase({
         <button
           onClick={handleAdvance}
           disabled={advancing}
-          className="px-10 py-4 rounded-2xl bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 text-[#050a14] font-black uppercase tracking-[0.2em] transition-all duration-200 flex items-center gap-3 shadow-[0_0_40px_rgba(6,182,212,0.2)] hover:shadow-[0_0_60px_rgba(6,182,212,0.35)] group"
+          className="px-10 py-4 rounded-2xl bg-[#f5a623] hover:bg-[#e07850] disabled:opacity-50 text-[#050a14] font-black uppercase tracking-[0.2em] transition-all duration-200 flex items-center gap-3 shadow-[0_0_40px_rgba(245,166,35,0.2)] hover:shadow-[0_0_60px_rgba(245,166,35,0.35)] group"
         >
           {advancing ? (
             <Loader2 className="w-5 h-5 animate-spin" />
@@ -1032,7 +1032,7 @@ function DeployPhase({
     <div className="max-w-4xl mx-auto px-6 py-12 flex flex-col gap-8">
       {/* Header */}
       <div>
-        <p className="text-[9px] font-black tracking-[0.3em] text-cyan-400/60 uppercase mb-2">
+        <p className="text-[9px] font-black tracking-[0.3em] text-[#f5a623]/60 uppercase mb-2">
           Phase 5 — Deploy
         </p>
         <h2 className="text-3xl font-black text-white uppercase tracking-tight">Launch Checklist</h2>
@@ -1048,7 +1048,7 @@ function DeployPhase({
             <circle cx="18" cy="18" r="15.9" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="3" />
             <circle
               cx="18" cy="18" r="15.9" fill="none"
-              stroke={allDone ? "#22c55e" : "#06b6d4"}
+              stroke={allDone ? "#22c55e" : "#f5a623"}
               strokeWidth="3"
               strokeDasharray={`${(completedCount / checklist.length) * 100} 100`}
               strokeLinecap="round"
@@ -1068,7 +1068,7 @@ function DeployPhase({
           </p>
           <div className="w-48 bg-white/5 rounded-full h-1 mt-3">
             <div
-              className={`h-full rounded-full transition-all duration-700 ${allDone ? "bg-green-500" : "bg-cyan-500"}`}
+              className={`h-full rounded-full transition-all duration-700 ${allDone ? "bg-green-500" : "bg-[#f5a623]"}`}
               style={{ width: `${(completedCount / checklist.length) * 100}%` }}
             />
           </div>
@@ -1123,7 +1123,7 @@ function DeployPhase({
           <button
             onClick={handleMarkLive}
             disabled={launching}
-            className="flex-1 px-6 py-4 rounded-xl bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 text-[#050a14] font-black uppercase tracking-[0.2em] text-sm transition flex items-center justify-center gap-3 shadow-[0_0_30px_rgba(6,182,212,0.2)] hover:shadow-[0_0_50px_rgba(6,182,212,0.4)] group"
+            className="flex-1 px-6 py-4 rounded-xl bg-[#f5a623] hover:bg-[#e07850] disabled:opacity-50 text-[#050a14] font-black uppercase tracking-[0.2em] text-sm transition flex items-center justify-center gap-3 shadow-[0_0_30px_rgba(245,166,35,0.2)] hover:shadow-[0_0_50px_rgba(245,166,35,0.4)] group"
           >
             {launching ? (
               <Loader2 className="w-5 h-5 animate-spin" />

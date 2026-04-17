@@ -116,7 +116,7 @@ const INITIAL_STATE: DockState = {
 
 function toneClass(tone: ActionItem["tone"]) {
   if (tone === "primary") {
-    return "bg-gradient-to-r from-cyan-500 to-blue-500 text-white shadow-[0_0_24px_rgba(6,182,212,0.25)]";
+    return "bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white shadow-[0_0_24px_rgba(245,166,35,0.25)]";
   }
   if (tone === "warning") {
     return "border border-amber-500/30 bg-amber-500/10 text-amber-300";
@@ -143,7 +143,7 @@ function relativeTime(iso?: string | null) {
 
 function verdictTone(status?: string) {
   if (status === "healthy") return "border-emerald-500/20 bg-emerald-500/10 text-emerald-200";
-  if (status === "stale") return "border-cyan-500/20 bg-cyan-500/10 text-cyan-100";
+  if (status === "stale") return "border-[#f5a623]/20 bg-[#f5a623]/10 text-cyan-100";
   return "border-amber-500/20 bg-amber-500/10 text-amber-100";
 }
 
@@ -605,11 +605,11 @@ export default function GlobalCopilotDock() {
             setCompact(false);
             setExpanded(true);
           }}
-          className="group flex h-[132px] w-[46px] items-center justify-center overflow-hidden rounded-[20px] border border-white/[0.1] bg-[#06101de8] shadow-[0_30px_120px_rgba(0,0,0,0.55)] backdrop-blur-2xl transition hover:border-cyan-500/25 hover:bg-[#081423ee]"
+          className="group flex h-[132px] w-[46px] items-center justify-center overflow-hidden rounded-[20px] border border-white/[0.1] bg-[#06101de8] shadow-[0_30px_120px_rgba(0,0,0,0.55)] backdrop-blur-2xl transition hover:border-[#f5a623]/25 hover:bg-[#081423ee]"
           aria-label="Open Copilot dock"
         >
           <div className="flex -rotate-90 items-center gap-2 whitespace-nowrap">
-            <Sparkles className="h-4 w-4 text-cyan-300" />
+            <Sparkles className="h-4 w-4 text-[#f5a623]" />
             <span className="text-[11px] font-black uppercase tracking-[0.22em] text-white/70">
               {compactLabel}
             </span>
@@ -621,14 +621,14 @@ export default function GlobalCopilotDock() {
           <div className="absolute left-[-58px] top-24 z-10 flex flex-col gap-2">
             <button
               onClick={() => setCompact(true)}
-              className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/[0.08] bg-[#06101de8] text-white/65 shadow-[0_18px_50px_rgba(0,0,0,0.35)] backdrop-blur-2xl transition hover:border-cyan-500/25 hover:text-white"
+              className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/[0.08] bg-[#06101de8] text-white/65 shadow-[0_18px_50px_rgba(0,0,0,0.35)] backdrop-blur-2xl transition hover:border-[#f5a623]/25 hover:text-white"
               aria-label="Compact dock"
             >
               <Minimize2 className="h-4 w-4" />
             </button>
             <button
               onClick={() => setCollapsed(true)}
-              className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/[0.08] bg-[#06101de8] text-white/65 shadow-[0_18px_50px_rgba(0,0,0,0.35)] backdrop-blur-2xl transition hover:border-cyan-500/25 hover:text-white"
+              className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/[0.08] bg-[#06101de8] text-white/65 shadow-[0_18px_50px_rgba(0,0,0,0.35)] backdrop-blur-2xl transition hover:border-[#f5a623]/25 hover:text-white"
               aria-label="Hide dock"
             >
               <ChevronUp className="h-4 w-4 rotate-90" />
@@ -669,13 +669,13 @@ export default function GlobalCopilotDock() {
           } select-none touch-none ${dragging ? "cursor-grabbing" : "cursor-grab"}`}
         >
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 shadow-[0_0_25px_rgba(6,182,212,0.3)]">
+            <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-br from-[#f5a623] to-[#e07850] shadow-[0_0_25px_rgba(245,166,35,0.3)]">
               <Sparkles className="h-4 w-4 text-white" />
             </div>
             {!compact ? (
               <div>
                 <div className="flex items-center gap-2">
-                  <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Copilot Live</p>
+                  <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#f5a623]/80">Copilot Live</p>
                   <GripHorizontal className="h-3.5 w-3.5 text-white/25" />
                 </div>
                 <p className="text-sm font-black text-white">Tasks, reminders, and next moves</p>
@@ -768,9 +768,9 @@ export default function GlobalCopilotDock() {
             <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-3">
               <div className="mb-2 flex items-center justify-between">
                 <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/35">Next Best Action</p>
-                <span className="text-[11px] text-cyan-300">{nextBestAction.impact || pathname}</span>
+                <span className="text-[11px] text-[#f5a623]">{nextBestAction.impact || pathname}</span>
               </div>
-              <div className="mb-3 rounded-2xl border border-cyan-500/15 bg-cyan-500/8 p-3">
+              <div className="mb-3 rounded-2xl border border-[#f5a623]/15 bg-[#f5a623]/8 p-3">
                 <p className="text-sm font-black text-white">{nextBestAction.title}</p>
                 <p className="mt-1 text-xs leading-6 text-white/50">{nextBestAction.body}</p>
               </div>
@@ -806,7 +806,7 @@ export default function GlobalCopilotDock() {
             <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] px-3 py-3">
               <div className="flex items-center justify-between gap-3">
                 <p className="text-[10px] font-black uppercase tracking-[0.18em] text-white/25">OS Freshness</p>
-                <span className="text-[11px] font-bold text-cyan-300">
+                <span className="text-[11px] font-bold text-[#f5a623]">
                   {relativeTime(state.businessProfile?.recommendedAt)}
                 </span>
               </div>
@@ -825,7 +825,7 @@ export default function GlobalCopilotDock() {
                 <button
                   onClick={refreshBusinessSystem}
                   disabled={refreshingRecommendations}
-                  className="mt-3 w-full rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-xs font-bold text-cyan-100 transition hover:bg-cyan-500/15 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="mt-3 w-full rounded-xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-3 py-2 text-xs font-bold text-cyan-100 transition hover:bg-[#f5a623]/15 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {refreshingRecommendations ? "Refreshing recommendations..." : "Refresh Recommendations"}
                 </button>
@@ -834,7 +834,7 @@ export default function GlobalCopilotDock() {
 
             <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-3">
               <div className="mb-2 flex items-center gap-2">
-                <Target className="h-3.5 w-3.5 text-cyan-300" />
+                <Target className="h-3.5 w-3.5 text-[#f5a623]" />
                 <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/35">Action Stream</p>
               </div>
               <div className="space-y-2">
@@ -842,11 +842,11 @@ export default function GlobalCopilotDock() {
                   <Link
                     key={`${action.title}-${index}`}
                     href={action.href}
-                    className="block rounded-xl border border-white/[0.06] bg-black/20 px-3 py-2 transition hover:border-cyan-500/25 hover:bg-cyan-500/5"
+                    className="block rounded-xl border border-white/[0.06] bg-black/20 px-3 py-2 transition hover:border-[#f5a623]/25 hover:bg-[#f5a623]/5"
                   >
                     <div className="flex items-center justify-between gap-3">
                       <p className="text-xs font-bold text-white">{action.title}</p>
-                      <span className="text-[10px] font-black uppercase tracking-[0.18em] text-cyan-300">
+                      <span className="text-[10px] font-black uppercase tracking-[0.18em] text-[#f5a623]">
                         {index === 0 ? "Now" : `Next ${index}`}
                       </span>
                     </div>
@@ -858,7 +858,7 @@ export default function GlobalCopilotDock() {
 
             <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-3">
               <div className="mb-2 flex items-center gap-2">
-                <Target className="h-3.5 w-3.5 text-cyan-300" />
+                <Target className="h-3.5 w-3.5 text-[#f5a623]" />
                 <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/35">Reminders</p>
               </div>
               {state.unsyncedSystems.length > 0 && (
@@ -877,7 +877,7 @@ export default function GlobalCopilotDock() {
                     <Link
                       key={reminder.id}
                       href={reminder.href}
-                      className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-black/20 px-3 py-2 text-xs text-white/70 transition hover:border-cyan-500/25 hover:bg-cyan-500/5"
+                      className="flex items-center justify-between rounded-xl border border-white/[0.06] bg-black/20 px-3 py-2 text-xs text-white/70 transition hover:border-[#f5a623]/25 hover:bg-[#f5a623]/5"
                     >
                       <span className="flex items-center gap-2">
                         {reminderIcon(reminder.icon)}
@@ -898,7 +898,7 @@ export default function GlobalCopilotDock() {
             <div className="flex items-center gap-2">
               <Link
                 href="/copilot"
-                className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-3 text-sm font-black text-white"
+                className="flex flex-1 items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-4 py-3 text-sm font-black text-white"
               >
                 <Zap className="h-4 w-4" />
                 Open Full Copilot

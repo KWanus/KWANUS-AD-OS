@@ -51,7 +51,7 @@ type ResearchResult = {
 const PLATFORM_BADGE: Record<Platform, string> = {
   clickbank:   "bg-green-500/15 text-green-400 border-green-500/30",
   jvzoo:       "bg-blue-500/15 text-blue-400 border-blue-500/30",
-  warriorplus: "bg-purple-500/15 text-purple-400 border-purple-500/30",
+  warriorplus: "bg-purple-500/15 text-[#e07850] border-purple-500/30",
   cj:          "bg-indigo-500/15 text-indigo-400 border-indigo-500/30",
   amazon:      "bg-orange-500/15 text-orange-400 border-orange-500/30",
   digistore24: "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
@@ -60,7 +60,7 @@ const PLATFORM_BADGE: Record<Platform, string> = {
 
 const STATUS_BADGE: Record<OfferStatus, string> = {
   researching: "text-white/40 bg-white/5 border-white/10",
-  approved:    "text-cyan-400 bg-cyan-500/10 border-cyan-500/30",
+  approved:    "text-[#f5a623] bg-[#f5a623]/10 border-[#f5a623]/30",
   building:    "text-yellow-400 bg-yellow-500/10 border-yellow-500/30",
   running:     "text-green-400 bg-green-500/10 border-green-500/30",
   paused:      "text-orange-400 bg-orange-500/10 border-orange-500/30",
@@ -86,7 +86,7 @@ function CopyButton({ text }: { text: string }) {
   return (
     <button
       onClick={() => { void navigator.clipboard.writeText(text); setCopied(true); setTimeout(() => setCopied(false), 1800); }}
-      className="p-1.5 rounded-lg bg-white/[0.04] border border-white/[0.07] text-white/30 hover:text-cyan-400 transition"
+      className="p-1.5 rounded-lg bg-white/[0.04] border border-white/[0.07] text-white/30 hover:text-[#f5a623] transition"
     >
       {copied ? <CheckCircle2 className="w-3.5 h-3.5 text-green-400" /> : <Copy className="w-3.5 h-3.5" />}
     </button>
@@ -94,7 +94,7 @@ function CopyButton({ text }: { text: string }) {
 }
 
 function Spinner() {
-  return <Loader2 className="w-4 h-4 animate-spin text-cyan-400" />;
+  return <Loader2 className="w-4 h-4 animate-spin text-[#f5a623]" />;
 }
 
 function CopyBlock({ label, content }: { label: string; content: string }) {
@@ -138,17 +138,17 @@ function ExecutionTierPicker({
             onClick={() => onChange(tier.id)}
             className={`rounded-2xl border p-4 text-left transition-all ${
               active
-                ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                ? "border-[#f5a623]/40 bg-[#f5a623]/10 shadow-[0_0_20px_rgba(245,166,35,0.12)]"
                 : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
             }`}
           >
             <div className="flex items-center justify-between gap-3">
-              <span className={`text-sm font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
-              <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+              <span className={`text-sm font-black ${active ? "text-[#f5a623]" : "text-white"}`}>{tier.label}</span>
+              <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-[#f5a623]" : "text-white/20"}`}>
                 {tier.id}
               </span>
             </div>
-            <p className={`mt-2 text-xs leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+            <p className={`mt-2 text-xs leading-relaxed ${active ? "text-[#f5f0e8]/80" : "text-white/45"}`}>
               {tier.description}
             </p>
           </button>
@@ -199,10 +199,10 @@ function OfferDetailPanel({
     <div className="fixed inset-0 z-50 flex items-start justify-end" onClick={onClose}>
       <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" />
       <div
-        className="relative z-10 w-full max-w-lg h-full bg-[#020509] border-l border-white/[0.07] overflow-y-auto"
+        className="relative z-10 w-full max-w-lg h-full bg-t-bg border-l border-white/[0.07] overflow-y-auto"
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="sticky top-0 bg-[#020509]/90 backdrop-blur-xl border-b border-white/[0.06] px-6 py-4 flex items-center justify-between">
+        <div className="sticky top-0 bg-t-bg/90 backdrop-blur-xl border-b border-white/[0.06] px-6 py-4 flex items-center justify-between">
           <h2 className="text-sm font-black text-white truncate">{offer.name}</h2>
           <button onClick={onClose} className="p-1.5 rounded-lg hover:bg-white/[0.06] text-white/30 hover:text-white transition">
             <X className="w-4 h-4" />
@@ -227,7 +227,7 @@ function OfferDetailPanel({
 
           {offer.affiliateUrl && (
             <a href={offer.affiliateUrl} target="_blank" rel="noreferrer"
-              className="flex items-center gap-2 text-xs text-cyan-400 hover:text-cyan-300 transition">
+              className="flex items-center gap-2 text-xs text-[#f5a623] hover:text-[#f5a623] transition">
               <ExternalLink className="w-3.5 h-3.5" /> Affiliate URL
             </a>
           )}
@@ -284,9 +284,9 @@ function OfferDetailPanel({
                 key={key}
                 disabled={loading !== null}
                 onClick={() => void callAction(key, endpoint)}
-                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.07] hover:bg-white/[0.06] hover:border-cyan-500/20 text-sm font-bold text-white/70 hover:text-white transition disabled:opacity-40"
+                className="w-full flex items-center gap-3 px-4 py-3 rounded-xl bg-white/[0.03] border border-white/[0.07] hover:bg-white/[0.06] hover:border-[#f5a623]/20 text-sm font-bold text-white/70 hover:text-white transition disabled:opacity-40"
               >
-                {loading === key ? <Spinner /> : <Icon className="w-4 h-4 text-cyan-400/60" />}
+                {loading === key ? <Spinner /> : <Icon className="w-4 h-4 text-[#f5a623]/60" />}
                 {label}
                 <ChevronRight className="w-3.5 h-3.5 ml-auto text-white/20" />
               </button>
@@ -374,7 +374,7 @@ function MyOffersTab() {
 
   if (loading) return (
     <div className="flex items-center justify-center py-24">
-      <Loader2 className="w-6 h-6 animate-spin text-cyan-400/50" />
+      <Loader2 className="w-6 h-6 animate-spin text-[#f5a623]/50" />
     </div>
   );
 
@@ -384,7 +384,7 @@ function MyOffersTab() {
         <p className="text-sm text-white/30">{offers.length} offer{offers.length !== 1 ? "s" : ""} tracked</p>
         <button
           onClick={() => setShowAdd((v) => !v)}
-          className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black px-4 py-2 rounded-xl hover:scale-[1.02] transition-all"
+          className="flex items-center gap-2 bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-black px-4 py-2 rounded-xl hover:scale-[1.02] transition-all"
         >
           <Plus className="w-4 h-4" /> Add Offer
         </button>
@@ -398,12 +398,12 @@ function MyOffersTab() {
             <label className="text-[10px] font-black uppercase tracking-widest text-white/30 block mb-1">Offer Name</label>
             <input required value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
               placeholder="e.g. Keto Fat Burner Pro"
-              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-cyan-500/40" />
+              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-[#f5a623]/40" />
           </div>
           <div>
             <label className="text-[10px] font-black uppercase tracking-widest text-white/30 block mb-1">Platform</label>
             <select value={form.platform} onChange={(e) => setForm((f) => ({ ...f, platform: e.target.value as Platform }))}
-              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-cyan-500/40">
+              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-[#f5a623]/40">
               {PLATFORMS.map((p) => <option key={p} value={p}>{p}</option>)}
             </select>
           </div>
@@ -411,31 +411,31 @@ function MyOffersTab() {
             <label className="text-[10px] font-black uppercase tracking-widest text-white/30 block mb-1">Niche</label>
             <input value={form.niche} onChange={(e) => setForm((f) => ({ ...f, niche: e.target.value }))}
               placeholder="Health & Fitness"
-              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-cyan-500/40" />
+              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-[#f5a623]/40" />
           </div>
           <div>
             <label className="text-[10px] font-black uppercase tracking-widest text-white/30 block mb-1">Commission</label>
             <input value={form.commission} onChange={(e) => setForm((f) => ({ ...f, commission: e.target.value }))}
               placeholder="75%"
-              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-cyan-500/40" />
+              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-[#f5a623]/40" />
           </div>
           <div>
             <label className="text-[10px] font-black uppercase tracking-widest text-white/30 block mb-1">Gravity</label>
             <input type="number" value={form.gravity} onChange={(e) => setForm((f) => ({ ...f, gravity: e.target.value }))}
               placeholder="120"
-              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-cyan-500/40" />
+              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-[#f5a623]/40" />
           </div>
           <div className="col-span-2">
             <label className="text-[10px] font-black uppercase tracking-widest text-white/30 block mb-1">Offer URL</label>
             <input value={form.url} onChange={(e) => setForm((f) => ({ ...f, url: e.target.value }))}
               placeholder="https://..."
-              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-cyan-500/40" />
+              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-[#f5a623]/40" />
           </div>
           <div className="col-span-2">
             <label className="text-[10px] font-black uppercase tracking-widest text-white/30 block mb-1">Affiliate URL</label>
             <input value={form.affiliateUrl} onChange={(e) => setForm((f) => ({ ...f, affiliateUrl: e.target.value }))}
               placeholder="https://hop.clickbank.net/..."
-              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-cyan-500/40" />
+              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-[#f5a623]/40" />
           </div>
           <div className="col-span-2 flex gap-2 justify-end">
             <button type="button" onClick={() => setShowAdd(false)}
@@ -443,7 +443,7 @@ function MyOffersTab() {
               Cancel
             </button>
             <button type="submit" disabled={saving}
-              className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black px-4 py-2 rounded-xl disabled:opacity-50">
+              className="flex items-center gap-2 bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-black px-4 py-2 rounded-xl disabled:opacity-50">
               {saving ? <Spinner /> : null} Save Offer
             </button>
           </div>
@@ -473,7 +473,7 @@ function MyOffersTab() {
                   {o.status}
                 </span>
               </div>
-              <h3 className="text-sm font-bold text-white group-hover:text-cyan-300 transition truncate">{o.name}</h3>
+              <h3 className="text-sm font-bold text-white group-hover:text-[#f5a623] transition truncate">{o.name}</h3>
               <div className="flex items-center gap-4 mt-1">
                 {o.commission && (
                   <span className="flex items-center gap-1 text-xs text-white/30">
@@ -492,7 +492,7 @@ function MyOffersTab() {
                 )}
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-white/20 group-hover:text-cyan-400 transition shrink-0" />
+            <ChevronRight className="w-4 h-4 text-white/20 group-hover:text-[#f5a623] transition shrink-0" />
           </div>
         ))}
       </div>
@@ -579,24 +579,24 @@ function ResearchTab() {
           <label className="text-[10px] font-black uppercase tracking-widest text-white/30 block mb-1">Niche *</label>
           <input required value={form.niche} onChange={(e) => setForm((f) => ({ ...f, niche: e.target.value }))}
             placeholder="Weight Loss"
-            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-cyan-500/40" />
+            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-[#f5a623]/40" />
         </div>
         <div>
           <label className="text-[10px] font-black uppercase tracking-widest text-white/30 block mb-1">Budget (optional)</label>
           <input value={form.budget} onChange={(e) => setForm((f) => ({ ...f, budget: e.target.value }))}
             placeholder="$500/mo"
-            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-cyan-500/40" />
+            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-[#f5a623]/40" />
         </div>
         <div>
           <label className="text-[10px] font-black uppercase tracking-widest text-white/30 block mb-1">Traffic Source</label>
           <select value={form.trafficSource} onChange={(e) => setForm((f) => ({ ...f, trafficSource: e.target.value }))}
-            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-cyan-500/40">
+            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-[#f5a623]/40">
             {TRAFFIC_SOURCES.map((t) => <option key={t} value={t}>{t}</option>)}
           </select>
         </div>
         <div className="col-span-3">
           <button type="submit" disabled={loading}
-            className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black px-6 py-2.5 rounded-xl disabled:opacity-50 hover:scale-[1.02] transition-all">
+            className="flex items-center gap-2 bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-black px-6 py-2.5 rounded-xl disabled:opacity-50 hover:scale-[1.02] transition-all">
             {loading ? <><Spinner /> Researching...</> : <><Target className="w-4 h-4" /> Run Research</>}
           </button>
         </div>
@@ -612,7 +612,7 @@ function ResearchTab() {
                 <div key={i} className="rounded-2xl bg-white/[0.02] border border-white/[0.06] p-4">
                   <div className="flex items-start justify-between mb-2">
                     <h4 className="text-sm font-black text-white">{n.name}</h4>
-                    <span className="text-[10px] text-cyan-400 font-bold">{n.typicalCommission}</span>
+                    <span className="text-[10px] text-[#f5a623] font-bold">{n.typicalCommission}</span>
                   </div>
                   <p className="text-xs text-white/30 mb-2">{n.category}</p>
                   <ul className="space-y-1">
@@ -636,7 +636,7 @@ function ResearchTab() {
             <ol className="space-y-2">
               {result.nicheAngles.map((a, i) => (
                 <li key={i} className="flex items-start gap-3 text-sm text-white/60">
-                  <span className="text-cyan-400 font-black shrink-0">{i + 1}.</span> {a}
+                  <span className="text-[#f5a623] font-black shrink-0">{i + 1}.</span> {a}
                 </li>
               ))}
             </ol>
@@ -654,7 +654,7 @@ function ResearchTab() {
               <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">Recommended Traffic</p>
               <div className="flex flex-wrap gap-1.5">
                 {result.recommendedTraffic.map((t, i) => (
-                  <span key={i} className="text-xs px-2.5 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 font-bold">{t}</span>
+                  <span key={i} className="text-xs px-2.5 py-1 rounded-full bg-[#f5a623]/10 border border-[#f5a623]/20 text-[#f5a623] font-bold">{t}</span>
                 ))}
               </div>
             </div>
@@ -799,7 +799,7 @@ function BuildAssetsTab({ offers }: { offers: AffiliateOffer[] }) {
         <div>
           <label className="text-[10px] font-black uppercase tracking-widest text-white/30 block mb-1">Select Offer</label>
           <select value={selectedOfferId} onChange={(e) => setSelectedOfferId(e.target.value)}
-            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-cyan-500/40 min-w-[240px]">
+            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-[#f5a623]/40 min-w-[240px]">
             <option value="">— Choose an offer —</option>
             {offers.map((o) => <option key={o.id} value={o.id}>{o.name}</option>)}
           </select>
@@ -819,7 +819,7 @@ function BuildAssetsTab({ offers }: { offers: AffiliateOffer[] }) {
               <div className="flex items-start justify-between">
                 <div className="flex items-center gap-3">
                   <div className="w-9 h-9 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center">
-                    <Icon className="w-4 h-4 text-cyan-400/60" />
+                    <Icon className="w-4 h-4 text-[#f5a623]/60" />
                   </div>
                   <div>
                     <h4 className="text-sm font-black text-white">{card.title}</h4>
@@ -890,13 +890,13 @@ function FunnelsTab({ offers }: { offers: AffiliateOffer[] }) {
             onClick={() => setSelected(o)}
             className="group rounded-2xl bg-white/[0.02] border border-white/[0.06] p-5 cursor-pointer hover:bg-white/[0.04] hover:border-white/[0.1] transition-all flex items-center gap-4">
             <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border border-white/[0.06] flex items-center justify-center shrink-0">
-              <Layers className="w-4 h-4 text-cyan-400/70" />
+              <Layers className="w-4 h-4 text-[#f5a623]/70" />
             </div>
             <div className="flex-1 min-w-0">
-              <h3 className="text-sm font-black text-white group-hover:text-cyan-300 transition truncate">{o.name}</h3>
+              <h3 className="text-sm font-black text-white group-hover:text-[#f5a623] transition truncate">{o.name}</h3>
               <div className="flex items-center gap-3 mt-1">
                 {funnel?.type && (
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-purple-400 font-bold uppercase tracking-wider">
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-[#e07850] font-bold uppercase tracking-wider">
                     {String(funnel.type)}
                   </span>
                 )}
@@ -912,7 +912,7 @@ function FunnelsTab({ offers }: { offers: AffiliateOffer[] }) {
                 )}
               </div>
             </div>
-            <ChevronRight className="w-4 h-4 text-white/20 group-hover:text-cyan-400 transition shrink-0" />
+            <ChevronRight className="w-4 h-4 text-white/20 group-hover:text-[#f5a623] transition shrink-0" />
           </div>
         );
       })}
@@ -920,7 +920,7 @@ function FunnelsTab({ offers }: { offers: AffiliateOffer[] }) {
       {selected && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-6" onClick={() => setSelected(null)}>
           <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
-          <div className="relative z-10 w-full max-w-2xl max-h-[80vh] overflow-y-auto rounded-3xl bg-[#020509] border border-white/[0.08] p-6"
+          <div className="relative z-10 w-full max-w-2xl max-h-[80vh] overflow-y-auto rounded-3xl bg-t-bg border border-white/[0.08] p-6"
             onClick={(e) => e.stopPropagation()}>
             <div className="flex items-center justify-between mb-5">
               <h2 className="text-base font-black text-white">{selected.name} — Funnel</h2>
@@ -953,10 +953,10 @@ export default function AffiliatePage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#020509] text-white flex flex-col">
+    <div className="min-h-screen bg-t-bg text-white flex flex-col">
       {/* Background */}
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 right-1/3 w-[600px] h-[300px] opacity-[0.04] blur-[120px] bg-cyan-500 rounded-full" />
+        <div className="absolute top-0 right-1/3 w-[600px] h-[300px] opacity-[0.04] blur-[120px] bg-[#f5a623] rounded-full" />
         <div className="absolute bottom-0 left-0 w-[500px] h-[280px] opacity-[0.03] blur-[100px] bg-purple-500 rounded-full" />
         <div className="absolute inset-0 opacity-[0.018]"
           style={{ backgroundImage: "radial-gradient(circle, #fff 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
@@ -968,8 +968,8 @@ export default function AffiliatePage() {
         {/* Header */}
         <header className="pt-12 pb-8 border-b border-white/[0.06]">
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-1.5 h-1.5 rounded-full bg-cyan-500 animate-pulse" />
-            <span className="text-[11px] font-black tracking-[0.25em] text-cyan-400/70 uppercase">Affiliate</span>
+            <div className="w-1.5 h-1.5 rounded-full bg-[#f5a623] animate-pulse" />
+            <span className="text-[11px] font-black tracking-[0.25em] text-[#f5a623]/70 uppercase">Affiliate</span>
           </div>
           <h1 className="text-4xl font-black tracking-tight">
             Affiliate{" "}
@@ -986,7 +986,7 @@ export default function AffiliatePage() {
             <button key={t} onClick={() => setTab(t)}
               className={`px-4 py-2.5 text-sm font-bold rounded-t-xl transition-all ${
                 tab === t
-                  ? "text-white border-b-2 border-cyan-500"
+                  ? "text-white border-b-2 border-[#f5a623]"
                   : "text-white/30 hover:text-white/60"
               }`}>
               {t}

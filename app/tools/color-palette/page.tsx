@@ -14,7 +14,7 @@ type PaletteResult = {
 };
 
 const PALETTES: PaletteResult[] = [
-  { name: "Ocean Trust", primary: "#0891b2", secondary: "#1e3a5f", accent: "#06b6d4", background: "#0f172a", text: "#f8fafc" },
+  { name: "Ocean Trust", primary: "#0891b2", secondary: "#1e3a5f", accent: "#f5a623", background: "#0f172a", text: "#f8fafc" },
   { name: "Forest Growth", primary: "#16a34a", secondary: "#1a3a2a", accent: "#22c55e", background: "#0a1a0f", text: "#f0fdf4" },
   { name: "Royal Authority", primary: "#7c3aed", secondary: "#2e1065", accent: "#a78bfa", background: "#0f0525", text: "#f5f3ff" },
   { name: "Sunset Energy", primary: "#ea580c", secondary: "#431407", accent: "#f97316", background: "#1a0a02", text: "#fff7ed" },
@@ -23,7 +23,7 @@ const PALETTES: PaletteResult[] = [
   { name: "Arctic Clean", primary: "#0ea5e9", secondary: "#0c4a6e", accent: "#38bdf8", background: "#f0f9ff", text: "#0c4a6e" },
   { name: "Warm Earth", primary: "#92400e", secondary: "#451a03", accent: "#d97706", background: "#fffbeb", text: "#451a03" },
   { name: "Steel Modern", primary: "#475569", secondary: "#1e293b", accent: "#64748b", background: "#f8fafc", text: "#0f172a" },
-  { name: "Neon Cyber", primary: "#06b6d4", secondary: "#0f172a", accent: "#22d3ee", background: "#020617", text: "#e0f2fe" },
+  { name: "Neon Cyber", primary: "#f5a623", secondary: "#0f172a", accent: "#22d3ee", background: "#020617", text: "#e0f2fe" },
   { name: "Coral Vibrant", primary: "#f43f5e", secondary: "#0f172a", accent: "#fb923c", background: "#0a0a0a", text: "#fecdd3" },
   { name: "Sage Calm", primary: "#059669", secondary: "#064e3b", accent: "#34d399", background: "#f0fdf4", text: "#064e3b" },
 ];
@@ -57,12 +57,12 @@ export default function ColorPalettePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-            <Palette className="w-5 h-5 text-purple-400" />
+            <Palette className="w-5 h-5 text-[#e07850]" />
           </div>
           <div>
             <h1 className="text-xl font-black text-white">Brand Color Palette</h1>
@@ -76,7 +76,7 @@ export default function ColorPalettePage() {
           <div className="flex items-center gap-3">
             <input type="color" value={customPrimary} onChange={(e) => setCustomPrimary(e.target.value)} className="w-12 h-10 rounded-lg border-0 cursor-pointer" />
             <input type="text" value={customPrimary} onChange={(e) => setCustomPrimary(e.target.value)} className="w-24 bg-white/[0.04] border border-white/[0.1] rounded-lg px-3 py-2 text-xs text-white font-mono focus:outline-none" />
-            <button onClick={() => setSelected(generateFromPrimary(customPrimary))} className="px-4 py-2 rounded-lg bg-cyan-500 text-[#0a0f1e] text-xs font-bold hover:bg-cyan-400 transition">
+            <button onClick={() => setSelected(generateFromPrimary(customPrimary))} className="px-4 py-2 rounded-lg bg-[#f5a623] text-[#0a0f1e] text-xs font-bold hover:bg-[#e07850] transition">
               Generate Palette
             </button>
           </div>
@@ -92,7 +92,7 @@ export default function ColorPalettePage() {
                   key={p.name}
                   onClick={() => setSelected(p)}
                   className={`p-3 rounded-xl border transition text-left ${
-                    selected.name === p.name ? "border-cyan-500/40 bg-cyan-500/10" : "border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12]"
+                    selected.name === p.name ? "border-[#f5a623]/40 bg-[#f5a623]/10" : "border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12]"
                   }`}
                 >
                   <div className="flex gap-1 mb-2">
@@ -150,7 +150,7 @@ export default function ColorPalettePage() {
             {/* CSS variables */}
             <div className="mt-4 rounded-xl bg-black/30 p-4">
               <p className="text-[10px] text-white/20 mb-2">CSS Variables</p>
-              <pre className="text-[10px] text-cyan-400/60 font-mono leading-relaxed">
+              <pre className="text-[10px] text-[#f5a623]/60 font-mono leading-relaxed">
 {`:root {
   --primary: ${selected.primary};
   --secondary: ${selected.secondary};

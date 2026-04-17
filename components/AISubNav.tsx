@@ -24,7 +24,7 @@ export default function AISubNav() {
                 href={href}
                 className={`flex items-center gap-2 px-4 py-3 text-xs font-bold whitespace-nowrap border-b-2 transition-all ${
                   active
-                    ? "border-cyan-500 text-cyan-400"
+                    ? "border-[#f5a623] text-[#f5a623]"
                     : "border-transparent text-white/35 hover:text-white/60 hover:border-white/20"
                 }`}
               >

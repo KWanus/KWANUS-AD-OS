@@ -76,7 +76,7 @@ interface DashboardData {
 
 function verdictTone(status?: string) {
   if (status === "healthy") return "border-emerald-500/20 bg-emerald-500/10 text-emerald-200";
-  if (status === "stale") return "border-cyan-500/20 bg-cyan-500/10 text-cyan-100";
+  if (status === "stale") return "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5f0e8]";
   return "border-amber-500/20 bg-amber-500/10 text-amber-100";
 }
 
@@ -108,7 +108,7 @@ function MetricCard({
       <p className="text-[11px] font-medium uppercase tracking-wider text-white/30">{label}</p>
       {sub && <p className="text-[10px] text-white/20 mt-1">{sub}</p>}
       {href && (
-        <div className="flex items-center gap-1 mt-3 text-[11px] text-white/25 group-hover:text-cyan-400/60 transition">
+        <div className="flex items-center gap-1 mt-3 text-[11px] text-white/25 group-hover:text-[#f5a623]/60 transition">
           View <ArrowRight className="w-3 h-3" />
         </div>
       )}
@@ -131,7 +131,7 @@ function SectionHeader({ title, href, count }: { title: string; href?: string; c
         )}
       </div>
       {href && (
-        <Link href={href} className="flex items-center gap-1 text-[11px] text-cyan-400/50 hover:text-cyan-400 transition">
+        <Link href={href} className="flex items-center gap-1 text-[11px] text-[#f5a623]/50 hover:text-[#f5a623] transition">
           View all <ArrowRight className="w-3 h-3" />
         </Link>
       )}
@@ -270,9 +270,9 @@ export default function AnalyticsPage() {
   const { stats, analyses, campaigns, clients, sites, emails, leads } = data;
 
   return (
-    <main className="min-h-screen bg-[#050a14] text-white">
+    <main className="min-h-screen bg-t-bg text-white">
       {/* Glows */}
-      <div className="fixed top-0 left-1/3 w-[600px] h-[400px] bg-cyan-500/[0.05] blur-[140px] rounded-full pointer-events-none" />
+      <div className="fixed top-0 left-1/3 w-[600px] h-[400px] bg-[#f5a623]/[0.05] blur-[140px] rounded-full pointer-events-none" />
       <div className="fixed bottom-0 right-1/4 w-[400px] h-[400px] bg-purple-500/[0.05] blur-[120px] rounded-full pointer-events-none" />
 
       <AppNav />
@@ -282,10 +282,10 @@ export default function AnalyticsPage() {
         {/* Page header */}
         <div className="mb-10">
           <div className="flex items-center gap-2 mb-3">
-            <div className="w-8 h-8 rounded-xl bg-cyan-500/15 border border-cyan-500/20 flex items-center justify-center">
-              <BarChart3 className="w-4 h-4 text-cyan-400" />
+            <div className="w-8 h-8 rounded-xl bg-[#f5a623]/15 border border-[#f5a623]/20 flex items-center justify-center">
+              <BarChart3 className="w-4 h-4 text-[#f5a623]" />
             </div>
-            <p className="text-[11px] font-black uppercase tracking-[0.26em] text-cyan-400/70">Analytics</p>
+            <p className="text-[11px] font-black uppercase tracking-[0.26em] text-[#f5a623]/70">Analytics</p>
           </div>
           <h1 className="text-3xl font-black text-white">Platform Overview</h1>
           <p className="text-sm text-white/40 mt-1">All systems at a glance — analyses, campaigns, clients, email, sites, and leads.</p>
@@ -310,7 +310,7 @@ export default function AnalyticsPage() {
               </div>
             </div>
             <div className="flex flex-col items-center justify-center py-20 gap-4 text-white/20">
-              <Loader2 className="w-8 h-8 animate-spin text-cyan-400/40" />
+              <Loader2 className="w-8 h-8 animate-spin text-[#f5a623]/40" />
               <p className="text-sm font-semibold">Loading your analytics…</p>
             </div>
           </div>
@@ -349,13 +349,13 @@ export default function AnalyticsPage() {
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-4">
                 <MetricCard
                   label="Analyses" value={analyses.total}
-                  icon={Target} color="text-cyan-400" accent="bg-cyan-500/10"
+                  icon={Target} color="text-[#f5a623]" accent="bg-[#f5a623]/10"
                   href="/analyses"
                   sub={analyses.total > 0 ? `Avg ${analyses.avgScore}/100` : undefined}
                 />
                 <MetricCard
                   label="Campaigns" value={campaigns.total}
-                  icon={Sparkles} color="text-purple-400" accent="bg-purple-500/10"
+                  icon={Sparkles} color="text-[#e07850]" accent="bg-purple-500/10"
                   href="/campaigns"
                   sub={campaigns.active > 0 ? `${campaigns.active} active` : undefined}
                 />
@@ -418,7 +418,7 @@ export default function AnalyticsPage() {
                 <MetricCard label="Active Clients" value={clients.active} icon={CheckCircle} color="text-green-400" />
                 <MetricCard label="Pipeline Value" value={clients.pipelineValue > 0 ? `$${(clients.pipelineValue / 1000).toFixed(0)}k` : "—"} icon={DollarSign} color="text-amber-400" href="/clients/pipeline" />
                 <MetricCard label="Won Revenue" value={clients.wonRevenue > 0 ? `$${(clients.wonRevenue / 1000).toFixed(0)}k` : "—"} icon={TrendingUp} color="text-emerald-400" />
-                <MetricCard label="Avg Health" value={`${clients.avgHealth}/100`} icon={Activity} color="text-cyan-400" sub={clients.atRisk > 0 ? `${clients.atRisk} at risk` : undefined} />
+                <MetricCard label="Avg Health" value={`${clients.avgHealth}/100`} icon={Activity} color="text-[#f5a623]" sub={clients.atRisk > 0 ? `${clients.atRisk} at risk` : undefined} />
               </div>
             </div>
 
@@ -426,8 +426,8 @@ export default function AnalyticsPage() {
             <div>
               <SectionHeader title="Email Performance" href="/emails" count={emails.contacts} />
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
-                <MetricCard label="Subscribed" value={emails.subscribed.toLocaleString()} icon={Mail} color="text-cyan-400" />
-                <MetricCard label="Active Flows" value={`${emails.activeFlows} / ${emails.flows}`} icon={Zap} color="text-purple-400" href="/emails/flows/new" />
+                <MetricCard label="Subscribed" value={emails.subscribed.toLocaleString()} icon={Mail} color="text-[#f5a623]" />
+                <MetricCard label="Active Flows" value={`${emails.activeFlows} / ${emails.flows}`} icon={Zap} color="text-[#e07850]" href="/emails/flows/new" />
                 <MetricCard label="Emails Sent" value={emails.sentEmails.toLocaleString()} icon={FileText} color="text-white/50" />
                 <MetricCard
                   label="Avg Open Rate"
@@ -447,7 +447,7 @@ export default function AnalyticsPage() {
                 <MetricCard label="Total Sites" value={sites.total} icon={Globe} color="text-blue-400" href="/websites" />
                 <MetricCard label="Published" value={sites.published} icon={CheckCircle} color="text-green-400" />
                 <MetricCard label="In Draft" value={sites.total - sites.published} icon={FileText} color="text-white/40" />
-                <MetricCard label="Publish Rate" value={sites.total > 0 ? `${Math.round((sites.published / sites.total) * 100)}%` : "—"} icon={TrendingUp} color="text-cyan-400" />
+                <MetricCard label="Publish Rate" value={sites.total > 0 ? `${Math.round((sites.published / sites.total) * 100)}%` : "—"} icon={TrendingUp} color="text-[#f5a623]" />
               </div>
             </div>
 
@@ -456,14 +456,14 @@ export default function AnalyticsPage() {
               <p className="text-[10px] font-black uppercase tracking-[0.26em] text-white/30 mb-4">Detailed Analytics</p>
               <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3">
                 {[
-                  { label: "Email Analytics", href: "/emails/analytics", icon: BarChart3, color: "text-cyan-400" },
+                  { label: "Email Analytics", href: "/emails/analytics", icon: BarChart3, color: "text-[#f5a623]" },
                   { label: "Client Dashboard", href: "/clients/dashboard", icon: Users, color: "text-green-400" },
                   { label: "Pipeline View", href: "/clients/pipeline", icon: TrendingUp, color: "text-amber-400" },
-                  { label: "All Analyses", href: "/analyses", icon: Target, color: "text-purple-400" },
+                  { label: "All Analyses", href: "/analyses", icon: Target, color: "text-[#e07850]" },
                   { label: "Winner Finder", href: "/winners", icon: Sparkles, color: "text-rose-400" },
                   { label: "Products", href: "/products", icon: Package, color: "text-blue-400" },
                   { label: "Leads", href: "/leads", icon: Activity, color: "text-white/50" },
-                  { label: "Campaigns", href: "/campaigns", icon: FileText, color: "text-purple-400" },
+                  { label: "Campaigns", href: "/campaigns", icon: FileText, color: "text-[#e07850]" },
                 ].map(({ label, href, icon: Icon, color }) => (
                   <Link
                     key={href}

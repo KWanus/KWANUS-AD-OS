@@ -45,8 +45,8 @@ const ANGLE_COLORS: Record<string, string> = {
   desire: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
   proof: "bg-blue-500/10 text-blue-400 border-blue-500/20",
   urgency: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-  story: "bg-purple-500/10 text-purple-400 border-purple-500/20",
-  search: "bg-cyan-500/10 text-cyan-400 border-cyan-500/20",
+  story: "bg-purple-500/10 text-[#e07850] border-purple-500/20",
+  search: "bg-[#f5a623]/10 text-[#f5a623] border-[#f5a623]/20",
 };
 
 export default function AdReviewLaunch({ campaignId }: { campaignId: string }) {
@@ -160,7 +160,7 @@ export default function AdReviewLaunch({ campaignId }: { campaignId: string }) {
           <p className="text-xs text-white/30 mt-0.5">{ads.length} ads generated · {selected.size} selected for launch</p>
         </div>
         <div className="flex gap-2">
-          <button onClick={selectAll} className="text-[10px] text-cyan-400/50 hover:text-cyan-400 transition">Select all</button>
+          <button onClick={selectAll} className="text-[10px] text-[#f5a623]/50 hover:text-[#f5a623] transition">Select all</button>
           <button onClick={selectNone} className="text-[10px] text-white/20 hover:text-white/40 transition">Clear</button>
         </div>
       </div>
@@ -177,12 +177,12 @@ export default function AdReviewLaunch({ campaignId }: { campaignId: string }) {
               key={ad.id}
               onClick={() => toggleSelect(ad.id)}
               className={`relative rounded-xl border cursor-pointer transition overflow-hidden ${
-                isSelected ? "border-cyan-500/30 bg-cyan-500/[0.04]" : "border-white/[0.06] bg-white/[0.02] hover:border-white/[0.1]"
+                isSelected ? "border-[#f5a623]/30 bg-[#f5a623]/[0.04]" : "border-white/[0.06] bg-white/[0.02] hover:border-white/[0.1]"
               }`}
             >
               {/* Selection indicator */}
               <div className={`absolute top-3 right-3 w-5 h-5 rounded-full border flex items-center justify-center z-10 ${
-                isSelected ? "bg-cyan-500 border-cyan-500" : "border-white/20 bg-black/40"
+                isSelected ? "bg-[#f5a623] border-[#f5a623]" : "border-white/20 bg-black/40"
               }`}>
                 {isSelected && <Check className="w-3 h-3 text-white" />}
               </div>
@@ -257,7 +257,7 @@ export default function AdReviewLaunch({ campaignId }: { campaignId: string }) {
         <button
           onClick={() => void handleLaunch()}
           disabled={selected.size === 0 || launching}
-          className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 py-3.5 text-sm font-bold text-white disabled:opacity-30 hover:opacity-90 transition"
+          className="w-full flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] py-3.5 text-sm font-bold text-white disabled:opacity-30 hover:opacity-90 transition"
         >
           {launching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Rocket className="w-4 h-4" />}
           {launching ? "Launching..." : `Launch ${selected.size} Ads on Meta + TikTok`}
@@ -295,7 +295,7 @@ export default function AdReviewLaunch({ campaignId }: { campaignId: string }) {
                 <div key={post.id ?? i} className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-2">
-                      <span className="text-[9px] font-bold uppercase text-cyan-400/50">{post.platform}</span>
+                      <span className="text-[9px] font-bold uppercase text-[#f5a623]/50">{post.platform}</span>
                       <span className="text-[9px] text-white/15">{post.type}</span>
                       <span className="text-[9px] text-white/15">{post.scheduleSuggestion}</span>
                     </div>
@@ -309,7 +309,7 @@ export default function AdReviewLaunch({ campaignId }: { campaignId: string }) {
                   </div>
                   <p className="text-xs text-white/50 whitespace-pre-wrap">{post.content}</p>
                   {post.hashtags && post.hashtags.length > 0 && (
-                    <p className="text-[10px] text-cyan-400/30 mt-1">{post.hashtags.map(h => `#${h}`).join(" ")}</p>
+                    <p className="text-[10px] text-[#f5a623]/30 mt-1">{post.hashtags.map(h => `#${h}`).join(" ")}</p>
                   )}
                 </div>
               ))}

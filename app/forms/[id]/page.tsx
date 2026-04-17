@@ -60,7 +60,7 @@ export default function PublicFormPage({ params }: { params: Promise<{ id: strin
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex items-center justify-center">
+      <div className="min-h-screen bg-t-bg flex items-center justify-center">
         <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
       </div>
     );
@@ -68,7 +68,7 @@ export default function PublicFormPage({ params }: { params: Promise<{ id: strin
 
   if (!form) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex flex-col items-center justify-center gap-3">
+      <div className="min-h-screen bg-t-bg flex flex-col items-center justify-center gap-3">
         <AlertTriangle className="w-8 h-8 text-red-400/50" />
         <p className="text-white/30 text-sm">This form is no longer available.</p>
       </div>
@@ -77,7 +77,7 @@ export default function PublicFormPage({ params }: { params: Promise<{ id: strin
 
   if (done) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex flex-col items-center justify-center gap-5 px-4">
+      <div className="min-h-screen bg-t-bg flex flex-col items-center justify-center gap-5 px-4">
         <div className="w-16 h-16 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center">
           <CheckCircle className="w-8 h-8 text-green-400" />
         </div>
@@ -92,10 +92,10 @@ export default function PublicFormPage({ params }: { params: Promise<{ id: strin
   const executionTier = form.executionTier === "core" ? "core" : "elite";
 
   return (
-    <div className="min-h-screen bg-[#050a14] flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-t-bg flex flex-col items-center justify-center px-4">
       {/* Glow */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
-        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-cyan-500/5 blur-[120px]" />
+        <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-[#f5a623]/5 blur-[120px]" />
       </div>
 
       <div className="relative w-full max-w-md">
@@ -103,7 +103,7 @@ export default function PublicFormPage({ params }: { params: Promise<{ id: strin
           <div className="mb-4 flex justify-center">
             <span className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.24em] ${
               executionTier === "elite"
-                ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
+                ? "border-[#f5a623]/30 bg-[#f5a623]/10 text-[#f5a623]"
                 : "border-white/10 bg-white/5 text-white/45"
             }`}>
               {executionTier} opt-in
@@ -126,7 +126,7 @@ export default function PublicFormPage({ params }: { params: Promise<{ id: strin
               value={firstName}
               onChange={(e) => setFirstName(e.target.value)}
               placeholder="First name (optional)"
-              className="w-full bg-white/[0.05] border border-white/[0.1] rounded-xl px-4 py-3.5 text-sm text-white placeholder-white/25 focus:outline-none focus:border-cyan-500/50 transition"
+              className="w-full bg-white/[0.05] border border-white/[0.1] rounded-xl px-4 py-3.5 text-sm text-white placeholder-white/25 focus:outline-none focus:border-[#f5a623]/50 transition"
             />
             <input
               type="email"
@@ -134,7 +134,7 @@ export default function PublicFormPage({ params }: { params: Promise<{ id: strin
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Your email address"
               required
-              className="w-full bg-white/[0.05] border border-white/[0.1] rounded-xl px-4 py-3.5 text-sm text-white placeholder-white/25 focus:outline-none focus:border-cyan-500/50 transition"
+              className="w-full bg-white/[0.05] border border-white/[0.1] rounded-xl px-4 py-3.5 text-sm text-white placeholder-white/25 focus:outline-none focus:border-[#f5a623]/50 transition"
             />
 
             {error && (
@@ -148,8 +148,8 @@ export default function PublicFormPage({ params }: { params: Promise<{ id: strin
               disabled={submitting || !email}
               className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-white font-bold text-sm hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition ${
                 executionTier === "elite"
-                  ? "bg-gradient-to-r from-cyan-500 to-purple-600 shadow-[0_0_30px_rgba(6,182,212,0.18)]"
-                  : "bg-gradient-to-r from-cyan-500 to-blue-500"
+                  ? "bg-gradient-to-r from-[#f5a623] to-[#e07850] shadow-[0_0_30px_rgba(245,166,35,0.18)]"
+                  : "bg-gradient-to-r from-[#f5a623] to-[#e07850]"
               }`}
             >
               {submitting ? (

@@ -70,14 +70,14 @@ function MessageBubble({ message }: { message: Message }) {
         .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
         .replace(/\*(.+?)\*/g, "<em>$1</em>")
         .replace(/`(.+?)`/g, '<code style="background:rgba(255,255,255,0.06);padding:1px 5px;border-radius:4px;font-size:12px">$1</code>')
-        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color:#06b6d4;text-decoration:underline">$1</a>');
+        .replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" style="color:#f5a623;text-decoration:underline">$1</a>');
 
       // Numbered lists
       const numMatch = line.match(/^(\d+)\.\s(.+)/);
       if (numMatch) {
         elements.push(
           <div key={i} style={{ display: "flex", gap: 8, marginBottom: 4 }}>
-            <span style={{ color: "#06b6d4", flexShrink: 0, fontWeight: 800, fontSize: 12, minWidth: 16 }}>{numMatch[1]}.</span>
+            <span style={{ color: "#f5a623", flexShrink: 0, fontWeight: 800, fontSize: 12, minWidth: 16 }}>{numMatch[1]}.</span>
             <span dangerouslySetInnerHTML={{ __html: formatted.replace(/^\d+\.\s/, "") }} />
           </div>
         );
@@ -88,7 +88,7 @@ function MessageBubble({ message }: { message: Message }) {
       if (line.trim().startsWith("- ") || line.trim().startsWith("• ")) {
         elements.push(
           <div key={i} style={{ display: "flex", gap: 8, marginBottom: 4 }}>
-            <span style={{ color: "#06b6d4", flexShrink: 0, marginTop: 2 }}>•</span>
+            <span style={{ color: "#f5a623", flexShrink: 0, marginTop: 2 }}>•</span>
             <span dangerouslySetInnerHTML={{ __html: formatted.replace(/^[-•]\s/, "") }} />
           </div>
         );
@@ -105,7 +105,7 @@ function MessageBubble({ message }: { message: Message }) {
         continue;
       }
       if (line.startsWith("**→")) {
-        elements.push(<p key={i} style={{ fontWeight: 700, color: "#06b6d4", margin: "8px 0 2px" }} dangerouslySetInnerHTML={{ __html: formatted }} />);
+        elements.push(<p key={i} style={{ fontWeight: 700, color: "#f5a623", margin: "8px 0 2px" }} dangerouslySetInnerHTML={{ __html: formatted }} />);
         continue;
       }
 
@@ -118,7 +118,7 @@ function MessageBubble({ message }: { message: Message }) {
   if (isUser) {
     return (
       <div className="flex justify-end mb-4">
-        <div className="max-w-[75%] bg-gradient-to-r from-cyan-500/20 to-purple-600/20 border border-cyan-500/25 rounded-2xl rounded-tr-sm px-4 py-3">
+        <div className="max-w-[75%] bg-gradient-to-r from-cyan-500/20 to-[#e07850]/20 border border-[#f5a623]/25 rounded-2xl rounded-tr-sm px-4 py-3">
           <p className="text-sm text-white leading-relaxed">{message.content}</p>
         </div>
         <div className="w-7 h-7 rounded-full bg-white/10 border border-white/15 flex items-center justify-center ml-2 shrink-0 mt-auto">
@@ -130,7 +130,7 @@ function MessageBubble({ message }: { message: Message }) {
 
   return (
     <div className="flex gap-3 mb-5">
-      <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shrink-0 mt-0.5">
+      <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-[#f5a623] to-[#e07850] flex items-center justify-center shrink-0 mt-0.5">
         <Zap className="w-3.5 h-3.5 text-white" />
       </div>
       <div className="max-w-[85%] bg-white/[0.035] border border-white/[0.08] rounded-2xl rounded-tl-sm px-4 py-3">
@@ -301,7 +301,7 @@ function CopilotPageContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white flex flex-col">
+    <div className="min-h-screen bg-t-bg text-white flex flex-col">
       <AppNav />
       <AISubNav />
 
@@ -310,7 +310,7 @@ function CopilotPageContent() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
+              <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-[#f5a623] to-[#e07850] flex items-center justify-center">
                 <Zap className="w-3 h-3 text-white" />
               </div>
               <h1 className="text-lg font-black text-white">Himalaya Copilot</h1>
@@ -337,7 +337,7 @@ function CopilotPageContent() {
                   osStats.osVerdict.status === "healthy"
                     ? "border-emerald-500/20 bg-emerald-500/10 text-emerald-200"
                     : osStats.osVerdict.status === "stale"
-                      ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-100"
+                      ? "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5f0e8]"
                       : "border-amber-500/20 bg-amber-500/10 text-amber-100"
                 }`}>
                   {osStats.osVerdict.label}
@@ -364,7 +364,7 @@ function CopilotPageContent() {
                     onClick={() => setExecutionTier(tier)}
                     className={`rounded-lg px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] transition ${
                       active
-                        ? "bg-cyan-500/15 text-cyan-300"
+                        ? "bg-[#f5a623]/15 text-[#f5a623]"
                         : "text-white/35 hover:bg-white/[0.05] hover:text-white/75"
                     }`}
                   >
@@ -377,7 +377,7 @@ function CopilotPageContent() {
               <>
                 <Link
                   href="/setup"
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold transition hover:bg-cyan-500/20"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#f5a623]/10 border border-[#f5a623]/20 text-[#f5a623] text-xs font-bold transition hover:bg-[#f5a623]/20"
                 >
                   ← Back to setup
                 </Link>
@@ -421,7 +421,7 @@ function CopilotPageContent() {
                       onClick={() => setExecutionTier(tier)}
                       className={`rounded-lg px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.18em] transition ${
                         active
-                          ? "bg-cyan-500/15 text-cyan-300"
+                          ? "bg-[#f5a623]/15 text-[#f5a623]"
                           : "text-white/35 hover:bg-white/[0.05] hover:text-white/75"
                       }`}
                     >
@@ -437,7 +437,7 @@ function CopilotPageContent() {
               <button
                 key={s}
                 onClick={() => void sendMessage(s)}
-                className="px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:border-cyan-500/30 hover:bg-cyan-500/[0.06] text-xs text-white/50 hover:text-white/80 transition"
+                className="px-3 py-1.5 rounded-xl bg-white/[0.04] border border-white/[0.08] hover:border-[#f5a623]/30 hover:bg-[#f5a623]/[0.06] text-xs text-white/50 hover:text-white/80 transition"
               >
                 {s}
               </button>
@@ -455,12 +455,12 @@ function CopilotPageContent() {
           ))}
           {streaming && messages[messages.length - 1]?.content === "" && (
             <div className="flex gap-3 mb-5">
-              <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shrink-0">
+              <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-[#f5a623] to-[#e07850] flex items-center justify-center shrink-0">
                 <Zap className="w-3.5 h-3.5 text-white" />
               </div>
               <div className="bg-white/[0.035] border border-white/[0.08] rounded-2xl rounded-tl-sm px-4 py-3">
                 {scanning ? (
-                  <div className="flex items-center gap-2 text-[11px] text-cyan-400/80">
+                  <div className="flex items-center gap-2 text-[11px] text-[#f5a623]/80">
                     <Loader2 className="w-3.5 h-3.5 animate-spin" />
                     Scanning site…
                   </div>
@@ -497,7 +497,7 @@ function CopilotPageContent() {
           <button
             onClick={() => void sendMessage()}
             disabled={!input.trim() || streaming}
-            className="p-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed transition shrink-0"
+            className="p-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed transition shrink-0"
           >
             {streaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
           </button>
@@ -513,7 +513,7 @@ function CopilotPageContent() {
 
 export default function CopilotPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#050a14] text-white"><AppNav /></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-t-bg text-white"><AppNav /></div>}>
       <CopilotPageContent />
     </Suspense>
   );

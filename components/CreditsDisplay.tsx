@@ -34,7 +34,7 @@ export default function CreditsDisplay() {
         className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full border text-xs font-bold tabular-nums transition
           ${low
             ? "bg-orange-500/10 border-orange-500/30 text-orange-400 hover:bg-orange-500/15"
-            : "bg-cyan-500/[0.07] border-cyan-500/20 text-cyan-400 hover:bg-cyan-500/12"
+            : "bg-[#f5a623]/[0.07] border-[#f5a623]/20 text-[#f5a623] hover:bg-[#f5a623]/12"
           }`}
       >
         <Zap className="w-3 h-3" />

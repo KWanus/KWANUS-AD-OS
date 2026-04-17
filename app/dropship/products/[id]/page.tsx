@@ -128,7 +128,7 @@ const STATUS_BADGE: Record<ProductStatus, string> = {
   researching: "bg-white/10 text-white/50 border-white/20",
   testing:     "bg-amber-500/15 text-amber-400 border-amber-500/30",
   winning:     "bg-green-500/15 text-green-400 border-green-500/30",
-  scaling:     "bg-cyan-500/15 text-cyan-400 border-cyan-500/30",
+  scaling:     "bg-[#f5a623]/15 text-[#f5a623] border-[#f5a623]/30",
   dead:        "bg-red-500/15 text-red-400 border-red-500/30",
 };
 
@@ -236,7 +236,7 @@ function ProfitCalc({ supplierPrice = 0, shipping = 0, suggestedRetail = 0 }: {
             type="number"
             value={retail}
             onChange={(e) => setRetail(Number(e.target.value))}
-            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500/40 transition"
+            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#f5a623]/40 transition"
           />
         </div>
         <div>
@@ -245,7 +245,7 @@ function ProfitCalc({ supplierPrice = 0, shipping = 0, suggestedRetail = 0 }: {
             type="number"
             value={adSpend}
             onChange={(e) => setAdSpend(Number(e.target.value))}
-            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500/40 transition"
+            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#f5a623]/40 transition"
           />
         </div>
       </div>
@@ -253,7 +253,7 @@ function ProfitCalc({ supplierPrice = 0, shipping = 0, suggestedRetail = 0 }: {
         {[
           { label: "COGS", value: `$${cogs.toFixed(2)}`, color: "text-red-400" },
           { label: "Profit", value: `$${profit.toFixed(2)}`, color: profit >= 0 ? "text-green-400" : "text-red-400" },
-          { label: "Margin", value: `${margin}%`, color: "text-cyan-400" },
+          { label: "Margin", value: `${margin}%`, color: "text-[#f5a623]" },
           { label: "Break-Even ROAS", value: breakEvenRoas, color: "text-amber-400" },
         ].map(({ label, value, color }) => (
           <div key={label} className="flex flex-col items-center p-3 bg-white/[0.02] rounded-xl border border-white/[0.05]">
@@ -283,7 +283,7 @@ function TabAnalysis({ product, onRunAnalysis, running }: {
         <button
           onClick={onRunAnalysis}
           disabled={running}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600/30 to-blue-600/30 border border-cyan-500/30 hover:border-cyan-400/50 text-sm font-bold text-white transition disabled:opacity-40"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600/30 to-blue-600/30 border border-[#f5a623]/30 hover:border-cyan-400/50 text-sm font-bold text-white transition disabled:opacity-40"
         >
           {running ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
           Run Full Analysis
@@ -340,7 +340,7 @@ function TabAnalysis({ product, onRunAnalysis, running }: {
                     <td className="py-2.5 pr-4 text-white/50">${tier.cogs.toFixed(2)}</td>
                     <td className="py-2.5 pr-4 text-white/70 font-semibold">${tier.retail.toFixed(2)}</td>
                     <td className="py-2.5 pr-4 text-green-400 font-bold">${tier.profit.toFixed(2)}</td>
-                    <td className="py-2.5 pr-4 text-cyan-400 font-bold">{tier.marginPct.toFixed(1)}%</td>
+                    <td className="py-2.5 pr-4 text-[#f5a623] font-bold">{tier.marginPct.toFixed(1)}%</td>
                     <td className="py-2.5 text-amber-400 font-bold">{tier.breakEvenRoas.toFixed(2)}x</td>
                   </tr>
                 ))}
@@ -354,7 +354,7 @@ function TabAnalysis({ product, onRunAnalysis, running }: {
       {a.targetAudience && (
         <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5">
           <div className="flex items-center gap-2 mb-4">
-            <Users className="w-4 h-4 text-cyan-400" />
+            <Users className="w-4 h-4 text-[#f5a623]" />
             <h3 className="text-xs font-black uppercase tracking-widest text-white/40">Target Audience</h3>
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -387,7 +387,7 @@ function TabAnalysis({ product, onRunAnalysis, running }: {
                 <p className="text-[10px] font-black uppercase tracking-widest text-white/25 mb-2">Interests</p>
                 <div className="flex flex-wrap gap-1.5">
                   {a.targetAudience.interests.map((int, i) => (
-                    <span key={i} className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-purple-500/10 text-purple-400 border border-purple-500/20">{int}</span>
+                    <span key={i} className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-purple-500/10 text-[#e07850] border border-purple-500/20">{int}</span>
                   ))}
                 </div>
               </div>
@@ -517,11 +517,11 @@ function TabStoreContent({ product, onGenerate, running }: {
               value={editTitle}
               onChange={(e) => setEditTitle(e.target.value)}
               onBlur={() => setEditTitle(null)}
-              className="w-full text-xl font-black text-white bg-transparent border-b border-cyan-500 outline-none pb-1"
+              className="w-full text-xl font-black text-white bg-transparent border-b border-[#f5a623] outline-none pb-1"
             />
           ) : (
             <button onClick={() => setEditTitle(s.mainTitle ?? "")} className="group w-full text-left">
-              <h2 className="text-xl font-black text-white group-hover:text-cyan-300 transition-colors">{s.mainTitle}</h2>
+              <h2 className="text-xl font-black text-white group-hover:text-[#f5a623] transition-colors">{s.mainTitle}</h2>
             </button>
           )}
         </div>
@@ -646,7 +646,7 @@ function TabAdCreatives({ product, onGenerate, running }: {
         <button
           onClick={onGenerate}
           disabled={running}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600/30 to-purple-600/30 border border-indigo-500/30 hover:border-indigo-400/50 text-sm font-bold text-white transition disabled:opacity-40"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600/30 to-[#e07850]/30 border border-indigo-500/30 hover:border-indigo-400/50 text-sm font-bold text-white transition disabled:opacity-40"
         >
           {running ? <Loader2 className="w-4 h-4 animate-spin" /> : <Megaphone className="w-4 h-4" />}
           Generate Ads
@@ -764,7 +764,7 @@ function TabAdCreatives({ product, onGenerate, running }: {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {data.thumbnailConcepts.map((tc, i) => (
                       <div key={i} className="p-3 bg-white/[0.02] rounded-xl border border-white/[0.05]">
-                        <span className="inline-flex px-2 py-0.5 rounded-lg text-[10px] font-black bg-purple-500/15 text-purple-400 border border-purple-500/25 mb-2">{tc.style}</span>
+                        <span className="inline-flex px-2 py-0.5 rounded-lg text-[10px] font-black bg-purple-500/15 text-[#e07850] border border-purple-500/25 mb-2">{tc.style}</span>
                         <p className="text-xs text-white/60">{tc.concept}</p>
                       </div>
                     ))}
@@ -790,7 +790,7 @@ function TabAdCreatives({ product, onGenerate, running }: {
                         {[
                           { label: "Hook", val: sc.hook, color: "text-pink-400" },
                           { label: "Demo", val: sc.demo, color: "text-white/60" },
-                          { label: "Proof", val: sc.proof, color: "text-cyan-400" },
+                          { label: "Proof", val: sc.proof, color: "text-[#f5a623]" },
                           { label: "CTA", val: sc.cta, color: "text-green-400" },
                         ].map(({ label, val, color }) => (
                           <div key={label} className="mb-2 last:mb-0">
@@ -913,9 +913,9 @@ function TabEmailFlows({ product, onGenerate, running }: {
   const DELAY_COLORS: Record<string, string> = {
     "1h": "bg-amber-500/15 text-amber-400 border-amber-500/25",
     "24h": "bg-blue-500/15 text-blue-400 border-blue-500/25",
-    "48h": "bg-purple-500/15 text-purple-400 border-purple-500/25",
+    "48h": "bg-purple-500/15 text-[#e07850] border-purple-500/25",
     "3d": "bg-indigo-500/15 text-indigo-400 border-indigo-500/25",
-    "7d": "bg-cyan-500/15 text-cyan-400 border-cyan-500/25",
+    "7d": "bg-[#f5a623]/15 text-[#f5a623] border-[#f5a623]/25",
     "14d": "bg-green-500/15 text-green-400 border-green-500/25",
     "30d": "bg-white/10 text-white/50 border-white/20",
   };
@@ -987,7 +987,7 @@ function TabSuppliers({ product, onPatch }: {
             href={product.supplierUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.07] text-xs text-cyan-400 hover:text-cyan-300 hover:border-cyan-500/30 transition mb-4"
+            className="flex items-center gap-2 px-3 py-2.5 rounded-xl bg-white/[0.03] border border-white/[0.07] text-xs text-[#f5a623] hover:text-[#f5a623] hover:border-[#f5a623]/30 transition mb-4"
           >
             <ExternalLink className="w-3.5 h-3.5 shrink-0" />
             <span className="truncate font-mono">{product.supplierUrl}</span>
@@ -1003,7 +1003,7 @@ function TabSuppliers({ product, onPatch }: {
               value={supplierPrice}
               onChange={(e) => setSupplierPrice(Number(e.target.value))}
               onBlur={() => onPatch({ supplierPrice })}
-              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500/40 transition"
+              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#f5a623]/40 transition"
             />
           </div>
           <div>
@@ -1013,7 +1013,7 @@ function TabSuppliers({ product, onPatch }: {
               value={shipping}
               onChange={(e) => setShipping(Number(e.target.value))}
               onBlur={() => onPatch({ shippingCost: shipping })}
-              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-cyan-500/40 transition"
+              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-[#f5a623]/40 transition"
             />
           </div>
         </div>
@@ -1035,7 +1035,7 @@ function TabSuppliers({ product, onPatch }: {
           onBlur={() => onPatch({ notes })}
           placeholder="Supplier notes, shipping times, MOQ, contacts..."
           rows={5}
-          className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-3 py-2.5 text-xs text-white/70 placeholder-white/20 focus:outline-none focus:border-cyan-500/40 transition resize-none"
+          className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-3 py-2.5 text-xs text-white/70 placeholder-white/20 focus:outline-none focus:border-[#f5a623]/40 transition resize-none"
         />
       </div>
     </div>
@@ -1126,7 +1126,7 @@ export default function DropshipProductPage() {
           <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8">
             <AlertTriangle className="w-8 h-8 text-red-400/50" />
             <p className="text-white/40">{databaseUnavailable ? "Product data is temporarily unavailable" : "Product not found"}</p>
-            <Link href="/dropship" className="text-sm text-cyan-400 hover:text-cyan-300">← Back to Dropship</Link>
+            <Link href="/dropship" className="text-sm text-[#f5a623] hover:text-[#f5a623]">← Back to Dropship</Link>
           </div>
         </div>
       </>
@@ -1197,7 +1197,7 @@ export default function DropshipProductPage() {
               {/* Score breakdown bars */}
               {sb && (
                 <div className="flex flex-wrap gap-4">
-                  <ScoreBar label="Demand" value={sb.demand} color="bg-cyan-500" />
+                  <ScoreBar label="Demand" value={sb.demand} color="bg-[#f5a623]" />
                   <ScoreBar label="Competition" value={sb.competition} color="bg-purple-500" />
                   <ScoreBar label="Trend" value={sb.trend} color="bg-amber-500" />
                   <ScoreBar label="Margin" value={sb.margin} color="bg-green-500" />

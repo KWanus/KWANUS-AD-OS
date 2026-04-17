@@ -73,7 +73,7 @@ interface Client {
 
 const STAGES: Record<string, { label: string; color: string; bg: string; border: string }> = {
   lead:      { label: "Lead",      color: "text-white/40",   bg: "bg-white/5",        border: "border-white/10" },
-  qualified: { label: "Qualified", color: "text-cyan-400",   bg: "bg-cyan-500/10",    border: "border-cyan-500/20" },
+  qualified: { label: "Qualified", color: "text-[#f5a623]",   bg: "bg-[#f5a623]/10",    border: "border-[#f5a623]/20" },
   proposal:  { label: "Proposal",  color: "text-blue-400",   bg: "bg-blue-500/10",    border: "border-blue-500/20" },
   active:    { label: "Active",    color: "text-green-400",  bg: "bg-green-500/10",   border: "border-green-500/20" },
   won:       { label: "Won",       color: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20" },
@@ -88,7 +88,7 @@ const HEALTH_CONFIG = {
 
 function verdictTone(status?: string) {
   if (status === "healthy") return "border-emerald-500/20 bg-emerald-500/10 text-emerald-200";
-  if (status === "stale") return "border-cyan-500/20 bg-cyan-500/10 text-cyan-100";
+  if (status === "stale") return "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5f0e8]";
   return "border-amber-500/20 bg-amber-500/10 text-amber-100";
 }
 
@@ -189,13 +189,13 @@ function ClientRow({ client, onDelete, onUpdate, selected, onToggle }: { client:
       />
 
       {/* Avatar */}
-      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500/20 to-purple-600/20 border border-white/10 flex items-center justify-center text-sm font-black text-white/70 shrink-0">
+      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500/20 to-[#e07850]/20 border border-white/10 flex items-center justify-center text-sm font-black text-white/70 shrink-0">
         {client.name.charAt(0).toUpperCase()}
       </div>
 
       {/* Name + company */}
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-bold text-white truncate group-hover:text-cyan-300 transition-colors">
+        <p className="text-sm font-bold text-white truncate group-hover:text-[#f5a623] transition-colors">
           {client.name}
         </p>
       <div className="flex items-center gap-2 mt-0.5">
@@ -206,10 +206,10 @@ function ClientRow({ client, onDelete, onUpdate, selected, onToggle }: { client:
             </span>
           )}
           {client.niche && (
-            <span className="text-[10px] text-purple-400/60 font-medium">{client.niche}</span>
+            <span className="text-[10px] text-[#e07850]/60 font-medium">{client.niche}</span>
           )}
           <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${
-            client.executionTier === "core" ? "text-white/35" : "text-cyan-300/80"
+            client.executionTier === "core" ? "text-white/35" : "text-[#f5a623]/80"
           }`}>
             {client.executionTier ?? "elite"}
           </span>
@@ -315,8 +315,8 @@ function SkeletonRow() {
 function EmptyState({ filtered }: { filtered: boolean }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center px-4">
-      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-purple-600/20 border border-white/10 flex items-center justify-center mb-5">
-        <Users className="w-7 h-7 text-cyan-400/70" />
+      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-[#e07850]/20 border border-white/10 flex items-center justify-center mb-5">
+        <Users className="w-7 h-7 text-[#f5a623]/70" />
       </div>
       {filtered ? (
         <>
@@ -332,7 +332,7 @@ function EmptyState({ filtered }: { filtered: boolean }) {
           <div className="flex flex-col sm:flex-row gap-3">
             <Link
               href="/clients/new"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition-opacity"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition-opacity"
             >
               Add Client Manually
             </Link>
@@ -534,7 +534,7 @@ export default function ClientsPage() {
                   <button
                     onClick={() => void refreshBusinessSystem()}
                     disabled={refreshingRecommendations}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-5 py-3 text-sm font-bold text-cyan-100 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex items-center gap-2 rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-5 py-3 text-sm font-bold text-[#f5f0e8] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {refreshingRecommendations ? "Refreshing..." : "Refresh Recommendations"}
                   </button>
@@ -545,10 +545,10 @@ export default function ClientsPage() {
 
           <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="mb-6" />
 
-          <div className="mb-6 rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] to-emerald-500/[0.03] p-6">
+          <div className="mb-6 rounded-[28px] border border-[#f5a623]/20 bg-gradient-to-br from-cyan-500/[0.08] to-emerald-500/[0.03] p-6">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-3xl">
-                <p className="text-[10px] font-black uppercase tracking-[0.26em] text-cyan-200/70">Recommended CRM Move</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.26em] text-[#f5a623]/70">Recommended CRM Move</p>
                 <h2 className="mt-2 text-2xl font-black text-white">
                   Turn {businessProfile.niche || businessProfile.businessType.replace(/_/g, " ")} prospects into tracked relationships
                 </h2>
@@ -562,7 +562,7 @@ export default function ClientsPage() {
               <div className="flex flex-wrap gap-3">
                 <Link
                   href="/clients/new"
-                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-emerald-500 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)]"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-emerald-500 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(245,166,35,0.22)]"
                 >
                   Add Client
                 </Link>
@@ -597,7 +597,7 @@ export default function ClientsPage() {
           <div className="flex gap-3">
             {[
               { label: "Active", value: active, color: "text-green-400" },
-              { label: "Pipeline", value: `$${(pipelineValue / 1000).toFixed(0)}k`, color: "text-cyan-400" },
+              { label: "Pipeline", value: `$${(pipelineValue / 1000).toFixed(0)}k`, color: "text-[#f5a623]" },
               { label: "At Risk", value: atRisk, color: "text-red-400" },
             ].map(({ label, value, color }) => (
               <div key={label} className="bg-white/[0.03] border border-white/[0.06] rounded-xl px-4 py-2 text-center">
@@ -614,7 +614,7 @@ export default function ClientsPage() {
         <div className="flex items-center gap-2 mb-4">
           <Link
             href="/clients/new"
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-xs font-bold hover:opacity-90 transition"
           >
             <Users className="w-3.5 h-3.5" /> Add Client
           </Link>
@@ -642,7 +642,7 @@ export default function ClientsPage() {
               onClick={() => { if (chip.active) { setHealthFilter(""); setStageFilter(""); } else chip.filter(); }}
               className={`px-3 py-1.5 rounded-lg text-[10px] font-bold transition ${
                 chip.active
-                  ? "bg-cyan-500/15 text-cyan-400 border border-cyan-500/30"
+                  ? "bg-[#f5a623]/15 text-[#f5a623] border border-[#f5a623]/30"
                   : "bg-white/[0.03] text-white/30 border border-white/[0.06] hover:text-white/50 hover:border-white/[0.12]"
               }`}
             >
@@ -666,14 +666,14 @@ export default function ClientsPage() {
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search clients..."
-            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
           />
         </div>
 
         <select
           value={stageFilter}
           onChange={(e) => setStageFilter(e.target.value)}
-          className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-cyan-500/50 transition appearance-none cursor-pointer"
+          className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-[#f5a623]/50 transition appearance-none cursor-pointer"
         >
           <option value="">All Stages</option>
           {Object.entries(STAGES).map(([key, { label }]) => (
@@ -684,7 +684,7 @@ export default function ClientsPage() {
         <select
           value={healthFilter}
           onChange={(e) => setHealthFilter(e.target.value)}
-          className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-cyan-500/50 transition appearance-none cursor-pointer"
+          className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-[#f5a623]/50 transition appearance-none cursor-pointer"
         >
           <option value="">All Health</option>
           <option value="green" className="bg-[#0d1525]">Healthy</option>
@@ -695,7 +695,7 @@ export default function ClientsPage() {
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
-          className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-cyan-500/50 transition appearance-none cursor-pointer"
+          className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-[#f5a623]/50 transition appearance-none cursor-pointer"
         >
           <option value="updatedAt" className="bg-[#0d1525]">Recently Updated</option>
           <option value="healthScore" className="bg-[#0d1525]">Health Score (worst first)</option>
@@ -706,9 +706,9 @@ export default function ClientsPage() {
 
       {/* Bulk action bar */}
       {selectedIds.size > 0 && (
-        <div className="mb-4 px-4 py-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/20">
+        <div className="mb-4 px-4 py-3 rounded-2xl bg-[#f5a623]/10 border border-[#f5a623]/20">
           <div className="flex items-center gap-3 flex-wrap">
-            <span className="text-xs font-bold text-cyan-300">{selectedIds.size} selected</span>
+            <span className="text-xs font-bold text-[#f5a623]">{selectedIds.size} selected</span>
             <select
               value={bulkAction}
               onChange={e => { setBulkAction(e.target.value); setBulkTags(""); }}
@@ -755,7 +755,7 @@ export default function ClientsPage() {
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition disabled:opacity-40 ${
                 bulkAction === "delete"
                   ? "bg-red-500/20 border border-red-500/30 text-red-400 hover:bg-red-500/30"
-                  : "bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/30"
+                  : "bg-[#f5a623]/20 border border-[#f5a623]/30 text-[#f5a623] hover:bg-[#f5a623]/30"
               }`}
             >
               {bulkLoading ? "Running..." : bulkAction === "delete" ? "Delete" : "Apply"}

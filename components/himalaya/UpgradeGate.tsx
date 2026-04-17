@@ -65,7 +65,7 @@ export default function UpgradeGate({ feature, children }: Props) {
   return (
     <div className="rounded-2xl border border-purple-500/15 bg-gradient-to-br from-purple-500/[0.06] to-cyan-500/[0.06] p-5 sm:p-6">
       <div className="mb-3 flex items-center gap-2">
-        <Lock className="w-4 h-4 text-purple-400/60" />
+        <Lock className="w-4 h-4 text-[#e07850]/60" />
         <h3 className="text-sm font-bold text-white/60">Unlock Full Access</h3>
       </div>
 
@@ -78,7 +78,7 @@ export default function UpgradeGate({ feature, children }: Props) {
       <div className="mb-5 grid grid-cols-1 gap-2 sm:grid-cols-2">
         {PRO_FEATURES.map(({ icon: Icon, text }, i) => (
           <div key={i} className="flex items-center gap-2 rounded-xl border border-white/[0.05] bg-black/20 px-3 py-3">
-            <Icon className="w-3.5 h-3.5 text-cyan-400/50 shrink-0" />
+            <Icon className="w-3.5 h-3.5 text-[#f5a623]/50 shrink-0" />
             <p className="text-[11px] text-white/45">{text}</p>
           </div>
         ))}
@@ -87,7 +87,7 @@ export default function UpgradeGate({ feature, children }: Props) {
       <div className="flex flex-col gap-2 sm:flex-row sm:flex-wrap sm:items-center sm:gap-3">
         <Link
           href="/himalaya/upgrade"
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 px-5 py-2.5 text-xs font-bold text-white transition hover:opacity-90"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-5 py-2.5 text-xs font-bold text-white transition hover:opacity-90"
         >
           <Zap className="w-3.5 h-3.5" /> Upgrade to Pro
         </Link>

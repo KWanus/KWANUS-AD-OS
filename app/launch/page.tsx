@@ -93,7 +93,7 @@ export default function LaunchPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-xl mx-auto px-4 py-20">
         {!launching && !result ? (
@@ -136,13 +136,13 @@ export default function LaunchPage() {
                 onChange={(e) => setNiche(e.target.value)}
                 onKeyDown={(e) => e.key === "Enter" && launch()}
                 placeholder="e.g. dental practices in Texas"
-                className="flex-1 bg-white/[0.04] border border-white/[0.1] rounded-xl px-5 py-4 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+                className="flex-1 bg-white/[0.04] border border-white/[0.1] rounded-xl px-5 py-4 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
                 autoFocus
               />
               <button
                 onClick={launch}
                 disabled={!niche.trim()}
-                className="px-8 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-30 shadow-[0_0_24px_rgba(6,182,212,0.2)]"
+                className="px-8 py-4 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-30 shadow-[0_0_24px_rgba(245,166,35,0.2)]"
               >
                 Launch
               </button>
@@ -183,12 +183,12 @@ export default function LaunchPage() {
                     i < stageIdx
                       ? "border border-emerald-500/15 bg-emerald-500/5"
                       : i === stageIdx
-                        ? "animate-pulse border border-cyan-500/20 bg-cyan-500/5"
+                        ? "animate-pulse border border-[#f5a623]/20 bg-[#f5a623]/5"
                         : "border border-white/[0.05] bg-white/[0.02] opacity-40"
                   }`}
                 >
                   <span className="text-base">{i < stageIdx ? "✓" : stage.icon}</span>
-                  <span className={`text-xs font-semibold ${i < stageIdx ? "text-emerald-300" : i === stageIdx ? "text-cyan-300" : "text-white/30"}`}>
+                  <span className={`text-xs font-semibold ${i < stageIdx ? "text-emerald-300" : i === stageIdx ? "text-[#f5a623]" : "text-white/30"}`}>
                     {stage.label}
                   </span>
                 </div>
@@ -208,7 +208,7 @@ export default function LaunchPage() {
             <div className="grid grid-cols-3 gap-3 mb-6">
               {result.generated?.adImages ? (
                 <div className="rounded-xl bg-white/[0.03] border border-white/[0.08] p-3 text-center">
-                  <Image className="w-4 h-4 text-cyan-400 mx-auto mb-1" />
+                  <Image className="w-4 h-4 text-[#f5a623] mx-auto mb-1" />
                   <p className="text-sm font-bold text-white">{result.generated.adImages}</p>
                   <p className="text-[10px] text-white/30">Images</p>
                 </div>
@@ -248,11 +248,11 @@ export default function LaunchPage() {
               {result.deployed?.campaign && (
                 <button
                   onClick={() => router.push(result.deployed!.campaign!.url)}
-                  className="w-full flex items-center gap-3 p-3 rounded-xl bg-cyan-500/5 border border-cyan-500/15 hover:bg-cyan-500/10 transition text-left"
+                  className="w-full flex items-center gap-3 p-3 rounded-xl bg-[#f5a623]/5 border border-[#f5a623]/15 hover:bg-[#f5a623]/10 transition text-left"
                 >
-                  <Megaphone className="w-5 h-5 text-cyan-400" />
+                  <Megaphone className="w-5 h-5 text-[#f5a623]" />
                   <div>
-                    <p className="text-xs font-bold text-cyan-300">Your Campaign</p>
+                    <p className="text-xs font-bold text-[#f5a623]">Your Campaign</p>
                     <p className="text-[10px] text-white/30">Ad images + AI generators ready</p>
                   </div>
                 </button>
@@ -262,7 +262,7 @@ export default function LaunchPage() {
             {/* Main CTA */}
             <button
               onClick={() => router.push(`/himalaya/run/${result.runId}`)}
-              className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition shadow-[0_0_24px_rgba(6,182,212,0.2)]"
+              className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition shadow-[0_0_24px_rgba(245,166,35,0.2)]"
             >
               View Full Results
             </button>

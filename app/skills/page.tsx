@@ -35,7 +35,7 @@ type StatsSummary = {
 
 function verdictTone(status?: string) {
   if (status === "healthy") return "border-emerald-500/20 bg-emerald-500/10 text-emerald-200";
-  if (status === "stale") return "border-cyan-500/20 bg-cyan-500/10 text-cyan-100";
+  if (status === "stale") return "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5f0e8]";
   return "border-amber-500/20 bg-amber-500/10 text-amber-100";
 }
 
@@ -46,8 +46,8 @@ function verdictTone(status?: string) {
 function SkillCard({ skill, onRun }: { skill: SkillMeta; onRun: (skill: SkillMeta) => void }) {
   const cat = SKILL_CATEGORIES[skill.category];
   const colors: Record<string, string> = {
-    cyan:   "from-cyan-500/10 border-cyan-500/20 text-cyan-400",
-    purple: "from-purple-500/10 border-purple-500/20 text-purple-400",
+    cyan:   "from-cyan-500/10 border-[#f5a623]/20 text-[#f5a623]",
+    purple: "from-purple-500/10 border-purple-500/20 text-[#e07850]",
     blue:   "from-blue-500/10 border-blue-500/20 text-blue-400",
     green:  "from-green-500/10 border-green-500/20 text-green-400",
   };
@@ -82,7 +82,7 @@ function SkillCard({ skill, onRun }: { skill: SkillMeta; onRun: (skill: SkillMet
 
       <button
         onClick={() => onRun(skill)}
-        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500/15 to-purple-600/15 hover:from-cyan-500/25 hover:to-purple-600/25 border border-white/[0.08] hover:border-cyan-500/30 text-white/70 hover:text-white text-xs font-bold transition-all"
+        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500/15 to-[#e07850]/15 hover:from-cyan-500/25 hover:to-[#e07850]/25 border border-white/[0.08] hover:border-[#f5a623]/30 text-white/70 hover:text-white text-xs font-bold transition-all"
       >
         Run Skill
         <ChevronRight className="w-3.5 h-3.5" />
@@ -172,8 +172,8 @@ function SkillRunner({
                       onClick={() => setExecutionTier(value)}
                       className={`rounded-2xl border px-4 py-3 text-left transition ${
                         executionTier === value
-                          ? "border-cyan-500/25 bg-cyan-500/10 text-cyan-100"
-                          : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+                          ? "border-[#f5a623]/25 bg-[#f5a623]/10 text-[#f5f0e8]"
+                          : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.05]"
                       }`}
                     >
                       <p className="text-sm font-black">{label}</p>
@@ -197,13 +197,13 @@ function SkillRunner({
                       value={input[field.key] ?? ""}
                       onChange={(e) => setInput((p) => ({ ...p, [field.key]: e.target.value }))}
                       placeholder={field.placeholder}
-                      className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition resize-none"
+                      className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition resize-none"
                     />
                   ) : field.type === "select" ? (
                     <select
                       value={input[field.key] ?? ""}
                       onChange={(e) => setInput((p) => ({ ...p, [field.key]: e.target.value }))}
-                      className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500/50 transition appearance-none"
+                      className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[#f5a623]/50 transition appearance-none"
                     >
                       <option value="" className="bg-[#07101f]">Select…</option>
                       {field.options?.map((o) => (
@@ -216,7 +216,7 @@ function SkillRunner({
                       value={input[field.key] ?? ""}
                       onChange={(e) => setInput((p) => ({ ...p, [field.key]: e.target.value }))}
                       placeholder={field.placeholder}
-                      className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+                      className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
                     />
                   )}
                 </div>
@@ -231,7 +231,7 @@ function SkillRunner({
               <button
                 onClick={() => void run()}
                 disabled={running}
-                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black hover:opacity-90 transition disabled:opacity-40"
+                className="w-full flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-black hover:opacity-90 transition disabled:opacity-40"
               >
                 {running ? (
                   <>
@@ -274,7 +274,7 @@ function SkillRunner({
                       ? `/websites/${result.created.siteId}/editor/${result.data.pageId as string}`
                       : `/websites/${result.created.siteId}`
                   }
-                  className="flex items-center gap-2 p-3 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-bold hover:bg-cyan-500/15 transition"
+                  className="flex items-center gap-2 p-3 rounded-xl bg-[#f5a623]/10 border border-[#f5a623]/20 text-[#f5a623] text-xs font-bold hover:bg-[#f5a623]/15 transition"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
                   Open your new site in the editor →
@@ -292,7 +292,7 @@ function SkillRunner({
               {result.created.broadcastId && (
                 <Link
                   href="/emails/broadcasts"
-                  className="flex items-center gap-2 p-3 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 text-xs font-bold hover:bg-purple-500/15 transition"
+                  className="flex items-center gap-2 p-3 rounded-xl bg-purple-500/10 border border-purple-500/20 text-[#e07850] text-xs font-bold hover:bg-purple-500/15 transition"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
                   Open broadcast drafts →
@@ -334,7 +334,7 @@ function SkillRunner({
                 <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4 space-y-2">
                   <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Ad Hooks</p>
                   {(result.data.hooks as { hook: string; format?: string }[]).slice(0, 3).map((h, i) => (
-                    <p key={i} className="text-[11px] text-white/60 leading-relaxed border-l-2 border-cyan-500/20 pl-3">
+                    <p key={i} className="text-[11px] text-white/60 leading-relaxed border-l-2 border-[#f5a623]/20 pl-3">
                       {h.hook ?? String(h)}
                     </p>
                   ))}
@@ -493,7 +493,7 @@ function SkillsPageInner() {
   const recommendedSkill = SKILLS.find((skill) => skill.slug === recommendedSkillSlug) ?? null;
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <AISubNav />
       <WorkspaceShell>
@@ -503,7 +503,7 @@ function SkillsPageInner() {
           description="Run specialized skills for audits, campaigns, landing pages, emails, and client work. Each skill wraps a real production workflow so you can go from prompt to asset fast."
           stats={[
             { label: "Available Skills", value: SKILLS.length.toString() },
-            { label: "Categories", value: Object.keys(SKILL_CATEGORIES).length.toString(), tone: "text-cyan-300" },
+            { label: "Categories", value: Object.keys(SKILL_CATEGORIES).length.toString(), tone: "text-[#f5a623]" },
             { label: "Instant Workflows", value: "30 sec", tone: "text-emerald-300" },
           ]}
         />
@@ -544,7 +544,7 @@ function SkillsPageInner() {
                   <button
                     onClick={() => void refreshBusinessSystem()}
                     disabled={refreshingRecommendations}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-5 py-3 text-sm font-bold text-cyan-100 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex items-center gap-2 rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-5 py-3 text-sm font-bold text-[#f5f0e8] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {refreshingRecommendations ? "Refreshing..." : "Refresh Recommendations"}
                   </button>
@@ -557,10 +557,10 @@ function SkillsPageInner() {
         <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="mb-6" />
 
         {businessProfile && recommendedSkill && (
-          <div className="mb-6 rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] to-purple-600/[0.03] p-6">
+          <div className="mb-6 rounded-[28px] border border-[#f5a623]/20 bg-gradient-to-br from-cyan-500/[0.08] to-[#e07850]/[0.03] p-6">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-3xl">
-                <p className="text-[10px] font-black uppercase tracking-[0.26em] text-cyan-200/70">Recommended Operator Skill</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.26em] text-[#f5a623]/70">Recommended Operator Skill</p>
                 <h2 className="mt-2 text-2xl font-black text-white">
                   Run {recommendedSkill.name} for {businessProfile.niche || businessProfile.businessType.replace(/_/g, " ")}
                 </h2>
@@ -574,7 +574,7 @@ function SkillsPageInner() {
               <div className="flex flex-wrap gap-3">
                 <button
                   onClick={() => setRunningSkill(recommendedSkill)}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)]"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(245,166,35,0.22)]"
                 >
                   <Zap className="w-4 h-4" />
                   Run Recommended Skill

@@ -87,7 +87,7 @@ export default function OfferBuilderPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
@@ -104,7 +104,7 @@ export default function OfferBuilderPage() {
           {/* Builder */}
           <div className="space-y-4">
             <input type="text" value={offerName} onChange={(e) => setOfferName(e.target.value)} placeholder="Offer name (e.g. Growth Accelerator Package)"
-              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition font-bold" />
+              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition font-bold" />
 
             <input type="text" value={price} onChange={(e) => setPrice(e.target.value)} placeholder="Price (e.g. $497)"
               className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-emerald-500/50 transition" />
@@ -115,20 +115,20 @@ export default function OfferBuilderPage() {
               {items.filter((i) => i.type === "core").map((item) => (
                 <div key={item.id} className="flex gap-2 mb-2">
                   <input type="text" value={item.name} onChange={(e) => updateItem(item.id, "name", e.target.value)} placeholder="What they get"
-                    className="flex-1 bg-white/[0.04] border border-white/[0.1] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition" />
+                    className="flex-1 bg-white/[0.04] border border-white/[0.1] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition" />
                   <input type="text" value={item.value} onChange={(e) => updateItem(item.id, "value", e.target.value)} placeholder="$value"
                     className="w-20 bg-white/[0.04] border border-white/[0.1] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none transition" />
                   <button onClick={() => removeItem(item.id)} className="text-white/15 hover:text-red-400"><X className="w-4 h-4" /></button>
                 </div>
               ))}
-              <button onClick={() => addItem("core")} className="text-[10px] text-cyan-400/60 hover:text-cyan-400 transition">+ Add deliverable</button>
+              <button onClick={() => addItem("core")} className="text-[10px] text-[#f5a623]/60 hover:text-[#f5a623] transition">+ Add deliverable</button>
             </div>
 
             {/* Bonuses */}
             <div>
               <div className="flex items-center justify-between mb-2">
                 <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Bonuses</p>
-                <button onClick={aiSuggestBonuses} disabled={aiGenerating} className="text-[10px] text-purple-400/60 hover:text-purple-400 transition flex items-center gap-1 disabled:opacity-40">
+                <button onClick={aiSuggestBonuses} disabled={aiGenerating} className="text-[10px] text-[#e07850]/60 hover:text-[#e07850] transition flex items-center gap-1 disabled:opacity-40">
                   {aiGenerating ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />} AI Suggest
                 </button>
               </div>
@@ -213,7 +213,7 @@ export default function OfferBuilderPage() {
                 {urgency && <p className="text-xs text-red-400/70 italic">{urgency}</p>}
               </div>
 
-              <button onClick={copyOffer} className="w-full mt-3 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-cyan-500 text-[#0a0f1e] text-xs font-bold hover:bg-cyan-400 transition">
+              <button onClick={copyOffer} className="w-full mt-3 flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#f5a623] text-[#0a0f1e] text-xs font-bold hover:bg-[#e07850] transition">
                 {copied ? <><Check className="w-3.5 h-3.5" /> Copied!</> : <><Copy className="w-3.5 h-3.5" /> Copy Offer Stack</>}
               </button>
             </div>

@@ -42,7 +42,7 @@ export default function ResultsSummary({ vm }: { vm: HimalayaResultsViewModel })
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 sm:gap-4">
         {blocks.map(({ label, value }) => (
           <div key={label} className="rounded-xl border border-white/[0.06] bg-black/25 p-3.5 sm:p-4">
-            <p className="mb-1.5 text-[9px] font-black uppercase tracking-widest text-cyan-400/50">{label}</p>
+            <p className="mb-1.5 text-[9px] font-black uppercase tracking-widest text-[#f5a623]/50">{label}</p>
             <p className="text-sm leading-relaxed text-white/65">{value}</p>
           </div>
         ))}

@@ -23,7 +23,7 @@ export default function ExecutionDecisionBlock({ runId, mode }: { runId: string;
   if (!tier || tier !== "free") return null;
 
   return (
-    <div className="rounded-3xl border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] via-transparent to-purple-500/[0.06] p-6 print:hidden">
+    <div className="rounded-3xl border border-[#f5a623]/20 bg-gradient-to-br from-cyan-500/[0.08] via-transparent to-purple-500/[0.06] p-6 print:hidden">
       <p className="mb-2 text-[10px] font-black uppercase tracking-[0.22em] text-cyan-200/70">Unlock Execution</p>
       {/* Main message */}
       <h3 className="mb-1 text-base font-black text-white">
@@ -50,7 +50,7 @@ export default function ExecutionDecisionBlock({ runId, mode }: { runId: string;
         <Link
           href="/himalaya/upgrade"
           onClick={() => track.upgradeClick("decision_block")}
-          className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition"
+          className="inline-flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition"
         >
           Unlock Execution & Tracking <ArrowRight className="w-3.5 h-3.5" />
         </Link>
@@ -68,7 +68,7 @@ export default function ExecutionDecisionBlock({ runId, mode }: { runId: string;
 function ValueProp({ icon: Icon, label, detail }: { icon: React.ElementType; label: string; detail: string }) {
   return (
     <div className="rounded-xl border border-white/[0.06] bg-black/20 p-3 text-center">
-      <Icon className="mx-auto mb-2 h-4 w-4 text-cyan-400/50" />
+      <Icon className="mx-auto mb-2 h-4 w-4 text-[#f5a623]/50" />
       <p className="text-[11px] font-bold text-white/55">{label}</p>
       <p className="mt-1 text-[9px] text-white/25">{detail}</p>
     </div>

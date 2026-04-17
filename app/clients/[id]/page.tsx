@@ -74,7 +74,7 @@ const STAGES = ["lead", "qualified", "proposal", "active", "won", "churned"];
 
 const STAGE_COLORS: Record<string, string> = {
   lead: "text-white/40",
-  qualified: "text-cyan-400",
+  qualified: "text-[#f5a623]",
   proposal: "text-blue-400",
   active: "text-green-400",
   won: "text-emerald-400",
@@ -82,11 +82,11 @@ const STAGE_COLORS: Record<string, string> = {
 };
 
 const ACTIVITY_CONFIG: Record<string, { icon: React.ElementType; color: string; label: string }> = {
-  email:        { icon: Mail,         color: "text-purple-400",  label: "Email" },
+  email:        { icon: Mail,         color: "text-[#e07850]",  label: "Email" },
   call:         { icon: PhoneIcon,    color: "text-green-400",   label: "Call" },
   meeting:      { icon: Calendar,     color: "text-blue-400",    label: "Meeting" },
   note:         { icon: FileText,     color: "text-white/50",    label: "Note" },
-  stage_change: { icon: Layers,       color: "text-cyan-400",    label: "Stage Change" },
+  stage_change: { icon: Layers,       color: "text-[#f5a623]",    label: "Stage Change" },
   task:         { icon: Check,        color: "text-amber-400",   label: "Task" },
   sms:          { icon: MessageSquare, color: "text-pink-400",   label: "SMS" },
 };
@@ -146,7 +146,7 @@ function ActivityItem({ activity }: { activity: Activity }) {
         {activity.type === "stage_change" && meta?.from && meta?.to && (
           <p className="text-xs text-white/40">
             <span className="text-white/30">{meta.from}</span>
-            <span className="mx-2 text-cyan-400/50">→</span>
+            <span className="mx-2 text-[#f5a623]/50">→</span>
             <span className={STAGE_COLORS[meta.to] ?? "text-white/60"}>{meta.to}</span>
           </p>
         )}
@@ -189,7 +189,7 @@ function TagAdder({ onAdd }: { onAdd: (tag: string) => void }) {
       }}
       onBlur={() => { if (!value.trim()) setOpen(false); }}
       placeholder="tag name"
-      className="text-[10px] font-bold text-cyan-400 bg-cyan-500/10 border border-cyan-500/30 px-2 py-0.5 rounded-md outline-none w-20 placeholder-cyan-400/30"
+      className="text-[10px] font-bold text-[#f5a623] bg-[#f5a623]/10 border border-[#f5a623]/30 px-2 py-0.5 rounded-md outline-none w-20 placeholder-cyan-400/30"
     />
   );
 }
@@ -243,7 +243,7 @@ function AIAssistPanel({ client }: { client: Client }) {
   return (
     <div className="bg-gradient-to-br from-purple-900/20 to-cyan-900/20 border border-purple-500/20 rounded-2xl p-4">
       <div className="flex items-center gap-2 mb-3">
-        <Sparkles className="w-4 h-4 text-purple-400" />
+        <Sparkles className="w-4 h-4 text-[#e07850]" />
         <h3 className="text-xs font-black text-white uppercase tracking-wider">AI Copilot</h3>
       </div>
 
@@ -287,7 +287,7 @@ function AIAssistPanel({ client }: { client: Client }) {
         <button
           onClick={() => void run()}
           disabled={loading}
-          className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-purple-600/40 to-cyan-600/40 border border-purple-500/30 hover:border-purple-400/50 text-xs font-bold text-white hover:text-white transition disabled:opacity-40"
+          className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-gradient-to-r from-[#e07850]/40 to-cyan-600/40 border border-purple-500/30 hover:border-purple-400/50 text-xs font-bold text-white hover:text-white transition disabled:opacity-40"
         >
           {loading ? <Loader2 className="w-3 h-3 animate-spin" /> : <Zap className="w-3 h-3" />}
           Run
@@ -372,7 +372,7 @@ function LogActivity({ clientId, onLogged }: { clientId: string; onLogged: (acti
           onChange={(e) => setContent(e.target.value)}
           placeholder={`Log a ${type}...`}
           rows={2}
-          className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-xs text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition resize-none"
+          className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-xs text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition resize-none"
           onKeyDown={(e) => {
             if (e.key === "Enter" && e.metaKey) void handleLog();
           }}
@@ -380,7 +380,7 @@ function LogActivity({ clientId, onLogged }: { clientId: string; onLogged: (acti
         <button
           onClick={() => void handleLog()}
           disabled={saving || !content.trim()}
-          className="px-3 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 border border-cyan-500/30 text-cyan-400 transition disabled:opacity-30 flex items-center"
+          className="px-3 rounded-xl bg-[#f5a623]/20 hover:bg-[#f5a623]/30 border border-[#f5a623]/30 text-[#f5a623] transition disabled:opacity-30 flex items-center"
         >
           {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
         </button>
@@ -462,7 +462,7 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
         <div className="flex flex-col items-center gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8">
           <AlertTriangle className="w-8 h-8 text-red-400/50" />
           <p className="text-white/40">{databaseUnavailable ? "Client data is temporarily unavailable" : "Client not found"}</p>
-          <Link href="/clients" className="text-sm text-cyan-400 hover:text-cyan-300">← Back to Clients</Link>
+          <Link href="/clients" className="text-sm text-[#f5a623] hover:text-[#f5a623]">← Back to Clients</Link>
         </div>
       </div>
     );
@@ -485,7 +485,7 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
           <div className="bg-white/[0.02] border border-white/[0.07] rounded-2xl p-6">
             <div className="flex items-start gap-5 mb-5">
               {/* Avatar */}
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-purple-600/20 border border-white/10 flex items-center justify-center text-xl font-black text-white/70 shrink-0">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-[#e07850]/20 border border-white/10 flex items-center justify-center text-xl font-black text-white/70 shrink-0">
                 {client.name.charAt(0).toUpperCase()}
               </div>
 
@@ -499,7 +499,7 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
                       onChange={(e) => setEditValue(e.target.value)}
                       onBlur={() => void commitEdit("name")}
                       onKeyDown={(e) => e.key === "Enter" && void commitEdit("name")}
-                      className="text-xl font-black text-white bg-transparent border-b border-cyan-500 outline-none"
+                      className="text-xl font-black text-white bg-transparent border-b border-[#f5a623] outline-none"
                     />
                   </div>
                 ) : (
@@ -507,7 +507,7 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
                     onClick={() => startEdit("name", client.name)}
                     className="flex items-center gap-2 group mb-1"
                   >
-                    <h1 className="text-xl font-black text-white group-hover:text-cyan-300 transition-colors">{client.name}</h1>
+                    <h1 className="text-xl font-black text-white group-hover:text-[#f5a623] transition-colors">{client.name}</h1>
                     <Edit2 className="w-3.5 h-3.5 text-white/20 opacity-0 group-hover:opacity-100 transition-opacity" />
                   </button>
                 )}
@@ -537,7 +537,7 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
                 <span className={`inline-flex items-center rounded-xl border px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.2em] ${
                   client.executionTier === "core"
                     ? "border-white/10 bg-white/[0.03] text-white/45"
-                    : "border-cyan-500/30 bg-cyan-500/10 text-cyan-200"
+                    : "border-[#f5a623]/30 bg-[#f5a623]/10 text-[#f5a623]"
                 }`}>
                   {client.executionTier ?? "elite"} lane
                 </span>
@@ -586,7 +586,7 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
                           if (e.key === "Enter") void commitEdit(field);
                           if (e.key === "Escape") setEditingField(null);
                         }}
-                        className="text-xs text-white bg-transparent border-b border-cyan-500/50 outline-none w-full"
+                        className="text-xs text-white bg-transparent border-b border-[#f5a623]/50 outline-none w-full"
                         placeholder={placeholder}
                       />
                     ) : (
@@ -616,7 +616,7 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
                     const newTags = client.tags.filter(t => t !== tag);
                     void patchClient("tags", newTags);
                   }}
-                  className="text-[10px] font-bold text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 px-2 py-0.5 rounded-md hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20 transition group"
+                  className="text-[10px] font-bold text-[#f5a623] bg-[#f5a623]/10 border border-[#f5a623]/20 px-2 py-0.5 rounded-md hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20 transition group"
                   title="Click to remove"
                 >
                   {tag} <span className="opacity-0 group-hover:opacity-100 ml-0.5">×</span>
@@ -664,7 +664,7 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
               onBlur={(e) => void patchClient("notes", e.target.value)}
               placeholder="Add notes about this client..."
               rows={6}
-              className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-3 py-2.5 text-xs text-white/70 placeholder-white/20 focus:outline-none focus:border-cyan-500/40 transition resize-none"
+              className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-3 py-2.5 text-xs text-white/70 placeholder-white/20 focus:outline-none focus:border-[#f5a623]/40 transition resize-none"
             />
           </div>
 

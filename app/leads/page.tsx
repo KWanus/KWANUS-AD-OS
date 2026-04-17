@@ -75,7 +75,7 @@ const STATUS_CONFIG: Record<string, { label: string; color: string; icon: ReactN
   analyzed: { label: "Analyzed", color: "text-blue-300 border-blue-500/20 bg-blue-500/10", icon: <CheckCircle className="h-3 w-3" /> },
   generating: { label: "Generating", color: "text-violet-300 border-violet-500/20 bg-violet-500/10", icon: <Loader2 className="h-3 w-3 animate-spin" /> },
   ready: { label: "Ready", color: "text-emerald-300 border-emerald-500/20 bg-emerald-500/10", icon: <Zap className="h-3 w-3" /> },
-  outreach_sent: { label: "Outreach Sent", color: "text-cyan-300 border-cyan-500/20 bg-cyan-500/10", icon: <Send className="h-3 w-3" /> },
+  outreach_sent: { label: "Outreach Sent", color: "text-[#f5a623] border-[#f5a623]/20 bg-[#f5a623]/10", icon: <Send className="h-3 w-3" /> },
   replied: { label: "Replied", color: "text-green-200 border-green-500/20 bg-green-500/10", icon: <CheckCircle className="h-3 w-3" /> },
   converted: { label: "Client", color: "text-amber-200 border-amber-400/20 bg-amber-500/10", icon: <Star className="h-3 w-3" /> },
   rejected: { label: "Skipped", color: "text-white/40 border-white/10 bg-white/[0.03]", icon: <AlertCircle className="h-3 w-3" /> },
@@ -110,7 +110,7 @@ function SectionLabel({ children }: { children: string }) {
 
 function verdictTone(status?: string) {
   if (status === "healthy") return "border-emerald-500/20 bg-emerald-500/10 text-emerald-200";
-  if (status === "stale") return "border-cyan-500/20 bg-cyan-500/10 text-cyan-100";
+  if (status === "stale") return "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5f0e8]";
   return "border-amber-500/20 bg-amber-500/10 text-amber-100";
 }
 
@@ -157,11 +157,11 @@ function LeadCard({
           <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/25">Contact</p>
           <div className="mt-3 space-y-2 text-sm text-white/70">
             <div className="flex items-center gap-2">
-              <Phone className="h-4 w-4 text-cyan-300/70" />
+              <Phone className="h-4 w-4 text-[#f5a623]/70" />
               <span className="truncate">{lead.phone ?? "No phone found"}</span>
             </div>
             <div className="flex items-center gap-2">
-              <Globe className="h-4 w-4 text-cyan-300/70" />
+              <Globe className="h-4 w-4 text-[#f5a623]/70" />
               <span className="truncate">
                 {lead.website ? lead.website.replace(/https?:\/\/(www\.)?/, "") : "No website found"}
               </span>
@@ -399,7 +399,7 @@ export default function LeadsPage() {
     : visibleByNiche;
 
   return (
-    <main className="min-h-screen bg-[#050a14] text-white">
+    <main className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <CRMSubNav />
 
@@ -413,7 +413,7 @@ export default function LeadsPage() {
             <>
               <Link
                 href="/copilot"
-                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-[0_0_26px_rgba(6,182,212,0.28)]"
+                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-5 py-3 text-sm font-black text-white shadow-[0_0_26px_rgba(245,166,35,0.28)]"
               >
                 <BotMessageSquare className="h-4 w-4" />
                 Ask Copilot
@@ -431,7 +431,7 @@ export default function LeadsPage() {
             { label: "New", value: String(newCount), tone: "text-white" },
             { label: "Analyzed", value: String(analyzedCount), tone: "text-blue-300" },
             { label: "Ready", value: String(readyCount), tone: "text-emerald-300" },
-            { label: "Sent", value: String(sentCount), tone: "text-cyan-300" },
+            { label: "Sent", value: String(sentCount), tone: "text-[#f5a623]" },
           ]}
         />
 
@@ -473,7 +473,7 @@ export default function LeadsPage() {
                       <button
                         onClick={() => void refreshBusinessSystem()}
                         disabled={refreshingRecommendations}
-                        className="inline-flex items-center gap-2 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-5 py-3 text-sm font-bold text-cyan-100 disabled:cursor-not-allowed disabled:opacity-60"
+                        className="inline-flex items-center gap-2 rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-5 py-3 text-sm font-bold text-[#f5f0e8] disabled:cursor-not-allowed disabled:opacity-60"
                       >
                         {refreshingRecommendations ? "Refreshing..." : "Refresh Recommendations"}
                       </button>
@@ -484,10 +484,10 @@ export default function LeadsPage() {
 
               <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="xl:col-span-2" />
 
-              <div className="xl:col-span-2 rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] to-emerald-500/[0.03] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.24)]">
+              <div className="xl:col-span-2 rounded-[28px] border border-[#f5a623]/20 bg-gradient-to-br from-cyan-500/[0.08] to-emerald-500/[0.03] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.24)]">
                 <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                   <div className="max-w-3xl">
-                    <p className="text-[10px] font-black uppercase tracking-[0.28em] text-cyan-200/70">Recommended Lead Engine Move</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.28em] text-[#f5a623]/70">Recommended Lead Engine Move</p>
                     <h2 className="mt-2 text-2xl font-black text-white">
                       Search {businessProfile.niche || "your niche"} in {businessProfile.location || "your best market"}
                     </h2>
@@ -524,7 +524,7 @@ export default function LeadsPage() {
           )}
 
           <div className="rounded-[28px] border border-white/[0.08] bg-[linear-gradient(145deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.24)]">
-            <p className="text-[10px] font-black uppercase tracking-[0.28em] text-cyan-300/80">Find Businesses</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.28em] text-[#f5a623]/80">Find Businesses</p>
             <h2 className="mt-3 text-2xl font-black tracking-tight text-white">Spin up a fresh lead batch</h2>
             <p className="mt-2 max-w-2xl text-sm leading-7 text-white/45">
               Search a niche and market, then let the engine turn raw businesses into scored opportunities you can analyze and convert.
@@ -541,8 +541,8 @@ export default function LeadsPage() {
                   onClick={() => setExecutionTier(value)}
                   className={`rounded-2xl border px-4 py-3 text-left transition ${
                     executionTier === value
-                      ? "border-cyan-500/25 bg-cyan-500/10 text-cyan-100"
-                      : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+                      ? "border-[#f5a623]/25 bg-[#f5a623]/10 text-[#f5f0e8]"
+                      : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.05]"
                   }`}
                 >
                   <p className="text-sm font-black">{label}</p>
@@ -613,7 +613,7 @@ export default function LeadsPage() {
                 { label: "Source and review raw businesses", value: `${newCount} waiting`, tone: "text-white" },
                 { label: "Analyze the strongest opportunities", value: `${analyzedCount} scored`, tone: "text-blue-300" },
                 { label: "Generate assets and offers", value: `${readyCount} ready`, tone: "text-emerald-300" },
-                { label: "Push outreach and follow-up", value: `${sentCount} in motion`, tone: "text-cyan-300" },
+                { label: "Push outreach and follow-up", value: `${sentCount} in motion`, tone: "text-[#f5a623]" },
               ].map((item) => (
                 <div key={item.label} className="rounded-2xl border border-white/[0.07] bg-black/20 px-4 py-3">
                   <p className="text-sm font-bold text-white/65">{item.label}</p>
@@ -665,7 +665,7 @@ export default function LeadsPage() {
                   onClick={() => setFilterNiche("all")}
                   className={`rounded-2xl border px-4 py-2.5 text-sm font-bold capitalize transition ${
                     filterNiche === "all"
-                      ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-200"
+                      ? "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5a623]"
                       : "border-white/[0.08] bg-white/[0.03] text-white/50 hover:text-white/75"
                   }`}
                 >
@@ -677,7 +677,7 @@ export default function LeadsPage() {
                     onClick={() => setFilterNiche(item)}
                     className={`rounded-2xl border px-4 py-2.5 text-sm font-bold capitalize transition ${
                       filterNiche === item
-                        ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-200"
+                        ? "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5a623]"
                         : "border-white/[0.08] bg-white/[0.03] text-white/50 hover:text-white/75"
                     }`}
                   >
@@ -700,7 +700,7 @@ export default function LeadsPage() {
             <p className="mx-auto mt-3 max-w-xl text-sm leading-7 text-white/40">
               Leads are created when you scan businesses through Himalaya or add them manually. Start with Himalaya to auto-generate leads from your niche.
             </p>
-            <Link href="/himalaya" className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition">
+            <Link href="/himalaya" className="mt-4 inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition">
               <Sparkles className="w-4 h-4" /> Find Leads with Himalaya
             </Link>
           </div>

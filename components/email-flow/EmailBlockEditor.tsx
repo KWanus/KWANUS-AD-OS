@@ -22,7 +22,7 @@ export type EmailBlock =
 const BLOCK_TEMPLATES: { type: EmailBlock["type"]; label: string; icon: React.ElementType; default: EmailBlock }[] = [
   { type: "text", label: "Text", icon: Type, default: { type: "text", content: "Write your message here..." } },
   { type: "heading", label: "Heading", icon: Type, default: { type: "heading", content: "Your Heading", level: 2 } },
-  { type: "button", label: "Button", icon: MousePointer, default: { type: "button", text: "Click Here", url: "https://", color: "#06b6d4" } },
+  { type: "button", label: "Button", icon: MousePointer, default: { type: "button", text: "Click Here", url: "https://", color: "#f5a623" } },
   { type: "image", label: "Image", icon: Image, default: { type: "image", src: "", alt: "Image" } },
   { type: "divider", label: "Divider", icon: Minus, default: { type: "divider" } },
   { type: "list", label: "List", icon: List, default: { type: "list", items: ["Item 1", "Item 2", "Item 3"] } },
@@ -58,7 +58,7 @@ function BlockEditor({ block, onChange, onDelete, onMoveUp, onMoveDown, isFirst,
           value={block.content}
           onChange={(e) => onChange({ ...block, content: e.target.value })}
           rows={3}
-          className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg p-2 text-xs text-white/60 focus:outline-none focus:border-cyan-500/20 resize-y"
+          className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg p-2 text-xs text-white/60 focus:outline-none focus:border-[#f5a623]/20 resize-y"
           placeholder="Write your email text..."
         />
       )}
@@ -68,12 +68,12 @@ function BlockEditor({ block, onChange, onDelete, onMoveUp, onMoveDown, isFirst,
           <input
             value={block.content}
             onChange={(e) => onChange({ ...block, content: e.target.value })}
-            className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg p-2 text-sm font-bold text-white/70 focus:outline-none focus:border-cyan-500/20"
+            className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg p-2 text-sm font-bold text-white/70 focus:outline-none focus:border-[#f5a623]/20"
             placeholder="Heading text"
           />
           <div className="flex gap-1">
             {([1, 2, 3] as const).map((l) => (
-              <button key={l} onClick={() => onChange({ ...block, level: l })} className={`px-2 py-0.5 rounded text-[10px] font-bold ${block.level === l ? "bg-cyan-500/20 text-cyan-400" : "text-white/20 hover:text-white/40"}`}>
+              <button key={l} onClick={() => onChange({ ...block, level: l })} className={`px-2 py-0.5 rounded text-[10px] font-bold ${block.level === l ? "bg-[#f5a623]/20 text-[#f5a623]" : "text-white/20 hover:text-white/40"}`}>
                 H{l}
               </button>
             ))}
@@ -86,13 +86,13 @@ function BlockEditor({ block, onChange, onDelete, onMoveUp, onMoveDown, isFirst,
           <input
             value={block.text}
             onChange={(e) => onChange({ ...block, text: e.target.value })}
-            className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg p-2 text-xs text-white/60 focus:outline-none focus:border-cyan-500/20"
+            className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg p-2 text-xs text-white/60 focus:outline-none focus:border-[#f5a623]/20"
             placeholder="Button text"
           />
           <input
             value={block.url}
             onChange={(e) => onChange({ ...block, url: e.target.value })}
-            className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg p-2 text-xs text-white/40 focus:outline-none focus:border-cyan-500/20"
+            className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg p-2 text-xs text-white/40 focus:outline-none focus:border-[#f5a623]/20"
             placeholder="https://your-link.com"
           />
           <div className="flex items-center gap-2">
@@ -107,13 +107,13 @@ function BlockEditor({ block, onChange, onDelete, onMoveUp, onMoveDown, isFirst,
           <input
             value={block.src}
             onChange={(e) => onChange({ ...block, src: e.target.value })}
-            className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg p-2 text-xs text-white/40 focus:outline-none focus:border-cyan-500/20"
+            className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg p-2 text-xs text-white/40 focus:outline-none focus:border-[#f5a623]/20"
             placeholder="Image URL (https://...)"
           />
           <input
             value={block.alt}
             onChange={(e) => onChange({ ...block, alt: e.target.value })}
-            className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg p-2 text-xs text-white/40 focus:outline-none focus:border-cyan-500/20"
+            className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg p-2 text-xs text-white/40 focus:outline-none focus:border-[#f5a623]/20"
             placeholder="Alt text"
           />
         </div>
@@ -135,12 +135,12 @@ function BlockEditor({ block, onChange, onDelete, onMoveUp, onMoveDown, isFirst,
                   items[i] = e.target.value;
                   onChange({ ...block, items });
                 }}
-                className="flex-1 bg-white/[0.03] border border-white/[0.06] rounded px-2 py-1 text-xs text-white/50 focus:outline-none focus:border-cyan-500/20"
+                className="flex-1 bg-white/[0.03] border border-white/[0.06] rounded px-2 py-1 text-xs text-white/50 focus:outline-none focus:border-[#f5a623]/20"
               />
               <button onClick={() => onChange({ ...block, items: block.items.filter((_, j) => j !== i) })} className="text-red-400/30 hover:text-red-400 p-0.5"><Trash2 className="w-2.5 h-2.5" /></button>
             </div>
           ))}
-          <button onClick={() => onChange({ ...block, items: [...block.items, "New item"] })} className="text-[10px] text-cyan-400/40 hover:text-cyan-400/70 transition">+ Add item</button>
+          <button onClick={() => onChange({ ...block, items: [...block.items, "New item"] })} className="text-[10px] text-[#f5a623]/40 hover:text-[#f5a623]/70 transition">+ Add item</button>
         </div>
       )}
 
@@ -150,13 +150,13 @@ function BlockEditor({ block, onChange, onDelete, onMoveUp, onMoveDown, isFirst,
             value={block.content}
             onChange={(e) => onChange({ ...block, content: e.target.value })}
             rows={2}
-            className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg p-2 text-xs text-white/50 italic focus:outline-none focus:border-cyan-500/20 resize-none"
+            className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg p-2 text-xs text-white/50 italic focus:outline-none focus:border-[#f5a623]/20 resize-none"
             placeholder="Quote text..."
           />
           <input
             value={block.author ?? ""}
             onChange={(e) => onChange({ ...block, author: e.target.value })}
-            className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg p-2 text-xs text-white/30 focus:outline-none focus:border-cyan-500/20"
+            className="w-full bg-white/[0.03] border border-white/[0.06] rounded-lg p-2 text-xs text-white/30 focus:outline-none focus:border-[#f5a623]/20"
             placeholder="— Author name"
           />
         </div>
@@ -224,7 +224,7 @@ export default function EmailBlockEditor({ blocks, onChange }: Props) {
               <button
                 key={type}
                 onClick={() => addBlock(def)}
-                className="flex flex-col items-center gap-1 p-2 rounded-lg bg-white/[0.02] border border-white/[0.05] hover:border-cyan-500/20 hover:bg-cyan-500/5 transition text-center"
+                className="flex flex-col items-center gap-1 p-2 rounded-lg bg-white/[0.02] border border-white/[0.05] hover:border-[#f5a623]/20 hover:bg-[#f5a623]/5 transition text-center"
               >
                 <Icon className="w-3.5 h-3.5 text-white/30" />
                 <span className="text-[9px] text-white/30">{label}</span>
@@ -267,7 +267,7 @@ export function blocksToHtml(blocks: EmailBlock[]): string {
       case "list":
         return `<ul style="margin:0 0 16px;padding-left:20px">${block.items.map((i) => `<li style="margin:4px 0;font-size:15px;line-height:1.7;color:#1a1a1a">${i}</li>`).join("")}</ul>`;
       case "quote":
-        return `<blockquote style="margin:16px 0;padding:12px 20px;border-left:3px solid #06b6d4;background:#f8f9fa;border-radius:4px"><p style="margin:0;font-style:italic;color:#333">${block.content}</p>${block.author ? `<p style="margin:8px 0 0;font-size:12px;color:#666">— ${block.author}</p>` : ""}</blockquote>`;
+        return `<blockquote style="margin:16px 0;padding:12px 20px;border-left:3px solid #f5a623;background:#f8f9fa;border-radius:4px"><p style="margin:0;font-style:italic;color:#333">${block.content}</p>${block.author ? `<p style="margin:8px 0 0;font-size:12px;color:#666">— ${block.author}</p>` : ""}</blockquote>`;
       default:
         return "";
     }

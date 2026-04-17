@@ -3,10 +3,10 @@ import { Mountain } from "lucide-react";
 
 export default function PrivacyPage() {
   return (
-    <div className="min-h-screen bg-[#020509] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <nav className="border-b border-white/[0.04] py-4 px-6">
         <Link href="/" className="flex items-center gap-2">
-          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
+          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#f5a623] to-[#e07850] flex items-center justify-center">
             <Mountain className="w-3.5 h-3.5 text-white" />
           </div>
           <span className="text-sm font-black text-white">Himalaya</span>

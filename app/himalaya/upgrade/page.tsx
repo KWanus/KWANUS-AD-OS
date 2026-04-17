@@ -133,7 +133,7 @@ export default function HimalayaUpgradePage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <HimalayaNav />
       <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
@@ -142,8 +142,8 @@ export default function HimalayaUpgradePage() {
         </Link>
 
         {/* Hero */}
-        <div className="mb-10 rounded-3xl border border-cyan-500/12 bg-gradient-to-br from-cyan-500/[0.06] via-transparent to-purple-500/[0.05] px-5 py-8 text-center sm:px-8 sm:py-10">
-          <Mountain className="mx-auto mb-4 h-12 w-12 text-cyan-400" />
+        <div className="mb-10 rounded-3xl border border-[#f5a623]/12 bg-gradient-to-br from-cyan-500/[0.06] via-transparent to-purple-500/[0.05] px-5 py-8 text-center sm:px-8 sm:py-10">
+          <Mountain className="mx-auto mb-4 h-12 w-12 text-[#f5a623]" />
           <h1 className="text-2xl sm:text-3xl font-black text-white mb-3">
             Don't stop at ideas.<br className="hidden sm:block" />
             Execute and improve until it works.
@@ -182,7 +182,7 @@ export default function HimalayaUpgradePage() {
               <div key={i} className="flex items-center gap-1 sm:gap-2">
                 <div className="flex flex-col items-center gap-1">
                   <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center">
-                    <step.icon className="w-4 h-4 text-cyan-400/60" />
+                    <step.icon className="w-4 h-4 text-[#f5a623]/60" />
                   </div>
                   <p className="text-[9px] font-bold text-white/30 text-center">{step.label}</p>
                 </div>
@@ -191,7 +191,7 @@ export default function HimalayaUpgradePage() {
                 )}
               </div>
             ))}
-            <div className="text-cyan-400/30 text-xs font-bold mt-[-12px] ml-1">↻</div>
+            <div className="text-[#f5a623]/30 text-xs font-bold mt-[-12px] ml-1">↻</div>
           </div>
           <p className="text-center text-[10px] text-white/20 mt-3">
             Each cycle makes your business stronger. That's the real product.
@@ -207,12 +207,12 @@ export default function HimalayaUpgradePage() {
                 key={plan.id}
                 className={`relative rounded-2xl border p-6 ${
                   plan.popular
-                    ? "bg-gradient-to-br from-cyan-500/[0.08] to-purple-500/[0.06] border-cyan-500/25"
+                    ? "bg-gradient-to-br from-cyan-500/[0.08] to-purple-500/[0.06] border-[#f5a623]/25"
                     : "bg-gradient-to-br from-white/[0.03] via-white/[0.02] to-transparent border-white/[0.07]"
                 }`}
               >
                 {plan.popular && (
-                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 text-[9px] font-black text-white uppercase tracking-wider">
+                  <span className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-1 rounded-full bg-gradient-to-r from-[#f5a623] to-[#e07850] text-[9px] font-black text-white uppercase tracking-wider">
                     Most Chosen
                   </span>
                 )}
@@ -246,7 +246,7 @@ export default function HimalayaUpgradePage() {
                     isCurrent
                       ? "bg-white/[0.04] border border-white/[0.08] text-white/30 cursor-default"
                       : plan.popular
-                        ? "bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:opacity-90"
+                        ? "bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white hover:opacity-90"
                         : "bg-white/[0.04] border border-white/[0.1] text-white/60 hover:text-white hover:border-white/[0.2]"
                   } disabled:opacity-40`}
                 >

@@ -144,7 +144,7 @@ const VERDICT_COLORS: Record<string, string> = {
 
 const STATUS_COLORS: Record<string, string> = {
   "Build Immediately": "text-green-400 border-green-500/30 bg-green-500/5",
-  "Strong Opportunity": "text-cyan-400 border-cyan-500/30 bg-cyan-500/5",
+  "Strong Opportunity": "text-[#f5a623] border-[#f5a623]/30 bg-[#f5a623]/5",
   "Test Carefully": "text-yellow-400 border-yellow-500/30 bg-yellow-500/5",
   "Needs Rework": "text-orange-400 border-orange-500/30 bg-orange-500/5",
   "Reject": "text-red-400 border-red-500/30 bg-red-500/5",
@@ -237,7 +237,7 @@ function AssetSection({ assets, onOpenStudio }: { assets: AssetPackage; onOpenSt
   return (
     <div className="flex flex-col h-full">
       {/* Tab bar — sticky at top of right panel */}
-      <div className="sticky top-0 z-10 bg-[#0a0f1e] border-b border-white/10 flex gap-0.5 px-4 pt-3 pb-0 overflow-x-auto shrink-0">
+      <div className="sticky top-0 z-10 bg-t-bg-card border-b border-white/10 flex gap-0.5 px-4 pt-3 pb-0 overflow-x-auto shrink-0">
         {tabs.map((t) => (
           <button
             key={t.id}
@@ -272,7 +272,7 @@ function AssetSection({ assets, onOpenStudio }: { assets: AssetPackage; onOpenSt
             {assets.adHooks.map((hook, i) => (
               <div key={i} className="rounded-xl border border-white/10 bg-black/20 p-4">
                 <div className="flex items-start justify-between gap-3 mb-2">
-                  <span className="text-xs font-semibold text-cyan-400 uppercase tracking-wide">{hook.format}</span>
+                  <span className="text-xs font-semibold text-[#f5a623] uppercase tracking-wide">{hook.format}</span>
                   <CopyButton text={hook.hook} />
                 </div>
                 <p className="text-sm text-white/80 leading-relaxed">{hook.hook}</p>
@@ -294,7 +294,7 @@ function AssetSection({ assets, onOpenStudio }: { assets: AssetPackage; onOpenSt
                   {script.sections.map((section, j) => (
                     <div key={j} className="px-4 py-3 flex gap-4">
                       <div className="shrink-0 w-12">
-                        <span className="text-xs font-bold text-cyan-400">{section.timestamp}</span>
+                        <span className="text-xs font-bold text-[#f5a623]">{section.timestamp}</span>
                       </div>
                       <div className="flex-1">
                         <p className="text-xs text-white/40 mb-1">{section.direction}</p>
@@ -371,7 +371,7 @@ function AssetSection({ assets, onOpenStudio }: { assets: AssetPackage; onOpenSt
                   key={t.id}
                   onClick={() => setEmailTab(t.id)}
                   className={`px-3 py-1.5 text-xs rounded-lg border transition ${emailTab === t.id
-                    ? "border-cyan-400/50 bg-cyan-500/10 text-cyan-300"
+                    ? "border-cyan-400/50 bg-[#f5a623]/10 text-[#f5a623]"
                     : "border-white/10 text-white/40 hover:text-white/60"
                     }`}
                 >
@@ -426,7 +426,7 @@ function EmailList({ emails }: { emails: EmailItem[] }) {
         <div key={i} className="rounded-xl border border-white/10 bg-black/20 overflow-hidden">
           <div className="flex items-start justify-between px-4 py-3 border-b border-white/5">
             <div>
-              <span className="text-xs text-cyan-400 font-semibold">{email.timing}</span>
+              <span className="text-xs text-[#f5a623] font-semibold">{email.timing}</span>
               <p className="text-sm font-semibold text-white/80 mt-0.5">{email.subject}</p>
               <p className="text-xs text-white/40 mt-0.5">{email.preview}</p>
             </div>
@@ -451,7 +451,7 @@ function ChecklistDay({ label, items }: { label: string; items: string[] }) {
       <ol className="space-y-2">
         {items.map((item, i) => (
           <li key={i} className="flex items-start gap-2 text-sm text-white/70">
-            <span className="text-cyan-400 font-bold shrink-0 mt-0.5">{i + 1}.</span>
+            <span className="text-[#f5a623] font-bold shrink-0 mt-0.5">{i + 1}.</span>
             {item}
           </li>
         ))}
@@ -468,7 +468,7 @@ function BriefCard({ brief, onOpenStudio }: { brief: AdBrief; onOpenStudio: () =
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="px-2 py-0.5 rounded bg-cyan-500 text-[10px] font-bold text-[#0a0f1e] uppercase">{brief.platform}</span>
+              <span className="px-2 py-0.5 rounded bg-[#f5a623] text-[10px] font-bold text-[#0a0f1e] uppercase">{brief.platform}</span>
               <span className="text-[10px] font-medium text-white/40 uppercase tracking-widest">{brief.format}</span>
             </div>
             <h3 className="text-xl font-bold text-white uppercase tracking-tight">{brief.title}</h3>
@@ -477,7 +477,7 @@ function BriefCard({ brief, onOpenStudio }: { brief: AdBrief; onOpenStudio: () =
           <div className="flex items-center gap-2">
             <button
               onClick={onOpenStudio}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-[#0a0f1e] text-[11px] font-bold uppercase transition"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#f5a623] hover:bg-[#e07850] text-[#0a0f1e] text-[11px] font-bold uppercase transition"
             >
               Open in Studio →
             </button>
@@ -485,7 +485,7 @@ function BriefCard({ brief, onOpenStudio }: { brief: AdBrief; onOpenStudio: () =
           </div>
         </div>
         <div className="mt-4 p-3 rounded-lg bg-black/40 border border-white/5">
-          <p className="text-xs font-semibold text-cyan-400/80 uppercase tracking-wide mb-1">Creative Concept</p>
+          <p className="text-xs font-semibold text-[#f5a623]/80 uppercase tracking-wide mb-1">Creative Concept</p>
           <p className="text-sm text-white/70 leading-relaxed italic">&quot;{brief.concept}&quot;</p>
         </div>
       </div>
@@ -504,8 +504,8 @@ function BriefCard({ brief, onOpenStudio }: { brief: AdBrief; onOpenStudio: () =
           ) : (
             brief.imageAd && (
               <div className="space-y-6">
-                <div className="p-4 rounded-xl border border-cyan-500/30 bg-cyan-500/5">
-                  <p className="text-[10px] font-bold text-cyan-400 uppercase mb-2">Primary Headline</p>
+                <div className="p-4 rounded-xl border border-[#f5a623]/30 bg-[#f5a623]/5">
+                  <p className="text-[10px] font-bold text-[#f5a623] uppercase mb-2">Primary Headline</p>
                   <p className="text-lg font-bold text-white leading-tight">{brief.imageAd.headline}</p>
                 </div>
                 <div>
@@ -538,7 +538,7 @@ function BriefCard({ brief, onOpenStudio }: { brief: AdBrief; onOpenStudio: () =
           </div>
           <div className="mt-8 pt-6 border-t border-white/10 text-center">
             <p className="text-[10px] text-white/20 uppercase font-medium">Production Status</p>
-            <p className="text-xs text-cyan-400/50 mt-1 font-bold">READY FOR SHOOT</p>
+            <p className="text-xs text-[#f5a623]/50 mt-1 font-bold">READY FOR SHOOT</p>
           </div>
         </div>
       </div>
@@ -549,9 +549,9 @@ function BriefCard({ brief, onOpenStudio }: { brief: AdBrief; onOpenStudio: () =
 function SceneRow({ scene, index }: { scene: AdBriefScene; index: number }) {
   return (
     <div className="relative pl-8 border-l border-white/10 pb-2">
-      <div className="absolute -left-[5px] top-0 w-2 h-2 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.5)]" />
+      <div className="absolute -left-[5px] top-0 w-2 h-2 rounded-full bg-[#f5a623] shadow-[0_0_8px_rgba(245,166,35,0.5)]" />
       <div className="flex items-center gap-3 mb-2">
-        <span className="text-[10px] font-black text-cyan-400/60 uppercase">Scene {index + 1}</span>
+        <span className="text-[10px] font-black text-[#f5a623]/60 uppercase">Scene {index + 1}</span>
         <span className="px-1.5 py-0.5 rounded bg-white/5 text-[10px] font-mono text-white/40">{scene.timestamp}</span>
         <span className="text-[10px] font-bold text-white/20 uppercase tracking-wider">{scene.shotType}</span>
       </div>
@@ -560,11 +560,11 @@ function SceneRow({ scene, index }: { scene: AdBriefScene; index: number }) {
           <p className="text-[9px] font-bold text-white/30 uppercase mb-1">Visual Action</p>
           <p className="text-sm text-white/90 leading-snug">{scene.visual}</p>
         </div>
-        <div className="p-3 rounded-lg bg-cyan-500/5 border border-cyan-500/10">
-          <p className="text-[9px] font-bold text-cyan-400/50 uppercase mb-1">Audio / VO</p>
-          <p className="text-sm text-cyan-100/80 leading-snug">{scene.audio}</p>
+        <div className="p-3 rounded-lg bg-[#f5a623]/5 border border-[#f5a623]/10">
+          <p className="text-[9px] font-bold text-[#f5a623]/50 uppercase mb-1">Audio / VO</p>
+          <p className="text-sm text-[#f5f0e8]/80 leading-snug">{scene.audio}</p>
           {scene.textOverlay && (
-            <div className="mt-2 pt-2 border-t border-cyan-500/10">
+            <div className="mt-2 pt-2 border-t border-[#f5a623]/10">
               <p className="text-[9px] font-bold text-white/30 uppercase mb-1">Text Overlay</p>
               <p className="text-xs font-bold text-white italic tracking-tight">{scene.textOverlay}</p>
             </div>
@@ -715,12 +715,12 @@ function AnalyzeContent() {
   // ── NO RESULT: Master Intake Scanner (ChatGPT-style) ──────────────────────────
   if (!result) {
     return (
-      <main className="h-screen bg-[#020509] text-white flex flex-col font-sans">
+      <main className="h-screen bg-t-bg text-white flex flex-col font-sans">
         <AppNav />
 
         <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 relative">
           {/* Subtle background glow */}
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-[#f5a623]/5 blur-[120px] rounded-full pointer-events-none" />
 
           <div className="w-full max-w-3xl z-10 flex flex-col items-center">
             <WorkflowHeader
@@ -752,7 +752,7 @@ function AnalyzeContent() {
               ]}
             />
 
-          <div className="w-full bg-[#050a14] border border-white/[0.08] shadow-2xl rounded-3xl p-3 flex flex-col transition-all focus-within:border-cyan-500/40 focus-within:shadow-[0_0_40px_rgba(6,182,212,0.1)]">
+          <div className="w-full bg-t-bg border border-white/[0.08] shadow-2xl rounded-3xl p-3 flex flex-col transition-all focus-within:border-[#f5a623]/40 focus-within:shadow-[0_0_40px_rgba(245,166,35,0.1)]">
               <textarea
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}
@@ -793,7 +793,7 @@ function AnalyzeContent() {
                 <button
                   onClick={handleAnalyze}
                   disabled={isLoading || !url.trim()}
-                  className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 hover:opacity-90 px-6 py-2.5 text-sm font-black text-white transition shadow-lg disabled:shadow-none"
+                  className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 hover:opacity-90 px-6 py-2.5 text-sm font-black text-white transition shadow-lg disabled:shadow-none"
                 >
                   {isLoading ? (
                     <>
@@ -808,10 +808,10 @@ function AnalyzeContent() {
             {/* Loading Status Array */}
             {isLoading && (
               <div className="mt-8 flex flex-col items-center">
-                <div className="flex items-center gap-3 text-cyan-400 font-semibold mb-2">
+                <div className="flex items-center gap-3 text-[#f5a623] font-semibold mb-2">
                   <div className="relative flex h-3 w-3">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3 w-3 bg-cyan-500"></span>
+                    <span className="relative inline-flex rounded-full h-3 w-3 bg-[#f5a623]"></span>
                   </div>
                   {LOADING_STEPS[loadingStep]}
                 </div>
@@ -846,7 +846,7 @@ function AnalyzeContent() {
 
   // ── WITH RESULT: two-panel layout ────────────────────────────────────────
   return (
-    <main className="h-screen overflow-hidden bg-[#0a0f1e] text-white flex flex-col">
+    <main className="h-screen overflow-hidden bg-t-bg-card text-white flex flex-col">
       <AppNav />
       {/* Action bar */}
       <header className="shrink-0 px-6 py-2 border-b border-white/[0.06] flex items-center gap-4">
@@ -857,7 +857,7 @@ function AnalyzeContent() {
           savedCampaignId ? (
             <Link
               href={`/campaigns/${savedCampaignId}`}
-              className="rounded-lg border border-cyan-400/30 bg-cyan-500/10 px-4 py-1.5 text-xs font-semibold text-cyan-300 hover:bg-cyan-500/20 transition"
+              className="rounded-lg border border-cyan-400/30 bg-[#f5a623]/10 px-4 py-1.5 text-xs font-semibold text-[#f5a623] hover:bg-[#f5a623]/20 transition"
             >
               Open Workspace →
             </Link>
@@ -1015,12 +1015,12 @@ function AnalyzeContent() {
 
           {/* Next actions */}
           {result.decisionPacket.nextActions.length > 0 && (
-            <div className="rounded-lg border border-cyan-500/20 bg-cyan-500/5 p-3">
-              <p className="text-[10px] font-semibold text-cyan-400 uppercase tracking-widest mb-2">Next Actions</p>
+            <div className="rounded-lg border border-[#f5a623]/20 bg-[#f5a623]/5 p-3">
+              <p className="text-[10px] font-semibold text-[#f5a623] uppercase tracking-widest mb-2">Next Actions</p>
               <ol className="space-y-1.5">
                 {result.decisionPacket.nextActions.map((a, i) => (
                   <li key={i} className="flex items-start gap-1.5 text-xs text-white/70">
-                    <span className="text-cyan-400 font-bold shrink-0">{i + 1}.</span>{a}
+                    <span className="text-[#f5a623] font-bold shrink-0">{i + 1}.</span>{a}
                   </li>
                 ))}
               </ol>
@@ -1032,10 +1032,10 @@ function AnalyzeContent() {
             <div className="rounded-lg border border-white/10 bg-white/5 p-4">
               {savedCampaignId ? (
                 <div className="space-y-2">
-                  <p className="text-xs font-semibold text-cyan-400">Saved to workspace</p>
+                  <p className="text-xs font-semibold text-[#f5a623]">Saved to workspace</p>
                   <Link
                     href={`/campaigns/${savedCampaignId}`}
-                    className="block w-full rounded-lg bg-cyan-500 hover:bg-cyan-400 px-4 py-2 text-xs font-semibold text-[#0a0f1e] text-center transition"
+                    className="block w-full rounded-lg bg-[#f5a623] hover:bg-[#e07850] px-4 py-2 text-xs font-semibold text-[#0a0f1e] text-center transition"
                   >
                     Open Workspace →
                   </Link>
@@ -1056,7 +1056,7 @@ function AnalyzeContent() {
                     <button
                       onClick={() => void handleSave()}
                       disabled={saving}
-                      className="flex-1 rounded-lg bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 px-3 py-2 text-xs font-semibold text-[#0a0f1e] transition"
+                      className="flex-1 rounded-lg bg-[#f5a623] hover:bg-[#e07850] disabled:opacity-50 px-3 py-2 text-xs font-semibold text-[#0a0f1e] transition"
                     >
                       {saving ? "Saving..." : "Save"}
                     </button>
@@ -1074,7 +1074,7 @@ function AnalyzeContent() {
                   <p className="text-[10px] text-white/30">Keep drafts, track what&apos;s live, and A/B test variations.</p>
                   <button
                     onClick={() => { setCampaignName(result.title || ""); setShowSaveForm(true); }}
-                    className="w-full rounded-lg bg-cyan-500 hover:bg-cyan-400 px-4 py-2 text-xs font-semibold text-[#0a0f1e] transition"
+                    className="w-full rounded-lg bg-[#f5a623] hover:bg-[#e07850] px-4 py-2 text-xs font-semibold text-[#0a0f1e] transition"
                   >
                     Save to Workspace →
                   </button>

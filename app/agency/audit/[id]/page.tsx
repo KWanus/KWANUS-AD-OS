@@ -124,7 +124,7 @@ interface AgencyAudit {
 
 const GRADE_COLORS: Record<string, string> = {
   A: "text-green-400 bg-green-500/10 border-green-500/20",
-  B: "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
+  B: "text-[#f5a623] bg-[#f5a623]/10 border-[#f5a623]/20",
   C: "text-yellow-400 bg-yellow-500/10 border-yellow-500/20",
   D: "text-orange-400 bg-orange-500/10 border-orange-500/20",
   F: "text-red-400 bg-red-500/10 border-red-500/20",
@@ -190,7 +190,7 @@ function EmptyGenerate({ icon: Icon, title, subtitle, btnLabel, onGenerate, load
       <button
         onClick={onGenerate}
         disabled={loading}
-        className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black px-5 py-2.5 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
+        className="flex items-center gap-2 bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-black px-5 py-2.5 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
       >
         {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
         {btnLabel}
@@ -306,7 +306,7 @@ function AuditTab({ audit }: { audit: AgencyAudit }) {
           <div className="space-y-2">
             {aj.topOpportunities.map((opp, i) => (
               <div key={i} className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4 flex gap-3">
-                <span className="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-black flex items-center justify-center shrink-0">
+                <span className="w-6 h-6 rounded-full bg-[#f5a623]/20 text-[#f5a623] text-xs font-black flex items-center justify-center shrink-0">
                   {i + 1}
                 </span>
                 <div className="flex-1 min-w-0">
@@ -389,7 +389,7 @@ function StrategyTab({ audit, onRefresh }: { audit: AgencyAudit; onRefresh: () =
   }
 
   const PHASE_COLORS = [
-    "from-cyan-500/10 to-cyan-500/5 border-cyan-500/20",
+    "from-cyan-500/10 to-cyan-500/5 border-[#f5a623]/20",
     "from-purple-500/10 to-purple-500/5 border-purple-500/20",
     "from-green-500/10 to-green-500/5 border-green-500/20",
   ];
@@ -419,7 +419,7 @@ function StrategyTab({ audit, onRefresh }: { audit: AgencyAudit; onRefresh: () =
                 <div key={ti} className="bg-black/20 rounded-xl p-3 flex gap-3 items-start">
                   <span className={`text-[10px] font-bold border rounded-lg px-2 py-0.5 shrink-0 ${
                     task.owner === "agency"
-                      ? "text-cyan-400 bg-cyan-500/10 border-cyan-500/20"
+                      ? "text-[#f5a623] bg-[#f5a623]/10 border-[#f5a623]/20"
                       : "text-white/40 bg-white/[0.04] border-white/10"
                   }`}>
                     {task.owner}
@@ -429,7 +429,7 @@ function StrategyTab({ audit, onRefresh }: { audit: AgencyAudit; onRefresh: () =
                     <div className="flex items-center gap-2 mt-1 flex-wrap">
                       <span className="text-[10px] text-white/25">{task.timeline}</span>
                       {task.tool && (
-                        <span className="text-[10px] text-purple-400/70 bg-purple-500/10 px-1.5 py-0.5 rounded">
+                        <span className="text-[10px] text-[#e07850]/70 bg-purple-500/10 px-1.5 py-0.5 rounded">
                           {task.tool}
                         </span>
                       )}
@@ -461,10 +461,10 @@ function StrategyTab({ audit, onRefresh }: { audit: AgencyAudit; onRefresh: () =
       {/* Revenue lift */}
       {strategy.projectedRevenueLift && (
         <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5 flex items-center gap-4">
-          <TrendingUp className="w-6 h-6 text-cyan-400 shrink-0" />
+          <TrendingUp className="w-6 h-6 text-[#f5a623] shrink-0" />
           <div>
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Projected Revenue Lift</p>
-            <p className="text-3xl font-black text-cyan-400">{strategy.projectedRevenueLift}</p>
+            <p className="text-3xl font-black text-[#f5a623]">{strategy.projectedRevenueLift}</p>
           </div>
         </div>
       )}
@@ -525,7 +525,7 @@ function ProposalTab({ audit, onRefresh }: { audit: AgencyAudit; onRefresh: () =
 
   const TIER_COLORS = [
     "border-white/[0.06] bg-white/[0.02]",
-    "border-cyan-500/40 bg-cyan-500/[0.04]",
+    "border-[#f5a623]/40 bg-[#f5a623]/[0.04]",
     "border-purple-500/30 bg-purple-500/[0.03]",
   ];
 
@@ -586,19 +586,19 @@ function ProposalTab({ audit, onRefresh }: { audit: AgencyAudit; onRefresh: () =
               return (
                 <div key={i} className={`rounded-2xl p-5 border flex flex-col gap-3 ${TIER_COLORS[i] ?? TIER_COLORS[0]}`}>
                   {isRecommended && (
-                    <span className="self-start text-[10px] font-black uppercase tracking-wider bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-2 py-0.5 rounded-lg">
+                    <span className="self-start text-[10px] font-black uppercase tracking-wider bg-[#f5a623]/20 text-[#f5a623] border border-[#f5a623]/30 px-2 py-0.5 rounded-lg">
                       Recommended
                     </span>
                   )}
                   <div>
                     <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest">{TIER_NAMES[i] ?? tier.name}</p>
                     <p className="text-sm font-black text-white">{tier.name}</p>
-                    <p className="text-xl font-black text-cyan-400">{tier.price}</p>
+                    <p className="text-xl font-black text-[#f5a623]">{tier.price}</p>
                   </div>
                   <ul className="space-y-1.5 flex-1">
                     {tier.deliverables.map((d: any, j: number) => (
                       <li key={j} className="flex items-start gap-2 text-xs text-white/55">
-                        <Check className="w-3 h-3 text-cyan-400/60 mt-0.5 shrink-0" />{d}
+                        <Check className="w-3 h-3 text-[#f5a623]/60 mt-0.5 shrink-0" />{d}
                       </li>
                     ))}
                   </ul>
@@ -614,7 +614,7 @@ function ProposalTab({ audit, onRefresh }: { audit: AgencyAudit; onRefresh: () =
 
       {/* Social proof */}
       {proposal.socialProof && (
-        <div className="border-l-2 border-cyan-500/30 pl-4">
+        <div className="border-l-2 border-[#f5a623]/30 pl-4">
           <SectionLabel>Social Proof</SectionLabel>
           <p className="text-sm text-white/50 italic leading-relaxed">"{proposal.socialProof}"</p>
         </div>
@@ -701,13 +701,13 @@ function PricingTab({ audit, onRefresh }: { audit: AgencyAudit; onRefresh: () =>
 
   const RATE_LABELS: Array<{ key: "low" | "mid" | "premium"; label: string; color: string }> = [
     { key: "low",     label: "Low",     color: "text-white/50" },
-    { key: "mid",     label: "Mid",     color: "text-cyan-400" },
-    { key: "premium", label: "Premium", color: "text-purple-400" },
+    { key: "mid",     label: "Mid",     color: "text-[#f5a623]" },
+    { key: "premium", label: "Premium", color: "text-[#e07850]" },
   ];
 
   const PKG_COLORS = [
     "border-white/[0.06] bg-white/[0.02]",
-    "border-cyan-500/40 bg-cyan-500/[0.04]",
+    "border-[#f5a623]/40 bg-[#f5a623]/[0.04]",
     "border-purple-500/30 bg-purple-500/[0.03]",
   ];
 
@@ -722,11 +722,11 @@ function PricingTab({ audit, onRefresh }: { audit: AgencyAudit; onRefresh: () =>
               {RATE_LABELS.map(({ key, label, color }) => {
                 const isRec = mr.recommended === key;
                 return (
-                  <div key={key} className={`text-center p-4 rounded-xl transition ${isRec ? "bg-cyan-500/10 border border-cyan-500/20" : "bg-white/[0.02] border border-white/[0.06]"}`}>
+                  <div key={key} className={`text-center p-4 rounded-xl transition ${isRec ? "bg-[#f5a623]/10 border border-[#f5a623]/20" : "bg-white/[0.02] border border-white/[0.06]"}`}>
                     <p className="text-[10px] font-black uppercase tracking-wider text-white/30 mb-1">{label}</p>
                     <p className={`text-lg font-black ${color}`}>{mr[key]}</p>
                     {isRec && (
-                      <span className="text-[9px] font-black uppercase tracking-wider text-cyan-400 mt-1 block">Recommended</span>
+                      <span className="text-[9px] font-black uppercase tracking-wider text-[#f5a623] mt-1 block">Recommended</span>
                     )}
                   </div>
                 );
@@ -753,7 +753,7 @@ function PricingTab({ audit, onRefresh }: { audit: AgencyAudit; onRefresh: () =>
               <div key={i} className={`rounded-2xl p-5 border flex flex-col gap-3 ${PKG_COLORS[i] ?? PKG_COLORS[0]}`}>
                 <div>
                   <p className="text-sm font-black text-white">{pkg.name}</p>
-                  <p className="text-xl font-black text-cyan-400">{pkg.price}</p>
+                  <p className="text-xl font-black text-[#f5a623]">{pkg.price}</p>
                   {pkg.profitMargin && (
                     <p className="text-[11px] text-green-400/70 mt-0.5">Margin: {pkg.profitMargin}</p>
                   )}
@@ -761,7 +761,7 @@ function PricingTab({ audit, onRefresh }: { audit: AgencyAudit; onRefresh: () =>
                 <ul className="space-y-1.5 flex-1">
                   {pkg.deliverables.map((d, j) => (
                     <li key={j} className="flex items-start gap-2 text-xs text-white/55">
-                      <Check className="w-3 h-3 text-cyan-400/60 mt-0.5 shrink-0" />{d}
+                      <Check className="w-3 h-3 text-[#f5a623]/60 mt-0.5 shrink-0" />{d}
                     </li>
                   ))}
                 </ul>
@@ -795,7 +795,7 @@ function PricingTab({ audit, onRefresh }: { audit: AgencyAudit; onRefresh: () =>
           <ul className="space-y-1.5">
             {pricing.pricingTips.map((tip, i) => (
               <li key={i} className="flex items-start gap-2 text-xs text-white/45">
-                <span className="w-1 h-1 rounded-full bg-cyan-500/50 mt-1.5 shrink-0" />
+                <span className="w-1 h-1 rounded-full bg-[#f5a623]/50 mt-1.5 shrink-0" />
                 {tip}
               </li>
             ))}
@@ -809,7 +809,7 @@ function PricingTab({ audit, onRefresh }: { audit: AgencyAudit; onRefresh: () =>
           <SectionLabel>Upsell Opportunities</SectionLabel>
           <div className="flex flex-wrap gap-2">
             {pricing.upsellOpportunities.map((item, i) => (
-              <span key={i} className="text-xs font-bold text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 rounded-xl px-3 py-1.5">
+              <span key={i} className="text-xs font-bold text-[#f5a623] bg-[#f5a623]/10 border border-[#f5a623]/20 rounded-xl px-3 py-1.5">
                 {item}
               </span>
             ))}
@@ -863,7 +863,7 @@ export default function AgencyAuditDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex items-center justify-center">
+      <div className="min-h-screen bg-t-bg flex items-center justify-center">
         <Loader2 className="w-6 h-6 animate-spin text-white/20" />
       </div>
     );
@@ -871,9 +871,9 @@ export default function AgencyAuditDetailPage() {
 
   if (!audit) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex flex-col items-center justify-center text-center px-4">
+      <div className="min-h-screen bg-t-bg flex flex-col items-center justify-center text-center px-4">
         <p className="text-sm font-bold text-white/30 mb-4">Audit not found</p>
-        <button onClick={() => router.push("/agency")} className="text-cyan-400 text-sm hover:underline">Back to Agency</button>
+        <button onClick={() => router.push("/agency")} className="text-[#f5a623] text-sm hover:underline">Back to Agency</button>
       </div>
     );
   }
@@ -885,7 +885,7 @@ export default function AgencyAuditDetailPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <div className="max-w-5xl mx-auto px-4 pt-8 pb-24">
 

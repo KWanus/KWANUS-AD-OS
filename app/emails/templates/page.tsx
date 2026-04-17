@@ -31,11 +31,11 @@ interface EmailTemplate {
 // ─── Category config ──────────────────────────────────────────────────────────
 
 const CATEGORY_META: Record<string, { label: string; color: string; bg: string; border: string }> = {
-  welcome:       { label: "Welcome",       color: "text-cyan-400",   bg: "bg-cyan-500/10",   border: "border-cyan-500/20" },
+  welcome:       { label: "Welcome",       color: "text-[#f5a623]",   bg: "bg-[#f5a623]/10",   border: "border-[#f5a623]/20" },
   nurture:       { label: "Nurture",       color: "text-blue-400",   bg: "bg-blue-500/10",   border: "border-blue-500/20" },
   sales:         { label: "Sales",         color: "text-emerald-400",bg: "bg-emerald-500/10",border: "border-emerald-500/20" },
   cart:          { label: "Cart Recovery", color: "text-amber-400",  bg: "bg-amber-500/10",  border: "border-amber-500/20" },
-  onboarding:    { label: "Onboarding",    color: "text-purple-400", bg: "bg-purple-500/10", border: "border-purple-500/20" },
+  onboarding:    { label: "Onboarding",    color: "text-[#e07850]", bg: "bg-purple-500/10", border: "border-purple-500/20" },
   reengagement:  { label: "Re-engagement", color: "text-red-400",    bg: "bg-red-500/10",    border: "border-red-500/20" },
 };
 
@@ -67,7 +67,7 @@ function PreviewModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <div className="w-full max-w-3xl max-h-[90vh] flex flex-col rounded-3xl border border-white/[0.08] bg-[#050a14] shadow-2xl">
+      <div className="w-full max-w-3xl max-h-[90vh] flex flex-col rounded-3xl border border-white/[0.08] bg-t-bg shadow-2xl">
         {/* Header */}
         <div className="flex items-start justify-between px-6 py-5 border-b border-white/[0.06]">
           <div className="flex items-center gap-3">
@@ -93,7 +93,7 @@ function PreviewModal({
               onClick={() => setStep(i)}
               className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-bold whitespace-nowrap transition ${
                 step === i
-                  ? "bg-cyan-500/15 border border-cyan-500/25 text-cyan-400"
+                  ? "bg-[#f5a623]/15 border border-[#f5a623]/25 text-[#f5a623]"
                   : "text-white/30 hover:text-white/55 hover:bg-white/[0.04]"
               }`}
             >
@@ -151,7 +151,7 @@ function PreviewModal({
           </div>
           <button
             onClick={() => { onUse(template); onClose(); }}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-sm font-black text-white hover:opacity-90 transition shadow-[0_0_20px_rgba(6,182,212,0.2)]"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-sm font-black text-white hover:opacity-90 transition shadow-[0_0_20px_rgba(245,166,35,0.2)]"
           >
             Use Template
             <ArrowRight className="w-3.5 h-3.5" />
@@ -177,7 +177,7 @@ function TemplateCard({
   const totalDays = template.emails.reduce((s, e) => s + e.delayDays, 0);
 
   return (
-    <div className="group rounded-2xl border border-white/[0.07] bg-white/[0.025] hover:border-cyan-500/20 hover:bg-cyan-500/[0.025] transition-all p-5 flex flex-col gap-4">
+    <div className="group rounded-2xl border border-white/[0.07] bg-white/[0.025] hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.025] transition-all p-5 flex flex-col gap-4">
       <div className="flex items-start justify-between gap-3">
         <div className="flex items-center gap-3">
           <div className="w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.08] flex items-center justify-center text-xl shrink-0">
@@ -187,7 +187,7 @@ function TemplateCard({
             <span className={`inline-flex items-center rounded-full border px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.18em] ${meta.color} ${meta.bg} ${meta.border}`}>
               {meta.label}
             </span>
-            <h3 className="text-sm font-black text-white mt-1 group-hover:text-cyan-100 transition">{template.name}</h3>
+            <h3 className="text-sm font-black text-white mt-1 group-hover:text-[#f5f0e8] transition">{template.name}</h3>
           </div>
         </div>
       </div>
@@ -230,7 +230,7 @@ function TemplateCard({
         </button>
         <button
           onClick={() => onUse(template)}
-          className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border border-cyan-500/20 bg-cyan-500/[0.06] text-[11px] font-black text-cyan-400 hover:bg-cyan-500/[0.1] transition"
+          className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl border border-[#f5a623]/20 bg-[#f5a623]/[0.06] text-[11px] font-black text-[#f5a623] hover:bg-[#f5a623]/[0.1] transition"
         >
           Use Template <ChevronRight className="w-3 h-3" />
         </button>
@@ -299,9 +299,9 @@ export default function EmailTemplatesPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white flex flex-col">
+    <div className="min-h-screen bg-t-bg text-white flex flex-col">
       {/* Background glows */}
-      <div className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-cyan-500/[0.05] blur-[120px] rounded-full pointer-events-none" />
+      <div className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-[#f5a623]/[0.05] blur-[120px] rounded-full pointer-events-none" />
       <div className="fixed bottom-0 right-1/4 w-[400px] h-[400px] bg-purple-500/[0.04] blur-[120px] rounded-full pointer-events-none" />
 
       <AppNav />
@@ -313,9 +313,9 @@ export default function EmailTemplatesPage() {
           <div>
             <div className="flex items-center gap-2 mb-2">
               <div className="w-7 h-7 rounded-lg bg-purple-500/15 border border-purple-500/20 flex items-center justify-center">
-                <LayoutTemplate className="w-3.5 h-3.5 text-purple-400" />
+                <LayoutTemplate className="w-3.5 h-3.5 text-[#e07850]" />
               </div>
-              <p className="text-[10px] font-black uppercase tracking-[0.26em] text-purple-400/70">Email Templates</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.26em] text-[#e07850]/70">Email Templates</p>
             </div>
             <h1 className="text-3xl font-black text-white">Proven Sequences</h1>
             <p className="text-sm text-white/35 mt-1.5 leading-relaxed max-w-lg">
@@ -349,7 +349,7 @@ export default function EmailTemplatesPage() {
                   active
                     ? meta
                       ? `${meta.color} ${meta.bg} ${meta.border}`
-                      : "border-cyan-500/30 bg-cyan-500/10 text-cyan-400"
+                      : "border-[#f5a623]/30 bg-[#f5a623]/10 text-[#f5a623]"
                     : "border-white/[0.07] text-white/35 hover:text-white/60 hover:border-white/15"
                 }`}
               >
@@ -404,14 +404,14 @@ export default function EmailTemplatesPage() {
         {!loading && filtered.length > 0 && (
           <div className="mt-10 rounded-2xl border border-purple-500/15 bg-purple-500/[0.04] p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
-              <p className="text-xs font-black uppercase tracking-[0.22em] text-purple-400/70 mb-1">How it works</p>
+              <p className="text-xs font-black uppercase tracking-[0.22em] text-[#e07850]/70 mb-1">How it works</p>
               <p className="text-sm text-white/55 leading-relaxed max-w-lg">
                 Clicking <strong className="text-white/70">Use Template</strong> creates a new flow pre-loaded with this sequence. You can edit any step before activating. Variables like <code className="text-purple-300/70 text-[11px]">{"{{firstName}}"}</code> are auto-filled from your contact list.
               </p>
             </div>
             <a
               href="/emails"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-purple-500/25 bg-purple-500/10 text-sm font-black text-purple-400 hover:bg-purple-500/15 transition shrink-0"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-purple-500/25 bg-purple-500/10 text-sm font-black text-[#e07850] hover:bg-purple-500/15 transition shrink-0"
             >
               Go to Flows <ArrowRight className="w-3.5 h-3.5" />
             </a>

@@ -68,15 +68,15 @@ export default function AdScorerPage() {
     setResult(scoreAd(adText.trim(), platform));
   }
 
-  const gradeColors: Record<string, string> = { A: "text-emerald-400", B: "text-cyan-400", C: "text-amber-400", D: "text-orange-400", F: "text-red-400" };
+  const gradeColors: Record<string, string> = { A: "text-emerald-400", B: "text-[#f5a623]", C: "text-amber-400", D: "text-orange-400", F: "text-red-400" };
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-            <Target className="w-5 h-5 text-cyan-400" />
+          <div className="w-10 h-10 rounded-xl bg-[#f5a623]/10 border border-[#f5a623]/20 flex items-center justify-center">
+            <Target className="w-5 h-5 text-[#f5a623]" />
           </div>
           <div>
             <h1 className="text-xl font-black text-white">Ad Copy Scorer</h1>
@@ -91,7 +91,7 @@ export default function AdScorerPage() {
               key={p}
               onClick={() => { setPlatform(p); setResult(null); }}
               className={`px-3 py-1.5 rounded-lg text-xs font-bold transition border ${
-                platform === p ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-300" : "border-white/10 bg-white/[0.03] text-white/30"
+                platform === p ? "border-[#f5a623]/40 bg-[#f5a623]/10 text-[#f5a623]" : "border-white/10 bg-white/[0.03] text-white/30"
               }`}
             >
               {p.charAt(0).toUpperCase() + p.slice(1)}
@@ -105,13 +105,13 @@ export default function AdScorerPage() {
           onChange={(e) => { setAdText(e.target.value); setResult(null); }}
           placeholder="Paste your ad copy here..."
           rows={6}
-          className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-4 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition resize-none mb-4"
+          className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-4 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition resize-none mb-4"
         />
 
         <button
           onClick={analyze}
           disabled={!adText.trim()}
-          className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-cyan-500 text-[#0a0f1e] text-sm font-bold hover:bg-cyan-400 transition disabled:opacity-40 mb-6"
+          className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#f5a623] text-[#0a0f1e] text-sm font-bold hover:bg-[#e07850] transition disabled:opacity-40 mb-6"
         >
           Score My Ad
         </button>

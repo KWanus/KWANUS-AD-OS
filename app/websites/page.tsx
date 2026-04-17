@@ -89,7 +89,7 @@ type ScanResult = {
 
 function verdictTone(status?: string) {
     if (status === "healthy") return "border-emerald-500/20 bg-emerald-500/10 text-emerald-200";
-    if (status === "stale") return "border-cyan-500/20 bg-cyan-500/10 text-cyan-100";
+    if (status === "stale") return "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5f0e8]";
     return "border-amber-500/20 bg-amber-500/10 text-amber-100";
 }
 
@@ -350,7 +350,7 @@ export default function WebsitesDashboard() {
     }
 
     return (
-        <div className="min-h-screen bg-[#020509] font-sans flex flex-col text-white">
+        <div className="min-h-screen bg-t-bg font-sans flex flex-col text-white">
             <AppNav />
             <WorkspaceShell maxWidth="max-w-7xl">
                 <WorkspaceHero
@@ -362,7 +362,7 @@ export default function WebsitesDashboard() {
                         <>
                             <button
                                 onClick={() => router.push("/websites/new")}
-                                className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black shadow-[0_0_30px_rgba(6,182,212,0.3)] hover:shadow-[0_0_50px_rgba(6,182,212,0.45)] hover:scale-[1.02] transition-all duration-200"
+                                className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-black shadow-[0_0_30px_rgba(245,166,35,0.3)] hover:shadow-[0_0_50px_rgba(245,166,35,0.45)] hover:scale-[1.02] transition-all duration-200"
                             >
                                 <Plus className="w-4 h-4" />
                                 Create New Site
@@ -423,7 +423,7 @@ export default function WebsitesDashboard() {
                                         <button
                                             onClick={() => void refreshBusinessSystem()}
                                             disabled={refreshingRecommendations}
-                                            className="inline-flex items-center gap-2 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-5 py-3 text-sm font-bold text-cyan-100 disabled:cursor-not-allowed disabled:opacity-60"
+                                            className="inline-flex items-center gap-2 rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-5 py-3 text-sm font-bold text-[#f5f0e8] disabled:cursor-not-allowed disabled:opacity-60"
                                         >
                                             {refreshingRecommendations ? "Refreshing..." : "Refresh Recommendations"}
                                         </button>
@@ -434,10 +434,10 @@ export default function WebsitesDashboard() {
 
                         <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="mb-6" />
 
-                        <section className="mb-6 rounded-[30px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] to-violet-500/[0.03] p-6">
+                        <section className="mb-6 rounded-[30px] border border-[#f5a623]/20 bg-gradient-to-br from-cyan-500/[0.08] to-violet-500/[0.03] p-6">
                             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                                 <div className="max-w-3xl">
-                                    <p className="text-[10px] font-black uppercase tracking-[0.28em] text-cyan-200/70">Recommended Next Site Move</p>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.28em] text-[#f5a623]/70">Recommended Next Site Move</p>
                                     <h2 className="mt-2 text-2xl font-black text-white">
                                         {businessProfile.website ? "Scan and improve your current site" : "Generate your core conversion site"}
                                     </h2>
@@ -457,7 +457,7 @@ export default function WebsitesDashboard() {
                                                 const el = document.getElementById("site-scan-mode");
                                                 el?.scrollIntoView({ behavior: "smooth", block: "start" });
                                             }}
-                                            className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)]"
+                                            className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(245,166,35,0.22)]"
                                         >
                                             <Radar className="h-4 w-4" />
                                             Improve Existing Site
@@ -465,7 +465,7 @@ export default function WebsitesDashboard() {
                                     ) : (
                                         <Link
                                             href="/websites/new"
-                                            className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)]"
+                                            className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(245,166,35,0.22)]"
                                         >
                                             <Plus className="h-4 w-4" />
                                             Build New Site
@@ -488,13 +488,13 @@ export default function WebsitesDashboard() {
                     <div className="rounded-[30px] border border-white/[0.08] bg-[linear-gradient(145deg,rgba(255,255,255,0.05),rgba(255,255,255,0.02))] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.24)]">
                         <div className="flex items-start justify-between gap-4">
                             <div>
-                                <p className="text-[10px] font-black uppercase tracking-[0.28em] text-cyan-300/80">Scan Mode</p>
+                                <p className="text-[10px] font-black uppercase tracking-[0.28em] text-[#f5a623]/80">Scan Mode</p>
                                 <h2 className="mt-3 text-2xl font-black tracking-tight text-white">Clone any site or build the better version</h2>
                                 <p className="mt-2 max-w-2xl text-sm leading-7 text-white/45">
                                     Drop in any live URL and the Sites engine will scan the structure, messaging, CTAs, and on-page cues, then generate a ready-to-edit draft in your workspace.
                                 </p>
                             </div>
-                            <div className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-cyan-500/20 bg-cyan-500/10 text-cyan-300 sm:flex">
+                            <div className="hidden h-12 w-12 shrink-0 items-center justify-center rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5a623] sm:flex">
                                 <Radar className="h-5 w-5" />
                             </div>
                         </div>
@@ -548,7 +548,7 @@ export default function WebsitesDashboard() {
                                     onClick={() => setScanMode(option.value)}
                                     className={`rounded-2xl border px-4 py-3 text-left transition ${
                                         scanMode === option.value
-                                            ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-100"
+                                            ? "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5f0e8]"
                                             : "border-white/[0.08] bg-white/[0.03] text-white/55 hover:text-white/75"
                                     }`}
                                 >
@@ -567,7 +567,7 @@ export default function WebsitesDashboard() {
                                         onClick={() => setScanExecutionTier(tier)}
                                         className={`rounded-2xl border px-4 py-3 text-left transition ${
                                             active
-                                                ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-100"
+                                                ? "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5f0e8]"
                                                 : "border-white/[0.08] bg-white/[0.03] text-white/55 hover:text-white/75"
                                         }`}
                                     >
@@ -650,7 +650,7 @@ export default function WebsitesDashboard() {
                                 "Triggers n8n after generation when your external webhook is configured.",
                             ].map((line, index) => (
                                 <div key={line} className="rounded-2xl border border-white/[0.07] bg-black/20 px-4 py-3">
-                                    <p className="text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300/70">Step {index + 1}</p>
+                                    <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#f5a623]/70">Step {index + 1}</p>
                                     <p className="mt-2 text-sm leading-6 text-white/60">{line}</p>
                                 </div>
                             ))}
@@ -677,10 +677,10 @@ export default function WebsitesDashboard() {
                 {!loading && sites.length === 0 && (
                     <div className="mt-8 relative overflow-hidden rounded-3xl border border-white/[0.06] bg-gradient-to-br from-purple-500/[0.05] to-transparent p-16 flex flex-col items-center text-center">
                         <div className="absolute inset-0 opacity-[0.015]"
-                            style={{ backgroundImage: "radial-gradient(circle, #8b5cf6 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
+                            style={{ backgroundImage: "radial-gradient(circle, #e07850 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
 
                         <div className="relative w-24 h-24 rounded-3xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 border border-white/[0.07] flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(139,92,246,0.15)]">
-                            <Globe className="w-10 h-10 text-purple-400/60" />
+                            <Globe className="w-10 h-10 text-[#e07850]/60" />
                             <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 flex items-center justify-center">
                                 <Sparkles className="w-3 h-3 text-white" />
                             </div>
@@ -700,7 +700,7 @@ export default function WebsitesDashboard() {
 
                         <div className="flex flex-wrap gap-3 justify-center">
                             <Link href="/himalaya"
-                                className="flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black shadow-[0_0_30px_rgba(6,182,212,0.25)] hover:scale-[1.02] transition-all">
+                                className="flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-black shadow-[0_0_30px_rgba(245,166,35,0.25)] hover:scale-[1.02] transition-all">
                                 <Sparkles className="w-4 h-4" />
                                 Build with Himalaya
                             </Link>
@@ -718,7 +718,7 @@ export default function WebsitesDashboard() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pb-16">
                         {sites.map(site => (
                             <div key={site.id}
-                                className="group relative border border-white/[0.07] bg-[#050a14] hover:border-purple-500/30 transition-all duration-300 rounded-3xl flex flex-col overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.4)] hover:shadow-[0_0_40px_rgba(139,92,246,0.08)]">
+                                className="group relative border border-white/[0.07] bg-t-bg hover:border-purple-500/30 transition-all duration-300 rounded-3xl flex flex-col overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.4)] hover:shadow-[0_0_40px_rgba(139,92,246,0.08)]">
                                 {(() => {
                                     const siteAudit = auditPublishedSite({
                                         published: site.published,
@@ -793,7 +793,7 @@ export default function WebsitesDashboard() {
                                 <div className="p-6 flex-1 flex flex-col">
                                     <h3 className="text-base font-black text-white tracking-tight truncate mb-1 group-hover:text-purple-300 transition">{site.name}</h3>
                                     <div className="mb-3 flex items-center gap-2">
-                                        <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-cyan-200">
+                                        <span className="rounded-full border border-[#f5a623]/20 bg-[#f5a623]/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-[#f5a623]">
                                             {siteAudit.score}/100
                                         </span>
                                         <span className={`rounded-full border px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.18em] ${readinessTone(siteAudit.readiness)}`}>
@@ -830,7 +830,7 @@ export default function WebsitesDashboard() {
                                     </div>
                                     <div className="flex items-center gap-1.5">
                                         <a href={getPublicUrl(site)} target="_blank" rel="noreferrer"
-                                            className="text-xs text-cyan-400/60 hover:text-cyan-300 flex items-center gap-1 transition">
+                                            className="text-xs text-[#f5a623]/60 hover:text-[#f5a623] flex items-center gap-1 transition">
                                             {site.customDomain?.trim() ? site.customDomain.trim().replace(/^https?:\/\//, "") : `/s/${site.slug}`} <ExternalLink className="w-3 h-3" />
                                         </a>
                                         <button
@@ -849,14 +849,14 @@ export default function WebsitesDashboard() {
                                         {trafficReadiness.reason}
                                     </p>
                                     {generation?.templateId && (
-                                        <div className="mt-3 rounded-2xl border border-cyan-500/15 bg-cyan-500/[0.07] px-3 py-3">
-                                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-200/75">Template Next Move</p>
+                                        <div className="mt-3 rounded-2xl border border-[#f5a623]/15 bg-[#f5a623]/[0.07] px-3 py-3">
+                                            <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f5a623]/75">Template Next Move</p>
                                             <p className="mt-2 text-xs font-black text-white">{starterGuidance.headline}</p>
                                             <p className="mt-1 text-[11px] leading-5 text-cyan-50/70">{starterGuidance.summary}</p>
                                         </div>
                                     )}
                                     {!site.customDomain?.trim() && site.published && (
-                                        <p className="mt-2 text-[11px] leading-5 text-cyan-100/65">
+                                        <p className="mt-2 text-[11px] leading-5 text-[#f5f0e8]/65">
                                             Live on the built-in share route. Add a custom domain when you want branded launch links.
                                         </p>
                                     )}
@@ -864,7 +864,7 @@ export default function WebsitesDashboard() {
                                     <div className="mt-4 flex flex-wrap gap-2">
                                         <Link
                                             href={quickAction.href}
-                                            className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-[11px] font-black text-cyan-200 transition hover:bg-cyan-500/15"
+                                            className="rounded-xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-3 py-2 text-[11px] font-black text-[#f5a623] transition hover:bg-[#f5a623]/15"
                                         >
                                             {quickAction.label}
                                         </Link>
@@ -888,7 +888,7 @@ export default function WebsitesDashboard() {
                                         {generation?.templateId && starterGuidance.actions[0] && (
                                             <Link
                                                 href={getStarterActionHref(site, starterGuidance.actions[0].type, firstPageNeedingTrust ?? firstPageNeedingSeo ?? firstPageNeedingCta ?? firstPageId)}
-                                                className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-[11px] font-black text-cyan-200 transition hover:bg-cyan-500/15"
+                                                className="rounded-xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-3 py-2 text-[11px] font-black text-[#f5a623] transition hover:bg-[#f5a623]/15"
                                             >
                                                 {starterGuidance.actions[0].label}
                                             </Link>
@@ -927,7 +927,7 @@ export default function WebsitesDashboard() {
                                                         }
                                                     } catch { toast.error("Failed to duplicate"); }
                                                 }}
-                                                className="p-2 rounded-xl bg-white/[0.04] hover:bg-cyan-500/10 border border-white/[0.06] hover:border-cyan-500/20 text-white/20 hover:text-cyan-400 transition"
+                                                className="p-2 rounded-xl bg-white/[0.04] hover:bg-[#f5a623]/10 border border-white/[0.06] hover:border-[#f5a623]/20 text-white/20 hover:text-[#f5a623] transition"
                                                 title="Duplicate site"
                                             >
                                                 <Copy className="w-4 h-4" />
@@ -968,7 +968,7 @@ export default function WebsitesDashboard() {
                         <button onClick={() => router.push("/websites/new")}
                             className="group border-2 border-dashed border-white/[0.07] hover:border-purple-500/30 rounded-3xl flex flex-col items-center justify-center gap-3 py-12 text-center transition-all duration-300 hover:bg-purple-500/[0.03]">
                             <div className="w-12 h-12 rounded-2xl bg-white/[0.04] border border-white/[0.07] group-hover:bg-purple-500/10 group-hover:border-purple-500/20 flex items-center justify-center transition-all duration-300">
-                                <Plus className="w-5 h-5 text-white/30 group-hover:text-purple-400 transition" />
+                                <Plus className="w-5 h-5 text-white/30 group-hover:text-[#e07850] transition" />
                             </div>
                             <p className="text-sm font-bold text-white/25 group-hover:text-white/50 transition">New Site</p>
                         </button>

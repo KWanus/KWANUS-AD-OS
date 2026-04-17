@@ -38,7 +38,7 @@ export default function CreativeLibraryPage() {
   const videoCount = creatives.filter((c) => c.type === "video").length;
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center justify-between mb-8">
@@ -56,7 +56,7 @@ export default function CreativeLibraryPage() {
                 key={f.id}
                 onClick={() => setFilter(f.id)}
                 className={`px-3 py-1.5 rounded-lg text-xs font-bold transition border ${
-                  filter === f.id ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-300" : "border-white/10 bg-white/[0.03] text-white/30"
+                  filter === f.id ? "border-[#f5a623]/40 bg-[#f5a623]/10 text-[#f5a623]" : "border-white/10 bg-white/[0.03] text-white/30"
                 }`}
               >
                 {f.label}
@@ -76,7 +76,7 @@ export default function CreativeLibraryPage() {
             <p className="text-sm text-white/30 max-w-sm mx-auto mb-6">
               Deploy a Himalaya campaign to generate AI ad images and videos automatically.
             </p>
-            <Link href="/himalaya" className="text-xs text-cyan-400 hover:text-cyan-300 transition">
+            <Link href="/himalaya" className="text-xs text-[#f5a623] hover:text-[#f5a623] transition">
               Run Himalaya →
             </Link>
           </div>
@@ -113,7 +113,7 @@ export default function CreativeLibraryPage() {
 
                   {/* Type badge */}
                   <span className={`absolute top-2 left-2 text-[9px] font-bold px-1.5 py-0.5 rounded ${
-                    creative.type === "video" ? "bg-purple-500/80 text-white" : "bg-cyan-500/80 text-white"
+                    creative.type === "video" ? "bg-purple-500/80 text-white" : "bg-[#f5a623]/80 text-white"
                   }`}>
                     {creative.type === "video" ? "VIDEO" : "IMAGE"}
                   </span>
@@ -123,7 +123,7 @@ export default function CreativeLibraryPage() {
                 <div className="p-3">
                   <p className="text-xs font-bold text-white truncate">{creative.name}</p>
                   <div className="flex items-center justify-between mt-1">
-                    <Link href={`/campaigns/${creative.campaignId}`} className="text-[10px] text-cyan-400/50 hover:text-cyan-400 transition truncate">
+                    <Link href={`/campaigns/${creative.campaignId}`} className="text-[10px] text-[#f5a623]/50 hover:text-[#f5a623] transition truncate">
                       {creative.campaignName}
                     </Link>
                     {creative.platform && (

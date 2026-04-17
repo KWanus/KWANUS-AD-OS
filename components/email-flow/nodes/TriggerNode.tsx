@@ -27,10 +27,10 @@ export default function TriggerNode({ data, selected }: NodeProps) {
     <div
       className={`relative min-w-[200px] rounded-2xl border transition-all duration-200 ${
         selected
-          ? "border-cyan-400/80 shadow-[0_0_32px_rgba(6,182,212,0.4)]"
-          : "border-cyan-500/30 shadow-[0_0_16px_rgba(6,182,212,0.15)]"
+          ? "border-cyan-400/80 shadow-[0_0_32px_rgba(245,166,35,0.4)]"
+          : "border-[#f5a623]/30 shadow-[0_0_16px_rgba(245,166,35,0.15)]"
       }`}
-      style={{ background: "linear-gradient(135deg, rgba(6,182,212,0.12) 0%, rgba(8,145,178,0.08) 100%)" }}
+      style={{ background: "linear-gradient(135deg, rgba(245,166,35,0.12) 0%, rgba(8,145,178,0.08) 100%)" }}
     >
       {/* Top glow bar */}
       <div className="absolute inset-x-0 top-0 h-0.5 rounded-t-2xl bg-gradient-to-r from-transparent via-cyan-400 to-transparent" />
@@ -38,13 +38,13 @@ export default function TriggerNode({ data, selected }: NodeProps) {
       <div className="px-4 py-3">
         {/* Entry label */}
         <div className="flex items-center gap-1.5 mb-2">
-          <Zap className="w-3 h-3 text-cyan-400" />
-          <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400/70">Entry Point</span>
+          <Zap className="w-3 h-3 text-[#f5a623]" />
+          <span className="text-[10px] font-black uppercase tracking-widest text-[#f5a623]/70">Entry Point</span>
         </div>
 
         {/* Trigger info */}
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-cyan-500/15 border border-cyan-500/25 flex items-center justify-center text-lg">
+          <div className="w-9 h-9 rounded-xl bg-[#f5a623]/15 border border-[#f5a623]/25 flex items-center justify-center text-lg">
             {meta.icon}
           </div>
           <div>

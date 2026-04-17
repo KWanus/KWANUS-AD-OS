@@ -96,7 +96,7 @@ function SortableBlockRow({
       style={style}
       onClick={onClick}
       className={`flex items-center gap-2 px-3 py-2 rounded-xl cursor-pointer transition-all ${
-        selected ? "bg-cyan-500/15 border border-cyan-500/30" : "hover:bg-white/[0.04] border border-transparent"
+        selected ? "bg-[#f5a623]/15 border border-[#f5a623]/30" : "hover:bg-white/[0.04] border border-transparent"
       }`}
     >
       <span {...attributes} {...listeners} className="text-white/20 hover:text-white/50 cursor-grab active:cursor-grabbing shrink-0">
@@ -421,7 +421,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex items-center justify-center">
+      <div className="min-h-screen bg-t-bg flex items-center justify-center">
         <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
       </div>
     );
@@ -429,7 +429,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
 
   if (!site || !page) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex items-center justify-center">
+      <div className="min-h-screen bg-t-bg flex items-center justify-center">
         <p className="text-white/30">Page not found.</p>
       </div>
     );
@@ -446,7 +446,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
   });
 
   return (
-    <div className="h-screen bg-[#050a14] flex flex-col overflow-hidden">
+    <div className="h-screen bg-t-bg flex flex-col overflow-hidden">
       {/* Top bar */}
       <header className="h-12 shrink-0 bg-[#07101f] border-b border-white/[0.07] flex items-center px-4 gap-3 z-10">
         <button onClick={() => router.push(`/websites/${siteId}`)} className="flex items-center gap-1.5 text-white/30 hover:text-white/60 transition shrink-0">
@@ -467,7 +467,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
         {/* Preview toggle */}
         <button
           onClick={() => setPreviewMode(!previewMode)}
-          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${previewMode ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30" : "bg-white/[0.05] text-white/40 hover:text-white/60 border border-white/[0.08]"}`}
+          className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${previewMode ? "bg-[#f5a623]/20 text-[#f5a623] border border-[#f5a623]/30" : "bg-white/[0.05] text-white/40 hover:text-white/60 border border-white/[0.08]"}`}
         >
           <Eye className="w-3.5 h-3.5" />
           Preview
@@ -480,7 +480,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
             site.published
               ? "bg-green-500/15 text-green-300 border border-green-500/30 hover:bg-red-500/15 hover:text-red-300 hover:border-red-500/30"
-              : "bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:opacity-90"
+              : "bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white hover:opacity-90"
           }`}
         >
           {publishing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Globe className="w-3.5 h-3.5" />}
@@ -499,7 +499,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
         <div className="shrink-0 border-b border-white/[0.07] bg-[#081120] px-4 py-3">
           <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
             <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Publish Readiness</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#f5a623]/80">Publish Readiness</p>
               <div className="mt-1 flex flex-wrap items-center gap-3">
                 <p className="text-lg font-black text-white">{pageAudit.score}/100</p>
                 <p className="text-xs text-white/35">
@@ -518,7 +518,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
               {!pageAudit.hasPrimaryCta && (
                 <button
                   onClick={() => queueCopilotInstruction("add a stronger CTA section to this page")}
-                  className="rounded-xl border border-cyan-500/25 bg-cyan-500/10 px-3 py-2 text-[11px] font-black text-cyan-200"
+                  className="rounded-xl border border-[#f5a623]/25 bg-[#f5a623]/10 px-3 py-2 text-[11px] font-black text-[#f5a623]"
                 >
                   Add CTA
                 </button>
@@ -526,7 +526,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
               {!pageAudit.hasTrust && (
                 <button
                   onClick={() => queueCopilotInstruction("add trust proof to this page")}
-                  className="rounded-xl border border-cyan-500/25 bg-cyan-500/10 px-3 py-2 text-[11px] font-black text-cyan-200"
+                  className="rounded-xl border border-[#f5a623]/25 bg-[#f5a623]/10 px-3 py-2 text-[11px] font-black text-[#f5a623]"
                 >
                   Add Trust
                 </button>
@@ -558,7 +558,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
           <div className="shrink-0 border-b border-white/[0.07] bg-[#060d19] px-4 py-3">
             <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
               <div className="flex flex-wrap items-center gap-3">
-                <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-cyan-200">
+                <span className="rounded-full border border-[#f5a623]/20 bg-[#f5a623]/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-[#f5a623]">
                   Page Readiness
                 </span>
                 <div className="flex items-center gap-2">
@@ -590,7 +590,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                 {!pageAudit.hasTrust && (
                   <button
                     onClick={() => queueCopilotInstruction("improve trust on this page")}
-                    className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-[11px] font-black text-cyan-200"
+                    className="rounded-xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-3 py-2 text-[11px] font-black text-[#f5a623]"
                   >
                     Add Trust
                   </button>
@@ -598,7 +598,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                 {!pageAudit.hasPrimaryCta && (
                   <button
                     onClick={() => queueCopilotInstruction("add a stronger CTA to this page")}
-                    className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-[11px] font-black text-cyan-200"
+                    className="rounded-xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-3 py-2 text-[11px] font-black text-[#f5a623]"
                   >
                     Add CTA
                   </button>
@@ -606,7 +606,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                 {!pageAudit.hasHero && (
                   <button
                     onClick={() => queueCopilotInstruction("add or improve the hero section on this page")}
-                    className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-[11px] font-black text-cyan-200"
+                    className="rounded-xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-3 py-2 text-[11px] font-black text-[#f5a623]"
                   >
                     Improve Hero
                   </button>
@@ -637,7 +637,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                   key={key}
                   onClick={() => setTab(key as "blocks" | "add" | "seo")}
                   className={`flex-1 flex items-center justify-center gap-1 py-3 text-[10px] font-black uppercase tracking-widest transition-all ${
-                    tab === key ? "text-cyan-300 border-b-2 border-cyan-500" : "text-white/25 hover:text-white/50"
+                    tab === key ? "text-[#f5a623] border-b-2 border-[#f5a623]" : "text-white/25 hover:text-white/50"
                   }`}
                 >
                   <Icon className="w-3 h-3" />
@@ -651,7 +651,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                 {page.blocks.length === 0 ? (
                   <div className="text-center py-12">
                     <p className="text-xs text-white/25 mb-3">No blocks yet</p>
-                    <button onClick={() => setTab("add")} className="text-[11px] text-cyan-400 hover:text-cyan-300 font-bold">+ Add your first block</button>
+                    <button onClick={() => setTab("add")} className="text-[11px] text-[#f5a623] hover:text-[#f5a623] font-bold">+ Add your first block</button>
                   </div>
                 ) : (
                   <DndContext sensors={sensors} collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
@@ -678,7 +678,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                     <button
                       key={cat}
                       onClick={() => setAddCategory(cat)}
-                      className={`px-2 py-1 rounded-lg text-[10px] font-bold transition-all ${addCategory === cat ? "bg-cyan-500/20 text-cyan-300" : "text-white/30 hover:text-white/50"}`}
+                      className={`px-2 py-1 rounded-lg text-[10px] font-bold transition-all ${addCategory === cat ? "bg-[#f5a623]/20 text-[#f5a623]" : "text-white/30 hover:text-white/50"}`}
                     >
                       {cat}
                     </button>
@@ -711,7 +711,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                     value={page.seoTitle ?? ""}
                     onChange={(e) => setPage((prev) => prev ? { ...prev, seoTitle: e.target.value } : prev)}
                     placeholder={page.title}
-                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
                   />
                   <p className="text-[9px] text-white/20">{(page.seoTitle ?? "").length}/60 chars</p>
                 </div>
@@ -723,7 +723,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                     onChange={(e) => setPage((prev) => prev ? { ...prev, seoDesc: e.target.value } : prev)}
                     placeholder="Brief description for search results…"
                     rows={3}
-                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition resize-none"
+                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition resize-none"
                   />
                   <p className="text-[9px] text-white/20">{(page.seoDesc ?? "").length}/160 chars</p>
                 </div>
@@ -731,7 +731,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                 <button
                   onClick={() => void saveSeo({ seoTitle: page.seoTitle, seoDesc: page.seoDesc })}
                   disabled={seoSaving}
-                  className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg bg-cyan-500/15 border border-cyan-500/25 text-cyan-400 text-[11px] font-bold hover:bg-cyan-500/25 transition disabled:opacity-40"
+                  className="w-full flex items-center justify-center gap-1.5 py-2 rounded-lg bg-[#f5a623]/15 border border-[#f5a623]/25 text-[#f5a623] text-[11px] font-bold hover:bg-[#f5a623]/25 transition disabled:opacity-40"
                 >
                   {seoSaving ? <Loader2 className="w-3 h-3 animate-spin" /> : <Check className="w-3 h-3" />}
                   Save SEO
@@ -754,12 +754,12 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                     <div className="flex gap-2 items-center">
                       <input
                         type="color"
-                        value={(site.theme.primaryColor as string) ?? "#06b6d4"}
+                        value={(site.theme.primaryColor as string) ?? "#f5a623"}
                         onChange={(e) => setSite((prev) => prev ? { ...prev, theme: { ...prev.theme, primaryColor: e.target.value } } : prev)}
                         onBlur={(e) => void saveTheme({ primaryColor: e.target.value })}
                         className="w-8 h-8 rounded-lg border border-white/10 bg-transparent cursor-pointer"
                       />
-                      <span className="text-[11px] text-white/30 font-mono">{(site.theme.primaryColor as string) ?? "#06b6d4"}</span>
+                      <span className="text-[11px] text-white/30 font-mono">{(site.theme.primaryColor as string) ?? "#f5a623"}</span>
                     </div>
                   </div>
 
@@ -772,7 +772,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                           onClick={() => void saveTheme({ mode: m })}
                           className={`flex-1 py-1.5 rounded-lg text-[11px] font-bold capitalize border transition ${
                             (site.theme.mode ?? "dark") === m
-                              ? "bg-cyan-500/20 border-cyan-500/30 text-cyan-300"
+                              ? "bg-[#f5a623]/20 border-[#f5a623]/30 text-[#f5a623]"
                               : "border-white/[0.08] text-white/30 hover:text-white/50"
                           }`}
                         >
@@ -791,7 +791,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                           onClick={() => void saveTheme({ font: f })}
                           className={`flex-1 py-1.5 rounded-lg text-[11px] font-bold capitalize border transition ${
                             (site.theme.font ?? "inter") === f
-                              ? "bg-cyan-500/20 border-cyan-500/30 text-cyan-300"
+                              ? "bg-[#f5a623]/20 border-[#f5a623]/30 text-[#f5a623]"
                               : "border-white/[0.08] text-white/30 hover:text-white/50"
                           }`}
                         >
@@ -821,7 +821,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                         } : prev)}
                         onBlur={(e) => void saveShellTheme({ headerCtaLabel: e.target.value })}
                         placeholder="Book Now"
-                        className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+                        className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
                       />
                     </div>
 
@@ -842,7 +842,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                         } : prev)}
                         onBlur={(e) => void saveShellTheme({ headerCtaHref: e.target.value })}
                         placeholder="#contact"
-                        className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+                        className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
                       />
                     </div>
 
@@ -863,7 +863,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                         } : prev)}
                         onBlur={(e) => void saveShellTheme({ footerDescription: e.target.value })}
                         placeholder="Built as a multi-page conversion site with connected navigation."
-                        className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition resize-none"
+                        className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition resize-none"
                       />
                     </div>
 
@@ -898,7 +898,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                               },
                             })}
                             placeholder={sitePage.title}
-                            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+                            className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
                           />
                         </div>
                       ))}
@@ -933,7 +933,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                                 void saveShellTheme({ footerLinks: nextFooterLinks });
                               }}
                               placeholder={`Link ${index + 1} label`}
-                              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+                              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
                             />
                             <input
                               type="text"
@@ -958,7 +958,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                                 void saveShellTheme({ footerLinks: nextFooterLinks });
                               }}
                               placeholder="/privacy"
-                              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+                              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
                             />
                           </div>
                         );
@@ -983,10 +983,10 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
         <main className="flex-1 overflow-y-auto bg-[#040810]">
           {page.blocks.length === 0 && !previewMode ? (
             <div className="flex flex-col items-center justify-center h-full text-center px-4">
-              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/15 to-purple-600/15 border border-white/10 flex items-center justify-center text-3xl mb-5">🏗️</div>
+              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/15 to-[#e07850]/15 border border-white/10 flex items-center justify-center text-3xl mb-5">🏗️</div>
               <h2 className="text-xl font-black text-white mb-2">Start building</h2>
               <p className="text-sm text-white/35 max-w-xs mb-6">Add blocks from the left panel to start designing your page.</p>
-              <button onClick={() => setTab("add")} className="flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition">
+              <button onClick={() => setTab("add")} className="flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition">
                 <Plus className="w-4 h-4" /> Add First Block
               </button>
             </div>
@@ -1026,7 +1026,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                   key={key}
                   onClick={() => setRightTab(key)}
                   className={`flex-1 flex items-center justify-center gap-1 py-3 text-[10px] font-black uppercase tracking-widest transition-all ${
-                    rightTab === key ? "text-cyan-300 border-b-2 border-cyan-500" : "text-white/25 hover:text-white/50"
+                    rightTab === key ? "text-[#f5a623] border-b-2 border-[#f5a623]" : "text-white/25 hover:text-white/50"
                   }`}
                 >
                   <Icon className="w-3 h-3" />

@@ -377,7 +377,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] text-white">
+      <div className="min-h-screen bg-t-bg text-white">
         <AppNav />
         <ScanSubNav />
         <div className="flex items-center justify-center min-h-[50vh]">
@@ -389,7 +389,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
 
   if (!analysis) {
     return (
-      <div className="min-h-screen bg-[#050a14] text-white">
+      <div className="min-h-screen bg-t-bg text-white">
         <AppNav />
         <ScanSubNav />
         <div className="mx-auto flex min-h-[50vh] max-w-3xl flex-col justify-center gap-4 px-4">
@@ -397,7 +397,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
           <div className="flex flex-col items-center gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8">
             <AlertTriangle className="w-8 h-8 text-red-400/50" />
             <p className="text-white/40">{databaseUnavailable ? "Analysis data is temporarily unavailable" : "Analysis not found"}</p>
-            <Link href="/analyses" className="text-sm text-cyan-400 hover:text-cyan-300">← Back to Scan History</Link>
+            <Link href="/analyses" className="text-sm text-[#f5a623] hover:text-[#f5a623]">← Back to Scan History</Link>
           </div>
         </div>
       </div>
@@ -420,7 +420,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
   const adScripts = (assets?.adScripts ?? []) as { title: string; duration: string; sections: { timestamp: string; direction: string; copy: string }[] }[];
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {/* Back */}
@@ -447,7 +447,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
                   href={analysis.inputUrl}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-sm text-cyan-400/60 hover:text-cyan-400 transition flex items-center gap-1"
+                  className="text-sm text-[#f5a623]/60 hover:text-[#f5a623] transition flex items-center gap-1"
                 >
                   <ExternalLink className="w-3 h-3" /> {analysis.inputUrl}
                 </a>
@@ -539,11 +539,11 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
                 {/* Next Actions */}
                 {(packet.nextActions ?? []).length > 0 && (
                   <div className="mt-4 pt-4 border-t border-white/[0.05]">
-                    <p className="text-[9px] font-black uppercase tracking-widest text-cyan-400/50 mb-2">Next Actions</p>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-[#f5a623]/50 mb-2">Next Actions</p>
                     <ul className="space-y-1.5">
                       {(packet.nextActions ?? []).map((a, i) => (
                         <li key={i} className="flex items-start gap-2 text-xs text-white/50">
-                          <Zap className="w-3 h-3 text-cyan-400/60 shrink-0 mt-0.5" /> {a}
+                          <Zap className="w-3 h-3 text-[#f5a623]/60 shrink-0 mt-0.5" /> {a}
                         </li>
                       ))}
                     </ul>
@@ -559,7 +559,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
                   <h2 className="text-xs font-black uppercase tracking-widest text-white/30">Opportunity Dimensions</h2>
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] text-white/20">Total:</span>
-                    <span className="text-sm font-black text-cyan-400">{opp.totalScore ?? 0}/100</span>
+                    <span className="text-sm font-black text-[#f5a623]">{opp.totalScore ?? 0}/100</span>
                   </div>
                 </div>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4">
@@ -601,9 +601,9 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
 
                 {/* Recommended Path */}
                 {opp.recommendedPath && (
-                  <div className="mt-4 bg-cyan-500/5 border border-cyan-500/15 rounded-xl p-3">
-                    <p className="text-[9px] font-black uppercase tracking-widest text-cyan-400/50 mb-1">Recommended Path</p>
-                    <p className="text-xs text-cyan-100/70 leading-relaxed">{opp.recommendedPath}</p>
+                  <div className="mt-4 bg-[#f5a623]/5 border border-[#f5a623]/15 rounded-xl p-3">
+                    <p className="text-[9px] font-black uppercase tracking-widest text-[#f5a623]/50 mb-1">Recommended Path</p>
+                    <p className="text-xs text-[#f5f0e8]/70 leading-relaxed">{opp.recommendedPath}</p>
                   </div>
                 )}
               </div>
@@ -611,23 +611,23 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
 
             {/* Truth Engine — Rescore Panel */}
             {opp && profiles.length > 0 && (
-              <div className="bg-gradient-to-br from-cyan-900/15 to-purple-900/15 border border-cyan-500/20 rounded-2xl p-5">
+              <div className="bg-gradient-to-br from-cyan-900/15 to-purple-900/15 border border-[#f5a623]/20 rounded-2xl p-5">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
-                    <BarChart2 className="w-4 h-4 text-cyan-400" />
+                    <BarChart2 className="w-4 h-4 text-[#f5a623]" />
                     <h2 className="text-xs font-black uppercase tracking-widest text-white/30">Truth Engine</h2>
                   </div>
                   <div className="flex items-center gap-2">
                     <select
                       value={selectedProfile}
                       onChange={(e) => void runTruthRescore(e.target.value)}
-                      className="bg-white/[0.04] border border-white/[0.1] rounded-xl px-3 py-1.5 text-xs text-white/60 focus:outline-none focus:border-cyan-500/50 transition appearance-none cursor-pointer"
+                      className="bg-white/[0.04] border border-white/[0.1] rounded-xl px-3 py-1.5 text-xs text-white/60 focus:outline-none focus:border-[#f5a623]/50 transition appearance-none cursor-pointer"
                     >
                       {profiles.map(p => (
                         <option key={p.key} value={p.key} className="bg-[#0d1525]">{p.name}</option>
                       ))}
                     </select>
-                    {loadingTruth && <Loader2 className="w-3.5 h-3.5 text-cyan-400 animate-spin" />}
+                    {loadingTruth && <Loader2 className="w-3.5 h-3.5 text-[#f5a623] animate-spin" />}
                   </div>
                 </div>
 
@@ -653,7 +653,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
                       {truthResult.breakdown.map((b) => {
                         const gradeColors: Record<string, string> = {
                           A: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
-                          B: "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
+                          B: "text-[#f5a623] bg-[#f5a623]/10 border-[#f5a623]/20",
                           C: "text-amber-400 bg-amber-500/10 border-amber-500/20",
                           D: "text-orange-400 bg-orange-500/10 border-orange-500/20",
                           F: "text-red-400 bg-red-500/10 border-red-500/20",
@@ -696,12 +696,12 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
 
                     {/* Action Plan */}
                     {truthResult.actionPlan.length > 0 && (
-                      <div className="bg-cyan-500/5 border border-cyan-500/15 rounded-xl p-3">
-                        <p className="text-[9px] font-black uppercase tracking-widest text-cyan-400/50 mb-2">Prioritized Action Plan</p>
+                      <div className="bg-[#f5a623]/5 border border-[#f5a623]/15 rounded-xl p-3">
+                        <p className="text-[9px] font-black uppercase tracking-widest text-[#f5a623]/50 mb-2">Prioritized Action Plan</p>
                         <ul className="space-y-1">
                           {truthResult.actionPlan.map((a, i) => (
                             <li key={i} className="text-xs text-white/60 flex items-start gap-2">
-                              <span className="text-cyan-400 font-black shrink-0">{i + 1}.</span>
+                              <span className="text-[#f5a623] font-black shrink-0">{i + 1}.</span>
                               <span>{a}</span>
                             </li>
                           ))}
@@ -727,7 +727,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
                     <button
                       onClick={() => void runTruthRescore(selectedProfile)}
                       disabled={loadingTruth}
-                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 text-xs font-bold hover:bg-cyan-500/30 transition disabled:opacity-40"
+                      className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#f5a623]/20 border border-[#f5a623]/30 text-[#f5a623] text-xs font-bold hover:bg-[#f5a623]/30 transition disabled:opacity-40"
                     >
                       {loadingTruth ? <Loader2 className="w-3 h-3 animate-spin" /> : <BarChart2 className="w-3 h-3" />}
                       Run Truth Engine
@@ -749,7 +749,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
                       key={i}
                       className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05] group hover:border-white/[0.1] transition"
                     >
-                      <span className="text-[10px] font-black text-purple-400/60 bg-purple-500/10 border border-purple-500/20 px-1.5 py-0.5 rounded shrink-0 mt-0.5">
+                      <span className="text-[10px] font-black text-[#e07850]/60 bg-purple-500/10 border border-purple-500/20 px-1.5 py-0.5 rounded shrink-0 mt-0.5">
                         {hook.format}
                       </span>
                       <p className="text-xs text-white/60 flex-1 leading-relaxed">{hook.hook}</p>
@@ -781,9 +781,9 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
                       <div className="space-y-2">
                         {script.sections.map((section, j) => (
                           <div key={j} className="flex gap-3">
-                            <span className="text-[10px] text-cyan-400/50 font-mono shrink-0 w-10 pt-0.5">{section.timestamp}</span>
+                            <span className="text-[10px] text-[#f5a623]/50 font-mono shrink-0 w-10 pt-0.5">{section.timestamp}</span>
                             <div>
-                              <p className="text-[10px] text-purple-400/50 font-bold uppercase tracking-wider mb-0.5">{section.direction}</p>
+                              <p className="text-[10px] text-[#e07850]/50 font-bold uppercase tracking-wider mb-0.5">{section.direction}</p>
                               <p className="text-xs text-white/50 leading-relaxed">{section.copy}</p>
                             </div>
                           </div>
@@ -802,14 +802,14 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
             <div className="bg-gradient-to-br from-purple-900/20 to-cyan-900/20 border border-purple-500/20 rounded-2xl p-5">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
-                  <Sparkles className="w-4 h-4 text-purple-400" />
+                  <Sparkles className="w-4 h-4 text-[#e07850]" />
                   <h3 className="text-xs font-black text-white uppercase tracking-wider">AI Deep Insights</h3>
                 </div>
                 {!insights && (
                   <button
                     onClick={() => void generateInsights()}
                     disabled={loadingInsights}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-purple-600/40 to-cyan-600/40 border border-purple-500/30 hover:border-purple-400/50 text-[11px] font-bold text-white transition disabled:opacity-40"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#e07850]/40 to-cyan-600/40 border border-purple-500/30 hover:border-purple-400/50 text-[11px] font-bold text-white transition disabled:opacity-40"
                   >
                     {loadingInsights ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
                     Generate
@@ -828,7 +828,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
                 <div className="space-y-4">
                   {insights.executiveSummary && (
                     <div className="bg-black/20 rounded-xl p-3">
-                      <p className="text-[9px] font-black uppercase tracking-widest text-purple-400/50 mb-1">Executive Summary</p>
+                      <p className="text-[9px] font-black uppercase tracking-widest text-[#e07850]/50 mb-1">Executive Summary</p>
                       <p className="text-xs text-white/70 leading-relaxed">{insights.executiveSummary}</p>
                     </div>
                   )}
@@ -839,16 +839,16 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
                     <InsightCard title="Biggest Risk" content={insights.biggestRisk} icon={AlertTriangle} color="text-red-400" />
                   )}
                   {insights.audienceInsight && (
-                    <InsightCard title="Audience Insight" content={insights.audienceInsight} icon={Target} color="text-cyan-400" />
+                    <InsightCard title="Audience Insight" content={insights.audienceInsight} icon={Target} color="text-[#f5a623]" />
                   )}
                   {insights.adAngle && (
-                    <InsightCard title="Ad Angle" content={insights.adAngle} icon={Megaphone} color="text-purple-400" />
+                    <InsightCard title="Ad Angle" content={insights.adAngle} icon={Megaphone} color="text-[#e07850]" />
                   )}
                   {insights.emailPlaybook && (
                     <InsightCard title="Email Playbook" content={insights.emailPlaybook} icon={Mail} color="text-blue-400" />
                   )}
                   {insights.landingPageAdvice && (
-                    <InsightCard title="Landing Page" content={insights.landingPageAdvice} icon={Globe} color="text-cyan-400" />
+                    <InsightCard title="Landing Page" content={insights.landingPageAdvice} icon={Globe} color="text-[#f5a623]" />
                   )}
                   {insights.competitiveAdvantage && (
                     <InsightCard title="Competitive Edge" content={insights.competitiveAdvantage} icon={Shield} color="text-amber-400" />
@@ -859,7 +859,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
                       <ul className="space-y-1.5">
                         {(insights.strategyRecommendations ?? []).map((r, i) => (
                           <li key={i} className="flex items-start gap-2 text-xs text-white/60">
-                            <span className="text-cyan-400 font-black shrink-0">{i + 1}.</span> {r}
+                            <span className="text-[#f5a623] font-black shrink-0">{i + 1}.</span> {r}
                           </li>
                         ))}
                       </ul>
@@ -890,14 +890,14 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
               <div className="space-y-2">
                 <ConvertButton
                   label="Create Client from Scan"
-                  icon={<Users className="w-3.5 h-3.5 text-cyan-400/60" />}
+                  icon={<Users className="w-3.5 h-3.5 text-[#f5a623]/60" />}
                   endpoint={`/api/analyses/${id}/create-client`}
                   successRedirect="/clients"
                   successLabel="Client created"
                 />
                 <ConvertButton
                   label="Create Campaign from Scan"
-                  icon={<Megaphone className="w-3.5 h-3.5 text-purple-400/60" />}
+                  icon={<Megaphone className="w-3.5 h-3.5 text-[#e07850]/60" />}
                   endpoint={`/api/analyses/${id}/create-campaign`}
                   successRedirect="/campaigns"
                   successLabel="Campaign created"
@@ -912,7 +912,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
                   href={`/skills?skill=landing-page&prefill_offer=${encodeURIComponent(analysis.title ?? analysis.inputUrl)}&prefill_audience=${encodeURIComponent((packet?.audience as string) ?? "")}`}
                   className="flex items-center gap-2 p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05] hover:bg-white/[0.04] hover:border-white/[0.1] transition text-xs font-semibold text-white/50 hover:text-white/70"
                 >
-                  <Globe className="w-3.5 h-3.5 text-purple-400/60" /> Build Landing Page
+                  <Globe className="w-3.5 h-3.5 text-[#e07850]/60" /> Build Landing Page
                 </Link>
                 <Link
                   href={`/skills?skill=email-sequence&prefill_offer=${encodeURIComponent(analysis.title ?? analysis.inputUrl)}&prefill_audience=${encodeURIComponent((packet?.audience as string) ?? "")}`}

@@ -71,17 +71,17 @@ export default function AdAccountsPage() {
     }
   }, []);
 
-  if (loading) return <div className="min-h-screen bg-[#050a14] text-white"><AppNav /><main className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 text-white/20 animate-spin" /></main></div>;
+  if (loading) return <div className="min-h-screen bg-t-bg text-white"><AppNav /><main className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 text-white/20 animate-spin" /></main></div>;
 
   const connectedCount = status ? Object.values(status).filter((p) => p.connected).length : 0;
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-            <Shield className="w-5 h-5 text-cyan-400" />
+          <div className="w-10 h-10 rounded-xl bg-[#f5a623]/10 border border-[#f5a623]/20 flex items-center justify-center">
+            <Shield className="w-5 h-5 text-[#f5a623]" />
           </div>
           <div>
             <h1 className="text-xl font-black text-white">Ad Accounts</h1>
@@ -163,11 +163,11 @@ export default function AdAccountsPage() {
         <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 mt-6">
           <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-3">What Happens When You Connect</p>
           <ol className="space-y-2 text-xs text-white/40">
-            <li className="flex items-start gap-2"><span className="text-cyan-400 font-bold shrink-0">1.</span> Himalaya pulls your campaign performance data automatically</li>
-            <li className="flex items-start gap-2"><span className="text-cyan-400 font-bold shrink-0">2.</span> The ad buying agent starts monitoring and optimizing your campaigns</li>
-            <li className="flex items-start gap-2"><span className="text-cyan-400 font-bold shrink-0">3.</span> Smart budget allocator shifts spend to the highest-ROAS platform</li>
-            <li className="flex items-start gap-2"><span className="text-cyan-400 font-bold shrink-0">4.</span> You see unified metrics across all platforms in the Ads dashboard</li>
-            <li className="flex items-start gap-2"><span className="text-cyan-400 font-bold shrink-0">5.</span> Proactive alerts notify you when ROAS drops or campaigns need attention</li>
+            <li className="flex items-start gap-2"><span className="text-[#f5a623] font-bold shrink-0">1.</span> Himalaya pulls your campaign performance data automatically</li>
+            <li className="flex items-start gap-2"><span className="text-[#f5a623] font-bold shrink-0">2.</span> The ad buying agent starts monitoring and optimizing your campaigns</li>
+            <li className="flex items-start gap-2"><span className="text-[#f5a623] font-bold shrink-0">3.</span> Smart budget allocator shifts spend to the highest-ROAS platform</li>
+            <li className="flex items-start gap-2"><span className="text-[#f5a623] font-bold shrink-0">4.</span> You see unified metrics across all platforms in the Ads dashboard</li>
+            <li className="flex items-start gap-2"><span className="text-[#f5a623] font-bold shrink-0">5.</span> Proactive alerts notify you when ROAS drops or campaigns need attention</li>
           </ol>
         </div>
       </main>

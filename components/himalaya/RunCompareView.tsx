@@ -53,7 +53,7 @@ function PriorityColumn({ vm }: { vm: HimalayaResultsViewModel }) {
       {vm.priorities.map((p, i) => (
         <div key={i} className="rounded-xl border border-white/[0.05] bg-black/20 p-3">
           <div className="flex items-center gap-2 mb-1">
-            <span className="text-[10px] font-black text-cyan-400/50">{i + 1}.</span>
+            <span className="text-[10px] font-black text-[#f5a623]/50">{i + 1}.</span>
             <span className="text-xs font-bold text-white/60">{p.label}</span>
           </div>
           <p className="text-[10px] text-white/30">{p.nextStep}</p>
@@ -167,7 +167,7 @@ export default function RunCompareView({ runIdA, runIdB }: Props) {
     <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
       {/* Headers */}
       <CompareSection title="Summary">
-        <CompareCard vm={vmA} color="border-cyan-500/15" />
+        <CompareCard vm={vmA} color="border-[#f5a623]/15" />
         <CompareCard vm={vmB} color="border-purple-500/15" />
       </CompareSection>
 

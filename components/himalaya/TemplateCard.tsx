@@ -60,7 +60,7 @@ export default function TemplateCard({ template, onDeleted }: { template: Templa
         <div className="flex-1 min-w-0">
           <h3 className="text-sm font-bold text-white/70 sm:truncate">{template.name}</h3>
           <div className="mt-1.5 flex flex-wrap items-center gap-2">
-            <span className="rounded border border-cyan-500/15 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-bold text-cyan-400/50">
+            <span className="rounded border border-[#f5a623]/15 bg-[#f5a623]/10 px-2 py-0.5 text-[10px] font-bold text-[#f5a623]/50">
               {TYPE_LABELS[template.assetType] ?? template.assetType}
             </span>
             <span className="text-[10px] font-bold text-white/25 uppercase">

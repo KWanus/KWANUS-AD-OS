@@ -21,10 +21,10 @@ export default function WorkflowSuccess({
   const accentStyles =
     accent === "cyan"
       ? {
-          wrap: "border-cyan-500/25 bg-cyan-500/8",
-          iconWrap: "border-cyan-500/25 bg-cyan-500/10",
-          icon: "text-cyan-400",
-          title: "text-cyan-300",
+          wrap: "border-[#f5a623]/25 bg-[#f5a623]/8",
+          iconWrap: "border-[#f5a623]/25 bg-[#f5a623]/10",
+          icon: "text-[#f5a623]",
+          title: "text-[#f5a623]",
         }
       : {
           wrap: "border-emerald-500/25 bg-emerald-500/8",

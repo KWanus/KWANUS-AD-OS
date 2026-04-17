@@ -8,7 +8,7 @@ import {
 
 const PLATFORMS = [
   { id: "instagram", label: "Instagram", icon: Instagram, color: "text-pink-400" },
-  { id: "tiktok", label: "TikTok", icon: Music, color: "text-cyan-400" },
+  { id: "tiktok", label: "TikTok", icon: Music, color: "text-[#f5a623]" },
   { id: "twitter", label: "Twitter/X", icon: Twitter, color: "text-blue-400" },
   { id: "linkedin", label: "LinkedIn", icon: Linkedin, color: "text-blue-300" },
   { id: "facebook", label: "Facebook", icon: Facebook, color: "text-indigo-400" },
@@ -48,7 +48,7 @@ export default function SocialContentPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <h1 className="text-2xl font-black text-white tracking-tight mb-2">Social Content</h1>
@@ -67,7 +67,7 @@ export default function SocialContentPage() {
                     onClick={() => setPlatform(p.id)}
                     className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition border ${
                       platform === p.id
-                        ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-300"
+                        ? "border-[#f5a623]/40 bg-[#f5a623]/10 text-[#f5a623]"
                         : "border-white/10 bg-white/[0.03] text-white/40 hover:border-white/20"
                     }`}
                   >
@@ -89,7 +89,7 @@ export default function SocialContentPage() {
                   onClick={() => setContentType(t.id)}
                   className={`px-3 py-2 rounded-xl text-xs font-bold transition border ${
                     contentType === t.id
-                      ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-300"
+                      ? "border-[#f5a623]/40 bg-[#f5a623]/10 text-[#f5a623]"
                       : "border-white/10 bg-white/[0.03] text-white/40 hover:border-white/20"
                   }`}
                 >
@@ -107,7 +107,7 @@ export default function SocialContentPage() {
               value={topic}
               onChange={(e) => setTopic(e.target.value)}
               placeholder="e.g. 3 mistakes beginners make in fitness coaching"
-              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
             />
           </div>
 
@@ -115,7 +115,7 @@ export default function SocialContentPage() {
           <button
             onClick={generate}
             disabled={generating}
-            className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40"
+            className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40"
           >
             {generating ? <><Loader2 className="w-4 h-4 animate-spin" /> Generating...</> : "Generate Content"}
           </button>
@@ -129,7 +129,7 @@ export default function SocialContentPage() {
                 </p>
                 <button
                   onClick={() => { navigator.clipboard.writeText(result); setCopied(true); setTimeout(() => setCopied(false), 2000); }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-[10px] font-bold hover:bg-cyan-500/20 transition"
+                  className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#f5a623]/10 border border-[#f5a623]/20 text-[#f5a623] text-[10px] font-bold hover:bg-[#f5a623]/20 transition"
                 >
                   {copied ? <><Check className="w-3 h-3" /> Copied!</> : <><Copy className="w-3 h-3" /> Copy</>}
                 </button>

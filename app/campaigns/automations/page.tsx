@@ -25,11 +25,11 @@ import "reactflow/dist/style.css";
 
 function TriggerNode({ data, selected }: { data: any; selected: boolean }) {
     return (
-        <div className={`px-4 py-3 rounded-xl border-2 ${selected ? "border-cyan-500" : "border-white/10"} bg-[#050a14] shadow-xl min-w-[200px]`}>
-            <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-cyan-500 border-2 border-[#050a14]" />
-            <div className="flex items-center gap-2 mb-2 text-cyan-400">
+        <div className={`px-4 py-3 rounded-xl border-2 ${selected ? "border-[#f5a623]" : "border-white/10"} bg-t-bg shadow-xl min-w-[200px]`}>
+            <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-[#f5a623] border-2 border-[#050a14]" />
+            <div className="flex items-center gap-2 mb-2 text-[#f5a623]">
                 <Zap className="w-4 h-4" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-cyan-400/80">Trigger</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#f5a623]/80">Trigger</span>
             </div>
             <div className="text-sm font-bold text-white">{data.label || "When someone joins"}</div>
             <div className="text-xs text-white/50 mt-1">{data.subtitle || "All subscribers"}</div>
@@ -39,12 +39,12 @@ function TriggerNode({ data, selected }: { data: any; selected: boolean }) {
 
 function EmailNode({ data, selected }: { data: any; selected: boolean }) {
     return (
-        <div className={`px-4 py-3 rounded-xl border-2 ${selected ? "border-purple-500" : "border-white/10"} bg-[#050a14] shadow-xl min-w-[200px]`}>
+        <div className={`px-4 py-3 rounded-xl border-2 ${selected ? "border-purple-500" : "border-white/10"} bg-t-bg shadow-xl min-w-[200px]`}>
             <Handle type="target" position={Position.Top} className="w-3 h-3 bg-purple-500 border-2 border-[#050a14]" />
             <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-purple-500 border-2 border-[#050a14]" />
-            <div className="flex items-center gap-2 mb-2 text-purple-400">
+            <div className="flex items-center gap-2 mb-2 text-[#e07850]">
                 <Mail className="w-4 h-4" />
-                <span className="text-[10px] font-black uppercase tracking-widest text-purple-400/80">Send Email</span>
+                <span className="text-[10px] font-black uppercase tracking-widest text-[#e07850]/80">Send Email</span>
             </div>
             <div className="text-sm font-bold text-white">{data.label || "Welcome to the Brand"}</div>
             <div className="text-xs text-white/50 mt-1">{data.stats || "Opens: -- | Clicks: --"}</div>
@@ -54,7 +54,7 @@ function EmailNode({ data, selected }: { data: any; selected: boolean }) {
 
 function DelayNode({ data, selected }: { data: any; selected: boolean }) {
     return (
-        <div className={`px-4 py-3 rounded-xl border-2 ${selected ? "border-orange-500" : "border-white/10"} bg-[#050a14] shadow-xl min-w-[200px]`}>
+        <div className={`px-4 py-3 rounded-xl border-2 ${selected ? "border-orange-500" : "border-white/10"} bg-t-bg shadow-xl min-w-[200px]`}>
             <Handle type="target" position={Position.Top} className="w-3 h-3 bg-orange-500 border-2 border-[#050a14]" />
             <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-orange-500 border-2 border-[#050a14]" />
             <div className="flex items-center gap-2 mb-2 text-orange-400">
@@ -68,7 +68,7 @@ function DelayNode({ data, selected }: { data: any; selected: boolean }) {
 
 function ConditionNode({ data, selected }: { data: any; selected: boolean }) {
     return (
-        <div className={`px-4 py-3 rounded-xl border-2 ${selected ? "border-green-500" : "border-white/10"} bg-[#050a14] shadow-xl min-w-[200px]`}>
+        <div className={`px-4 py-3 rounded-xl border-2 ${selected ? "border-green-500" : "border-white/10"} bg-t-bg shadow-xl min-w-[200px]`}>
             <Handle type="target" position={Position.Top} className="w-3 h-3 bg-green-500 border-2 border-[#050a14]" />
             <Handle type="source" position={Position.Bottom} id="yes" style={{ left: '25%' }} className="w-3 h-3 bg-green-500 border-2 border-[#050a14]" />
             <Handle type="source" position={Position.Bottom} id="no" style={{ left: '75%' }} className="w-3 h-3 bg-red-500 border-2 border-[#050a14]" />
@@ -165,13 +165,13 @@ export default function AutomationsBuilder() {
                     { id: "9", type: "email", data: { label: "2B. Re-entry reminder", stats: "Angle: bring cold abandoners back cleanly" }, position: { x: 390, y: 820 } },
                 ] satisfies Node[],
                 edges: [
-                    { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#06b6d4" } },
-                    { id: "e2-3", source: "2", target: "3", animated: true, style: { stroke: "#8b5cf6" } },
-                    { id: "e3-4", source: "3", target: "4", animated: true, style: { stroke: "#06b6d4" } },
+                    { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#f5a623" } },
+                    { id: "e2-3", source: "2", target: "3", animated: true, style: { stroke: "#e07850" } },
+                    { id: "e3-4", source: "3", target: "4", animated: true, style: { stroke: "#f5a623" } },
                     { id: "e4-5", source: "4", target: "5", animated: true, style: { stroke: "#22c55e" } },
                     { id: "e5-6", source: "5", sourceHandle: "yes", target: "6", animated: true, style: { stroke: "#22c55e" } },
-                    { id: "e6-7", source: "6", target: "7", animated: true, style: { stroke: "#8b5cf6" } },
-                    { id: "e7-8", source: "7", target: "8", animated: true, style: { stroke: "#06b6d4" } },
+                    { id: "e6-7", source: "6", target: "7", animated: true, style: { stroke: "#e07850" } },
+                    { id: "e7-8", source: "7", target: "8", animated: true, style: { stroke: "#f5a623" } },
                     { id: "e5-9", source: "5", sourceHandle: "no", target: "9", animated: true, style: { stroke: "#ef4444" } },
                 ] satisfies Edge[],
             };
@@ -186,10 +186,10 @@ export default function AutomationsBuilder() {
                 { id: "5", type: "email", data: { label: "2. Final cart reminder", stats: "Hook: urgency + decision nudge" }, position: { x: 250, y: 650 } },
             ] satisfies Node[],
             edges: [
-                { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#06b6d4" } },
-                { id: "e2-3", source: "2", target: "3", animated: true, style: { stroke: "#8b5cf6" } },
-                { id: "e3-4", source: "3", target: "4", animated: true, style: { stroke: "#06b6d4" } },
-                { id: "e4-5", source: "4", target: "5", animated: true, style: { stroke: "#8b5cf6" } },
+                { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#f5a623" } },
+                { id: "e2-3", source: "2", target: "3", animated: true, style: { stroke: "#e07850" } },
+                { id: "e3-4", source: "3", target: "4", animated: true, style: { stroke: "#f5a623" } },
+                { id: "e4-5", source: "4", target: "5", animated: true, style: { stroke: "#e07850" } },
             ] satisfies Edge[],
         };
     }
@@ -332,9 +332,9 @@ export default function AutomationsBuilder() {
     }
 
     return (
-        <div className="h-screen bg-[#020509] flex flex-col font-sans">
+        <div className="h-screen bg-t-bg flex flex-col font-sans">
             {/* Header */}
-            <header className="h-14 shrink-0 bg-[#050a14] border-b border-white/[0.08] flex items-center justify-between px-6 z-10">
+            <header className="h-14 shrink-0 bg-t-bg border-b border-white/[0.08] flex items-center justify-between px-6 z-10">
                 <div className="flex items-center gap-4">
                     <a href="/campaigns" className="flex items-center gap-1.5 text-white/40 hover:text-white transition group">
                         <ArrowLeft className="w-4 h-4" />
@@ -344,7 +344,7 @@ export default function AutomationsBuilder() {
                     <input
                         value={automationName}
                         onChange={(e) => setAutomationName(e.target.value)}
-                        className="text-base font-black text-white bg-transparent border-none outline-none max-w-[250px] truncate hover:text-cyan-300 focus:text-cyan-300 transition"
+                        className="text-base font-black text-white bg-transparent border-none outline-none max-w-[250px] truncate hover:text-[#f5a623] focus:text-[#f5a623] transition"
                     />
                     <span className={`px-2.5 py-1 rounded-md border text-[10px] font-black uppercase tracking-wider ${
                         automationStatus === "active"
@@ -356,7 +356,7 @@ export default function AutomationsBuilder() {
                     {saved && <span className="text-[10px] text-emerald-400 font-bold">Saved!</span>}
                     <span className={`px-2.5 py-1 rounded-md border text-[10px] font-black uppercase tracking-wider ${
                         executionTier === "elite"
-                            ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-200"
+                            ? "border-[#f5a623]/40 bg-[#f5a623]/10 text-[#f5a623]"
                             : "border-white/10 bg-white/5 text-white/50"
                     }`}>
                         {executionTier} lane
@@ -412,7 +412,7 @@ export default function AutomationsBuilder() {
                     <button
                         onClick={() => void handlePublish()}
                         disabled={automationStatus === "active"}
-                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:opacity-90 transition disabled:opacity-40"
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white hover:opacity-90 transition disabled:opacity-40"
                     >
                         <Play className="w-3.5 h-3.5" />
                         {automationStatus === "active" ? "Live" : automationStatus === "paused" ? "Resume" : "Save & Publish"}
@@ -423,9 +423,9 @@ export default function AutomationsBuilder() {
             {/* Main Builder Interface */}
             <div className="flex-1 flex overflow-hidden">
                 {/* Left Toolbar */}
-                <aside className="w-64 shrink-0 bg-[#050a14] border-r border-white/[0.08] flex flex-col pt-4">
+                <aside className="w-64 shrink-0 bg-t-bg border-r border-white/[0.08] flex flex-col pt-4">
                     <div className="px-4 pb-4 border-b border-white/[0.08]">
-                        <div className="flex items-center gap-1.5 mb-3 text-cyan-400">
+                        <div className="flex items-center gap-1.5 mb-3 text-[#f5a623]">
                             <Sparkles className="w-4 h-4" />
                             <h2 className="text-[10px] font-black tracking-widest uppercase">Execution Lane</h2>
                         </div>
@@ -449,14 +449,14 @@ export default function AutomationsBuilder() {
                                         onClick={() => setExecutionTier(tier.id)}
                                         className={`rounded-xl border px-3 py-3 text-left transition ${
                                             active
-                                                ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                                                ? "border-[#f5a623]/40 bg-[#f5a623]/10 shadow-[0_0_20px_rgba(245,166,35,0.12)]"
                                                 : "border-white/[0.08] bg-white/[0.03] hover:border-white/[0.16]"
                                         }`}
                                     >
-                                        <div className={`text-xs font-black uppercase tracking-[0.22em] ${active ? "text-cyan-200" : "text-white/50"}`}>
+                                        <div className={`text-xs font-black uppercase tracking-[0.22em] ${active ? "text-[#f5a623]" : "text-white/50"}`}>
                                             {tier.label}
                                         </div>
-                                        <div className={`mt-1 text-[11px] leading-relaxed ${active ? "text-cyan-100/85" : "text-white/35"}`}>
+                                        <div className={`mt-1 text-[11px] leading-relaxed ${active ? "text-[#f5f0e8]/85" : "text-white/35"}`}>
                                             {tier.copy}
                                         </div>
                                     </button>
@@ -477,7 +477,7 @@ export default function AutomationsBuilder() {
                             onClick={() => addNode("email")}
                             className="w-full flex items-center gap-3 px-3 py-3 rounded-xl bg-white/[0.03] border border-white/[0.05] hover:border-purple-500/50 hover:bg-purple-500/5 transition group text-left"
                         >
-                            <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:bg-purple-500 group-hover:text-white transition">
+                            <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-[#e07850] group-hover:bg-purple-500 group-hover:text-white transition">
                                 <Mail className="w-4 h-4" />
                             </div>
                             <div>
@@ -514,15 +514,15 @@ export default function AutomationsBuilder() {
                     </div>
 
                     {campaigns.length > 0 && (
-                        <div className="mt-auto p-4 border-t border-white/[0.08] bg-[#020509]">
-                            <div className="flex items-center gap-1.5 mb-3 text-cyan-400">
+                        <div className="mt-auto p-4 border-t border-white/[0.08] bg-t-bg">
+                            <div className="flex items-center gap-1.5 mb-3 text-[#f5a623]">
                                 <Sparkles className="w-4 h-4" />
                                 <h2 className="text-[10px] font-black tracking-widest uppercase">Auto-Generate</h2>
                             </div>
                             <select
                                 value={selectedCampaignId}
                                 onChange={(e) => setSelectedCampaignId(e.target.value)}
-                                className="w-full mb-3 bg-cyan-500/10 border border-cyan-500/30 rounded-lg px-3 py-2 text-xs font-semibold text-cyan-100 outline-none focus:border-cyan-400 transition"
+                                className="w-full mb-3 bg-[#f5a623]/10 border border-[#f5a623]/30 rounded-lg px-3 py-2 text-xs font-semibold text-[#f5f0e8] outline-none focus:border-cyan-400 transition"
                             >
                                 <option value="">Select AI Campaign</option>
                                 {campaigns.map(c => (
@@ -537,7 +537,7 @@ export default function AutomationsBuilder() {
                                         </div>
                                         <span className={`rounded-md px-2 py-1 text-[10px] font-black uppercase tracking-[0.18em] ${
                                             executionTier === "elite"
-                                                ? "bg-cyan-500/10 text-cyan-200 border border-cyan-500/30"
+                                                ? "bg-[#f5a623]/10 text-[#f5a623] border border-[#f5a623]/30"
                                                 : "bg-white/5 text-white/55 border border-white/10"
                                         }`}>
                                             {executionTier}
@@ -556,7 +556,7 @@ export default function AutomationsBuilder() {
                             <button
                                 onClick={handleAutoGenerate}
                                 disabled={!selectedCampaignId || loading}
-                                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-purple-600 text-[#050a14] text-xs font-black disabled:opacity-50 transition shadow-[0_0_15px_rgba(6,182,212,0.3)] hover:shadow-[0_0_20px_rgba(6,182,212,0.5)]"
+                                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-[#f5a623] to-[#e07850] text-[#050a14] text-xs font-black disabled:opacity-50 transition shadow-[0_0_15px_rgba(245,166,35,0.3)] hover:shadow-[0_0_20px_rgba(245,166,35,0.5)]"
                             >
                                 GENERATE FLOW
                             </button>
@@ -582,7 +582,7 @@ export default function AutomationsBuilder() {
                             onConnect={onConnect}
                             nodeTypes={nodeTypes}
                             fitView
-                            className="bg-[#020509]"
+                            className="bg-t-bg"
                         >
                             <Background color="#ffffff" gap={16} size={1} style={{ opacity: 0.05 }} />
                             <Controls className="fill-white" />

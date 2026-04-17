@@ -21,14 +21,14 @@ export default function OperatorCallout({
     tone === "warning"
       ? "border-amber-500/15 bg-amber-500/[0.06]"
       : tone === "accent"
-        ? "border-cyan-500/15 bg-cyan-500/[0.06]"
+        ? "border-[#f5a623]/15 bg-[#f5a623]/[0.06]"
         : "border-white/[0.07] bg-black/20";
 
   const iconClassName =
     tone === "warning"
       ? "text-amber-300"
       : tone === "accent"
-        ? "text-cyan-300"
+        ? "text-[#f5a623]"
         : "text-white/50";
 
   return (

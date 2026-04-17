@@ -20,7 +20,7 @@ export default function WorkflowGuide({
     <div className={`${className} grid gap-2 md:grid-cols-3`}>
       {items.map((item) => {
         const classes = item.active
-          ? "rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4"
+          ? "rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 p-4"
           : "rounded-2xl border border-white/[0.06] bg-black/20 p-4 transition hover:border-white/[0.12] hover:bg-white/[0.04]";
         const content = (
           <>

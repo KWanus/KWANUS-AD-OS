@@ -136,9 +136,9 @@ export default function DeployActions({ vm, autoDeploy = false, autoPublish = fa
 
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl border border-cyan-500/15 bg-gradient-to-br from-cyan-500/[0.05] to-purple-500/[0.05] p-4 sm:p-5">
+      <div className="rounded-2xl border border-[#f5a623]/15 bg-gradient-to-br from-cyan-500/[0.05] to-purple-500/[0.05] p-4 sm:p-5">
         <div className="flex items-center gap-2 mb-3">
-          <Rocket className="w-4 h-4 text-cyan-400/60" />
+          <Rocket className="w-4 h-4 text-[#f5a623]/60" />
           <h2 className="text-[10px] font-black uppercase tracking-widest text-white/30">Deploy</h2>
         </div>
 
@@ -180,14 +180,14 @@ export default function DeployActions({ vm, autoDeploy = false, autoPublish = fa
               <div className="mb-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
                 {generated.adImages > 0 && (
                   <div className="rounded-xl bg-white/[0.03] border border-white/[0.08] p-3 text-center">
-                    <Image className="w-4 h-4 text-cyan-400 mx-auto mb-1" />
+                    <Image className="w-4 h-4 text-[#f5a623] mx-auto mb-1" />
                     <p className="text-sm font-bold text-white">{generated.adImages}</p>
                     <p className="text-[10px] text-white/30">Ad Images</p>
                   </div>
                 )}
                 {generated.adVideo && (
                   <div className="rounded-xl bg-white/[0.03] border border-white/[0.08] p-3 text-center">
-                    <Video className="w-4 h-4 text-purple-400 mx-auto mb-1" />
+                    <Video className="w-4 h-4 text-[#e07850] mx-auto mb-1" />
                     <p className="text-sm font-bold text-white">1</p>
                     <p className="text-[10px] text-white/30">Ad Video</p>
                   </div>
@@ -336,12 +336,12 @@ export default function DeployActions({ vm, autoDeploy = false, autoPublish = fa
           <div>
             <p className="text-xs text-white/50 mb-2 font-semibold">One click builds your entire business:</p>
             <div className="mb-4 grid grid-cols-1 gap-2 text-[10px] text-white/30 sm:grid-cols-2 lg:grid-cols-3">
-              <div className="flex items-center gap-1.5"><Globe className="w-3 h-3 text-cyan-400/50" /> Website with payment</div>
-              <div className="flex items-center gap-1.5"><Megaphone className="w-3 h-3 text-cyan-400/50" /> Campaign + ad images</div>
-              <div className="flex items-center gap-1.5"><Mail className="w-3 h-3 text-cyan-400/50" /> 3 email flows (active)</div>
-              <div className="flex items-center gap-1.5"><Image className="w-3 h-3 text-cyan-400/50" /> 5 AI ad creatives</div>
-              <div className="flex items-center gap-1.5"><Zap className="w-3 h-3 text-cyan-400/50" /> 4 pre-written ad copies</div>
-              <div className="flex items-center gap-1.5"><BarChart3 className="w-3 h-3 text-cyan-400/50" /> Tracking pixels</div>
+              <div className="flex items-center gap-1.5"><Globe className="w-3 h-3 text-[#f5a623]/50" /> Website with payment</div>
+              <div className="flex items-center gap-1.5"><Megaphone className="w-3 h-3 text-[#f5a623]/50" /> Campaign + ad images</div>
+              <div className="flex items-center gap-1.5"><Mail className="w-3 h-3 text-[#f5a623]/50" /> 3 email flows (active)</div>
+              <div className="flex items-center gap-1.5"><Image className="w-3 h-3 text-[#f5a623]/50" /> 5 AI ad creatives</div>
+              <div className="flex items-center gap-1.5"><Zap className="w-3 h-3 text-[#f5a623]/50" /> 4 pre-written ad copies</div>
+              <div className="flex items-center gap-1.5"><BarChart3 className="w-3 h-3 text-[#f5a623]/50" /> Tracking pixels</div>
             </div>
 
             {error && <p className="text-xs text-red-400/70 mb-3">{error}</p>}
@@ -350,7 +350,7 @@ export default function DeployActions({ vm, autoDeploy = false, autoPublish = fa
               <button
                 onClick={() => void handleDeploy(["all"])}
                 disabled={deploying}
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 px-6 py-3 text-sm font-bold text-white shadow-[0_0_24px_rgba(6,182,212,0.2)] transition hover:opacity-90 disabled:opacity-40"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-6 py-3 text-sm font-bold text-white shadow-[0_0_24px_rgba(245,166,35,0.2)] transition hover:opacity-90 disabled:opacity-40"
               >
                 {deploying ? <Loader2 className="w-4 h-4 animate-spin" /> : <Rocket className="w-4 h-4" />}
                 {deploying ? "Building your business..." : "Deploy Everything"}

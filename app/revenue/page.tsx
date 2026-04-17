@@ -49,7 +49,7 @@ export default function RevenueDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] text-white">
+      <div className="min-h-screen bg-t-bg text-white">
         <AppNav />
         <main className="max-w-6xl mx-auto px-4 py-10 flex items-center justify-center min-h-[60vh]">
           <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
@@ -63,7 +63,7 @@ export default function RevenueDashboard() {
   const maxDailyRev = Math.max(...(rev?.dailyRevenue ?? []).map((d) => d.revenue), 1);
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
         {/* Header */}
@@ -83,8 +83,8 @@ export default function RevenueDashboard() {
         {/* Top stats */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
           <StatCard icon={DollarSign} label="Total Revenue" value={`$${(rev?.total ?? 0).toLocaleString()}`} color="text-emerald-400" />
-          <StatCard icon={ShoppingCart} label="Total Orders" value={String(rev?.orders ?? 0)} color="text-cyan-400" />
-          <StatCard icon={TrendingUp} label="Avg Order" value={`$${(rev?.avgOrderValue ?? 0).toFixed(2)}`} color="text-purple-400" />
+          <StatCard icon={ShoppingCart} label="Total Orders" value={String(rev?.orders ?? 0)} color="text-[#f5a623]" />
+          <StatCard icon={TrendingUp} label="Avg Order" value={`$${(rev?.avgOrderValue ?? 0).toFixed(2)}`} color="text-[#e07850]" />
           <StatCard icon={DollarSign} label="Last 30 Days" value={`$${(rev?.last30Days ?? 0).toLocaleString()}`} color="text-amber-400" />
         </div>
 
@@ -123,7 +123,7 @@ export default function RevenueDashboard() {
           {/* Revenue by Site */}
           <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5">
             <div className="flex items-center gap-2 mb-4">
-              <Globe className="w-4 h-4 text-cyan-400/60" />
+              <Globe className="w-4 h-4 text-[#f5a623]/60" />
               <h2 className="text-[10px] font-black uppercase tracking-widest text-white/30">Revenue by Site</h2>
             </div>
             {rev && rev.bySite.length > 0 ? (
@@ -155,7 +155,7 @@ export default function RevenueDashboard() {
           {/* Email Performance */}
           <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5">
             <div className="flex items-center gap-2 mb-4">
-              <Mail className="w-4 h-4 text-purple-400/60" />
+              <Mail className="w-4 h-4 text-[#e07850]/60" />
               <h2 className="text-[10px] font-black uppercase tracking-widest text-white/30">Email Performance</h2>
             </div>
             <div className="grid grid-cols-2 gap-3 mb-4">
@@ -190,7 +190,7 @@ export default function RevenueDashboard() {
         {/* Bottom stats */}
         <div className="grid grid-cols-2 gap-4">
           <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 text-center">
-            <Users className="w-5 h-5 text-cyan-400/40 mx-auto mb-2" />
+            <Users className="w-5 h-5 text-[#f5a623]/40 mx-auto mb-2" />
             <p className="text-2xl font-bold text-white">{data?.contacts ?? 0}</p>
             <p className="text-xs text-white/30">Total Contacts</p>
           </div>

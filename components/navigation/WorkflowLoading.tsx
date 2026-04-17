@@ -19,8 +19,8 @@ export default function WorkflowLoading({
 }) {
   return (
     <div className={`flex flex-col items-center justify-center py-12 text-center ${className}`}>
-      <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-cyan-500/30 bg-cyan-500/5">
-        <Icon className="h-7 w-7 animate-pulse text-cyan-400" />
+      <div className="mb-6 flex h-16 w-16 items-center justify-center rounded-2xl border border-[#f5a623]/30 bg-[#f5a623]/5">
+        <Icon className="h-7 w-7 animate-pulse text-[#f5a623]" />
       </div>
       <h2 className="mb-2 text-xl font-black text-white">{title}</h2>
       <p className="text-sm text-white/40">{subtitle}</p>

@@ -28,8 +28,8 @@ type SearchResult = {
 };
 
 const TYPE_CONFIG: Record<string, { icon: React.ElementType; color: string; label: string }> = {
-  client: { icon: Users, color: "text-cyan-400", label: "Client" },
-  campaign: { icon: Megaphone, color: "text-purple-400", label: "Campaign" },
+  client: { icon: Users, color: "text-[#f5a623]", label: "Client" },
+  campaign: { icon: Megaphone, color: "text-[#e07850]", label: "Campaign" },
   site: { icon: Globe, color: "text-blue-400", label: "Site" },
   analysis: { icon: BarChart2, color: "text-emerald-400", label: "Scan" },
   lead: { icon: Building2, color: "text-amber-400", label: "Lead" },
@@ -198,7 +198,7 @@ export default function GlobalSearch() {
                 onClick={() => navigate(result.href)}
                 onMouseEnter={() => setSelectedIndex(i)}
                 className={`w-full flex items-center gap-3 px-4 py-3 text-left transition ${
-                  isSelected ? "bg-cyan-500/10" : "hover:bg-white/[0.03]"
+                  isSelected ? "bg-[#f5a623]/10" : "hover:bg-white/[0.03]"
                 }`}
               >
                 <div className={`w-8 h-8 rounded-lg bg-white/[0.04] border border-white/[0.06] flex items-center justify-center shrink-0 ${cfg.color}`}>

@@ -38,7 +38,7 @@ export default function PublicSiteShell({
   children,
 }: PublicSiteShellProps) {
   const isDark = theme?.mode !== "light";
-  const primary = theme?.primaryColor || "#06b6d4";
+  const primary = theme?.primaryColor || "#f5a623";
   const navBg = isDark ? "rgba(2,5,9,0.88)" : "rgba(255,255,255,0.88)";
   const navBorder = isDark ? "rgba(255,255,255,0.08)" : "rgba(15,23,42,0.08)";
   const textColor = isDark ? "#ffffff" : "#0f172a";

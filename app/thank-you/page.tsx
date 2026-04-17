@@ -6,7 +6,7 @@ import AppNav from "@/components/AppNav";
 
 export default function ThankYouPage() {
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-xl mx-auto px-4 py-20 text-center">
         <div className="mb-6">
@@ -23,7 +23,7 @@ export default function ThankYouPage() {
 
         <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 mb-8 text-left">
           <div className="flex items-center gap-2 mb-3">
-            <Mail className="w-4 h-4 text-cyan-400" />
+            <Mail className="w-4 h-4 text-[#f5a623]" />
             <p className="text-xs font-bold text-white/60 uppercase tracking-widest">What happens next</p>
           </div>
           <ol className="space-y-3 text-sm text-white/50">
@@ -44,7 +44,7 @@ export default function ThankYouPage() {
 
         <Link
           href="/"
-          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition"
+          className="inline-flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition"
         >
           Continue
           <ArrowRight className="w-4 h-4" />

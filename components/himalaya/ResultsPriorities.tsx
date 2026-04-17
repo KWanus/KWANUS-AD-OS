@@ -23,15 +23,15 @@ export default function ResultsPriorities({ vm }: { vm: HimalayaResultsViewModel
             className="rounded-xl border border-white/[0.06] bg-black/25 p-4 transition hover:border-white/[0.1]"
           >
             <div className="mb-2 flex items-start gap-2">
-              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-[10px] font-black text-cyan-400">
+              <span className="flex items-center justify-center w-5 h-5 rounded-full bg-[#f5a623]/10 border border-[#f5a623]/20 text-[10px] font-black text-[#f5a623]">
                 {i + 1}
               </span>
               <h3 className="min-w-0 flex-1 text-xs font-bold leading-5 text-white/70 sm:truncate">{p.label}</h3>
             </div>
             <p className="text-[11px] text-white/40 leading-relaxed mb-2">{p.reason}</p>
             <div className="flex items-start gap-1.5 mt-auto">
-              <Zap className="w-3 h-3 text-cyan-400/50 shrink-0 mt-0.5" />
-              <p className="text-[11px] text-cyan-400/60 leading-relaxed">{p.nextStep}</p>
+              <Zap className="w-3 h-3 text-[#f5a623]/50 shrink-0 mt-0.5" />
+              <p className="text-[11px] text-[#f5a623]/60 leading-relaxed">{p.nextStep}</p>
             </div>
           </div>
         ))}

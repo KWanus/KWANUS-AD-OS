@@ -289,20 +289,20 @@ export default function WebsiteCopilotPanel({
     <div className="flex h-full flex-col overflow-hidden">
       <div className="border-b border-white/[0.06] px-4 py-4">
         <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 shadow-[0_0_24px_rgba(6,182,212,0.28)]">
+          <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-[#f5a623] to-[#e07850] shadow-[0_0_24px_rgba(245,166,35,0.28)]">
             <BotMessageSquare className="h-4 w-4 text-white" />
           </div>
           <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Website Copilot</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#f5a623]/80">Website Copilot</p>
             <p className="text-sm font-black text-white">Edit this page like Lovable-style guidance</p>
             <p className="text-[11px] leading-5 text-white/35">
               {pageTitle} · {published ? "published" : "draft"} · {diagnostics.blockCount} blocks
             </p>
-            <p className="mt-1 text-[11px] font-bold text-cyan-300/90">
+            <p className="mt-1 text-[11px] font-bold text-[#f5a623]/90">
               {executionTier === "elite" ? "Elite website copilot lane" : "Core website copilot lane"}
             </p>
             {selectedBlock && (
-              <p className="mt-1 text-[11px] font-bold text-cyan-300/90">Selected section: {selectedBlock.type}</p>
+              <p className="mt-1 text-[11px] font-bold text-[#f5a623]/90">Selected section: {selectedBlock.type}</p>
             )}
           </div>
         </div>
@@ -331,13 +331,13 @@ export default function WebsiteCopilotPanel({
                 onClick={() => setExecutionTier(tier.id)}
                 className={`rounded-2xl border p-4 text-left transition-all ${
                   active
-                    ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                    ? "border-[#f5a623]/40 bg-[#f5a623]/10 shadow-[0_0_20px_rgba(245,166,35,0.12)]"
                     : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
                 }`}
               >
                 <div className="flex items-center justify-between gap-3">
-                  <span className={`text-sm font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
-                  <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+                  <span className={`text-sm font-black ${active ? "text-[#f5a623]" : "text-white"}`}>{tier.label}</span>
+                  <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-[#f5a623]" : "text-white/20"}`}>
                     {tier.id}
                   </span>
                 </div>
@@ -353,7 +353,7 @@ export default function WebsiteCopilotPanel({
       {selectedBlock && (
         <div className="border-b border-white/[0.06] px-4 py-4">
           <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/25">Selected Block</p>
-          <div className="mt-3 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-3 py-3">
+          <div className="mt-3 rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-3 py-3">
             <p className="text-sm font-bold text-white">{selectedBlock.type}</p>
             <p className="mt-1 text-sm leading-6 text-cyan-50/80">
               Regenerate just this section while keeping the rest of the page intact.
@@ -396,7 +396,7 @@ export default function WebsiteCopilotPanel({
                 {generationContext.niche ?? "Unknown niche"} · {generationContext.location ?? "Unknown market"}
               </p>
               {typeof generationContext.blueprintScore?.overall === "number" && (
-                <p className="mt-1 text-xs font-bold text-cyan-300">
+                <p className="mt-1 text-xs font-bold text-[#f5a623]">
                   Blueprint score: {generationContext.blueprintScore.overall}/100
                 </p>
               )}
@@ -409,7 +409,7 @@ export default function WebsiteCopilotPanel({
                   {generationContext.sourceMode?.replaceAll("_", " ") ?? "unknown origin"}
                 </p>
                 {generationContext.sourceUrl && (
-                  <p className="mt-1 break-all text-xs leading-5 text-cyan-300/80">{generationContext.sourceUrl}</p>
+                  <p className="mt-1 break-all text-xs leading-5 text-[#f5a623]/80">{generationContext.sourceUrl}</p>
                 )}
               </div>
             )}
@@ -446,7 +446,7 @@ export default function WebsiteCopilotPanel({
               disabled={working}
               className="flex items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.03] px-3 py-2.5 text-left text-sm font-bold text-white/70 transition hover:bg-white/[0.06] disabled:opacity-40"
             >
-              <item.icon className="h-4 w-4 text-cyan-300" />
+              <item.icon className="h-4 w-4 text-[#f5a623]" />
               {item.label}
             </button>
           ))}
@@ -480,7 +480,7 @@ export default function WebsiteCopilotPanel({
       {pendingChange && (
         <div className="border-b border-white/[0.06] px-4 py-4">
           <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/25">Pending Change</p>
-          <div className="mt-3 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-3 py-3">
+          <div className="mt-3 rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-3 py-3">
             <p className="text-sm font-bold text-white">{pendingChange.summary}</p>
             <div className="mt-3 space-y-1">
               {pendingChange.diff.map((line) => (
@@ -531,7 +531,7 @@ export default function WebsiteCopilotPanel({
             className={`rounded-2xl px-3 py-3 text-sm leading-6 ${
               message.role === "assistant"
                 ? "border border-white/[0.08] bg-white/[0.03] text-white/70"
-                : "border border-cyan-500/20 bg-cyan-500/10 text-cyan-100"
+                : "border border-[#f5a623]/20 bg-[#f5a623]/10 text-cyan-100"
             }`}
           >
             {message.content}
@@ -551,7 +551,7 @@ export default function WebsiteCopilotPanel({
           <button
             onClick={() => void runAction(input)}
             disabled={!input.trim() || working}
-            className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 px-4 py-2.5 text-sm font-black text-white disabled:opacity-40"
+            className="mt-2 flex w-full items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-4 py-2.5 text-sm font-black text-white disabled:opacity-40"
           >
             {working ? <Sparkles className="h-4 w-4 animate-pulse" /> : <BotMessageSquare className="h-4 w-4" />}
             Run Copilot

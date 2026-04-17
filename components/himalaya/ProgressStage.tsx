@@ -31,7 +31,7 @@ function StageIcon({ state }: { state: UiStageState }) {
     case "complete":
       return <CheckCircle className="w-5 h-5 text-emerald-400" />;
     case "active":
-      return <Loader2 className="w-5 h-5 text-cyan-400 animate-spin" />;
+      return <Loader2 className="w-5 h-5 text-[#f5a623] animate-spin" />;
     case "partial":
     case "fallback":
       return <AlertTriangle className="w-5 h-5 text-amber-400" />;
@@ -66,7 +66,7 @@ export default function ProgressStage({
                 isDone
                   ? "bg-emerald-500/[0.03] border-emerald-500/10"
                   : isActive
-                    ? "bg-cyan-500/[0.04] border-cyan-500/15"
+                    ? "bg-[#f5a623]/[0.04] border-[#f5a623]/15"
                     : state === "failed"
                       ? "bg-red-500/[0.04] border-red-500/15"
                       : "bg-white/[0.01] border-white/[0.04]"

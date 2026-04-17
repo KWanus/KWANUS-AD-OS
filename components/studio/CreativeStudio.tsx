@@ -57,7 +57,7 @@ const THEMES: Record<string, { from: string; to: string }> = {
   Facebook: { from: "#1877f2", to: "#42b72a" },
   Instagram: { from: "#f09433", to: "#833ab4" },
   Cinematic: { from: "#d4af37", to: "#c0c0c0" },
-  Static: { from: "#06b6d4", to: "#8b5cf6" },
+  Static: { from: "#f5a623", to: "#e07850" },
 };
 
 const AD_FORMATS: AdFormat[] = [
@@ -620,7 +620,7 @@ function ImageStudio({ brief, theme, executionTier }: { brief: StudioBrief; them
               {showPromptEdit ? "Hide prompt" : "Edit prompt"}
             </button>
             <div className={`px-3 py-1.5 rounded-lg border text-[10px] font-black uppercase tracking-[0.18em] ${executionTier === "elite"
-              ? "border-cyan-400/30 bg-cyan-500/10 text-cyan-300"
+              ? "border-cyan-400/30 bg-[#f5a623]/10 text-[#f5a623]"
               : "border-white/[0.07] bg-white/[0.04] text-white/45"
               }`}>
               {executionTier}
@@ -652,7 +652,7 @@ function ImageStudio({ brief, theme, executionTier }: { brief: StudioBrief; them
               </button>
             </div>
             <button onClick={applyAutoCaption}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-[10px] font-black text-cyan-400 uppercase tracking-widest transition">
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-[10px] font-black text-[#f5a623] uppercase tracking-widest transition">
               <Sparkles className="w-3 h-3" /> Auto-Caption TikTok
             </button>
           </div>
@@ -791,7 +791,7 @@ function ImageStudio({ brief, theme, executionTier }: { brief: StudioBrief; them
               <>
                 <div>
                   <p className="text-[9px] text-white/20 uppercase font-bold mb-1.5">Fill Color</p>
-                  <input type="color" value={selectedLayer.fill ?? "#06b6d4"} onChange={e => updateSelected({ fill: e.target.value })}
+                  <input type="color" value={selectedLayer.fill ?? "#f5a623"} onChange={e => updateSelected({ fill: e.target.value })}
                     className="w-full h-8 rounded-lg cursor-pointer border border-white/[0.07] bg-transparent" />
                 </div>
                 <div>
@@ -903,7 +903,7 @@ function VideoLab({ brief, theme, executionTier }: { brief: StudioBrief; theme: 
               <p className="text-xs text-white/30 mt-0.5">Generate AI video clips for each scene. Powered by Runway Gen-4.</p>
             </div>
             <div className="flex gap-2">
-              <button className="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 flex items-center gap-1.5">
+              <button className="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase bg-[#f5a623]/10 text-[#f5a623] border border-[#f5a623]/20 flex items-center gap-1.5">
                 <div className="w-1 h-1 rounded-full bg-cyan-400" /> Auto-Captions
               </button>
               <button className="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase bg-white/5 text-white/40 border border-white/[0.07]">
@@ -945,7 +945,7 @@ function VideoLab({ brief, theme, executionTier }: { brief: StudioBrief; theme: 
                       <video src={job.videoUrl} controls className="w-full rounded-xl max-h-48 bg-black" />
                     ) : job.status === "running" || job.status === "pending" ? (
                       <div className="rounded-xl border border-white/[0.06] bg-black/20 p-4 flex items-center gap-3">
-                        <Loader2 className="w-4 h-4 text-cyan-400 animate-spin shrink-0" />
+                        <Loader2 className="w-4 h-4 text-[#f5a623] animate-spin shrink-0" />
                         <div className="flex-1">
                           <p className="text-xs text-white/50">{job.status === "pending" ? "Starting generation..." : "Generating video..."}</p>
                           <div className="mt-2 h-1 bg-white/10 rounded-full overflow-hidden">
@@ -989,11 +989,11 @@ function VideoLab({ brief, theme, executionTier }: { brief: StudioBrief; theme: 
           <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
             <p className="text-[10px] font-bold text-white mb-1">1. Get Runway Key</p>
             <p className="text-[10px] text-white/40 leading-relaxed mb-2">Sign up at runwayml.com. Go to Account → API Keys.</p>
-            <a href="https://runwayml.com" target="_blank" rel="noopener" className="text-[10px] text-cyan-400 flex items-center gap-1 hover:underline">runwayml.com <ExternalLink className="w-3 h-3" /></a>
+            <a href="https://runwayml.com" target="_blank" rel="noopener" className="text-[10px] text-[#f5a623] flex items-center gap-1 hover:underline">runwayml.com <ExternalLink className="w-3 h-3" /></a>
           </div>
           <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
             <p className="text-[10px] font-bold text-white mb-1">2. Add to .env</p>
-            <code className="text-[10px] font-mono text-cyan-300/70 block bg-black/30 rounded p-2">RUNWAY_API_KEY=your_key_here</code>
+            <code className="text-[10px] font-mono text-[#f5a623]/70 block bg-black/30 rounded p-2">RUNWAY_API_KEY=your_key_here</code>
           </div>
           <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
             <p className="text-[10px] font-bold text-white mb-1">3. Restart dev server</p>
@@ -1006,7 +1006,7 @@ function VideoLab({ brief, theme, executionTier }: { brief: StudioBrief; theme: 
           {[
             { name: "Pika 2.0", url: "pika.art", color: "#ec4899" },
             { name: "Kling AI", url: "kling.ai", color: "#f59e0b" },
-            { name: "Luma Dream", url: "lumalabs.ai", color: "#8b5cf6" },
+            { name: "Luma Dream", url: "lumalabs.ai", color: "#e07850" },
           ].map(t => (
             <div key={t.name} className="flex items-center justify-between py-2 border-b border-white/[0.04]">
               <span className="text-[10px] font-bold" style={{ color: t.color }}>{t.name}</span>

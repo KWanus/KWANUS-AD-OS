@@ -100,9 +100,9 @@ const SUBSCRIPTION_TIERS = [
     price: 49,
     period: "/ month",
     badge: "Most Popular",
-    color: "border-cyan-500/40",
-    headerColor: "text-cyan-300",
-    buttonClass: "bg-cyan-500 hover:bg-cyan-400 text-[#050a14] shadow-[0_0_20px_rgba(6,182,212,0.25)]",
+    color: "border-[#f5a623]/40",
+    headerColor: "text-[#f5a623]",
+    buttonClass: "bg-[#f5a623] hover:bg-[#e07850] text-[#050a14] shadow-[0_0_20px_rgba(245,166,35,0.25)]",
     buttonLabel: "Upgrade to Pro →",
     features: [
       "Unlimited clients",
@@ -183,11 +183,11 @@ function BillingContent() {
   }
 
   return (
-    <main className="min-h-screen bg-[#050a14] text-white flex flex-col">
+    <main className="min-h-screen bg-t-bg text-white flex flex-col">
       <AppNav />
       {/* Background */}
       <div className="fixed inset-0 opacity-[0.025] pointer-events-none" style={{ backgroundImage: "radial-gradient(#fff 1px,transparent 1px)", backgroundSize: "28px 28px" }} />
-      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px] opacity-[0.06] blur-[100px] pointer-events-none" style={{ background: "linear-gradient(to bottom,#06b6d4,#8b5cf6)" }} />
+      <div className="fixed top-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px] opacity-[0.06] blur-[100px] pointer-events-none" style={{ background: "linear-gradient(to bottom,#f5a623,#e07850)" }} />
 
       {/* Header */}
       <header className="relative z-10 px-8 py-4 border-b border-white/[0.06] flex items-center justify-between">
@@ -197,12 +197,12 @@ function BillingContent() {
             <span className="text-xs font-medium">Dashboard</span>
           </Link>
           <span className="text-white/10">|</span>
-          <span className="text-sm font-black tracking-[0.2em] text-cyan-400 uppercase">Credits</span>
+          <span className="text-sm font-black tracking-[0.2em] text-[#f5a623] uppercase">Credits</span>
         </div>
         {credits !== null && (
-          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-cyan-500/25 bg-cyan-500/[0.06]">
-            <Zap className="w-3.5 h-3.5 text-cyan-400" />
-            <span className="text-xs font-black text-cyan-300">{credits} credits remaining</span>
+          <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-[#f5a623]/25 bg-[#f5a623]/[0.06]">
+            <Zap className="w-3.5 h-3.5 text-[#f5a623]" />
+            <span className="text-xs font-black text-[#f5a623]">{credits} credits remaining</span>
           </div>
         )}
       </header>
@@ -250,7 +250,7 @@ function BillingContent() {
               >
                 {tier.badge && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${tier.key === "pro" ? "bg-cyan-500 text-[#050a14]" : "bg-amber-500 text-[#050a14]"}`}>
+                    <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${tier.key === "pro" ? "bg-[#f5a623] text-[#050a14]" : "bg-amber-500 text-[#050a14]"}`}>
                       {tier.badge}
                     </span>
                   </div>
@@ -267,7 +267,7 @@ function BillingContent() {
                 <div className="flex-1 space-y-2">
                   {tier.features.map((f) => (
                     <div key={f} className="flex items-center gap-2">
-                      <Check className={`w-3 h-3 shrink-0 ${tier.key === "pro" ? "text-cyan-400" : tier.key === "elite" ? "text-amber-400" : "text-white/30"}`} />
+                      <Check className={`w-3 h-3 shrink-0 ${tier.key === "pro" ? "text-[#f5a623]" : tier.key === "elite" ? "text-amber-400" : "text-white/30"}`} />
                       <span className="text-xs text-white/55">{f}</span>
                     </div>
                   ))}
@@ -301,9 +301,9 @@ function BillingContent() {
                 The real upgrade path is output quality. Core is strong and launch-ready. Elite is where the platform pushes for sharper positioning, stronger objection handling, tighter conversion structure, and more premium execution across tools.
               </p>
             </div>
-            <div className="inline-flex items-center gap-2 rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1.5">
-              <Sparkles className="w-3.5 h-3.5 text-cyan-300" />
-              <span className="text-[11px] font-black uppercase tracking-[0.2em] text-cyan-300">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#f5a623]/20 bg-[#f5a623]/10 px-3 py-1.5">
+              <Sparkles className="w-3.5 h-3.5 text-[#f5a623]" />
+              <span className="text-[11px] font-black uppercase tracking-[0.2em] text-[#f5a623]">
                 Current plan: {currentPlan}
               </span>
             </div>
@@ -324,8 +324,8 @@ function BillingContent() {
               {
                 label: "Elite Lane",
                 badge: "Premium",
-                border: "border-cyan-500/30",
-                badgeClass: "border-cyan-500/30 bg-cyan-500/10 text-cyan-300",
+                border: "border-[#f5a623]/30",
+                badgeClass: "border-[#f5a623]/30 bg-[#f5a623]/10 text-[#f5a623]",
                 bullets: [
                   "Sharper positioning, proof framing, and objection handling",
                   "Higher-end page, email, campaign, and research execution",
@@ -343,7 +343,7 @@ function BillingContent() {
                 <div className="mt-4 space-y-2">
                   {lane.bullets.map((bullet) => (
                     <div key={bullet} className="flex items-start gap-2">
-                      <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cyan-300" />
+                      <Check className="mt-0.5 h-3.5 w-3.5 shrink-0 text-[#f5a623]" />
                       <span className="text-sm text-white/55">{bullet}</span>
                     </div>
                   ))}
@@ -369,7 +369,7 @@ function BillingContent() {
             <div key={b.key}
               className={`relative rounded-2xl border p-6 flex flex-col gap-5 transition-all duration-200
                 ${b.badge === "Most Popular"
-                  ? "border-cyan-500/40 bg-gradient-to-b from-cyan-500/10 to-transparent"
+                  ? "border-[#f5a623]/40 bg-gradient-to-b from-cyan-500/10 to-transparent"
                   : b.badge === "Best Value"
                   ? "border-amber-500/30 bg-gradient-to-b from-amber-500/[0.08] to-transparent"
                   : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.15]"
@@ -378,7 +378,7 @@ function BillingContent() {
               {b.badge && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                   <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest
-                    ${b.badge === "Most Popular" ? "bg-cyan-500 text-[#050a14]" : "bg-amber-500 text-[#050a14]"}`}>
+                    ${b.badge === "Most Popular" ? "bg-[#f5a623] text-[#050a14]" : "bg-amber-500 text-[#050a14]"}`}>
                     {b.badge}
                   </span>
                 </div>
@@ -396,7 +396,7 @@ function BillingContent() {
               <div className="flex-1 space-y-2">
                 {b.highlights.map(h => (
                   <div key={h} className="flex items-center gap-2">
-                    <Check className="w-3 h-3 text-cyan-400 shrink-0" />
+                    <Check className="w-3 h-3 text-[#f5a623] shrink-0" />
                     <span className="text-xs text-white/55">{h}</span>
                   </div>
                 ))}
@@ -407,7 +407,7 @@ function BillingContent() {
                 disabled={loading !== null}
                 className={`w-full py-3 rounded-xl text-sm font-black uppercase tracking-widest transition flex items-center justify-center gap-2
                   ${b.badge === "Most Popular"
-                    ? "bg-cyan-500 hover:bg-cyan-400 text-[#050a14] shadow-[0_0_20px_rgba(6,182,212,0.3)]"
+                    ? "bg-[#f5a623] hover:bg-[#e07850] text-[#050a14] shadow-[0_0_20px_rgba(245,166,35,0.3)]"
                     : b.badge === "Best Value"
                     ? "bg-amber-500 hover:bg-amber-400 text-[#050a14]"
                     : "bg-white/8 hover:bg-white/12 text-white border border-white/10"
@@ -429,7 +429,7 @@ function BillingContent() {
               <div key={c.action} className="flex items-center justify-between py-2 border-b border-white/[0.04]">
                 <span className="text-sm text-white/60">{c.action}</span>
                 <div className="flex items-center gap-3">
-                  <span className={`text-xs font-black ${c.credits === 0 ? "text-green-400" : "text-cyan-300"}`}>
+                  <span className={`text-xs font-black ${c.credits === 0 ? "text-green-400" : "text-[#f5a623]"}`}>
                     {c.credits === 0 ? "FREE" : `${c.credits} credit${c.credits > 1 ? "s" : ""}`}
                   </span>
                   <span className="text-xs text-white/20 w-12 text-right">{c.cost}</span>

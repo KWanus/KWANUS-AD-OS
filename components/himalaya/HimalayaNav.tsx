@@ -16,8 +16,8 @@ const NAV_ITEMS = [
 
 const TIER_BADGE: Record<string, { label: string; color: string }> = {
   free: { label: "Free", color: "text-white/25 bg-white/[0.03] border-white/[0.06]" },
-  pro: { label: "Builder", color: "text-cyan-400 bg-cyan-500/10 border-cyan-500/20" },
-  business: { label: "Operator", color: "text-purple-400 bg-purple-500/10 border-purple-500/20" },
+  pro: { label: "Builder", color: "text-[#f5a623] bg-[#f5a623]/10 border-[#f5a623]/20" },
+  business: { label: "Operator", color: "text-[#e07850] bg-purple-500/10 border-purple-500/20" },
 };
 
 export default function HimalayaNav() {
@@ -65,7 +65,7 @@ export default function HimalayaNav() {
             tier === "free" ? (
               <Link
                 href="/himalaya/upgrade"
-                className="flex items-center gap-1 rounded-lg border border-white/[0.06] bg-white/[0.03] px-2.5 py-1.5 text-[10px] font-bold text-white/25 transition hover:border-cyan-500/20 hover:text-cyan-400/60"
+                className="flex items-center gap-1 rounded-lg border border-white/[0.06] bg-white/[0.03] px-2.5 py-1.5 text-[10px] font-bold text-white/25 transition hover:border-[#f5a623]/20 hover:text-[#f5a623]/60"
               >
                 <Zap className="w-2.5 h-2.5" /> Upgrade
               </Link>

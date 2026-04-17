@@ -52,7 +52,7 @@ function SelectGrid({ options, value, onChange }: { options: string[]; value: st
           onClick={() => onChange(opt)}
           className={`p-3 rounded-xl border text-sm font-semibold text-left transition ${
             value === opt
-              ? "bg-cyan-500/10 border-cyan-500/25 text-cyan-300"
+              ? "bg-[#f5a623]/10 border-[#f5a623]/25 text-[#f5a623]"
               : "bg-white/[0.02] border-white/[0.07] text-white/50 hover:border-white/[0.15]"
           }`}
         >
@@ -230,14 +230,14 @@ export default function HimalayaScratchPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <HimalayaNav />
       <main className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
         {running ? (
           <>
-            <div className="mb-4 rounded-3xl border border-cyan-500/12 bg-gradient-to-br from-cyan-500/[0.06] via-transparent to-purple-500/[0.05] px-5 py-8 text-center">
-              <Mountain className="mx-auto mb-3 h-8 w-8 text-cyan-400" />
+            <div className="mb-4 rounded-3xl border border-[#f5a623]/12 bg-gradient-to-br from-cyan-500/[0.06] via-transparent to-purple-500/[0.05] px-5 py-8 text-center">
+              <Mountain className="mx-auto mb-3 h-8 w-8 text-[#f5a623]" />
               <h1 className="text-xl font-black text-white">Building Your Foundation</h1>
               <p className="text-sm text-white/30 mt-1">Himalaya is creating your business assets</p>
             </div>
@@ -258,7 +258,7 @@ export default function HimalayaScratchPage() {
             </div>
             {loadedFromRun && (
               <div className="mb-4 flex items-center gap-2 rounded-lg border border-purple-500/10 bg-purple-500/5 px-3 py-2">
-                <RotateCcw className="w-3 h-3 text-purple-400/50" />
+                <RotateCcw className="w-3 h-3 text-[#e07850]/50" />
                 <p className="text-[10px] text-purple-300/60">Loaded from a previous run. Edit anything before rebuilding.</p>
               </div>
             )}
@@ -272,7 +272,7 @@ export default function HimalayaScratchPage() {
                   onChange={(e) => setNiche(e.target.value)}
                   placeholder="e.g. dental practices in Texas, gym owners, B2B SaaS founders"
                   autoFocus
-                  className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/30"
+                  className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/30"
                 />
                 {!niche && (
                   <div className="flex flex-wrap gap-1.5 mt-2">
@@ -292,7 +292,7 @@ export default function HimalayaScratchPage() {
                   <select
                     value={businessType}
                     onChange={(e) => setBusinessType(e.target.value)}
-                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-cyan-500/30 appearance-none"
+                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-[#f5a623]/30 appearance-none"
                   >
                     <option value="" className="bg-[#0d1525]">Select type...</option>
                     {BUSINESS_TYPES.map((t) => (
@@ -305,7 +305,7 @@ export default function HimalayaScratchPage() {
                   <select
                     value={goal}
                     onChange={(e) => setGoal(e.target.value)}
-                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-cyan-500/30 appearance-none"
+                    className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-[#f5a623]/30 appearance-none"
                   >
                     <option value="" className="bg-[#0d1525]">Select goal...</option>
                     {GOALS.map((g) => (
@@ -327,7 +327,7 @@ export default function HimalayaScratchPage() {
                       value={competitorUrl}
                       onChange={(e) => setCompetitorUrl(e.target.value)}
                       placeholder="https://competitor-website.com"
-                      className="w-full bg-white/[0.03] border border-white/[0.06] rounded-xl px-3 py-2 text-sm text-white placeholder-white/15 focus:outline-none focus:border-cyan-500/20"
+                      className="w-full bg-white/[0.03] border border-white/[0.06] rounded-xl px-3 py-2 text-sm text-white placeholder-white/15 focus:outline-none focus:border-[#f5a623]/20"
                     />
                   </div>
                   <div>
@@ -337,7 +337,7 @@ export default function HimalayaScratchPage() {
                       onChange={(e) => setDream(e.target.value)}
                       placeholder="Anything else we should know?"
                       rows={2}
-                      className="w-full bg-white/[0.03] border border-white/[0.06] rounded-xl px-3 py-2 text-sm text-white placeholder-white/15 focus:outline-none focus:border-cyan-500/20 resize-none"
+                      className="w-full bg-white/[0.03] border border-white/[0.06] rounded-xl px-3 py-2 text-sm text-white placeholder-white/15 focus:outline-none focus:border-[#f5a623]/20 resize-none"
                     />
                   </div>
                 </div>
@@ -347,7 +347,7 @@ export default function HimalayaScratchPage() {
               <button
                 onClick={() => void handleSubmit()}
                 disabled={!canSubmit}
-                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-30 disabled:cursor-not-allowed"
+                className="w-full py-3.5 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-30 disabled:cursor-not-allowed"
               >
                 Build My Foundation
               </button>

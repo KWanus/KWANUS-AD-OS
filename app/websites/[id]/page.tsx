@@ -381,7 +381,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex items-center justify-center">
+      <div className="min-h-screen bg-t-bg flex items-center justify-center">
         <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
       </div>
     );
@@ -389,7 +389,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
 
   if (!site) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-t-bg flex items-center justify-center px-4">
         <div className="w-full max-w-3xl space-y-4">
           <DatabaseFallbackNotice visible={databaseUnavailable} />
           <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8 text-center">
@@ -500,7 +500,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
@@ -512,13 +512,13 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
 
         {/* Next step guidance */}
         {!site.published && (
-          <div className="mb-6 bg-cyan-500/[0.04] border border-cyan-500/10 rounded-xl p-4 flex items-center justify-between gap-4">
+          <div className="mb-6 bg-[#f5a623]/[0.04] border border-[#f5a623]/10 rounded-xl p-4 flex items-center justify-between gap-4">
             <div>
               <p className="text-xs font-bold text-white/50">Next step: {site.pages.length === 0 ? "Add your first page" : site.pages.length < 3 ? "Add more pages to complete your site" : "Preview and publish your site"}</p>
               <p className="text-[10px] text-white/25 mt-0.5">{site.pages.length === 0 ? "Click '+ Add Page' below to get started" : site.pages.length < 3 ? `${site.pages.length} page${site.pages.length > 1 ? "s" : ""} so far — most sites need 3-5` : "Your site looks ready. Preview it and hit publish."}</p>
             </div>
             {site.pages.length >= 3 && (
-              <button onClick={() => void togglePublish()} className="shrink-0 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition">
+              <button onClick={() => void togglePublish()} className="shrink-0 px-4 py-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-xs font-bold hover:opacity-90 transition">
                 Publish Now
               </button>
             )}
@@ -528,7 +528,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
         {/* Site header */}
         <div className="flex items-start justify-between gap-4 mb-8 flex-wrap">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-purple-600/20 border border-white/[0.08] flex items-center justify-center text-2xl">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-[#e07850]/20 border border-white/[0.08] flex items-center justify-center text-2xl">
               {site.faviconEmoji ?? "🚀"}
             </div>
             <div>
@@ -538,7 +538,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                   <span className={`w-1.5 h-1.5 rounded-full ${site.published ? "bg-green-400 animate-pulse" : "bg-white/30"}`} />
                   {site.published ? "Live" : "Draft"}
                 </span>
-                <button onClick={copyLink} className="flex items-center gap-1 text-[11px] text-white/30 hover:text-cyan-400 transition">
+                <button onClick={copyLink} className="flex items-center gap-1 text-[11px] text-white/30 hover:text-[#f5a623] transition">
                   <Copy className="w-3 h-3" />
                   /s/{site.slug}
                 </button>
@@ -564,7 +564,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
               className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-black transition-all ${
                 site.published
                   ? "bg-white/[0.06] border border-white/[0.1] text-white/50 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20"
-                  : "bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:opacity-90 shadow-[0_0_20px_rgba(6,182,212,0.2)]"
+                  : "bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white hover:opacity-90 shadow-[0_0_20px_rgba(245,166,35,0.2)]"
               }`}
             >
               {publishing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Globe className="w-3.5 h-3.5" />}
@@ -576,8 +576,8 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
         {/* Stats */}
         <div className="grid grid-cols-3 gap-3 mb-8">
           {[
-            { label: "Total Views", value: site.totalViews.toLocaleString(), color: "text-cyan-400" },
-            { label: "Pages", value: site.pages.length, color: "text-purple-400" },
+            { label: "Total Views", value: site.totalViews.toLocaleString(), color: "text-[#f5a623]" },
+            { label: "Pages", value: site.pages.length, color: "text-[#e07850]" },
             { label: "Status", value: site.published ? "Live" : "Draft", color: site.published ? "text-green-400" : "text-white/40" },
           ].map(({ label, value, color }) => (
             <div key={label} className="bg-white/[0.03] border border-white/[0.06] rounded-2xl px-5 py-4">
@@ -590,7 +590,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
         <div className="mb-8 rounded-[28px] border border-white/[0.07] bg-white/[0.03] p-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-2xl">
-              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Branding & Share Settings</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#f5a623]/80">Branding & Share Settings</p>
               <p className="mt-2 text-lg font-black text-white">Set how this site looks and where people should visit it.</p>
               <p className="mt-2 text-sm leading-6 text-white/55">
                 Keep the public URL, favicon, and description clean so the site looks launch-ready when you share it or index it.
@@ -610,7 +610,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
             <button
               onClick={() => void applyLaunchBasics()}
               disabled={autoFixingBasics}
-              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-3 text-sm font-black text-cyan-100 disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-4 py-3 text-sm font-black text-[#f5f0e8] disabled:opacity-50"
             >
               {autoFixingBasics ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
               Auto-Fix Launch Basics
@@ -628,7 +628,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                   type="text"
                   value={site.name}
                   onChange={(e) => setSite((prev) => prev ? { ...prev, name: e.target.value } : prev)}
-                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white placeholder:text-white/20 focus:border-cyan-500/40 focus:outline-none"
+                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white placeholder:text-white/20 focus:border-[#f5a623]/40 focus:outline-none"
                   placeholder="Your site name"
                 />
               </div>
@@ -639,7 +639,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                   rows={3}
                   value={site.description ?? ""}
                   onChange={(e) => setSite((prev) => prev ? { ...prev, description: e.target.value } : prev)}
-                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white placeholder:text-white/20 focus:border-cyan-500/40 focus:outline-none resize-none"
+                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white placeholder:text-white/20 focus:border-[#f5a623]/40 focus:outline-none resize-none"
                   placeholder="Short description used across the site and metadata."
                 />
               </div>
@@ -651,7 +651,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                   maxLength={4}
                   value={site.faviconEmoji ?? "🚀"}
                   onChange={(e) => setSite((prev) => prev ? { ...prev, faviconEmoji: e.target.value } : prev)}
-                  className="w-24 rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-center text-xl text-white focus:border-cyan-500/40 focus:outline-none"
+                  className="w-24 rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-center text-xl text-white focus:border-[#f5a623]/40 focus:outline-none"
                 />
               </div>
             </div>
@@ -663,19 +663,19 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                   type="text"
                   value={site.customDomain ?? ""}
                   onChange={(e) => setSite((prev) => prev ? { ...prev, customDomain: e.target.value } : prev)}
-                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white placeholder:text-white/20 focus:border-cyan-500/40 focus:outline-none"
+                  className="w-full rounded-xl border border-white/[0.08] bg-white/[0.04] px-3 py-2.5 text-sm text-white placeholder:text-white/20 focus:border-[#f5a623]/40 focus:outline-none"
                   placeholder="www.yoursite.com"
                 />
                 <p className="text-xs leading-5 text-white/35">Leave blank to use the built-in `/s/{site.slug}` public URL.</p>
               </div>
 
-              <div className="rounded-2xl border border-cyan-500/15 bg-cyan-500/10 p-4">
-                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-200/80">Share URL</p>
+              <div className="rounded-2xl border border-[#f5a623]/15 bg-[#f5a623]/10 p-4">
+                <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f5a623]/80">Share URL</p>
                 <p className="mt-2 break-all text-sm font-bold text-cyan-50">{getPublicUrl(site)}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button
                     onClick={copyLink}
-                    className="rounded-xl border border-cyan-500/20 bg-white px-3 py-2 text-xs font-black text-cyan-900"
+                    className="rounded-xl border border-[#f5a623]/20 bg-white px-3 py-2 text-xs font-black text-cyan-900"
                   >
                     Copy Link
                   </button>
@@ -683,24 +683,24 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                     href={getPublicUrl(site)}
                     target="_blank"
                     rel="noreferrer"
-                    className="rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-3 py-2 text-xs font-black text-cyan-100"
+                    className="rounded-xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-3 py-2 text-xs font-black text-[#f5f0e8]"
                   >
                     Open Public Site
                   </a>
                 </div>
                 {/* QR Code */}
-                <div className="mt-4 flex items-center gap-4 pt-4 border-t border-cyan-500/15">
+                <div className="mt-4 flex items-center gap-4 pt-4 border-t border-[#f5a623]/15">
                   <img
                     src={`https://api.qrserver.com/v1/create-qr-code/?size=120x120&data=${encodeURIComponent(getPublicUrl(site))}&format=png&margin=6`}
                     alt="QR Code"
                     className="w-20 h-20 rounded-lg bg-white p-1"
                   />
                   <div>
-                    <p className="text-[10px] text-cyan-200/60">Scan to visit your site</p>
+                    <p className="text-[10px] text-[#f5a623]/60">Scan to visit your site</p>
                     <a
                       href={`https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=${encodeURIComponent(getPublicUrl(site))}&format=png&margin=10`}
                       download={`${site.slug}-qr.png`}
-                      className="text-[10px] text-cyan-300 hover:underline mt-1 inline-block"
+                      className="text-[10px] text-[#f5a623] hover:underline mt-1 inline-block"
                     >
                       Download QR Code
                     </a>
@@ -712,10 +712,10 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
         </div>
 
         {generation?.templateId && (
-          <div className="mb-8 rounded-[28px] border border-cyan-500/20 bg-cyan-500/[0.08] p-5">
+          <div className="mb-8 rounded-[28px] border border-[#f5a623]/20 bg-[#f5a623]/[0.08] p-5">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-2xl">
-                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-200/80">Template Guidance</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#f5a623]/80">Template Guidance</p>
                 <p className="mt-2 text-lg font-black text-white">{starterGuidance.headline}</p>
                 <p className="mt-2 text-sm leading-6 text-cyan-50/80">
                   {starterGuidance.summary}
@@ -730,7 +730,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                   <button
                     key={action.label}
                     onClick={() => runStarterAction(action.type)}
-                    className="rounded-2xl border border-cyan-500/20 bg-white px-4 py-3 text-sm font-black text-cyan-900"
+                    className="rounded-2xl border border-[#f5a623]/20 bg-white px-4 py-3 text-sm font-black text-cyan-900"
                   >
                     {action.label}
                   </button>
@@ -743,7 +743,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
         <div className="mb-8 rounded-[28px] border border-white/[0.07] bg-white/[0.03] p-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-2xl">
-              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Launch Path</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#f5a623]/80">Launch Path</p>
               <p className="mt-2 text-lg font-black text-white">
                 {site.published ? "This site is live." : "This site is still in preflight."}
               </p>
@@ -764,7 +764,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
               <button
                 onClick={() => void applyLaunchBasics()}
                 disabled={autoFixingBasics}
-                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-3 text-sm font-black text-cyan-100 disabled:opacity-50"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-4 py-3 text-sm font-black text-[#f5f0e8] disabled:opacity-50"
               >
                 {autoFixingBasics ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
                 Fix Launch Basics
@@ -816,7 +816,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
         <div className="mb-8 rounded-[28px] border border-white/[0.07] bg-white/[0.03] p-5">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-2xl">
-              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Launch Actions</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#f5a623]/80">Launch Actions</p>
               <p className="mt-2 text-lg font-black text-white">Once this page is clean, start sending traffic with intent.</p>
               <p className="mt-2 text-sm leading-6 text-white/55">
                 These are the fastest next moves after the site is polished: preview, share, connect it to a campaign, or go find traffic sources.
@@ -829,36 +829,36 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
               href={getPublicUrl(site)}
               target="_blank"
               rel="noreferrer"
-              className="rounded-2xl border border-white/[0.08] bg-black/20 p-4 transition hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+              className="rounded-2xl border border-white/[0.08] bg-black/20 p-4 transition hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.05]"
             >
-              <ExternalLink className="h-5 w-5 text-cyan-300" />
+              <ExternalLink className="h-5 w-5 text-[#f5a623]" />
               <p className="mt-3 text-sm font-black text-white">Preview Public Site</p>
               <p className="mt-2 text-xs leading-5 text-white/40">Open the actual public version and sanity-check the share path before you push traffic.</p>
             </a>
 
             <button
               onClick={copyLink}
-              className="rounded-2xl border border-white/[0.08] bg-black/20 p-4 text-left transition hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+              className="rounded-2xl border border-white/[0.08] bg-black/20 p-4 text-left transition hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.05]"
             >
-              <Link2 className="h-5 w-5 text-cyan-300" />
+              <Link2 className="h-5 w-5 text-[#f5a623]" />
               <p className="mt-3 text-sm font-black text-white">Copy Share Link</p>
               <p className="mt-2 text-xs leading-5 text-white/40">Use the current public URL in sales messages, DMs, or internal review before a domain switch.</p>
             </button>
 
             <Link
               href="/campaigns/new"
-              className="rounded-2xl border border-white/[0.08] bg-black/20 p-4 transition hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+              className="rounded-2xl border border-white/[0.08] bg-black/20 p-4 transition hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.05]"
             >
-              <Megaphone className="h-5 w-5 text-cyan-300" />
+              <Megaphone className="h-5 w-5 text-[#f5a623]" />
               <p className="mt-3 text-sm font-black text-white">Create Launch Campaign</p>
               <p className="mt-2 text-xs leading-5 text-white/40">Spin this site into your next Google, Facebook, or offer campaign instead of leaving it idle.</p>
             </Link>
 
             <Link
               href="/leads"
-              className="rounded-2xl border border-white/[0.08] bg-black/20 p-4 transition hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+              className="rounded-2xl border border-white/[0.08] bg-black/20 p-4 transition hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.05]"
             >
-              <Globe className="h-5 w-5 text-cyan-300" />
+              <Globe className="h-5 w-5 text-[#f5a623]" />
               <p className="mt-3 text-sm font-black text-white">Find Traffic Sources</p>
               <p className="mt-2 text-xs leading-5 text-white/40">Go straight from site readiness into lead finding so the website becomes part of a real growth loop.</p>
             </Link>
@@ -867,13 +867,13 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
 
         {generation && (
           <div className="mb-8 rounded-[28px] border border-white/[0.07] bg-white/[0.03] p-5">
-            <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Build Context</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#f5a623]/80">Build Context</p>
             <div className="mt-4 grid gap-4 md:grid-cols-3">
               <div className="rounded-2xl border border-white/[0.06] bg-black/20 px-4 py-4">
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/25">Origin</p>
                 <p className="mt-2 text-sm font-bold text-white/75">{generation.sourceMode?.replaceAll("_", " ") ?? "unknown"}</p>
                 {generation.sourceUrl && (
-                  <p className="mt-2 break-all text-xs leading-5 text-cyan-300/75">{generation.sourceUrl}</p>
+                  <p className="mt-2 break-all text-xs leading-5 text-[#f5a623]/75">{generation.sourceUrl}</p>
                 )}
               </div>
 
@@ -886,7 +886,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                   {(generation.niche ?? "Unknown niche")} · {(generation.location ?? "Unknown market")}
                 </p>
                 {generation.createdPages?.length ? (
-                  <p className="mt-2 text-xs font-bold text-cyan-300">
+                  <p className="mt-2 text-xs font-bold text-[#f5a623]">
                     Created pages: {generation.createdPages.map((page) => page.title ?? page.slug ?? "Page").join(" · ")}
                   </p>
                 ) : null}
@@ -909,10 +909,10 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
         )}
 
         {missingStructurePages.length > 0 && (
-          <div className="mb-8 rounded-[28px] border border-cyan-500/20 bg-cyan-500/[0.07] p-5">
+          <div className="mb-8 rounded-[28px] border border-[#f5a623]/20 bg-[#f5a623]/[0.07] p-5">
             <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
               <div>
-                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Upgrade Site Structure</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#f5a623]/80">Upgrade Site Structure</p>
                 <p className="mt-2 text-lg font-black text-white">This site is still missing some core pages.</p>
                 <p className="mt-2 text-sm leading-6 text-cyan-50/75">
                   Generate the missing structure automatically so the public site feels more complete and easier to navigate.
@@ -921,7 +921,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                   {missingStructurePages.map((template) => (
                     <span
                       key={template}
-                      className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-[11px] font-bold text-cyan-100"
+                      className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-[11px] font-bold text-[#f5f0e8]"
                     >
                       {getAiPageTemplateLabel(template)}
                     </span>
@@ -943,7 +943,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
         <div className="mb-8 rounded-[28px] border border-white/[0.07] bg-white/[0.03] p-5">
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Site Health</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#f5a623]/80">Site Health</p>
               <div className="mt-3 flex items-center gap-3">
                 <p className="text-3xl font-black text-white">{siteAudit.score}</p>
                 <p className="text-sm font-bold text-white/45">/ 100</p>
@@ -964,7 +964,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
               {!hasLandingPage && (
                 <button
                   onClick={() => startAiPageFlow("landing")}
-                  className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-3 text-sm font-black text-cyan-200"
+                  className="rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-4 py-3 text-sm font-black text-[#f5a623]"
                 >
                   Add Landing Page
                 </button>
@@ -972,7 +972,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
               {missingStructurePages.length > 0 && (
                 <button
                   onClick={() => void upgradeSiteStructure()}
-                  className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-3 text-sm font-black text-cyan-200"
+                  className="rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-4 py-3 text-sm font-black text-[#f5a623]"
                 >
                   Build Missing Pages
                 </button>
@@ -989,7 +989,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                 <button
                   onClick={() => void applyLaunchBasics()}
                   disabled={autoFixingBasics}
-                  className="rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-3 text-sm font-black text-cyan-200 disabled:opacity-50"
+                  className="rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-4 py-3 text-sm font-black text-[#f5a623] disabled:opacity-50"
                 >
                   {autoFixingBasics ? "Fixing..." : "Auto-Fix Basics"}
                 </button>
@@ -1022,8 +1022,8 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
           </div>
 
           <div className="mt-4 grid gap-4 xl:grid-cols-[1.05fr_1.35fr]">
-            <div className="rounded-2xl border border-cyan-500/15 bg-cyan-500/10 p-4">
-              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-200/80">Next Best Fixes</p>
+            <div className="rounded-2xl border border-[#f5a623]/15 bg-[#f5a623]/10 p-4">
+              <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f5a623]/80">Next Best Fixes</p>
               <div className="mt-3 space-y-2">
                 {siteAudit.recommendations.length ? siteAudit.recommendations.map((item) => (
                   <p key={item} className="text-sm leading-6 text-cyan-50/90">{item}</p>
@@ -1040,7 +1040,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                   <button
                     key={pageAudit.id}
                     onClick={() => router.push(`/websites/${siteId}/editor/${pageAudit.id}`)}
-                    className="flex w-full items-start justify-between gap-4 rounded-2xl border border-white/[0.06] bg-white/[0.03] px-4 py-3 text-left transition hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+                    className="flex w-full items-start justify-between gap-4 rounded-2xl border border-white/[0.06] bg-white/[0.03] px-4 py-3 text-left transition hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.05]"
                   >
                     <div>
                       <p className="text-sm font-black text-white">{pageAudit.title}</p>
@@ -1065,7 +1065,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
         <div className="mb-8 rounded-[28px] border border-white/[0.07] bg-white/[0.03] p-5">
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
-              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Launch Checklist</p>
+              <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#f5a623]/80">Launch Checklist</p>
               <p className="mt-2 text-lg font-black text-white">Finish the site before you send traffic.</p>
               <p className="mt-2 max-w-2xl text-sm leading-6 text-white/55">
                 This checklist tracks the minimum launch-ready pieces: visibility, structure, SEO, trust, and CTA coverage.
@@ -1104,7 +1104,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                 {!item.done && (
                   <button
                     onClick={item.onAction}
-                    className="inline-flex items-center justify-center rounded-xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-2 text-xs font-black text-cyan-200"
+                    className="inline-flex items-center justify-center rounded-xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-4 py-2 text-xs font-black text-[#f5a623]"
                   >
                     {item.actionLabel}
                   </button>
@@ -1123,7 +1123,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                 setPageMode("ai");
                 setAddingPage(true);
               }}
-              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/20 text-cyan-300 hover:text-cyan-200 text-xs font-bold transition"
+              className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#f5a623]/10 hover:bg-[#f5a623]/20 border border-[#f5a623]/20 text-[#f5a623] hover:text-[#f5a623] text-xs font-bold transition"
             >
               <Plus className="w-3.5 h-3.5" /> Add Page with AI
             </button>
@@ -1152,7 +1152,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                   onClick={() => setPageMode(mode)}
                   className={`rounded-xl px-3 py-2 text-xs font-bold transition ${
                     pageMode === mode
-                      ? "bg-cyan-500/20 text-cyan-300 border border-cyan-500/30"
+                      ? "bg-[#f5a623]/20 text-[#f5a623] border border-[#f5a623]/30"
                       : "bg-white/[0.04] text-white/35 border border-white/[0.08] hover:text-white/60"
                   }`}
                 >
@@ -1180,7 +1180,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                     }}
                     className={`rounded-xl border px-3 py-2 text-left text-xs font-bold transition ${
                       aiPageTemplate === value
-                        ? "border-cyan-500/30 bg-cyan-500/15 text-cyan-200"
+                        ? "border-[#f5a623]/30 bg-[#f5a623]/15 text-[#f5a623]"
                         : "border-white/[0.08] bg-white/[0.03] text-white/40 hover:text-white/70"
                     }`}
                   >
@@ -1198,9 +1198,9 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                 onKeyDown={e => { if (e.key === "Enter") void createPage(); if (e.key === "Escape") setAddingPage(false); }}
                 placeholder={pageMode === "ai" ? "Page title for the AI-generated page..." : "Page title..."}
                 autoFocus
-                className="flex-1 bg-white/[0.05] border border-cyan-500/40 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none"
+                className="flex-1 bg-white/[0.05] border border-[#f5a623]/40 rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none"
               />
-              <button onClick={() => void createPage()} disabled={creatingPage || !newPageTitle.trim()} className="p-2.5 rounded-xl bg-cyan-500/20 border border-cyan-500/30 text-cyan-300 hover:bg-cyan-500/30 transition disabled:opacity-40">
+              <button onClick={() => void createPage()} disabled={creatingPage || !newPageTitle.trim()} className="p-2.5 rounded-xl bg-[#f5a623]/20 border border-[#f5a623]/30 text-[#f5a623] hover:bg-[#f5a623]/30 transition disabled:opacity-40">
                 {creatingPage ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
               </button>
               <button onClick={() => { setAddingPage(false); setNewPageTitle(""); setPageMode("manual"); }} className="p-2.5 rounded-xl hover:bg-white/[0.06] text-white/30 hover:text-white/60 transition">
@@ -1208,7 +1208,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
               </button>
             </div>
             {pageMode === "ai" && (
-              <p className="mt-3 text-xs leading-5 text-cyan-100/70">
+              <p className="mt-3 text-xs leading-5 text-[#f5f0e8]/70">
                 AI page generation uses this site’s niche, location, and conversion context to start the page with structured sections instead of a blank canvas.
               </p>
             )}
@@ -1229,7 +1229,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                 <div className="flex items-center gap-2">
                   <span className="text-sm font-bold text-white truncate">{page.title}</span>
                   {page.slug === "home" && (
-                    <span className="px-1.5 py-0.5 rounded text-[9px] font-black text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 uppercase">Home</span>
+                    <span className="px-1.5 py-0.5 rounded text-[9px] font-black text-[#f5a623] bg-[#f5a623]/10 border border-[#f5a623]/20 uppercase">Home</span>
                   )}
                   {!page.published && (
                     <span className="px-1.5 py-0.5 rounded text-[9px] font-black text-white/30 bg-white/5 border border-white/10 uppercase">Hidden</span>
@@ -1261,7 +1261,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                 </button>
                 <button
                   onClick={() => void duplicatePage(page.id, page.title)}
-                  className="p-1.5 rounded-lg hover:bg-white/[0.06] text-white/25 hover:text-cyan-300 transition"
+                  className="p-1.5 rounded-lg hover:bg-white/[0.06] text-white/25 hover:text-[#f5a623] transition"
                 >
                   <Copy className="w-3.5 h-3.5" />
                 </button>
@@ -1277,7 +1277,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                 )}
                 <Link
                   href={`/websites/${siteId}/editor/${page.id}`}
-                  className="p-1.5 rounded-lg hover:bg-cyan-500/10 text-white/25 hover:text-cyan-400 transition"
+                  className="p-1.5 rounded-lg hover:bg-[#f5a623]/10 text-white/25 hover:text-[#f5a623] transition"
                 >
                   <Edit2 className="w-3.5 h-3.5" />
                 </Link>

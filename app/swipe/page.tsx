@@ -44,7 +44,7 @@ export default function SwipeFilePage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center justify-between mb-8">
@@ -64,7 +64,7 @@ export default function SwipeFilePage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search your swipe file..."
-              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl pl-10 pr-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
             />
           </div>
           <div className="flex gap-1.5">
@@ -74,7 +74,7 @@ export default function SwipeFilePage() {
                 onClick={() => setFilterType(t)}
                 className={`px-3 py-1.5 rounded-lg text-[10px] font-bold transition border ${
                   filterType === t
-                    ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-300"
+                    ? "border-[#f5a623]/40 bg-[#f5a623]/10 text-[#f5a623]"
                     : "border-white/10 bg-white/[0.03] text-white/30 hover:text-white/50"
                 }`}
               >
@@ -106,7 +106,7 @@ export default function SwipeFilePage() {
               <div key={item.id} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 hover:border-cyan-400/15 transition">
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <div className="flex items-center gap-2 flex-wrap">
-                    <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-cyan-500/15 text-cyan-400 border border-cyan-500/20">
+                    <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-[#f5a623]/15 text-[#f5a623] border border-[#f5a623]/20">
                       {item.type}
                     </span>
                     {item.platform && (
@@ -122,7 +122,7 @@ export default function SwipeFilePage() {
                   </div>
                   <button
                     onClick={() => copyItem(item.id, item.content)}
-                    className="shrink-0 flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-[10px] font-bold hover:bg-cyan-500/20 transition"
+                    className="shrink-0 flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-[#f5a623]/10 border border-[#f5a623]/20 text-[#f5a623] text-[10px] font-bold hover:bg-[#f5a623]/20 transition"
                   >
                     {copiedId === item.id ? <><Check className="w-3 h-3" /> Copied</> : <><Copy className="w-3 h-3" /> Copy</>}
                   </button>

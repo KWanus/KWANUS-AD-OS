@@ -37,9 +37,9 @@ type Project = {
 };
 
 const PHASE_META: Record<number, { label: string; icon: typeof Target; tone: string }> = {
-  1: { label: "Source", icon: Target, tone: "text-cyan-400 bg-cyan-500/10 border-cyan-500/20" },
+  1: { label: "Source", icon: Target, tone: "text-[#f5a623] bg-[#f5a623]/10 border-[#f5a623]/20" },
   2: { label: "Audit", icon: BarChart3, tone: "text-blue-400 bg-blue-500/10 border-blue-500/20" },
-  3: { label: "Strategize", icon: Sparkles, tone: "text-violet-400 bg-violet-500/10 border-violet-500/20" },
+  3: { label: "Strategize", icon: Sparkles, tone: "text-[#e07850] bg-violet-500/10 border-violet-500/20" },
   4: { label: "Produce", icon: Wand2, tone: "text-fuchsia-400 bg-fuchsia-500/10 border-fuchsia-500/20" },
   5: { label: "Deploy", icon: Rocket, tone: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20" },
 };
@@ -106,9 +106,9 @@ export default function ProjectsPage() {
   }, [projects]);
 
   return (
-    <main className="min-h-screen bg-[#050a14] text-white">
+    <main className="min-h-screen bg-t-bg text-white">
       <div className="fixed inset-0 pointer-events-none">
-        <div className="absolute top-0 left-1/4 h-[28rem] w-[28rem] rounded-full bg-cyan-500/10 blur-[140px]" />
+        <div className="absolute top-0 left-1/4 h-[28rem] w-[28rem] rounded-full bg-[#f5a623]/10 blur-[140px]" />
         <div className="absolute bottom-0 right-1/4 h-[24rem] w-[24rem] rounded-full bg-fuchsia-500/10 blur-[140px]" />
         <div
           className="absolute inset-0 opacity-[0.02]"
@@ -123,7 +123,7 @@ export default function ProjectsPage() {
           <div>
             <div className="mb-3 flex items-center gap-2">
               <div className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse" />
-              <span className="text-[11px] font-black uppercase tracking-[0.25em] text-cyan-400/70">
+              <span className="text-[11px] font-black uppercase tracking-[0.25em] text-[#f5a623]/70">
                 Projects
               </span>
             </div>
@@ -147,7 +147,7 @@ export default function ProjectsPage() {
             </Link>
             <Link
               href="/analyze"
-              className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-fuchsia-600 px-6 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.25)] transition hover:scale-[1.02]"
+              className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-fuchsia-600 px-6 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(245,166,35,0.25)] transition hover:scale-[1.02]"
             >
               Start New Analysis
               <ArrowRight className="h-4 w-4" />
@@ -160,7 +160,7 @@ export default function ProjectsPage() {
             <div className="mt-8 grid grid-cols-2 gap-4 md:grid-cols-4">
               {[
                 { label: "Projects", value: totals.projects, tone: "text-white" },
-                { label: "In Progress", value: totals.active, tone: "text-cyan-400" },
+                { label: "In Progress", value: totals.active, tone: "text-[#f5a623]" },
                 { label: "Creatives", value: totals.creatives, tone: "text-fuchsia-400" },
                 { label: "Checklist Tasks", value: totals.tasks, tone: "text-emerald-400" },
               ].map((stat) => (
@@ -178,7 +178,7 @@ export default function ProjectsPage() {
                   value={search}
                   onChange={(event) => setSearch(event.target.value)}
                   placeholder="Search projects, sources, or modes..."
-                  className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.03] py-3 pl-10 pr-4 text-sm text-white outline-none transition placeholder:text-white/20 focus:border-cyan-500/40"
+                  className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.03] py-3 pl-10 pr-4 text-sm text-white outline-none transition placeholder:text-white/20 focus:border-[#f5a623]/40"
                 />
               </div>
             </div>
@@ -187,15 +187,15 @@ export default function ProjectsPage() {
 
         {loading && (
           <div className="flex flex-col items-center gap-4 py-32 text-white/25">
-            <Loader2 className="h-8 w-8 animate-spin text-cyan-400" />
+            <Loader2 className="h-8 w-8 animate-spin text-[#f5a623]" />
             <p className="text-sm font-semibold">Loading your project workspaces...</p>
           </div>
         )}
 
         {!loading && projects.length === 0 && (
           <div className="mt-8 overflow-hidden rounded-3xl border border-white/[0.06] bg-gradient-to-br from-cyan-500/[0.05] to-fuchsia-500/[0.04] p-14 text-center">
-            <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-3xl border border-white/[0.08] bg-white/[0.04] shadow-[0_0_40px_rgba(6,182,212,0.16)]">
-              <Sparkles className="h-10 w-10 text-cyan-300" />
+            <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-3xl border border-white/[0.08] bg-white/[0.04] shadow-[0_0_40px_rgba(245,166,35,0.16)]">
+              <Sparkles className="h-10 w-10 text-[#f5a623]" />
             </div>
             <h2 className="text-2xl font-black">No projects yet</h2>
             <p className="mx-auto mt-3 max-w-xl text-sm leading-relaxed text-white/35">
@@ -210,7 +210,7 @@ export default function ProjectsPage() {
               </Link>
               <Link
                 href="/analyze"
-                className="rounded-2xl border border-cyan-400/30 bg-cyan-500/10 px-6 py-3 text-sm font-black text-cyan-300 transition hover:bg-cyan-500/15"
+                className="rounded-2xl border border-cyan-400/30 bg-[#f5a623]/10 px-6 py-3 text-sm font-black text-[#f5a623] transition hover:bg-[#f5a623]/15"
               >
                 Analyze a URL
               </Link>
@@ -235,7 +235,7 @@ export default function ProjectsPage() {
                 <button
                   key={project.id}
                   onClick={() => router.push(`/projects/${project.id}`)}
-                  className="group rounded-3xl border border-white/[0.07] bg-white/[0.03] p-6 text-left transition duration-200 hover:border-cyan-500/30 hover:bg-white/[0.045]"
+                  className="group rounded-3xl border border-white/[0.07] bg-white/[0.03] p-6 text-left transition duration-200 hover:border-[#f5a623]/30 hover:bg-white/[0.045]"
                 >
                   <div className="flex flex-wrap items-start justify-between gap-4">
                     <div className="min-w-0 flex-1">
@@ -250,7 +250,7 @@ export default function ProjectsPage() {
                         <span
                           className={`rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] ${
                             executionTier === "elite"
-                              ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-300"
+                              ? "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5a623]"
                               : "border-white/10 bg-white/5 text-white/45"
                           }`}
                         >
@@ -261,7 +261,7 @@ export default function ProjectsPage() {
                         </span>
                       </div>
 
-                      <h2 className="truncate text-xl font-black tracking-tight text-white transition group-hover:text-cyan-300">
+                      <h2 className="truncate text-xl font-black tracking-tight text-white transition group-hover:text-[#f5a623]">
                         {project.name}
                       </h2>
                       <p className="mt-2 line-clamp-2 text-sm leading-relaxed text-white/35">
@@ -293,7 +293,7 @@ export default function ProjectsPage() {
                       <CheckSquare className="h-3.5 w-3.5 text-emerald-400/70" />
                       {project._count.checklistItems} execution tasks saved
                     </div>
-                    <span className="inline-flex items-center gap-2 text-sm font-black text-cyan-300">
+                    <span className="inline-flex items-center gap-2 text-sm font-black text-[#f5a623]">
                       Open workspace
                       <ArrowRight className="h-4 w-4 transition group-hover:translate-x-0.5" />
                     </span>

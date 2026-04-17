@@ -26,7 +26,7 @@ export default function CRMSubNav({ showAddButton = false }: { showAddButton?: b
                 href={href}
                 className={`flex items-center gap-2 px-4 py-3 text-xs font-bold whitespace-nowrap border-b-2 transition-all ${
                   active
-                    ? "border-cyan-500 text-cyan-400"
+                    ? "border-[#f5a623] text-[#f5a623]"
                     : "border-transparent text-white/35 hover:text-white/60 hover:border-white/20"
                 }`}
               >
@@ -40,7 +40,7 @@ export default function CRMSubNav({ showAddButton = false }: { showAddButton?: b
         {showAddButton && (
           <Link
             href="/clients/new"
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition-opacity my-2"
+            className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-xs font-bold hover:opacity-90 transition-opacity my-2"
           >
             <Plus className="w-3.5 h-3.5" />
             Add Client

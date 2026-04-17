@@ -164,7 +164,7 @@ export default function StoreDashboard({ params }: { params: Promise<{ id: strin
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#020509] flex items-center justify-center">
+            <div className="min-h-screen bg-t-bg flex items-center justify-center">
                 <Loader2 className="w-6 h-6 text-cyan-500 animate-spin" />
             </div>
         );
@@ -172,15 +172,15 @@ export default function StoreDashboard({ params }: { params: Promise<{ id: strin
 
     if (!site) {
         return (
-            <div className="min-h-screen bg-[#020509] flex items-center justify-center text-white/40">
+            <div className="min-h-screen bg-t-bg flex items-center justify-center text-white/40">
                 Site not found
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#020509] flex flex-col font-sans">
-            <header className="h-16 border-b border-white/[0.08] flex items-center justify-between px-6 bg-[#050a14]">
+        <div className="min-h-screen bg-t-bg flex flex-col font-sans">
+            <header className="h-16 border-b border-white/[0.08] flex items-center justify-between px-6 bg-t-bg">
                 <div className="flex items-center gap-4">
                     <button onClick={() => router.push(`/websites/${siteId}`)} className="flex items-center gap-1.5 text-white/40 hover:text-white transition group">
                         <ArrowLeft className="w-4 h-4" />
@@ -196,7 +196,7 @@ export default function StoreDashboard({ params }: { params: Promise<{ id: strin
                     </a>
                     <button
                         onClick={() => setShowAddModal(true)}
-                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:opacity-90 transition shadow-[0_0_20px_rgba(6,182,212,0.3)]"
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white hover:opacity-90 transition shadow-[0_0_20px_rgba(245,166,35,0.3)]"
                     >
                         <Plus className="w-3.5 h-3.5" />
                         Add Product
@@ -226,10 +226,10 @@ export default function StoreDashboard({ params }: { params: Promise<{ id: strin
                             onChange={(event) => setStatusFilter(event.target.value as "all" | "active" | "draft" | "archived")}
                             className="bg-white/[0.03] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white focus:outline-none"
                         >
-                            <option value="all" className="bg-[#050a14]">All statuses</option>
-                            <option value="active" className="bg-[#050a14]">Active</option>
-                            <option value="draft" className="bg-[#050a14]">Draft</option>
-                            <option value="archived" className="bg-[#050a14]">Archived</option>
+                            <option value="all" className="bg-t-bg">All statuses</option>
+                            <option value="active" className="bg-t-bg">Active</option>
+                            <option value="draft" className="bg-t-bg">Draft</option>
+                            <option value="archived" className="bg-t-bg">Archived</option>
                         </select>
                     </div>
                 </div>
@@ -250,7 +250,7 @@ export default function StoreDashboard({ params }: { params: Promise<{ id: strin
                         </button>
                     </div>
                 ) : (
-                    <div className="bg-[#050a14] border border-white/[0.08] rounded-2xl overflow-hidden shadow-2xl">
+                    <div className="bg-t-bg border border-white/[0.08] rounded-2xl overflow-hidden shadow-2xl">
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="border-b border-white/[0.08] bg-white/[0.02]">
@@ -276,7 +276,7 @@ export default function StoreDashboard({ params }: { params: Promise<{ id: strin
                                             </div>
                                         </td>
                                         <td className="py-4 px-6">
-                                            <div className="text-sm font-bold text-white group-hover:text-cyan-400 transition">{p.name}</div>
+                                            <div className="text-sm font-bold text-white group-hover:text-[#f5a623] transition">{p.name}</div>
                                             {p.description && (
                                                 <div className="text-xs text-white/35 mt-1 max-w-md line-clamp-2">{p.description}</div>
                                             )}
@@ -326,10 +326,10 @@ export default function StoreDashboard({ params }: { params: Promise<{ id: strin
 
             {showAddModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-                    <div className="w-full max-w-2xl rounded-3xl border border-white/[0.08] bg-[#050a14] shadow-2xl">
+                    <div className="w-full max-w-2xl rounded-3xl border border-white/[0.08] bg-t-bg shadow-2xl">
                         <div className="flex items-center justify-between px-6 py-5 border-b border-white/[0.08]">
                             <div>
-                                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-400/70">Store Catalog</p>
+                                <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#f5a623]/70">Store Catalog</p>
                                 <h3 className="text-lg font-black text-white mt-1">Add Product</h3>
                             </div>
                             <button
@@ -376,9 +376,9 @@ export default function StoreDashboard({ params }: { params: Promise<{ id: strin
                                 onChange={(event) => setProductForm((prev) => ({ ...prev, status: event.target.value }))}
                                 className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
                             >
-                                <option value="active" className="bg-[#050a14]">Active</option>
-                                <option value="draft" className="bg-[#050a14]">Draft</option>
-                                <option value="archived" className="bg-[#050a14]">Archived</option>
+                                <option value="active" className="bg-t-bg">Active</option>
+                                <option value="draft" className="bg-t-bg">Draft</option>
+                                <option value="archived" className="bg-t-bg">Archived</option>
                             </select>
                             <textarea
                                 value={productForm.description}
@@ -401,7 +401,7 @@ export default function StoreDashboard({ params }: { params: Promise<{ id: strin
                                 <button
                                     onClick={() => void createProduct()}
                                     disabled={saving}
-                                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-sm font-black text-white disabled:opacity-50"
+                                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-sm font-black text-white disabled:opacity-50"
                                 >
                                     {saving ? "Adding..." : "Add Product"}
                                 </button>

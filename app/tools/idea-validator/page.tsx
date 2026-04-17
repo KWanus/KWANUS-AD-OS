@@ -74,7 +74,7 @@ Be honest and specific. No generic advice.`,
   };
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
@@ -126,11 +126,11 @@ Be honest and specific. No generic advice.`,
 
             {/* Next steps */}
             {result.nextSteps.length > 0 && (
-              <div className="rounded-2xl border border-cyan-500/15 bg-cyan-500/5 p-5">
-                <p className="text-[10px] font-black uppercase tracking-widest text-cyan-400/60 mb-2">Next Steps</p>
+              <div className="rounded-2xl border border-[#f5a623]/15 bg-[#f5a623]/5 p-5">
+                <p className="text-[10px] font-black uppercase tracking-widest text-[#f5a623]/60 mb-2">Next Steps</p>
                 {result.nextSteps.map((step, i) => (
                   <p key={i} className="text-xs text-white/50 mb-1.5 flex items-start gap-2">
-                    <ArrowRight className="w-3 h-3 text-cyan-400 shrink-0 mt-0.5" /> {step}
+                    <ArrowRight className="w-3 h-3 text-[#f5a623] shrink-0 mt-0.5" /> {step}
                   </p>
                 ))}
               </div>

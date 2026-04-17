@@ -15,15 +15,15 @@ type Props = {
 };
 
 const GROWTH_COLORS: Record<string, string> = {
-  cyan: "bg-cyan-500/5 border-cyan-500/10",
+  cyan: "bg-[#f5a623]/5 border-[#f5a623]/10",
   purple: "bg-purple-500/5 border-purple-500/10",
   amber: "bg-amber-500/5 border-amber-500/10",
   emerald: "bg-emerald-500/5 border-emerald-500/10",
 };
 
 const GROWTH_ICON_COLORS: Record<string, string> = {
-  cyan: "text-cyan-400/60",
-  purple: "text-purple-400/60",
+  cyan: "text-[#f5a623]/60",
+  purple: "text-[#e07850]/60",
   amber: "text-amber-400/60",
   emerald: "text-emerald-400/60",
 };
@@ -32,13 +32,13 @@ function DayAction({ day, title, actions }: { day: string; title: string; action
   return (
     <div className="rounded-xl border border-white/[0.05] bg-black/20 p-4">
       <div className="flex items-center gap-3 mb-2">
-        <span className="shrink-0 rounded border border-cyan-500/15 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-black text-cyan-400/60">{day}</span>
+        <span className="shrink-0 rounded border border-[#f5a623]/15 bg-[#f5a623]/10 px-2 py-0.5 text-[10px] font-black text-[#f5a623]/60">{day}</span>
         <h4 className="text-xs font-bold text-white/60">{title}</h4>
       </div>
       <ul className="space-y-1.5 pl-1">
         {actions.map((a, i) => (
           <li key={i} className="flex items-start gap-2 text-[11px] text-white/40">
-            <span className="text-cyan-400/30 shrink-0 mt-0.5">→</span>
+            <span className="text-[#f5a623]/30 shrink-0 mt-0.5">→</span>
             {a}
           </li>
         ))}
@@ -147,7 +147,7 @@ export default function ExecutionSteps({ vm, runId }: Props) {
         </div>
         <div className="h-2 bg-white/[0.04] rounded-full overflow-hidden">
           <div
-            className={`h-full rounded-full transition-all duration-500 ${allDone ? "bg-emerald-500" : "bg-cyan-500"}`}
+            className={`h-full rounded-full transition-all duration-500 ${allDone ? "bg-emerald-500" : "bg-[#f5a623]"}`}
             style={{ width: `${Math.max(progress, 1)}%` }}
           />
         </div>
@@ -173,7 +173,7 @@ export default function ExecutionSteps({ vm, runId }: Props) {
           {/* Your Next 7 Days — concrete action plan */}
           <div className="rounded-2xl border border-white/[0.07] bg-gradient-to-br from-white/[0.03] via-white/[0.02] to-transparent p-5">
             <div className="flex items-center gap-2 mb-2">
-              <Target className="w-4 h-4 text-cyan-400/50" />
+              <Target className="w-4 h-4 text-[#f5a623]/50" />
               <h3 className="text-sm font-bold text-white/60">Your Next 7 Days</h3>
             </div>
             <p className="text-xs text-white/25 mb-4">This is exactly what to do with what you just built. Follow this order.</p>
@@ -245,7 +245,7 @@ export default function ExecutionSteps({ vm, runId }: Props) {
             </Link>
             <Link
               href="/himalaya"
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 px-4 py-2.5 text-xs font-bold text-white transition hover:opacity-90"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-4 py-2.5 text-xs font-bold text-white transition hover:opacity-90"
             >
               Start New Path
             </Link>

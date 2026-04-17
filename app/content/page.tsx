@@ -27,7 +27,7 @@ const PLATFORM_ICONS: Record<string, React.ElementType> = {
 
 const PLATFORM_COLORS: Record<string, string> = {
   instagram: "text-pink-400 bg-pink-500/10 border-pink-500/20",
-  tiktok: "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
+  tiktok: "text-[#f5a623] bg-[#f5a623]/10 border-[#f5a623]/20",
   twitter: "text-blue-400 bg-blue-500/10 border-blue-500/20",
   linkedin: "text-blue-300 bg-blue-400/10 border-blue-400/20",
   facebook: "text-indigo-400 bg-indigo-500/10 border-indigo-500/20",
@@ -70,7 +70,7 @@ export default function ContentCalendarPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center justify-between mb-8">
@@ -92,8 +92,8 @@ export default function ContentCalendarPage() {
 
         {!generated ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/20 to-purple-600/20 border border-white/10 flex items-center justify-center mb-6">
-              <Calendar className="w-9 h-9 text-cyan-400/70" />
+            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/20 to-[#e07850]/20 border border-white/10 flex items-center justify-center mb-6">
+              <Calendar className="w-9 h-9 text-[#f5a623]/70" />
             </div>
             <h2 className="text-xl font-black text-white mb-2">Generate Your Content Calendar</h2>
             <p className="text-sm text-white/40 max-w-sm mb-8 leading-relaxed">
@@ -106,13 +106,13 @@ export default function ContentCalendarPage() {
                 value={niche}
                 onChange={(e) => setNiche(e.target.value)}
                 placeholder="Your niche (optional — e.g. fitness coaching)"
-                className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+                className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
               />
             </div>
             <button
               onClick={generateCalendar}
               disabled={generating}
-              className="flex items-center gap-2 px-8 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40"
+              className="flex items-center gap-2 px-8 py-3 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40"
             >
               {generating ? (
                 <><Loader2 className="w-4 h-4 animate-spin" /> Generating 7 days...</>
@@ -145,7 +145,7 @@ export default function ContentCalendarPage() {
                     </div>
                     <button
                       onClick={() => copyContent(entry.day, entry.content + (entry.hashtags ? "\n\n" + entry.hashtags : ""))}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-[10px] font-bold hover:bg-cyan-500/20 transition"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#f5a623]/10 border border-[#f5a623]/20 text-[#f5a623] text-[10px] font-bold hover:bg-[#f5a623]/20 transition"
                     >
                       {isCopied ? <><Check className="w-3 h-3" /> Copied!</> : <><Copy className="w-3 h-3" /> Copy</>}
                     </button>
@@ -160,7 +160,7 @@ export default function ContentCalendarPage() {
                       {entry.content}
                     </pre>
                     {entry.hashtags && (
-                      <p className="text-xs text-cyan-400/40 mt-3">{entry.hashtags}</p>
+                      <p className="text-xs text-[#f5a623]/40 mt-3">{entry.hashtags}</p>
                     )}
                   </div>
                 </div>

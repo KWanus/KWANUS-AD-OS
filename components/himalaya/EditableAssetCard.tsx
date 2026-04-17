@@ -133,7 +133,7 @@ export default function EditableAssetCard({ group, analysisId, mode = "operator"
         <textarea
           value={editText}
           onChange={(e) => setEditText(e.target.value)}
-          className="min-h-[120px] w-full resize-y rounded-lg border border-white/[0.1] bg-white/[0.03] p-3 font-mono text-xs leading-relaxed text-white/70 transition focus:border-cyan-500/30 focus:outline-none"
+          className="min-h-[120px] w-full resize-y rounded-lg border border-white/[0.1] bg-white/[0.03] p-3 font-mono text-xs leading-relaxed text-white/70 transition focus:border-[#f5a623]/30 focus:outline-none"
           autoFocus
         />
       ) : (
@@ -154,7 +154,7 @@ function AssetCardContent({ group }: { group: AssetGroup }) {
       <ul className="space-y-2">
         {(group.content as string[]).map((item, i) => (
           <li key={i} className="flex items-start gap-3">
-            <span className="text-[10px] font-black text-cyan-400/50 shrink-0 mt-0.5 w-4 text-right">{i + 1}.</span>
+            <span className="text-[10px] font-black text-[#f5a623]/50 shrink-0 mt-0.5 w-4 text-right">{i + 1}.</span>
             <p className="text-xs text-white/60 leading-relaxed flex-1">{item}</p>
           </li>
         ))}
@@ -187,9 +187,9 @@ function AssetCardContent({ group }: { group: AssetGroup }) {
             <div className="space-y-2">
               {script.sections.map((section, j) => (
                 <div key={j} className="flex gap-3">
-                  <span className="text-[10px] text-cyan-400/50 font-mono shrink-0 w-10 pt-0.5">{section.timestamp}</span>
+                  <span className="text-[10px] text-[#f5a623]/50 font-mono shrink-0 w-10 pt-0.5">{section.timestamp}</span>
                   <div>
-                    <p className="text-[10px] text-purple-400/50 font-bold uppercase tracking-wider mb-0.5">{section.direction}</p>
+                    <p className="text-[10px] text-[#e07850]/50 font-bold uppercase tracking-wider mb-0.5">{section.direction}</p>
                     <p className="text-xs text-white/50 leading-relaxed">{section.copy}</p>
                   </div>
                 </div>

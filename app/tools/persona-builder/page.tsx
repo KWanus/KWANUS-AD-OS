@@ -84,12 +84,12 @@ BUYING TRIGGER: ${persona.buyingTrigger}`;
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 rounded-xl bg-violet-500/10 border border-violet-500/20 flex items-center justify-center">
-            <Users className="w-5 h-5 text-violet-400" />
+            <Users className="w-5 h-5 text-[#e07850]" />
           </div>
           <div>
             <h1 className="text-xl font-black text-white">Buyer Persona Builder</h1>
@@ -104,7 +104,7 @@ BUYING TRIGGER: ${persona.buyingTrigger}`;
             <input type="text" value={product} onChange={(e) => setProduct(e.target.value)} placeholder="Your product/service (optional)"
               className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none transition" />
             <button onClick={generate} disabled={generating || !niche.trim()}
-              className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-violet-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40">
+              className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-violet-500 to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40">
               {generating ? <><Loader2 className="w-4 h-4 animate-spin" /> Building persona...</> : <><Users className="w-4 h-4" /> Build Persona</>}
             </button>
           </div>
@@ -147,8 +147,8 @@ BUYING TRIGGER: ${persona.buyingTrigger}`;
             </div>
 
             {/* Buying trigger */}
-            <div className="rounded-xl border border-cyan-500/15 bg-cyan-500/5 p-4">
-              <p className="text-[10px] font-black uppercase tracking-widest text-cyan-400/60 mb-1">Buying Trigger</p>
+            <div className="rounded-xl border border-[#f5a623]/15 bg-[#f5a623]/5 p-4">
+              <p className="text-[10px] font-black uppercase tracking-widest text-[#f5a623]/60 mb-1">Buying Trigger</p>
               <p className="text-sm text-white/70">{persona.buyingTrigger}</p>
             </div>
           </div>
@@ -162,10 +162,10 @@ function DetailCard({ title, items, color }: { title: string; items: string[]; c
   const colorMap: Record<string, string> = {
     emerald: "border-emerald-500/15 bg-emerald-500/5 text-emerald-400/60",
     red: "border-red-500/15 bg-red-500/5 text-red-400/60",
-    cyan: "border-cyan-500/15 bg-cyan-500/5 text-cyan-400/60",
+    cyan: "border-[#f5a623]/15 bg-[#f5a623]/5 text-[#f5a623]/60",
     amber: "border-amber-500/15 bg-amber-500/5 text-amber-400/60",
     blue: "border-blue-500/15 bg-blue-500/5 text-blue-400/60",
-    purple: "border-purple-500/15 bg-purple-500/5 text-purple-400/60",
+    purple: "border-purple-500/15 bg-purple-500/5 text-[#e07850]/60",
   };
   const c = colorMap[color] ?? colorMap.cyan;
   return (

@@ -47,12 +47,12 @@ Create 6 modules with 3-5 lessons each. Make it transformation-focused (before â
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-            <BookOpen className="w-5 h-5 text-purple-400" />
+            <BookOpen className="w-5 h-5 text-[#e07850]" />
           </div>
           <div>
             <h1 className="text-xl font-black text-white">Course Outline Builder</h1>

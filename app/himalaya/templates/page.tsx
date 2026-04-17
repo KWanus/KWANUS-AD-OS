@@ -8,7 +8,7 @@ import TemplateList from "@/components/himalaya/TemplateList";
 
 export default function HimalayaTemplatesPage() {
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <HimalayaNav />
       <main className="mx-auto max-w-4xl px-4 py-8 sm:px-6">

@@ -111,12 +111,12 @@ Each under 45 characters. No emojis. No quotes. Just the text, one per line.`,
   const winner = results?.[0];
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
-            <Mail className="w-5 h-5 text-purple-400" />
+            <Mail className="w-5 h-5 text-[#e07850]" />
           </div>
           <div>
             <h1 className="text-xl font-black text-white">Subject Line Tester</h1>
@@ -175,7 +175,7 @@ Each under 45 characters. No emojis. No quotes. Just the text, one per line.`,
           <div className="space-y-3">
             {results.map((r, i) => {
               const isWinner = i === 0;
-              const scoreColor = r.score >= 80 ? "text-emerald-400" : r.score >= 60 ? "text-cyan-400" : r.score >= 40 ? "text-amber-400" : "text-red-400";
+              const scoreColor = r.score >= 80 ? "text-emerald-400" : r.score >= 60 ? "text-[#f5a623]" : r.score >= 40 ? "text-amber-400" : "text-red-400";
 
               return (
                 <div

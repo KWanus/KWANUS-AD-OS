@@ -17,14 +17,14 @@ type Props = {
 };
 
 const COLORS = {
-  cyan: "from-cyan-500/[0.06] to-purple-500/[0.04] border-cyan-500/15",
+  cyan: "from-cyan-500/[0.06] to-purple-500/[0.04] border-[#f5a623]/15",
   purple: "from-purple-500/[0.06] to-cyan-500/[0.04] border-purple-500/15",
   amber: "from-amber-500/[0.06] to-orange-500/[0.04] border-amber-500/15",
   emerald: "from-emerald-500/[0.06] to-cyan-500/[0.04] border-emerald-500/15",
 };
 
 const CTA_COLORS = {
-  cyan: "from-cyan-500 to-purple-600",
+  cyan: "from-[#f5a623] to-[#e07850]",
   purple: "from-purple-500 to-cyan-600",
   amber: "from-amber-500 to-orange-600",
   emerald: "from-emerald-500 to-cyan-600",

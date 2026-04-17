@@ -145,7 +145,7 @@ interface AffiliateOffer {
 const PLATFORM_BADGE: Record<Platform, string> = {
   clickbank:   "bg-green-500/15 text-green-400 border-green-500/30",
   jvzoo:       "bg-blue-500/15 text-blue-400 border-blue-500/30",
-  warriorplus: "bg-purple-500/15 text-purple-400 border-purple-500/30",
+  warriorplus: "bg-purple-500/15 text-[#e07850] border-purple-500/30",
   cj:          "bg-indigo-500/15 text-indigo-400 border-indigo-500/30",
   amazon:      "bg-orange-500/15 text-orange-400 border-orange-500/30",
   digistore24: "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
@@ -154,7 +154,7 @@ const PLATFORM_BADGE: Record<Platform, string> = {
 
 const STATUS_BADGE: Record<OfferStatus, string> = {
   researching: "bg-white/10 text-white/50 border-white/20",
-  approved:    "bg-cyan-500/15 text-cyan-400 border-cyan-500/30",
+  approved:    "bg-[#f5a623]/15 text-[#f5a623] border-[#f5a623]/30",
   building:    "bg-blue-500/15 text-blue-400 border-blue-500/30",
   running:     "bg-green-500/15 text-green-400 border-green-500/30",
   paused:      "bg-amber-500/15 text-amber-400 border-amber-500/30",
@@ -276,7 +276,7 @@ function TabOverview({ offer, onNotesBlur }: {
           onBlur={() => onNotesBlur(notes)}
           placeholder="Add research notes, observations, or reminders..."
           rows={5}
-          className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-3 py-2.5 text-xs text-white/70 placeholder-white/20 focus:outline-none focus:border-cyan-500/40 transition resize-none"
+          className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-3 py-2.5 text-xs text-white/70 placeholder-white/20 focus:outline-none focus:border-[#f5a623]/40 transition resize-none"
         />
       </div>
 
@@ -292,7 +292,7 @@ function TabOverview({ offer, onNotesBlur }: {
               <div key={stage} className="flex items-center flex-1 min-w-0">
                 <div className={`flex flex-col items-center gap-1 flex-1 min-w-0 ${active ? "opacity-100" : past ? "opacity-50" : "opacity-25"}`}>
                   <div className={`w-2.5 h-2.5 rounded-full border-2 ${active ? "bg-cyan-400 border-cyan-400" : past ? "bg-white/40 border-white/40" : "bg-transparent border-white/30"}`} />
-                  <span className={`text-[9px] font-black uppercase tracking-wide text-center leading-tight ${active ? "text-cyan-400" : "text-white/40"}`}>
+                  <span className={`text-[9px] font-black uppercase tracking-wide text-center leading-tight ${active ? "text-[#f5a623]" : "text-white/40"}`}>
                     {stage}
                   </span>
                 </div>
@@ -325,7 +325,7 @@ function TabAnalysis({ offer, onRunAnalysis, running }: {
         <button
           onClick={onRunAnalysis}
           disabled={running}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600/30 to-blue-600/30 border border-cyan-500/30 hover:border-cyan-400/50 text-sm font-bold text-white transition disabled:opacity-40"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600/30 to-blue-600/30 border border-[#f5a623]/30 hover:border-cyan-400/50 text-sm font-bold text-white transition disabled:opacity-40"
         >
           {running ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
           Run Analysis
@@ -364,7 +364,7 @@ function TabAnalysis({ offer, onRunAnalysis, running }: {
       {a.targetAudience && (
         <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5">
           <div className="flex items-center gap-2 mb-4">
-            <Users className="w-4 h-4 text-cyan-400" />
+            <Users className="w-4 h-4 text-[#f5a623]" />
             <h3 className="text-xs font-black uppercase tracking-widest text-white/40">Target Audience</h3>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -460,7 +460,7 @@ function TabAnalysis({ offer, onRunAnalysis, running }: {
       {a.audienceSegments && a.audienceSegments.length > 0 && (
         <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5">
           <div className="flex items-center gap-2 mb-4">
-            <Target className="w-4 h-4 text-purple-400" />
+            <Target className="w-4 h-4 text-[#e07850]" />
             <h3 className="text-xs font-black uppercase tracking-widest text-white/40">Audience Segments</h3>
           </div>
           <div className="overflow-x-auto">
@@ -506,7 +506,7 @@ function TabFunnel({ offer, onGenerate, running }: {
         <button
           onClick={onGenerate}
           disabled={running}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-600/30 to-pink-600/30 border border-purple-500/30 hover:border-purple-400/50 text-sm font-bold text-white transition disabled:opacity-40"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#e07850]/30 to-pink-600/30 border border-purple-500/30 hover:border-purple-400/50 text-sm font-bold text-white transition disabled:opacity-40"
         >
           {running ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
           Generate Funnel
@@ -515,7 +515,7 @@ function TabFunnel({ offer, onGenerate, running }: {
     );
   }
 
-  const STEP_COLORS = ["text-blue-400 border-blue-500/30 bg-blue-500/10", "text-purple-400 border-purple-500/30 bg-purple-500/10", "text-cyan-400 border-cyan-500/30 bg-cyan-500/10", "text-green-400 border-green-500/30 bg-green-500/10"];
+  const STEP_COLORS = ["text-blue-400 border-blue-500/30 bg-blue-500/10", "text-[#e07850] border-purple-500/30 bg-purple-500/10", "text-[#f5a623] border-[#f5a623]/30 bg-[#f5a623]/10", "text-green-400 border-green-500/30 bg-green-500/10"];
 
   return (
     <div className="space-y-5">
@@ -535,7 +535,7 @@ function TabFunnel({ offer, onGenerate, running }: {
                   {step.headline && <p className="text-sm font-bold text-white mb-1">{step.headline}</p>}
                   {step.body && <p className="text-xs text-white/50 leading-relaxed mb-2">{step.body}</p>}
                   {step.cta && (
-                    <span className="inline-flex px-3 py-1 rounded-lg bg-cyan-500/15 text-cyan-400 border border-cyan-500/25 text-[11px] font-bold">
+                    <span className="inline-flex px-3 py-1 rounded-lg bg-[#f5a623]/15 text-[#f5a623] border border-[#f5a623]/25 text-[11px] font-bold">
                       {step.cta}
                     </span>
                   )}
@@ -696,7 +696,7 @@ function TabAds({ offer, onGenerate, running }: {
         <button
           onClick={onGenerate}
           disabled={running}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600/30 to-purple-600/30 border border-indigo-500/30 hover:border-indigo-400/50 text-sm font-bold text-white transition disabled:opacity-40"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-600/30 to-[#e07850]/30 border border-indigo-500/30 hover:border-indigo-400/50 text-sm font-bold text-white transition disabled:opacity-40"
         >
           {running ? <Loader2 className="w-4 h-4 animate-spin" /> : <Megaphone className="w-4 h-4" />}
           Generate Ads
@@ -777,7 +777,7 @@ function TabAds({ offer, onGenerate, running }: {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {data.thumbnailConcepts.map((tc, i) => (
                       <div key={i} className="flex items-start gap-2 p-3 bg-white/[0.02] rounded-xl border border-white/[0.05]">
-                        <LayoutTemplate className="w-3.5 h-3.5 text-purple-400 mt-0.5 shrink-0" />
+                        <LayoutTemplate className="w-3.5 h-3.5 text-[#e07850] mt-0.5 shrink-0" />
                         <p className="flex-1 text-xs text-white/60">{tc}</p>
                         <CopyButton text={tc} size="xs" />
                       </div>
@@ -801,7 +801,7 @@ function TabAds({ offer, onGenerate, running }: {
                           <span className="text-[10px] font-black uppercase tracking-widest text-white/30">Script {i + 1}</span>
                           <CopyButton text={`Hook: ${sc.hook}\n\n${sc.body}\n\nCTA: ${sc.cta}`} size="xs" />
                         </div>
-                        {[{ label: "Hook", val: sc.hook, color: "text-pink-400" }, { label: "Body", val: sc.body, color: "text-white/60" }, { label: "CTA", val: sc.cta, color: "text-cyan-400" }].map(({ label, val, color }) => (
+                        {[{ label: "Hook", val: sc.hook, color: "text-pink-400" }, { label: "Body", val: sc.body, color: "text-white/60" }, { label: "CTA", val: sc.cta, color: "text-[#f5a623]" }].map(({ label, val, color }) => (
                           <div key={label} className="mb-2 last:mb-0">
                             <span className={`text-[9px] font-black uppercase tracking-widest ${color} block mb-0.5`}>{label}</span>
                             <p className="text-xs text-white/60 leading-relaxed">{val}</p>
@@ -929,7 +929,7 @@ ${lp?.faqs ? `<dl>${lp.faqs.map((faq) => `<dt>${faq.question}</dt><dd>${faq.answ
         </button>
         <Link
           href={`/websites/new?prefill_source=bridge&offer_id=${offer.id}`}
-          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/15 border border-cyan-500/25 text-xs font-bold text-cyan-400 hover:bg-cyan-500/25 transition"
+          className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#f5a623]/15 border border-[#f5a623]/25 text-xs font-bold text-[#f5a623] hover:bg-[#f5a623]/25 transition"
         >
           <Globe className="w-3.5 h-3.5" /> Build this in Sites →
         </Link>
@@ -979,7 +979,7 @@ ${lp?.faqs ? `<dl>${lp.faqs.map((faq) => `<dt>${faq.question}</dt><dd>${faq.answ
         <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5">
           <p className="text-[10px] font-black uppercase tracking-widest text-white/25 mb-3">CTA Button</p>
           <div className="flex items-center gap-3">
-            <div className="px-6 py-3 rounded-xl bg-cyan-500 text-white font-black text-sm cursor-default">
+            <div className="px-6 py-3 rounded-xl bg-[#f5a623] text-white font-black text-sm cursor-default">
               {lp.ctaButton}
             </div>
             <CopyButton text={lp.ctaButton} />
@@ -1115,7 +1115,7 @@ export default function AffiliateOfferPage() {
           <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8">
             <AlertTriangle className="w-8 h-8 text-red-400/50" />
             <p className="text-white/40">{databaseUnavailable ? "Offer data is temporarily unavailable" : "Offer not found"}</p>
-            <Link href="/affiliate" className="text-sm text-cyan-400 hover:text-cyan-300">← Back to Affiliate</Link>
+            <Link href="/affiliate" className="text-sm text-[#f5a623] hover:text-[#f5a623]">← Back to Affiliate</Link>
           </div>
         </div>
       </>

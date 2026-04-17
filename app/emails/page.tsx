@@ -107,9 +107,9 @@ const TRIGGER_CONFIG: Record<
     label: "Signup",
     description: "Someone joins your list",
     icon: Users,
-    border: "border-cyan-500/40",
-    bg: "bg-cyan-500/10",
-    text: "text-cyan-400",
+    border: "border-[#f5a623]/40",
+    bg: "bg-[#f5a623]/10",
+    text: "text-[#f5a623]",
     emoji: "🎯",
   },
   abandoned_cart: {
@@ -145,7 +145,7 @@ const TRIGGER_CONFIG: Record<
     icon: RotateCcw,
     border: "border-purple-500/40",
     bg: "bg-purple-500/10",
-    text: "text-purple-400",
+    text: "text-[#e07850]",
     emoji: "🔁",
   },
   custom: {
@@ -188,7 +188,7 @@ const STATUS_CONFIG: Record<
 
 function verdictTone(status?: string) {
   if (status === "healthy") return "border-emerald-500/20 bg-emerald-500/10 text-emerald-200";
-  if (status === "stale") return "border-cyan-500/20 bg-cyan-500/10 text-cyan-100";
+  if (status === "stale") return "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5f0e8]";
   return "border-amber-500/20 bg-amber-500/10 text-amber-100";
 }
 
@@ -287,7 +287,7 @@ function FlowCard({
             <StatusBadge status={flow.status} />
             <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.2em] ${
               executionTier === "elite"
-                ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
+                ? "border-[#f5a623]/30 bg-[#f5a623]/10 text-[#f5a623]"
                 : "border-white/10 bg-white/5 text-white/45"
             }`}>
               {executionTier}
@@ -326,7 +326,7 @@ function FlowCard({
                   }
                 } catch { toast.error("Failed to duplicate"); }
               }}
-              className="p-1.5 rounded-lg hover:bg-cyan-500/10 text-white/20 hover:text-cyan-400"
+              className="p-1.5 rounded-lg hover:bg-[#f5a623]/10 text-white/20 hover:text-[#f5a623]"
               aria-label="Duplicate flow"
             >
               <Copy className="w-3.5 h-3.5" />
@@ -382,10 +382,10 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center">
       <div className="relative mb-6">
-        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/20 to-purple-600/20 border border-white/10 flex items-center justify-center">
-          <Mail className="w-9 h-9 text-cyan-400/70" />
+        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/20 to-[#e07850]/20 border border-white/10 flex items-center justify-center">
+          <Mail className="w-9 h-9 text-[#f5a623]/70" />
         </div>
-        <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
+        <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-br from-[#f5a623] to-[#e07850] flex items-center justify-center">
           <Plus className="w-3.5 h-3.5 text-white" />
         </div>
       </div>
@@ -403,7 +403,7 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
       <div className="flex flex-col sm:flex-row gap-3">
         <button
           onClick={onCreateClick}
-          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition-opacity"
+          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition-opacity"
         >
           <Plus className="w-4 h-4" />
           Create Your First Flow
@@ -542,7 +542,7 @@ function CreateFlowModal({
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="e.g. Welcome Series"
-              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 focus:bg-white/[0.06] transition"
+              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 focus:bg-white/[0.06] transition"
             />
           </div>
 
@@ -609,17 +609,17 @@ function CreateFlowModal({
                     onClick={() => setExecutionTier(tier.id)}
                     className={`rounded-2xl border p-4 text-left transition-all ${
                       active
-                        ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                        ? "border-[#f5a623]/40 bg-[#f5a623]/10 shadow-[0_0_20px_rgba(245,166,35,0.12)]"
                         : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-3">
-                      <span className={`text-sm font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
-                      <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+                      <span className={`text-sm font-black ${active ? "text-[#f5a623]" : "text-white"}`}>{tier.label}</span>
+                      <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-[#f5a623]" : "text-white/20"}`}>
                         {tier.id}
                       </span>
                     </div>
-                    <p className={`mt-2 text-xs leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+                    <p className={`mt-2 text-xs leading-relaxed ${active ? "text-[#f5f0e8]/80" : "text-white/45"}`}>
                       {tier.description}
                     </p>
                   </button>
@@ -698,7 +698,7 @@ function CreateFlowModal({
           <button
             onClick={handleCreate}
             disabled={creating || !name.trim()}
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition"
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition"
           >
             {creating ? (
               <>
@@ -861,7 +861,7 @@ function EmailsPage() {
   const totalRevenue = flows.reduce((s, f) => s + (f.revenue ?? 0), 0);
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <CampaignSubNav />
 
@@ -902,7 +902,7 @@ function EmailsPage() {
                   <button
                     onClick={() => void refreshBusinessSystem()}
                     disabled={refreshingRecommendations}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-5 py-3 text-sm font-bold text-cyan-100 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex items-center gap-2 rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-5 py-3 text-sm font-bold text-[#f5f0e8] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {refreshingRecommendations ? "Refreshing..." : "Refresh Recommendations"}
                   </button>
@@ -936,10 +936,10 @@ function EmailsPage() {
         )}
 
         {businessProfile && (
-          <div className="mb-6 rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] to-purple-600/[0.03] p-6">
+          <div className="mb-6 rounded-[28px] border border-[#f5a623]/20 bg-gradient-to-br from-cyan-500/[0.08] to-[#e07850]/[0.03] p-6">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-3xl">
-                <p className="text-[10px] font-black uppercase tracking-[0.26em] text-cyan-200/70">Recommended Email System</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.26em] text-[#f5a623]/70">Recommended Email System</p>
                 <h2 className="mt-2 text-2xl font-black text-white">
                   {recommendedTemplateId === "abandoned-cart"
                     ? "Abandoned Cart Recovery"
@@ -957,7 +957,7 @@ function EmailsPage() {
               <div className="flex flex-wrap gap-3">
                 <button
                   onClick={() => void createRecommendedFlow()}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)]"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(245,166,35,0.22)]"
                 >
                   <Zap className="w-4 h-4" />
                   Create Recommended Flow
@@ -985,7 +985,7 @@ function EmailsPage() {
           {flows.length > 0 && (
             <button
               onClick={() => setModalOpen(true)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition-opacity shrink-0"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition-opacity shrink-0"
             >
               <Plus className="w-4 h-4" />
               Create Flow
@@ -996,13 +996,13 @@ function EmailsPage() {
         {/* Stats bar */}
         {flows.length > 0 && (
           <div className="flex gap-3 flex-wrap mb-8">
-            <StatCard label="Total Flows" value={totalFlows} icon={Mail} color="text-cyan-400" />
+            <StatCard label="Total Flows" value={totalFlows} icon={Mail} color="text-[#f5a623]" />
             <StatCard label="Active" value={activeFlows} icon={Activity} color="text-green-400" />
             <StatCard
               label="Total Enrolled"
               value={totalEnrolled.toLocaleString()}
               icon={Users}
-              color="text-purple-400"
+              color="text-[#e07850]"
             />
             <StatCard
               label="Avg Open Rate"

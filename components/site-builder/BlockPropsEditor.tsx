@@ -19,7 +19,7 @@ function Field({ label, children }: { label: string; children: React.ReactNode }
 }
 
 function TextInput({ value, onChange, placeholder, multiline }: { value: string; onChange: (v: string) => void; placeholder?: string; multiline?: boolean }) {
-  const cls = "w-full bg-white/[0.05] border border-white/[0.1] rounded-xl px-3 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition";
+  const cls = "w-full bg-white/[0.05] border border-white/[0.1] rounded-xl px-3 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition";
   if (multiline) {
     return <textarea value={value} onChange={e => onChange(e.target.value)} placeholder={placeholder} rows={3} className={`${cls} resize-none`} />;
   }
@@ -104,7 +104,7 @@ function FeaturesProps({ block, onChange }: { block: Block; onChange: (b: Block)
               <textarea value={item.body ?? ""} onChange={e => updateItem(i, "body", e.target.value)} placeholder="Short description..." rows={2} className="w-full bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none resize-none" />
             </div>
           ))}
-          <button onClick={addItem} className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-dashed border-white/[0.12] hover:border-cyan-500/40 text-white/30 hover:text-white/60 text-xs font-semibold transition">
+          <button onClick={addItem} className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-dashed border-white/[0.12] hover:border-[#f5a623]/40 text-white/30 hover:text-white/60 text-xs font-semibold transition">
             <Plus className="w-3 h-3" /> Add Item
           </button>
         </div>
@@ -123,7 +123,7 @@ function TextProps({ block, onChange }: { block: Block; onChange: (b: Block) => 
           onChange={e => set("content", e.target.value)}
           placeholder="Write your text content here..."
           rows={10}
-          className="w-full bg-white/[0.05] border border-white/[0.1] rounded-xl px-3 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition resize-none"
+          className="w-full bg-white/[0.05] border border-white/[0.1] rounded-xl px-3 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition resize-none"
         />
       </Field>
     </div>
@@ -191,7 +191,7 @@ function TestimonialsProps({ block, onChange }: { block: Block; onChange: (b: Bl
               </select>
             </div>
           ))}
-          <button onClick={addItem} className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-dashed border-white/[0.12] hover:border-cyan-500/40 text-white/30 hover:text-white/60 text-xs font-semibold transition">
+          <button onClick={addItem} className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-dashed border-white/[0.12] hover:border-[#f5a623]/40 text-white/30 hover:text-white/60 text-xs font-semibold transition">
             <Plus className="w-3 h-3" /> Add Testimonial
           </button>
         </div>
@@ -237,7 +237,7 @@ function PricingProps({ block, onChange }: { block: Block; onChange: (b: Block) 
                     <button onClick={() => updateTier(i, "features", (tier.features ?? []).filter((_, k) => k !== j))} className="text-white/20 hover:text-red-400 transition"><Trash2 className="w-3 h-3" /></button>
                   </div>
                 ))}
-                <button onClick={() => addFeature(i)} className="text-[11px] text-white/30 hover:text-cyan-400 transition flex items-center gap-1 mt-1"><Plus className="w-3 h-3" /> Add Feature</button>
+                <button onClick={() => addFeature(i)} className="text-[11px] text-white/30 hover:text-[#f5a623] transition flex items-center gap-1 mt-1"><Plus className="w-3 h-3" /> Add Feature</button>
               </div>
               <input type="text" value={tier.buttonText ?? ""} onChange={e => updateTier(i, "buttonText", e.target.value)} placeholder="Get Started" className="w-full bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none" />
               <div className="flex items-center gap-2">
@@ -246,7 +246,7 @@ function PricingProps({ block, onChange }: { block: Block; onChange: (b: Block) 
               </div>
             </div>
           ))}
-          <button onClick={() => set("tiers", [...tiers, { label: "Pro", price: "$49", period: "/ month", features: ["Feature 1"], buttonText: "Get Started" }])} className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-dashed border-white/[0.12] hover:border-cyan-500/40 text-white/30 hover:text-white/60 text-xs font-semibold transition">
+          <button onClick={() => set("tiers", [...tiers, { label: "Pro", price: "$49", period: "/ month", features: ["Feature 1"], buttonText: "Get Started" }])} className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-dashed border-white/[0.12] hover:border-[#f5a623]/40 text-white/30 hover:text-white/60 text-xs font-semibold transition">
             <Plus className="w-3 h-3" /> Add Tier
           </button>
         </div>
@@ -272,7 +272,7 @@ function FAQProps({ block, onChange }: { block: Block; onChange: (b: Block) => v
               <textarea value={item.a ?? ""} onChange={e => { const n = [...items]; n[i] = { ...n[i], a: e.target.value }; set("items", n); }} placeholder="Answer..." rows={2} className="w-full bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none resize-none" />
             </div>
           ))}
-          <button onClick={() => set("items", [...items, { q: "Question?", a: "Answer." }])} className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-dashed border-white/[0.12] hover:border-cyan-500/40 text-white/30 hover:text-white/60 text-xs font-semibold transition">
+          <button onClick={() => set("items", [...items, { q: "Question?", a: "Answer." }])} className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-dashed border-white/[0.12] hover:border-[#f5a623]/40 text-white/30 hover:text-white/60 text-xs font-semibold transition">
             <Plus className="w-3 h-3" /> Add Question
           </button>
         </div>
@@ -318,7 +318,7 @@ function CheckoutProps({ block, onChange }: { block: Block; onChange: (b: Block)
         <label htmlFor="orderBump" className="text-sm text-white font-bold">Show Order Bump (1-Click Upsell)</label>
       </div>
       {p(block, "showOrderBump", false) && (
-        <div className="pl-4 border-l-2 border-cyan-500/50 space-y-3">
+        <div className="pl-4 border-l-2 border-[#f5a623]/50 space-y-3">
           <Field label="Bump Headline"><TextInput value={p(block, "bumpHeadline")} onChange={v => set("bumpHeadline", v)} placeholder="Yes, add the VIP Bonus!" /></Field>
           <Field label="Bump Description"><TextInput value={p(block, "bumpText")} onChange={v => set("bumpText", v)} placeholder="Get it for $19 more..." multiline /></Field>
         </div>
@@ -344,7 +344,7 @@ function FooterProps({ block, onChange }: { block: Block; onChange: (b: Block) =
               <button onClick={() => set("links", links.filter((_, j) => j !== i))} className="text-white/20 hover:text-red-400 transition"><Trash2 className="w-3 h-3" /></button>
             </div>
           ))}
-          <button onClick={() => set("links", [...links, { label: "Privacy", url: "#" }])} className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-dashed border-white/[0.12] hover:border-cyan-500/40 text-white/30 hover:text-white/60 text-xs font-semibold transition">
+          <button onClick={() => set("links", [...links, { label: "Privacy", url: "#" }])} className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-dashed border-white/[0.12] hover:border-[#f5a623]/40 text-white/30 hover:text-white/60 text-xs font-semibold transition">
             <Plus className="w-3 h-3" /> Add Link
           </button>
         </div>

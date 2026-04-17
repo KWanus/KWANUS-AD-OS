@@ -26,7 +26,7 @@ export default function PricingCalculatorPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
@@ -63,9 +63,9 @@ export default function PricingCalculatorPage() {
 
             {/* Key metrics */}
             <div className="grid grid-cols-2 gap-3">
-              <Metric icon={Target} label="Projects/Month" value={String(projectsNeeded)} color="text-cyan-400" />
+              <Metric icon={Target} label="Projects/Month" value={String(projectsNeeded)} color="text-[#f5a623]" />
               <Metric icon={TrendingUp} label="Annual Revenue" value={`$${(annualRevenue / 1000).toFixed(0)}k`} color="text-emerald-400" />
-              <Metric icon={DollarSign} label="Annual Profit" value={`$${(annualProfit / 1000).toFixed(0)}k`} color="text-purple-400" />
+              <Metric icon={DollarSign} label="Annual Profit" value={`$${(annualProfit / 1000).toFixed(0)}k`} color="text-[#e07850]" />
               <Metric icon={Users} label="Clients Needed" value={`${projectsNeeded}/mo`} color="text-amber-400" />
             </div>
 
@@ -77,13 +77,13 @@ export default function PricingCalculatorPage() {
                   const price = Math.round(projectCost * tier.multiplier);
                   return (
                     <div key={tier.name} className={`flex items-center justify-between p-3 rounded-xl border ${
-                      tier.multiplier === 1.0 ? "border-cyan-500/20 bg-cyan-500/5" : "border-white/[0.06] bg-white/[0.02]"
+                      tier.multiplier === 1.0 ? "border-[#f5a623]/20 bg-[#f5a623]/5" : "border-white/[0.06] bg-white/[0.02]"
                     }`}>
                       <div>
                         <p className="text-xs font-bold text-white">{tier.name}</p>
                         <p className="text-[10px] text-white/25">{tier.label}</p>
                       </div>
-                      <p className={`text-lg font-black ${tier.multiplier === 1.0 ? "text-cyan-400" : "text-white"}`}>
+                      <p className={`text-lg font-black ${tier.multiplier === 1.0 ? "text-[#f5a623]" : "text-white"}`}>
                         ${price.toLocaleString()}
                       </p>
                     </div>

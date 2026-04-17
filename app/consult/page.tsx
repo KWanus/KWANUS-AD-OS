@@ -46,8 +46,8 @@ type ExecutionTier = "core" | "elite";
 // ---------------------------------------------------------------------------
 
 const TYPE_COLORS: Record<string, string> = {
-  hourly:       "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
-  retainer:     "text-purple-400 bg-purple-500/10 border-purple-500/20",
+  hourly:       "text-[#f5a623] bg-[#f5a623]/10 border-[#f5a623]/20",
+  retainer:     "text-[#e07850] bg-purple-500/10 border-purple-500/20",
   project:      "text-green-400 bg-green-500/10 border-green-500/20",
   productized:  "text-blue-400 bg-blue-500/10 border-blue-500/20",
   vip_day:      "text-yellow-400 bg-yellow-500/10 border-yellow-500/20",
@@ -55,7 +55,7 @@ const TYPE_COLORS: Record<string, string> = {
 
 const PROPOSAL_STATUS_COLORS: Record<string, string> = {
   draft:    "text-white/40 border-white/10",
-  sent:     "text-cyan-400 border-cyan-500/20",
+  sent:     "text-[#f5a623] border-[#f5a623]/20",
   viewed:   "text-blue-400 border-blue-500/20",
   accepted: "text-green-400 border-green-500/20",
   rejected: "text-red-400 border-red-500/20",
@@ -95,7 +95,7 @@ function InputField({
       placeholder={placeholder}
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-cyan-500/40 transition w-full"
+      className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-[#f5a623]/40 transition w-full"
     />
   );
 }
@@ -112,7 +112,7 @@ function PrimaryButton({
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black px-4 py-2 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
+      className="flex items-center gap-2 bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-black px-4 py-2 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
     >
       {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
       {children}
@@ -151,8 +151,8 @@ function ExecutionTierPicker({
           onClick={() => onChange(tier)}
           className={`rounded-2xl border px-4 py-3 text-left transition ${
             value === tier
-              ? "border-cyan-500/25 bg-cyan-500/10 text-cyan-100"
-              : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+              ? "border-[#f5a623]/25 bg-[#f5a623]/10 text-[#f5f0e8]"
+              : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.05]"
           }`}
         >
           <p className="text-sm font-black">{label}</p>
@@ -212,7 +212,7 @@ const ai = proposal.aiJson as Record<string, any> | null;
                     <div key={i} className="bg-white/[0.03] border border-white/[0.06] rounded-xl p-3">
                       <div className="flex items-center justify-between mb-1">
                         <span className="text-sm font-bold text-white">{String(pkg.name ?? "")}</span>
-                        <span className="text-sm font-black text-cyan-400">{String(pkg.price ?? "")}</span>
+                        <span className="text-sm font-black text-[#f5a623]">{String(pkg.price ?? "")}</span>
                       </div>
                       {pkg.description && (
                         <p className="text-xs text-white/40">{String(pkg.description)}</p>
@@ -384,7 +384,7 @@ function PackagesTab() {
             <select
               value={addType}
               onChange={(e) => setAddType(e.target.value)}
-              className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-cyan-500/40 transition flex-1"
+              className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-[#f5a623]/40 transition flex-1"
             >
               {["hourly", "retainer", "project", "productized", "vip_day"].map((t) => (
                 <option key={t} value={t} className="bg-[#0b1120]">{t.replace("_", " ")}</option>
@@ -400,7 +400,7 @@ function PackagesTab() {
             value={addDeliverables}
             onChange={(e) => setAddDeliverables(e.target.value)}
             rows={3}
-            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-cyan-500/40 transition w-full resize-none"
+            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white placeholder-white/30 outline-none focus:border-[#f5a623]/40 transition w-full resize-none"
           />
           <PrimaryButton onClick={handleAdd} disabled={!addName.trim() || !addPrice.trim()} loading={adding}>
             Add Package
@@ -423,7 +423,7 @@ function PackagesTab() {
                 </span>
               </div>
               <div className="flex items-center gap-3 mb-3">
-                <span className="text-lg font-black text-cyan-400">${pkg.price.toLocaleString()}</span>
+                <span className="text-lg font-black text-[#f5a623]">${pkg.price.toLocaleString()}</span>
                 {pkg.billingCycle && <span className="text-xs text-white/30">/ {pkg.billingCycle}</span>}
                 {pkg.duration && <span className="text-xs text-white/30">{pkg.duration}</span>}
               </div>
@@ -433,7 +433,7 @@ function PackagesTab() {
                   <ul className="space-y-1">
                     {pkg.deliverables.slice(0, 4).map((d, i) => (
                       <li key={i} className="flex items-start gap-2 text-xs text-white/50">
-                        <span className="w-1 h-1 rounded-full bg-cyan-500/50 mt-1.5 shrink-0" />
+                        <span className="w-1 h-1 rounded-full bg-[#f5a623]/50 mt-1.5 shrink-0" />
                         {d}
                       </li>
                     ))}
@@ -557,7 +557,7 @@ function ProposalsTab() {
               </div>
               <div className="flex items-center gap-4 text-xs text-white/35">
                 {p.totalValue && (
-                  <span className="flex items-center gap-1 text-cyan-400/80 font-bold">
+                  <span className="flex items-center gap-1 text-[#f5a623]/80 font-bold">
                     <DollarSign className="w-3 h-3" />${p.totalValue.toLocaleString()}
                   </span>
                 )}
@@ -768,8 +768,8 @@ function GenerateTab({ setActiveTab }: { setActiveTab: (t: string) => void }) {
       title: "Generate Service Packages",
       desc: "AI-crafted pricing tiers tailored to your niche",
       icon: Package,
-      color: "from-cyan-500/20 to-cyan-500/5 border-cyan-500/20",
-      iconColor: "text-cyan-400",
+      color: "from-cyan-500/20 to-cyan-500/5 border-[#f5a623]/20",
+      iconColor: "text-[#f5a623]",
       action: () => setActiveTab("packages"),
     },
     {
@@ -777,7 +777,7 @@ function GenerateTab({ setActiveTab }: { setActiveTab: (t: string) => void }) {
       desc: "Full client proposal with problem, solution & pricing",
       icon: FileText,
       color: "from-purple-500/20 to-purple-500/5 border-purple-500/20",
-      iconColor: "text-purple-400",
+      iconColor: "text-[#e07850]",
       action: () => setActiveTab("proposals"),
     },
     {
@@ -871,14 +871,14 @@ export default function ConsultPage() {
   const [activeTab, setActiveTab] = useState("packages");
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <div className="max-w-5xl mx-auto px-4 pt-10 pb-20">
 
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-1">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#f5a623] to-[#e07850] flex items-center justify-center">
               <Briefcase className="w-4 h-4 text-white" />
             </div>
             <h1 className="text-xl font-black text-white">Consult OS</h1>
@@ -894,7 +894,7 @@ export default function ConsultPage() {
               onClick={() => setActiveTab(tab.id)}
               className={`flex items-center gap-1.5 px-4 py-2.5 text-sm font-bold border-b-2 transition -mb-px ${
                 activeTab === tab.id
-                  ? "border-cyan-500 text-white"
+                  ? "border-[#f5a623] text-white"
                   : "border-transparent text-white/35 hover:text-white/60"
               }`}
             >

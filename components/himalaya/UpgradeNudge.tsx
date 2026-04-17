@@ -32,7 +32,7 @@ const NUDGE_CONFIG: Record<NudgeContext, {
     headline: "Your foundation is ready. Now make it work.",
     message: "Unlock execution tracking, deployment, and outcome learning to turn this foundation into real results that improve over time.",
     cta: "Unlock Full Execution",
-    color: "from-cyan-500/[0.06] to-purple-500/[0.06] border-cyan-500/15",
+    color: "from-cyan-500/[0.06] to-purple-500/[0.06] border-[#f5a623]/15",
     urgency: "Most users upgrade after seeing their first results",
   },
   after_deploy: {
@@ -63,7 +63,7 @@ const NUDGE_CONFIG: Record<NudgeContext, {
     headline: "This feature is part of the full system.",
     message: "Himalaya Pro unlocks competitive intelligence, deployment, execution tracking, and adaptive learning that improves your results over time.",
     cta: "Upgrade to Pro",
-    color: "from-cyan-500/[0.06] to-purple-500/[0.06] border-cyan-500/15",
+    color: "from-cyan-500/[0.06] to-purple-500/[0.06] border-[#f5a623]/15",
   },
 };
 
@@ -105,7 +105,7 @@ export default function UpgradeNudge({ context, onDismiss }: { context: NudgeCon
             <Link
               href="/himalaya/upgrade"
               onClick={() => track.upgradeClick(context)}
-              className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 px-4 py-2 text-xs font-bold text-white transition hover:opacity-90"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-4 py-2 text-xs font-bold text-white transition hover:opacity-90"
             >
               {config.cta} <ArrowRight className="w-3 h-3" />
             </Link>

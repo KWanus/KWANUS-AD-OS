@@ -92,17 +92,17 @@ function ExecutionTierPicker({
             onClick={() => onChange(tier.id)}
             className={`rounded-2xl border p-4 text-left transition-all ${
               active
-                ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                ? "border-[#f5a623]/40 bg-[#f5a623]/10 shadow-[0_0_20px_rgba(245,166,35,0.12)]"
                 : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
             }`}
           >
             <div className="flex items-center justify-between gap-3">
-              <span className={`text-sm font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
-              <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+              <span className={`text-sm font-black ${active ? "text-[#f5a623]" : "text-white"}`}>{tier.label}</span>
+              <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-[#f5a623]" : "text-white/20"}`}>
                 {tier.id}
               </span>
             </div>
-            <p className={`mt-2 text-xs leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+            <p className={`mt-2 text-xs leading-relaxed ${active ? "text-[#f5f0e8]/80" : "text-white/45"}`}>
               {tier.description}
             </p>
           </button>
@@ -195,10 +195,10 @@ export default function StartPage() {
   const selectedAffNiche = NICHES.find((n) => n.id === affNiche);
 
   return (
-    <main className="min-h-screen bg-[#0a0f1e] text-white flex flex-col">
+    <main className="min-h-screen bg-t-bg-card text-white flex flex-col">
       <AppNav />
       <header className="px-8 py-6 border-b border-white/10">
-        <Link href="/" className="text-cyan-400 text-sm hover:underline">← Back to Dashboard</Link>
+        <Link href="/" className="text-[#f5a623] text-sm hover:underline">← Back to Dashboard</Link>
         <div className="mt-2">
           <WorkflowHeader
             title="Starter Wizard"
@@ -207,7 +207,7 @@ export default function StartPage() {
           />
         </div>
         <div className="mt-3 flex items-center gap-3">
-          <Link href="/himalaya" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition">
+          <Link href="/himalaya" className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-xs font-bold hover:opacity-90 transition">
             Skip — use Himalaya instead →
           </Link>
           <span className="text-[10px] text-white/20">Faster, smarter, auto-deploys everything</span>
@@ -273,7 +273,7 @@ export default function StartPage() {
 
             <button
               onClick={() => setStep("model")}
-              className="w-full rounded-xl bg-cyan-500 hover:bg-cyan-400 px-6 py-4 text-base font-bold text-[#0a0f1e] transition"
+              className="w-full rounded-xl bg-[#f5a623] hover:bg-[#e07850] px-6 py-4 text-base font-bold text-[#0a0f1e] transition"
             >
               Build My Kit →
             </button>
@@ -291,12 +291,12 @@ export default function StartPage() {
             <div className="space-y-3">
               <button
                 onClick={() => selectModel("affiliate")}
-                className="w-full rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-cyan-500/5 p-6 text-left transition group"
+                className="w-full rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-[#f5a623]/5 p-6 text-left transition group"
               >
                 <div className="flex items-start gap-4">
                   <span className="text-3xl shrink-0">🔗</span>
                   <div>
-                    <p className="text-base font-bold text-white group-hover:text-cyan-300 transition">
+                    <p className="text-base font-bold text-white group-hover:text-[#f5a623] transition">
                       Promote other people&apos;s products
                     </p>
                     <p className="text-sm text-white/40 mt-1">
@@ -310,18 +310,18 @@ export default function StartPage() {
               </button>
               <button
                 onClick={() => selectModel("dropship")}
-                className="w-full rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-cyan-500/5 p-6 text-left transition group"
+                className="w-full rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-[#f5a623]/5 p-6 text-left transition group"
               >
                 <div className="flex items-start gap-4">
                   <span className="text-3xl shrink-0">📦</span>
                   <div>
-                    <p className="text-base font-bold text-white group-hover:text-cyan-300 transition">
+                    <p className="text-base font-bold text-white group-hover:text-[#f5a623] transition">
                       Sell physical products online
                     </p>
                     <p className="text-sm text-white/40 mt-1">
                       You sell products you never touch. A supplier ships directly to your customer. You keep the margin.
                     </p>
-                    <p className="text-xs text-cyan-400 mt-2">
+                    <p className="text-xs text-[#f5a623] mt-2">
                       Margin: $15–$25 per order · Best for: TikTok, Facebook Ads
                     </p>
                   </div>
@@ -343,7 +343,7 @@ export default function StartPage() {
               ))}
             </div>
             <p className="text-xs text-white/30">
-              Step {stepNum} of 4 · <span className="text-cyan-400">{stepNum - 1} of 3 answered</span>
+              Step {stepNum} of 4 · <span className="text-[#f5a623]">{stepNum - 1} of 3 answered</span>
               {" · "}
               <span className="text-white/20">{model === "affiliate" ? "Affiliate track" : "Dropshipping track"}</span>
             </p>
@@ -359,9 +359,9 @@ export default function StartPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {NICHES.map((n) => (
                 <button key={n.id} onClick={() => handleAffNiche(n.id)}
-                  className="rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-cyan-500/5 p-5 text-left transition group">
+                  className="rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-[#f5a623]/5 p-5 text-left transition group">
                   <span className="text-2xl mb-2 block">{n.icon}</span>
-                  <p className="text-sm font-semibold text-white group-hover:text-cyan-300 transition">{n.label}</p>
+                  <p className="text-sm font-semibold text-white group-hover:text-[#f5a623] transition">{n.label}</p>
                   <p className="text-xs text-white/40 mt-1">
                     {n.id === "health" && "Weight loss, supplements, wellness products"}
                     {n.id === "mmo" && "Teaching people to make money online"}
@@ -386,9 +386,9 @@ export default function StartPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {DROP_NICHES.map((n) => (
                 <button key={n.id} onClick={() => handleDropNiche(n.id)}
-                  className="rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-cyan-500/5 p-5 text-left transition group">
+                  className="rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-[#f5a623]/5 p-5 text-left transition group">
                   <span className="text-2xl mb-2 block">{n.icon}</span>
-                  <p className="text-sm font-semibold text-white group-hover:text-cyan-300 transition">{n.label}</p>
+                  <p className="text-sm font-semibold text-white group-hover:text-[#f5a623] transition">{n.label}</p>
                   <p className="text-xs text-white/40 mt-1">{n.sub}</p>
                 </button>
               ))}
@@ -407,12 +407,12 @@ export default function StartPage() {
               {BUDGET_OPTIONS.map((b) => (
                 <button key={b.value}
                   onClick={() => model === "affiliate" ? handleAffBudget(b.value) : handleDropBudget(b.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-cyan-500/5 p-5 text-left flex items-center justify-between transition group">
+                  className="w-full rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-[#f5a623]/5 p-5 text-left flex items-center justify-between transition group">
                   <div>
-                    <p className="text-base font-bold text-white group-hover:text-cyan-300 transition">{b.label}</p>
+                    <p className="text-base font-bold text-white group-hover:text-[#f5a623] transition">{b.label}</p>
                     <p className="text-xs text-white/40 mt-0.5">{b.sub}</p>
                   </div>
-                  <span className="text-white/20 group-hover:text-cyan-400 transition text-lg">→</span>
+                  <span className="text-white/20 group-hover:text-[#f5a623] transition text-lg">→</span>
                 </button>
               ))}
             </div>
@@ -432,12 +432,12 @@ export default function StartPage() {
                   onClick={() => model === "affiliate"
                     ? handleAffPlatform(p.id as AffPlatform)
                     : handleDropPlatform(p.id as DropPlatform)}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-cyan-500/5 p-5 text-left flex items-center justify-between transition group">
+                  className="w-full rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-[#f5a623]/5 p-5 text-left flex items-center justify-between transition group">
                   <div>
-                    <p className="text-base font-bold text-white group-hover:text-cyan-300 transition">{p.label}</p>
+                    <p className="text-base font-bold text-white group-hover:text-[#f5a623] transition">{p.label}</p>
                     <p className="text-xs text-white/40 mt-0.5">{p.sub}</p>
                   </div>
-                  <span className="text-white/20 group-hover:text-cyan-400 transition text-lg">→</span>
+                  <span className="text-white/20 group-hover:text-[#f5a623] transition text-lg">→</span>
                 </button>
               ))}
             </div>
@@ -544,14 +544,14 @@ function AffiliateResult({
   }
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl border border-cyan-500/30 bg-cyan-500/5 p-6">
-        <p className="text-xs uppercase tracking-widest text-cyan-400/60 mb-1">Your matched offer</p>
+      <div className="rounded-2xl border border-[#f5a623]/30 bg-[#f5a623]/5 p-6">
+        <p className="text-xs uppercase tracking-widest text-[#f5a623]/60 mb-1">Your matched offer</p>
         <h2 className="text-2xl font-bold">{offer.name}</h2>
-        <p className="text-sm text-cyan-300 mt-1">{offer.nicheLabel} · {offer.network}</p>
+        <p className="text-sm text-[#f5a623] mt-1">{offer.nicheLabel} · {offer.network}</p>
         <p className="text-xs text-white/30 mt-2 italic">
           Picked for {nicheName.toLowerCase()} at ${budget}/day on {platformLabel}.
         </p>
-        <div className="mt-3 inline-flex rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300">
+        <div className="mt-3 inline-flex rounded-full border border-[#f5a623]/20 bg-[#f5a623]/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-[#f5a623]">
           {executionTier} lane
         </div>
         <div className="mt-4 grid grid-cols-2 gap-3">
@@ -602,7 +602,7 @@ function AffiliateResult({
       )}
 
       {/* Save to Workspace */}
-      <div className="rounded-2xl border border-cyan-500/30 bg-cyan-500/5 p-5">
+      <div className="rounded-2xl border border-[#f5a623]/30 bg-[#f5a623]/5 p-5">
         {savedId ? (
           <WorkflowSuccess
             title="Saved to your workspace!"
@@ -612,7 +612,7 @@ function AffiliateResult({
             className="border-0 bg-transparent p-0"
           >
             <div className="flex justify-end">
-              <Link href={`/campaigns/${savedId}`} className="shrink-0 rounded-xl bg-cyan-500 hover:bg-cyan-400 px-5 py-2.5 text-sm font-semibold text-[#0a0f1e] transition">
+              <Link href={`/campaigns/${savedId}`} className="shrink-0 rounded-xl bg-[#f5a623] hover:bg-[#e07850] px-5 py-2.5 text-sm font-semibold text-[#0a0f1e] transition">
                 Open Workspace →
               </Link>
             </div>
@@ -623,7 +623,7 @@ function AffiliateResult({
               <p className="text-sm font-semibold text-white/80">Save to workspace</p>
               <p className="text-xs text-white/40 mt-0.5">Track this campaign, mark ads live, and add variations.</p>
             </div>
-            <button onClick={() => void handleSave()} disabled={saving} className="shrink-0 rounded-xl bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 px-5 py-2.5 text-sm font-semibold text-[#0a0f1e] transition">
+            <button onClick={() => void handleSave()} disabled={saving} className="shrink-0 rounded-xl bg-[#f5a623] hover:bg-[#e07850] disabled:opacity-50 px-5 py-2.5 text-sm font-semibold text-[#0a0f1e] transition">
               {saving ? "Saving..." : "Save to Workspace →"}
             </button>
           </div>
@@ -694,14 +694,14 @@ function DropshipResult({
 
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl border border-cyan-500/30 bg-cyan-500/5 p-6">
-        <p className="text-xs uppercase tracking-widest text-cyan-400/60 mb-1">Your matched product</p>
+      <div className="rounded-2xl border border-[#f5a623]/30 bg-[#f5a623]/5 p-6">
+        <p className="text-xs uppercase tracking-widest text-[#f5a623]/60 mb-1">Your matched product</p>
         <h2 className="text-2xl font-bold">{product.name}</h2>
-        <p className="text-sm text-cyan-300 mt-1 capitalize">{product.niche.replace(/-/g, " ")} · Source via CJ Dropshipping</p>
+        <p className="text-sm text-[#f5a623] mt-1 capitalize">{product.niche.replace(/-/g, " ")} · Source via CJ Dropshipping</p>
         <p className="text-xs text-white/30 mt-2 italic">
           Beginner score {product.beginnerScore}/10 · Picked for {platformLabel} at ${budget}/day.
         </p>
-        <div className="mt-3 inline-flex rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300">
+        <div className="mt-3 inline-flex rounded-full border border-[#f5a623]/20 bg-[#f5a623]/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.22em] text-[#f5a623]">
           {executionTier} lane
         </div>
         <div className="mt-4 grid grid-cols-2 gap-3">
@@ -775,7 +775,7 @@ function DropshipResult({
       )}
 
       {/* Save to Workspace */}
-      <div className="rounded-2xl border border-cyan-500/30 bg-cyan-500/5 p-5">
+      <div className="rounded-2xl border border-[#f5a623]/30 bg-[#f5a623]/5 p-5">
         {savedId ? (
           <WorkflowSuccess
             title="Saved to your workspace!"
@@ -785,7 +785,7 @@ function DropshipResult({
             className="border-0 bg-transparent p-0"
           >
             <div className="flex justify-end">
-              <Link href={`/campaigns/${savedId}`} className="shrink-0 rounded-xl bg-cyan-500 hover:bg-cyan-400 px-5 py-2.5 text-sm font-semibold text-[#0a0f1e] transition">
+              <Link href={`/campaigns/${savedId}`} className="shrink-0 rounded-xl bg-[#f5a623] hover:bg-[#e07850] px-5 py-2.5 text-sm font-semibold text-[#0a0f1e] transition">
                 Open Workspace →
               </Link>
             </div>
@@ -796,7 +796,7 @@ function DropshipResult({
               <p className="text-sm font-semibold text-white/80">Save to workspace</p>
               <p className="text-xs text-white/40 mt-0.5">Track this campaign, mark ads live, and add variations.</p>
             </div>
-            <button onClick={() => void handleSave()} disabled={saving} className="shrink-0 rounded-xl bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 px-5 py-2.5 text-sm font-semibold text-[#0a0f1e] transition">
+            <button onClick={() => void handleSave()} disabled={saving} className="shrink-0 rounded-xl bg-[#f5a623] hover:bg-[#e07850] disabled:opacity-50 px-5 py-2.5 text-sm font-semibold text-[#0a0f1e] transition">
               {saving ? "Saving..." : "Save to Workspace →"}
             </button>
           </div>
@@ -838,12 +838,12 @@ function DayOnePlan({ budget, platform, network, platformLabel, isDropship, sear
       ];
 
   return (
-    <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/5 p-6">
-      <p className="text-xs uppercase tracking-widest text-cyan-400/60 mb-4">Your Day 1 plan</p>
+    <div className="rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/5 p-6">
+      <p className="text-xs uppercase tracking-widest text-[#f5a623]/60 mb-4">Your Day 1 plan</p>
       <ol className="space-y-4">
         {steps.map((s, i) => (
           <li key={i} className="flex items-start gap-3">
-            <span className="text-cyan-400 font-bold shrink-0 w-5 text-center">{i + 1}.</span>
+            <span className="text-[#f5a623] font-bold shrink-0 w-5 text-center">{i + 1}.</span>
             <p className="flex-1 text-sm text-white/80">{s.action}</p>
             <span className="text-xs text-white/20 shrink-0">{s.time}</span>
           </li>
@@ -861,7 +861,7 @@ function DeepDiveCTA({ executionTier }: { executionTier: ExecutionTier }) {
         Paste the product or offer page into Analyze to get full ad scripts, email sequences, landing page copy, and a 2-week checklist — built specifically for what you picked.
       </p>
       <Link href={`/analyze?execution_tier=${executionTier}`}
-        className="block w-full rounded-xl bg-cyan-500 hover:bg-cyan-400 px-6 py-3 text-sm font-semibold text-[#0a0f1e] transition text-center">
+        className="block w-full rounded-xl bg-[#f5a623] hover:bg-[#e07850] px-6 py-3 text-sm font-semibold text-[#0a0f1e] transition text-center">
         Get My Full Launch Package →
       </Link>
     </div>

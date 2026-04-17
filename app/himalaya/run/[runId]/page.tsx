@@ -94,7 +94,7 @@ export default function HimalayaRunPage({ params }: { params: Promise<{ runId: s
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] text-white">
+      <div className="min-h-screen bg-t-bg text-white">
         <AppNav />
         <HimalayaNav />
         <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
@@ -132,13 +132,13 @@ export default function HimalayaRunPage({ params }: { params: Promise<{ runId: s
 
   if (error || !vm) {
     return (
-      <div className="min-h-screen bg-[#050a14] text-white">
+      <div className="min-h-screen bg-t-bg text-white">
         <AppNav />
         <div className="mx-auto flex min-h-[50vh] max-w-3xl flex-col justify-center gap-4 px-4">
           <div className="flex flex-col items-center gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8">
             <AlertTriangle className="w-8 h-8 text-red-400/50" />
             <p className="text-white/40">{error ?? "Analysis not found"}</p>
-            <Link href="/himalaya/runs" className="text-sm text-cyan-400 hover:text-cyan-300">
+            <Link href="/himalaya/runs" className="text-sm text-[#f5a623] hover:text-[#f5a623]">
               ← Back to Run History
             </Link>
           </div>
@@ -148,7 +148,7 @@ export default function HimalayaRunPage({ params }: { params: Promise<{ runId: s
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <HimalayaNav />
       <main className="mx-auto max-w-4xl px-4 py-6 sm:px-6 sm:py-8 print:max-w-none print:px-8">
@@ -192,8 +192,8 @@ export default function HimalayaRunPage({ params }: { params: Promise<{ runId: s
             </div>
 
             <div className="space-y-4 print:hidden">
-              <div className="rounded-3xl border border-cyan-500/15 bg-gradient-to-br from-cyan-500/[0.05] via-transparent to-purple-500/[0.05] p-3 sm:p-4">
-                <p className="mb-3 text-[10px] font-black uppercase tracking-[0.22em] text-cyan-200/70">Launch Surface</p>
+              <div className="rounded-3xl border border-[#f5a623]/15 bg-gradient-to-br from-cyan-500/[0.05] via-transparent to-purple-500/[0.05] p-3 sm:p-4">
+                <p className="mb-3 text-[10px] font-black uppercase tracking-[0.22em] text-[#f5a623]/70">Launch Surface</p>
                 <DeployActions vm={vm} autoDeploy />
               </div>
               <ExecutionBanner runId={runId} />

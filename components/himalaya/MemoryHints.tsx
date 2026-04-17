@@ -44,7 +44,7 @@ export default function MemoryHints({ onApplyUrl, onApplyMode }: Props) {
     <div className="rounded-xl border border-white/[0.06] bg-gradient-to-br from-white/[0.03] via-white/[0.02] to-transparent p-3 sm:p-4">
       <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-1.5">
-          <Brain className="w-3 h-3 text-purple-400/50" />
+          <Brain className="w-3 h-3 text-[#e07850]/50" />
           <span className="text-[10px] font-black uppercase tracking-widest text-white/20">Remembered</span>
         </div>
         <button
@@ -97,7 +97,7 @@ export default function MemoryHints({ onApplyUrl, onApplyMode }: Props) {
       <div className="mt-2 flex gap-2">
         <Link
           href="/himalaya/templates"
-          className="text-[10px] text-cyan-400/40 hover:text-cyan-400/70 transition"
+          className="text-[10px] text-[#f5a623]/40 hover:text-[#f5a623]/70 transition"
         >
           View Templates
         </Link>

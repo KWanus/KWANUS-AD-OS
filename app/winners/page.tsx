@@ -137,9 +137,9 @@ export default function WinnerFinder() {
     };
 
     return (
-        <main className="min-h-screen bg-[#050a14] text-white flex flex-col font-inter">
+        <main className="min-h-screen bg-t-bg text-white flex flex-col font-inter">
             {/* Subtle background glow */}
-            <div className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-cyan-500/10 blur-[120px] rounded-full pointer-events-none" />
+            <div className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-[#f5a623]/10 blur-[120px] rounded-full pointer-events-none" />
             <div className="fixed bottom-0 right-1/4 w-[500px] h-[500px] bg-purple-500/10 blur-[120px] rounded-full pointer-events-none" />
 
             <AppNav />
@@ -149,7 +149,7 @@ export default function WinnerFinder() {
                 <div className="mb-8 rounded-3xl border border-white/[0.08] bg-white/[0.03] p-6">
                     <div className="flex flex-col gap-6 xl:flex-row xl:items-start xl:justify-between">
                         <div className="max-w-2xl">
-                            <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-200/70">Research Lab</p>
+                            <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#f5a623]/70">Research Lab</p>
                             <h2 className="mt-2 text-3xl font-black text-white">Find the next angle worth building around</h2>
                             <p className="mt-3 text-sm leading-7 text-white/45">
                                 Run affiliate or dropship research with a clean validation pass in Core, or push for sharper operator-grade market selection in Elite.
@@ -167,8 +167,8 @@ export default function WinnerFinder() {
                                     onClick={() => setExecutionTier(value)}
                                     className={`rounded-2xl border px-4 py-3 text-left transition ${
                                         executionTier === value
-                                            ? "border-cyan-500/25 bg-cyan-500/10 text-cyan-100"
-                                            : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+                                            ? "border-[#f5a623]/25 bg-[#f5a623]/10 text-[#f5f0e8]"
+                                            : "border-white/[0.08] bg-white/[0.03] text-white/60 hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.05]"
                                     }`}
                                 >
                                     <p className="text-sm font-black">{label}</p>
@@ -191,7 +191,7 @@ export default function WinnerFinder() {
                                         onClick={() => setResearchMode(value)}
                                         className={`inline-flex items-center gap-2 rounded-2xl border px-4 py-2.5 text-sm font-black transition ${
                                             researchMode === value
-                                                ? "border-cyan-500/25 bg-cyan-500/10 text-cyan-100"
+                                                ? "border-[#f5a623]/25 bg-[#f5a623]/10 text-[#f5f0e8]"
                                                 : "border-white/[0.08] bg-white/[0.03] text-white/55 hover:text-white/75"
                                         }`}
                                     >
@@ -229,7 +229,7 @@ export default function WinnerFinder() {
                             <button
                                 onClick={() => void runResearch()}
                                 disabled={!researchNiche.trim() || researching}
-                                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(245,166,35,0.22)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
                             >
                                 {researching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                                 {researching ? "Researching..." : `Run ${executionTier === "elite" ? "Elite" : "Core"} Research`}
@@ -246,7 +246,7 @@ export default function WinnerFinder() {
                             {affiliateResearch ? (
                                 <div className="space-y-4">
                                     <div>
-                                        <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-200/70">Affiliate Snapshot</p>
+                                        <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#f5a623]/70">Affiliate Snapshot</p>
                                         <p className="mt-2 text-lg font-black text-white">
                                             {affiliateResearch.competitionLevel ? `${affiliateResearch.competitionLevel} competition` : "Research Ready"}
                                         </p>
@@ -273,7 +273,7 @@ export default function WinnerFinder() {
                                             <ul className="mt-3 space-y-2">
                                                 {affiliateResearch.topNicheAngles.slice(0, 4).map((angle, index) => (
                                                     <li key={index} className="text-xs leading-6 text-white/55">
-                                                        <span className="mr-2 text-cyan-300/60">{index + 1}.</span>
+                                                        <span className="mr-2 text-[#f5a623]/60">{index + 1}.</span>
                                                         {angle}
                                                     </li>
                                                 ))}
@@ -284,7 +284,7 @@ export default function WinnerFinder() {
                             ) : dropshipResearch ? (
                                 <div className="space-y-4">
                                     <div>
-                                        <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-200/70">Dropship Snapshot</p>
+                                        <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#f5a623]/70">Dropship Snapshot</p>
                                         <p className="mt-2 text-sm leading-7 text-white/55">
                                             {dropshipResearch.marketAnalysis ?? "Market analysis ready."}
                                         </p>
@@ -313,7 +313,7 @@ export default function WinnerFinder() {
                                             <ul className="mt-3 space-y-2">
                                                 {dropshipResearch.trendingNow.slice(0, 4).map((trend, index) => (
                                                     <li key={index} className="text-xs leading-6 text-white/55">
-                                                        <span className="mr-2 text-cyan-300/60">{index + 1}.</span>
+                                                        <span className="mr-2 text-[#f5a623]/60">{index + 1}.</span>
                                                         {trend}
                                                     </li>
                                                 ))}
@@ -413,7 +413,7 @@ function WinnerCard({ winner, onRemix, isLoading }: { winner: WinnerAd; onRemix:
                 {/* CTAs — always visible on mobile, hover-reveal on desktop */}
                 <div className="absolute inset-x-0 bottom-3 px-3 sm:translate-y-3 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100 transition-all duration-200 flex flex-col gap-2">
                     <Link href={`/analyze?url=${encodeURIComponent(winner.url)}`}
-                        className="w-full bg-cyan-500 hover:bg-cyan-400 text-[#050a14] py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition flex items-center justify-center gap-1.5 shadow-[0_0_20px_rgba(6,182,212,0.4)]">
+                        className="w-full bg-[#f5a623] hover:bg-[#e07850] text-[#050a14] py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition flex items-center justify-center gap-1.5 shadow-[0_0_20px_rgba(245,166,35,0.4)]">
                         <BarChart3 className="w-3.5 h-3.5" /> Analyze with AI
                     </Link>
                     <button onClick={onRemix} disabled={isLoading}
@@ -442,7 +442,7 @@ function WinnerCard({ winner, onRemix, isLoading }: { winner: WinnerAd; onRemix:
                 </div>
 
                 {/* Hook preview */}
-                <p className="text-[11px] text-white/40 italic leading-snug line-clamp-2 border-l-2 border-cyan-500/30 pl-2">
+                <p className="text-[11px] text-white/40 italic leading-snug line-clamp-2 border-l-2 border-[#f5a623]/30 pl-2">
                     &ldquo;{winner.hook}&rdquo;
                 </p>
 
@@ -458,7 +458,7 @@ function WinnerCard({ winner, onRemix, isLoading }: { winner: WinnerAd; onRemix:
                     </div>
                     <div>
                         <p className="text-[8px] font-bold text-white/20 uppercase tracking-widest">CTR</p>
-                        <p className="text-xs font-black text-cyan-400">{winner.metrics.ctr ?? "—"}</p>
+                        <p className="text-xs font-black text-[#f5a623]">{winner.metrics.ctr ?? "—"}</p>
                     </div>
                 </div>
 

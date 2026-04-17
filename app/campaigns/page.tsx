@@ -49,7 +49,7 @@ type StatsSummary = {
 
 const STATUS_STYLES: Record<string, { border: string; text: string; bg: string; dot: string; glow: string }> = {
   draft: { border: "border-white/10", text: "text-white/40", bg: "bg-white/5", dot: "bg-white/30", glow: "" },
-  active: { border: "border-cyan-500/40", text: "text-cyan-400", bg: "bg-cyan-500/10", dot: "bg-cyan-400", glow: "shadow-[0_0_6px_rgba(6,182,212,0.4)]" },
+  active: { border: "border-[#f5a623]/40", text: "text-[#f5a623]", bg: "bg-[#f5a623]/10", dot: "bg-cyan-400", glow: "shadow-[0_0_6px_rgba(245,166,35,0.4)]" },
   testing: { border: "border-yellow-500/40", text: "text-yellow-400", bg: "bg-yellow-500/10", dot: "bg-yellow-400", glow: "shadow-[0_0_6px_rgba(234,179,8,0.4)]" },
   scaling: { border: "border-green-500/40", text: "text-green-400", bg: "bg-green-500/10", dot: "bg-green-400", glow: "shadow-[0_0_6px_rgba(34,197,94,0.4)]" },
   dead: { border: "border-red-500/30", text: "text-red-400/60", bg: "bg-red-500/5", dot: "bg-red-500/60", glow: "" },
@@ -71,7 +71,7 @@ const STATUS_LABELS: Record<string, string> = {
 
 function verdictTone(status?: string) {
   if (status === "healthy") return "border-emerald-500/20 bg-emerald-500/10 text-emerald-200";
-  if (status === "stale") return "border-cyan-500/20 bg-cyan-500/10 text-cyan-100";
+  if (status === "stale") return "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5f0e8]";
   return "border-amber-500/20 bg-amber-500/10 text-amber-100";
 }
 
@@ -214,7 +214,7 @@ export default function CampaignsPage() {
           : "Campaign Workspace";
 
   return (
-    <div className="min-h-screen bg-[#020509] text-white flex flex-col">
+    <div className="min-h-screen bg-t-bg text-white flex flex-col">
       <AppNav />
       <CampaignSubNav />
       <WorkspaceShell>
@@ -226,13 +226,13 @@ export default function CampaignsPage() {
             : "Analyze a product or offer to generate your first full campaign package, then refine it here."}
           actions={(
             <Link href="/analyze"
-              className="shrink-0 flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-sm font-black shadow-[0_0_30px_rgba(6,182,212,0.3)] hover:shadow-[0_0_50px_rgba(6,182,212,0.45)] hover:scale-[1.02] transition-all duration-200">
+              className="shrink-0 flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-black shadow-[0_0_30px_rgba(245,166,35,0.3)] hover:shadow-[0_0_50px_rgba(245,166,35,0.45)] hover:scale-[1.02] transition-all duration-200">
               <Zap className="w-4 h-4" /> New Scan
             </Link>
           )}
           stats={campaigns.length > 0 ? [
             { label: "Campaigns", value: campaigns.length.toString() },
-            { label: "Ad Variations", value: totalAds.toString(), tone: "text-cyan-300" },
+            { label: "Ad Variations", value: totalAds.toString(), tone: "text-[#f5a623]" },
             { label: "Email Drafts", value: totalEmails.toString(), tone: "text-blue-300" },
             { label: "Active", value: campaigns.filter(c => c.status === "active" || c.status === "scaling").length.toString(), tone: "text-emerald-300" },
           ] : undefined}
@@ -252,7 +252,7 @@ export default function CampaignsPage() {
                 onClick={() => setStatusFilter(chip.value)}
                 className={`px-3 py-1.5 rounded-lg text-[10px] font-bold transition ${
                   statusFilter === chip.value
-                    ? "bg-cyan-500/15 text-cyan-400 border border-cyan-500/30"
+                    ? "bg-[#f5a623]/15 text-[#f5a623] border border-[#f5a623]/30"
                     : "bg-white/[0.03] text-white/30 border border-white/[0.06] hover:text-white/50 hover:border-white/[0.12]"
                 }`}
               >
@@ -265,7 +265,7 @@ export default function CampaignsPage() {
         <div className="mb-6 flex items-center gap-3">
           <button
             onClick={() => setShowCreate(v => !v)}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition shrink-0"
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-xs font-bold hover:opacity-90 transition shrink-0"
           >
             <Plus className="w-3.5 h-3.5" /> New Campaign
           </button>
@@ -276,7 +276,7 @@ export default function CampaignsPage() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search campaigns..."
-                className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-cyan-500/40 transition placeholder-white/20 font-medium"
+                className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-[#f5a623]/40 transition placeholder-white/20 font-medium"
               />
             </div>
           )}
@@ -294,7 +294,7 @@ export default function CampaignsPage() {
                   onChange={e => setNewName(e.target.value)}
                   onKeyDown={e => e.key === "Enter" && void handleCreate()}
                   placeholder="Campaign name..."
-                  className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-cyan-500/50 transition"
+                  className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-[#f5a623]/50 transition"
                 />
               </div>
               <select
@@ -308,7 +308,7 @@ export default function CampaignsPage() {
               <button
                 onClick={() => void handleCreate()}
                 disabled={creating || !newName.trim()}
-                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 disabled:opacity-40 transition"
+                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 disabled:opacity-40 transition"
               >
                 {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : "Create"}
               </button>
@@ -352,7 +352,7 @@ export default function CampaignsPage() {
                   <button
                     onClick={() => void refreshBusinessSystem()}
                     disabled={refreshingRecommendations}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-5 py-3 text-sm font-bold text-cyan-100 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex items-center gap-2 rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-5 py-3 text-sm font-bold text-[#f5f0e8] disabled:cursor-not-allowed disabled:opacity-60"
                   >
                     {refreshingRecommendations ? "Refreshing..." : "Refresh Recommendations"}
                   </button>
@@ -365,10 +365,10 @@ export default function CampaignsPage() {
         <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="mb-6" />
 
         {businessProfile && (
-          <div className="mb-6 rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] to-blue-500/[0.03] p-6">
+          <div className="mb-6 rounded-[28px] border border-[#f5a623]/20 bg-gradient-to-br from-cyan-500/[0.08] to-blue-500/[0.03] p-6">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-3xl">
-                <p className="text-[10px] font-black uppercase tracking-[0.26em] text-cyan-200/70">Recommended Next Campaign</p>
+                <p className="text-[10px] font-black uppercase tracking-[0.26em] text-[#f5a623]/70">Recommended Next Campaign</p>
                 <h2 className="mt-2 text-2xl font-black text-white">
                   {recommendedLabel} for {businessProfile.niche || businessProfile.businessType.replace(/_/g, " ")}
                 </h2>
@@ -382,7 +382,7 @@ export default function CampaignsPage() {
               <div className="flex flex-wrap gap-3">
                 <Link
                   href={recommendedTypeParam ? `/campaigns/new?type=${recommendedTypeParam}` : "/analyze"}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)]"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(245,166,35,0.22)]"
                 >
                   <Zap className="w-4 h-4" />
                   Start Recommended Campaign
@@ -411,9 +411,9 @@ export default function CampaignsPage() {
         {!loading && campaigns.length === 0 && (
           <div className="mt-8 relative rounded-3xl border border-white/[0.06] bg-gradient-to-br from-cyan-500/[0.04] to-purple-500/[0.02] p-20 flex flex-col items-center text-center overflow-hidden">
             <div className="absolute inset-0 opacity-[0.013]"
-              style={{ backgroundImage: "radial-gradient(circle, #06b6d4 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
-            <div className="relative w-24 h-24 rounded-3xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border border-white/[0.07] flex items-center justify-center mb-6 shadow-[0_0_50px_rgba(6,182,212,0.15)]">
-              <BarChart2 className="w-10 h-10 text-cyan-400/50" />
+              style={{ backgroundImage: "radial-gradient(circle, #f5a623 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
+            <div className="relative w-24 h-24 rounded-3xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border border-white/[0.07] flex items-center justify-center mb-6 shadow-[0_0_50px_rgba(245,166,35,0.15)]">
+              <BarChart2 className="w-10 h-10 text-[#f5a623]/50" />
             </div>
             <h2 className="text-2xl font-black text-white mb-2">No campaigns yet</h2>
             <p className="text-sm text-white/35 max-w-sm mb-4 leading-relaxed">
@@ -427,7 +427,7 @@ export default function CampaignsPage() {
               <span className="bg-white/[0.04] border border-white/[0.06] px-2 py-0.5 rounded">Campaign created</span>
             </div>
             <Link href="/himalaya"
-              className="flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black shadow-[0_0_30px_rgba(6,182,212,0.25)] hover:scale-[1.02] transition-all">
+              className="flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-black shadow-[0_0_30px_rgba(245,166,35,0.25)] hover:scale-[1.02] transition-all">
               <Zap className="w-4 h-4" />
               Start with Himalaya →
             </Link>
@@ -474,14 +474,14 @@ export default function CampaignsPage() {
                       <span
                         className={`rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.18em] ${
                           executionTier === "elite"
-                            ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-300"
+                            ? "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5a623]"
                             : "border-white/10 bg-white/5 text-white/45"
                         }`}
                       >
                         {executionTier}
                       </span>
                     </div>
-                    <h3 className="text-sm font-bold text-white group-hover:text-cyan-300 transition truncate leading-snug">{c.name}</h3>
+                    <h3 className="text-sm font-bold text-white group-hover:text-[#f5a623] transition truncate leading-snug">{c.name}</h3>
                     {c.productName && <p className="text-xs text-white/25 mt-0.5 truncate">{c.productName}</p>}
                     <p className="mt-1 text-[11px] text-white/30">
                       {executionTier === "elite"
@@ -546,7 +546,7 @@ export default function CampaignsPage() {
                               }
                             } catch { toast.error("Failed to duplicate"); }
                           }}
-                          className="p-2 rounded-lg hover:bg-cyan-500/10 text-white/20 hover:text-cyan-400 transition opacity-0 group-hover:opacity-100"
+                          className="p-2 rounded-lg hover:bg-[#f5a623]/10 text-white/20 hover:text-[#f5a623] transition opacity-0 group-hover:opacity-100"
                           title="Duplicate campaign"
                         >
                           <Copy className="w-3.5 h-3.5" />
@@ -558,7 +558,7 @@ export default function CampaignsPage() {
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
                         <div className="w-7 h-7 rounded-lg bg-white/[0.05] border border-white/[0.07] flex items-center justify-center">
-                          <ArrowRight className="w-4 h-4 text-cyan-400/60" />
+                          <ArrowRight className="w-4 h-4 text-[#f5a623]/60" />
                         </div>
                       </>
                     )}

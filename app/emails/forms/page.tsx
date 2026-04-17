@@ -78,7 +78,7 @@ export default function EmailFormsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <EmailSubNav />
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
@@ -89,7 +89,7 @@ export default function EmailFormsPage() {
           </div>
           <button
             onClick={() => setCreating(true)}
-            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-xs font-bold hover:opacity-90 transition"
           >
             <Plus className="w-3.5 h-3.5" /> New Form
           </button>
@@ -103,22 +103,22 @@ export default function EmailFormsPage() {
               <div>
                 <label className="text-[10px] font-bold text-white/25 uppercase mb-1 block">Form name</label>
                 <input value={newName} onChange={(e) => setNewName(e.target.value)} placeholder="e.g. Homepage signup" autoFocus
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white/60 focus:outline-none focus:border-cyan-500/30" />
+                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white/60 focus:outline-none focus:border-[#f5a623]/30" />
               </div>
               <div>
                 <label className="text-[10px] font-bold text-white/25 uppercase mb-1 block">Headline</label>
                 <input value={newHeadline} onChange={(e) => setNewHeadline(e.target.value)} placeholder="Join our list"
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white/60 focus:outline-none focus:border-cyan-500/30" />
+                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white/60 focus:outline-none focus:border-[#f5a623]/30" />
               </div>
               <div>
                 <label className="text-[10px] font-bold text-white/25 uppercase mb-1 block">Button text</label>
                 <input value={newButton} onChange={(e) => setNewButton(e.target.value)} placeholder="Subscribe"
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white/60 focus:outline-none focus:border-cyan-500/30" />
+                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white/60 focus:outline-none focus:border-[#f5a623]/30" />
               </div>
               <div>
                 <label className="text-[10px] font-bold text-white/25 uppercase mb-1 block">Auto-tags (comma separated)</label>
                 <input value={newTags} onChange={(e) => setNewTags(e.target.value)} placeholder="subscriber, lead"
-                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white/60 focus:outline-none focus:border-cyan-500/30" />
+                  className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-xs text-white/60 focus:outline-none focus:border-[#f5a623]/30" />
               </div>
             </div>
             <p className="text-[10px] text-white/20 mb-3">When someone submits this form, they'll be auto-enrolled in any active flow with a "signup" trigger.</p>
@@ -140,7 +140,7 @@ export default function EmailFormsPage() {
             <FileText className="w-10 h-10 text-white/10 mx-auto mb-3" />
             <p className="text-sm text-white/30 mb-1">No signup forms yet</p>
             <p className="text-xs text-white/20 mb-4">Forms capture leads and auto-trigger your email flows</p>
-            <button onClick={() => setCreating(true)} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-xs font-bold text-cyan-400 hover:bg-cyan-500/20 transition">
+            <button onClick={() => setCreating(true)} className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#f5a623]/10 border border-[#f5a623]/20 text-xs font-bold text-[#f5a623] hover:bg-[#f5a623]/20 transition">
               <Plus className="w-3 h-3" /> Create Your First Form
             </button>
           </div>

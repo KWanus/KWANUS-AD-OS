@@ -25,7 +25,7 @@ export default function ProfitCalculatorPage() {
   const isProfitable = netProfit > 0;
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
@@ -69,9 +69,9 @@ export default function ProfitCalculatorPage() {
 
             {/* Metrics grid */}
             <div className="grid grid-cols-2 gap-3">
-              <MetricBox icon={DollarSign} label="Revenue" value={`$${revenue.toFixed(0)}`} color="text-cyan-400" />
+              <MetricBox icon={DollarSign} label="Revenue" value={`$${revenue.toFixed(0)}`} color="text-[#f5a623]" />
               <MetricBox icon={TrendingUp} label="ROAS" value={`${roas.toFixed(1)}x`} color={roas >= 2 ? "text-emerald-400" : roas >= 1 ? "text-amber-400" : "text-red-400"} />
-              <MetricBox icon={Target} label="CPA" value={`$${cpa.toFixed(2)}`} color="text-purple-400" />
+              <MetricBox icon={Target} label="CPA" value={`$${cpa.toFixed(2)}`} color="text-[#e07850]" />
               <MetricBox icon={TrendingUp} label="ROI" value={`${roi.toFixed(0)}%`} color={roi > 0 ? "text-emerald-400" : "text-red-400"} />
             </div>
 

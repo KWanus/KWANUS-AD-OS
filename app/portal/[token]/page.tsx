@@ -44,15 +44,15 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] text-white flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-cyan-500/30 border-t-cyan-500 rounded-full animate-spin" />
+      <div className="min-h-screen bg-t-bg text-white flex items-center justify-center">
+        <div className="w-8 h-8 border-2 border-[#f5a623]/30 border-t-cyan-500 rounded-full animate-spin" />
       </div>
     );
   }
 
   if (error || !portal) {
     return (
-      <div className="min-h-screen bg-[#050a14] text-white flex items-center justify-center">
+      <div className="min-h-screen bg-t-bg text-white flex items-center justify-center">
         <div className="text-center">
           <p className="text-white/40 mb-2">{error ?? "Not found"}</p>
           <p className="text-xs text-white/20">This portal link may have expired or is invalid.</p>
@@ -64,12 +64,12 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
   const scoreColor = (portal.score ?? 0) >= 70 ? "text-emerald-400" : (portal.score ?? 0) >= 45 ? "text-amber-400" : "text-red-400";
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       {/* Header */}
       <header className="border-b border-white/[0.06] px-6 py-4">
         <div className="max-w-4xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-[#f5a623] to-[#e07850] flex items-center justify-center">
               <Zap className="w-4 h-4 text-white" />
             </div>
             <div>
@@ -103,8 +103,8 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
           <Section icon={Target} title="Top Priorities">
             <div className="space-y-3">
               {portal.priorities.map((p, i) => (
-                <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-cyan-500/5 border border-cyan-500/15">
-                  <span className="text-cyan-400 font-bold text-sm shrink-0">{i + 1}.</span>
+                <div key={i} className="flex items-start gap-3 p-3 rounded-xl bg-[#f5a623]/5 border border-[#f5a623]/15">
+                  <span className="text-[#f5a623] font-bold text-sm shrink-0">{i + 1}.</span>
                   <div>
                     <p className="text-sm font-bold text-white">{p.label}</p>
                     <p className="text-xs text-white/40 mt-0.5">{p.reason}</p>
@@ -135,7 +135,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
             <div className="space-y-2">
               {portal.adHooks.slice(0, 5).map((hook, i) => (
                 <div key={i} className="p-4 rounded-xl bg-white/[0.03] border border-white/[0.06]">
-                  <p className="text-[10px] text-cyan-400/60 font-bold uppercase mb-1">{hook.format}</p>
+                  <p className="text-[10px] text-[#f5a623]/60 font-bold uppercase mb-1">{hook.format}</p>
                   <p className="text-sm text-white/80 leading-relaxed">&ldquo;{hook.hook}&rdquo;</p>
                 </div>
               ))}
@@ -147,7 +147,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
         {portal.landingPage && (
           <Section icon={FileText} title="Landing Page Blueprint">
             <div className="space-y-3">
-              <div className="p-4 rounded-xl bg-cyan-500/5 border border-cyan-500/15">
+              <div className="p-4 rounded-xl bg-[#f5a623]/5 border border-[#f5a623]/15">
                 <p className="text-lg font-bold text-white">{portal.landingPage.headline}</p>
                 <p className="text-sm text-white/50 mt-1">{portal.landingPage.subheadline}</p>
               </div>
@@ -215,7 +215,7 @@ function Section({ icon: Icon, title, children }: { icon: React.ElementType; tit
   return (
     <div className="bg-white/[0.02] border border-white/[0.07] rounded-2xl p-5">
       <div className="flex items-center gap-2 mb-4">
-        <Icon className="w-4 h-4 text-cyan-400/60" />
+        <Icon className="w-4 h-4 text-[#f5a623]/60" />
         <h2 className="text-[10px] font-black uppercase tracking-widest text-white/30">{title}</h2>
       </div>
       {children}

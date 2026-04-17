@@ -19,7 +19,7 @@ export default function OperatorStatCard({
 }) {
   const toneClassName =
     tone === "accent"
-      ? "border-cyan-500/20 bg-cyan-500/10"
+      ? "border-[#f5a623]/20 bg-[#f5a623]/10"
       : tone === "warning"
         ? "border-amber-500/15 bg-amber-500/[0.06]"
         : "border-white/[0.07] bg-black/20";

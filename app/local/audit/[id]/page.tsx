@@ -124,9 +124,9 @@ const SEV_COLORS: Record<string, string> = {
 };
 
 const GMB_TYPE_COLORS: Record<string, string> = {
-  offer:   "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
+  offer:   "text-[#f5a623] bg-[#f5a623]/10 border-[#f5a623]/20",
   update:  "text-blue-400 bg-blue-500/10 border-blue-500/20",
-  event:   "text-purple-400 bg-purple-500/10 border-purple-500/20",
+  event:   "text-[#e07850] bg-purple-500/10 border-purple-500/20",
   product: "text-green-400 bg-green-500/10 border-green-500/20",
 };
 
@@ -264,7 +264,7 @@ function AuditFindingsTab({ audit }: { audit: LocalAudit }) {
                 <p className="text-sm font-bold text-white mb-1">{f.issue}</p>
                 <p className="text-xs text-white/50 mb-2 leading-relaxed">{f.fix}</p>
                 {f.impact && (
-                  <p className="text-[11px] text-cyan-400/70">{f.impact}</p>
+                  <p className="text-[11px] text-[#f5a623]/70">{f.impact}</p>
                 )}
               </div>
             ))}
@@ -279,7 +279,7 @@ function AuditFindingsTab({ audit }: { audit: LocalAudit }) {
           <div className="space-y-2">
             {aj.topPriorities.map((p, i) => (
               <div key={i} className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4 flex gap-3">
-                <span className="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-black flex items-center justify-center shrink-0">
+                <span className="w-6 h-6 rounded-full bg-[#f5a623]/20 text-[#f5a623] text-xs font-black flex items-center justify-center shrink-0">
                   {i + 1}
                 </span>
                 <div>
@@ -361,7 +361,7 @@ function PackagesTab({ audit, onRefresh }: { audit: LocalAudit; onRefresh: () =>
         <button
           onClick={handleGenerate}
           disabled={generating}
-          className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black px-5 py-2.5 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
+          className="flex items-center gap-2 bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-black px-5 py-2.5 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
         >
           {generating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
           Generate Packages
@@ -372,7 +372,7 @@ function PackagesTab({ audit, onRefresh }: { audit: LocalAudit; onRefresh: () =>
 
   const TIER_COLORS: Record<string, string> = {
     basic: "border-white/[0.06] bg-white/[0.02]",
-    pro:   "border-cyan-500/40 bg-cyan-500/[0.04]",
+    pro:   "border-[#f5a623]/40 bg-[#f5a623]/[0.04]",
     elite: "border-purple-500/30 bg-purple-500/[0.03]",
   };
 
@@ -403,20 +403,20 @@ function PackagesTab({ audit, onRefresh }: { audit: LocalAudit; onRefresh: () =>
           return (
             <div key={i} className={`rounded-2xl p-5 border flex flex-col gap-3 ${TIER_COLORS[pkg.tier] ?? TIER_COLORS.basic}`}>
               {isRecommended && (
-                <span className="self-start text-[10px] font-black uppercase tracking-wider bg-cyan-500/20 text-cyan-400 border border-cyan-500/30 px-2 py-0.5 rounded-lg">
+                <span className="self-start text-[10px] font-black uppercase tracking-wider bg-[#f5a623]/20 text-[#f5a623] border border-[#f5a623]/30 px-2 py-0.5 rounded-lg">
                   Recommended
                 </span>
               )}
               <div>
                 <p className="text-[10px] font-bold text-white/30 uppercase tracking-widest">{pkg.tier}</p>
                 <p className="text-sm font-black text-white">{pkg.name}</p>
-                <p className="text-xl font-black text-cyan-400">${pkg.price.toLocaleString()}</p>
+                <p className="text-xl font-black text-[#f5a623]">${pkg.price.toLocaleString()}</p>
                 {pkg.billingCycle && <p className="text-xs text-white/30">/{pkg.billingCycle}</p>}
               </div>
               <ul className="space-y-1.5 flex-1">
                 {pkg.deliverables.map((d, j) => (
                   <li key={j} className="flex items-start gap-2 text-xs text-white/55">
-                    <Check className="w-3 h-3 text-cyan-400/60 mt-0.5 shrink-0" />{d}
+                    <Check className="w-3 h-3 text-[#f5a623]/60 mt-0.5 shrink-0" />{d}
                   </li>
                 ))}
               </ul>
@@ -479,7 +479,7 @@ function GmbContentTab({ audit, onRefresh }: { audit: LocalAudit; onRefresh: () 
         <button
           onClick={handleGenerate}
           disabled={generating}
-          className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black px-5 py-2.5 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
+          className="flex items-center gap-2 bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-black px-5 py-2.5 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
         >
           {generating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
           Generate 30-Day Calendar
@@ -516,7 +516,7 @@ function GmbContentTab({ audit, onRefresh }: { audit: LocalAudit; onRefresh: () 
               <p className="text-sm font-bold text-white mb-1">{post.title}</p>
               <p className="text-xs text-white/50 leading-relaxed mb-2">{post.body}</p>
               <div className="flex items-center justify-between">
-                <p className="text-[11px] text-cyan-400/70">CTA: {post.cta}</p>
+                <p className="text-[11px] text-[#f5a623]/70">CTA: {post.cta}</p>
                 <CopyBtn text={postText} label="Post" />
               </div>
             </div>
@@ -560,7 +560,7 @@ function ReviewSystemTab({ audit, onRefresh }: { audit: LocalAudit; onRefresh: (
         <button
           onClick={handleGenerate}
           disabled={generating}
-          className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black px-5 py-2.5 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
+          className="flex items-center gap-2 bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-black px-5 py-2.5 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
         >
           {generating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
           Generate Review Templates
@@ -579,7 +579,7 @@ function ReviewSystemTab({ audit, onRefresh }: { audit: LocalAudit; onRefresh: (
             {templates.sms.map((t, i) => (
               <div key={i} className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-[10px] font-bold bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 rounded-lg px-2 py-0.5">
+                  <span className="text-[10px] font-bold bg-[#f5a623]/10 text-[#f5a623] border border-[#f5a623]/20 rounded-lg px-2 py-0.5">
                     {t.timing}
                   </span>
                 </div>
@@ -599,7 +599,7 @@ function ReviewSystemTab({ audit, onRefresh }: { audit: LocalAudit; onRefresh: (
             {templates.email.map((t, i) => (
               <div key={i} className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-[10px] font-bold bg-purple-500/10 text-purple-400 border border-purple-500/20 rounded-lg px-2 py-0.5">
+                  <span className="text-[10px] font-bold bg-purple-500/10 text-[#e07850] border border-purple-500/20 rounded-lg px-2 py-0.5">
                     {t.timing}
                   </span>
                 </div>
@@ -626,7 +626,7 @@ function ReviewSystemTab({ audit, onRefresh }: { audit: LocalAudit; onRefresh: (
             "Never incentivize reviews — it violates Google policy",
           ].map((tip, i) => (
             <li key={i} className="flex items-start gap-2">
-              <ChevronRight className="w-3 h-3 text-cyan-400/50 mt-0.5 shrink-0" />
+              <ChevronRight className="w-3 h-3 text-[#f5a623]/50 mt-0.5 shrink-0" />
               {tip}
             </li>
           ))}
@@ -689,17 +689,17 @@ function SeoReportTab({ audit, onRefresh }: { audit: LocalAudit; onRefresh: () =
                   onClick={() => setExecutionTier(tier.id)}
                   className={`rounded-2xl border p-4 text-left transition-all ${
                     active
-                      ? "border-cyan-500/40 bg-cyan-500/10 shadow-[0_0_20px_rgba(6,182,212,0.12)]"
+                      ? "border-[#f5a623]/40 bg-[#f5a623]/10 shadow-[0_0_20px_rgba(245,166,35,0.12)]"
                       : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.14]"
                   }`}
                 >
                   <div className="flex items-center justify-between gap-3">
-                    <span className={`text-sm font-black ${active ? "text-cyan-300" : "text-white"}`}>{tier.label}</span>
-                    <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-cyan-300" : "text-white/20"}`}>
+                    <span className={`text-sm font-black ${active ? "text-[#f5a623]" : "text-white"}`}>{tier.label}</span>
+                    <span className={`text-[10px] font-black uppercase tracking-[0.24em] ${active ? "text-[#f5a623]" : "text-white/20"}`}>
                       {tier.id}
                     </span>
                   </div>
-                  <p className={`mt-2 text-xs leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+                  <p className={`mt-2 text-xs leading-relaxed ${active ? "text-[#f5f0e8]/80" : "text-white/45"}`}>
                     {tier.description}
                   </p>
                 </button>
@@ -710,7 +710,7 @@ function SeoReportTab({ audit, onRefresh }: { audit: LocalAudit; onRefresh: () =
         <button
           onClick={handleGenerate}
           disabled={generating}
-          className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black px-5 py-2.5 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
+          className="flex items-center gap-2 bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-black px-5 py-2.5 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
         >
           {generating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
           Generate Client Report
@@ -782,7 +782,7 @@ function SeoReportTab({ audit, onRefresh }: { audit: LocalAudit; onRefresh: () =
           <div className="space-y-3">
             {report.recommendations.map((rec, i) => (
               <div key={i} className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4 flex gap-3">
-                <span className="w-6 h-6 rounded-full bg-cyan-500/20 text-cyan-400 text-xs font-black flex items-center justify-center shrink-0">
+                <span className="w-6 h-6 rounded-full bg-[#f5a623]/20 text-[#f5a623] text-xs font-black flex items-center justify-center shrink-0">
                   {rec.priority ?? i + 1}
                 </span>
                 <div>
@@ -804,7 +804,7 @@ function SeoReportTab({ audit, onRefresh }: { audit: LocalAudit; onRefresh: () =
       )}
 
       {report.investmentSummary && (
-        <div className="bg-cyan-500/[0.04] border border-cyan-500/20 rounded-2xl p-5">
+        <div className="bg-[#f5a623]/[0.04] border border-[#f5a623]/20 rounded-2xl p-5">
           <SectionLabel>Investment Summary</SectionLabel>
           <p className="text-sm text-white/60 leading-relaxed">{report.investmentSummary}</p>
         </div>
@@ -864,7 +864,7 @@ export default function LocalAuditDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex items-center justify-center">
+      <div className="min-h-screen bg-t-bg flex items-center justify-center">
         <Loader2 className="w-6 h-6 animate-spin text-white/20" />
       </div>
     );
@@ -872,12 +872,12 @@ export default function LocalAuditDetailPage() {
 
   if (!audit) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-t-bg flex items-center justify-center px-4">
         <div className="w-full max-w-3xl space-y-4">
           <DatabaseFallbackNotice visible={databaseUnavailable} />
           <div className="flex flex-col items-center justify-center text-center rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8">
             <p className="text-sm font-bold text-white/30 mb-4">{databaseUnavailable ? "Audit data is temporarily unavailable" : "Audit not found"}</p>
-            <button onClick={() => router.push("/local")} className="text-cyan-400 text-sm hover:underline">Back to Local</button>
+            <button onClick={() => router.push("/local")} className="text-[#f5a623] text-sm hover:underline">Back to Local</button>
           </div>
         </div>
       </div>
@@ -894,7 +894,7 @@ export default function LocalAuditDetailPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <div className="max-w-5xl mx-auto px-4 pt-8 pb-24">
 

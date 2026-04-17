@@ -150,7 +150,7 @@ export default function OrdersDashboard({ params }: { params: Promise<{ id: stri
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#020509] flex items-center justify-center">
+            <div className="min-h-screen bg-t-bg flex items-center justify-center">
                 <Loader2 className="w-6 h-6 text-cyan-500 animate-spin" />
             </div>
         );
@@ -158,15 +158,15 @@ export default function OrdersDashboard({ params }: { params: Promise<{ id: stri
 
     if (!site) {
         return (
-            <div className="min-h-screen bg-[#020509] flex items-center justify-center text-white/40">
+            <div className="min-h-screen bg-t-bg flex items-center justify-center text-white/40">
                 Site not found
             </div>
         );
     }
 
     return (
-        <div className="min-h-screen bg-[#020509] flex flex-col font-sans">
-            <header className="h-16 border-b border-white/[0.08] flex items-center justify-between px-6 bg-[#050a14]">
+        <div className="min-h-screen bg-t-bg flex flex-col font-sans">
+            <header className="h-16 border-b border-white/[0.08] flex items-center justify-between px-6 bg-t-bg">
                 <div className="flex items-center gap-4">
                     <button
                         onClick={() => router.push(`/websites/${siteId}`)}
@@ -204,7 +204,7 @@ export default function OrdersDashboard({ params }: { params: Promise<{ id: stri
                         { label: "Paid + Fulfilled", value: `$${(revenue / 100).toLocaleString("en-US", { minimumFractionDigits: 2 })}` },
                         { label: "Pending", value: orders.filter((o) => o.status === "pending").length },
                     ].map((stat) => (
-                        <div key={stat.label} className="bg-[#050a14] border border-white/[0.08] rounded-2xl p-5 hover:border-white/[0.12] hover:bg-white/[0.02] transition-all hover:scale-[1.01]">
+                        <div key={stat.label} className="bg-t-bg border border-white/[0.08] rounded-2xl p-5 hover:border-white/[0.12] hover:bg-white/[0.02] transition-all hover:scale-[1.01]">
                             <div className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">{stat.label}</div>
                             <div className="text-2xl font-black text-white">{stat.value}</div>
                         </div>
@@ -237,11 +237,11 @@ export default function OrdersDashboard({ params }: { params: Promise<{ id: stri
                             onChange={(e) => setStatusFilter(e.target.value as typeof statusFilter)}
                             className="bg-white/[0.03] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white focus:outline-none"
                         >
-                            <option value="all" className="bg-[#050a14]">All statuses</option>
-                            <option value="pending" className="bg-[#050a14]">Pending</option>
-                            <option value="paid" className="bg-[#050a14]">Paid</option>
-                            <option value="fulfilled" className="bg-[#050a14]">Fulfilled</option>
-                            <option value="refunded" className="bg-[#050a14]">Refunded</option>
+                            <option value="all" className="bg-t-bg">All statuses</option>
+                            <option value="pending" className="bg-t-bg">Pending</option>
+                            <option value="paid" className="bg-t-bg">Paid</option>
+                            <option value="fulfilled" className="bg-t-bg">Fulfilled</option>
+                            <option value="refunded" className="bg-t-bg">Refunded</option>
                         </select>
                     </div>
                 </div>
@@ -259,7 +259,7 @@ export default function OrdersDashboard({ params }: { params: Promise<{ id: stri
                         No orders match this filter.
                     </div>
                 ) : (
-                    <div className="bg-[#050a14] border border-white/[0.08] rounded-2xl overflow-hidden shadow-2xl">
+                    <div className="bg-t-bg border border-white/[0.08] rounded-2xl overflow-hidden shadow-2xl">
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="border-b border-white/[0.08] bg-white/[0.02]">

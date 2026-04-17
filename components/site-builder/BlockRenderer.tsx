@@ -65,9 +65,9 @@ interface Props {
   }>;
 }
 
-const DEFAULT_THEME: SiteTheme = { primaryColor: "#06b6d4", font: "inter", mode: "dark" };
+const DEFAULT_THEME: SiteTheme = { primaryColor: "#f5a623", font: "inter", mode: "dark" };
 
-function px(color: string) { return color ?? "#06b6d4"; }
+function px(color: string) { return color ?? "#f5a623"; }
 
 // ---------------------------------------------------------------------------
 // Shared style helpers
@@ -142,7 +142,7 @@ function HeroBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
             <a href={props.buttonUrl ?? "#"} style={{
               display: "inline-flex", alignItems: "center", gap: 8,
               padding: "15px 34px", borderRadius: 14,
-              background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
+              background: `linear-gradient(135deg, ${primary}, #e07850)`,
               boxShadow: `0 8px 32px ${primary}55`,
               color: "#fff", fontWeight: 800, fontSize: 15, textDecoration: "none",
               letterSpacing: "0.01em",
@@ -226,7 +226,7 @@ function FeaturesBlock({ props, theme }: { props: Block["props"]; theme: SiteThe
               {item.icon && (
                 <div style={{
                   width: 52, height: 52, borderRadius: 14, flexShrink: 0,
-                  background: `linear-gradient(135deg, ${primary}22, #8b5cf622)`,
+                  background: `linear-gradient(135deg, ${primary}22, #e0785022)`,
                   border: `1px solid ${primary}33`,
                   display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24,
                 }}>
@@ -236,7 +236,7 @@ function FeaturesBlock({ props, theme }: { props: Block["props"]; theme: SiteThe
               {!item.icon && item.number && (
                 <div style={{
                   width: 40, height: 40, borderRadius: "50%", flexShrink: 0,
-                  background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
+                  background: `linear-gradient(135deg, ${primary}, #e07850)`,
                   display: "flex", alignItems: "center", justifyContent: "center",
                   color: "#fff", fontWeight: 900, fontSize: 15,
                 }}>
@@ -345,7 +345,7 @@ function TestimonialsBlock({ props, theme }: { props: Block["props"]; theme: Sit
               {item.result && (
                 <div style={{
                   position: "absolute", top: -1, right: 20,
-                  background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
+                  background: `linear-gradient(135deg, ${primary}, #e07850)`,
                   color: "#fff", fontSize: 11, fontWeight: 800,
                   padding: "4px 12px", borderRadius: "0 0 10px 10px",
                   letterSpacing: "0.05em",
@@ -372,7 +372,7 @@ function TestimonialsBlock({ props, theme }: { props: Block["props"]; theme: Sit
                 ) : (
                   <div style={{
                     width: 44, height: 44, borderRadius: "50%", flexShrink: 0,
-                    background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
+                    background: `linear-gradient(135deg, ${primary}, #e07850)`,
                     display: "flex", alignItems: "center", justifyContent: "center",
                     color: "#fff", fontWeight: 800, fontSize: 15,
                   }}>
@@ -445,7 +445,7 @@ function PricingBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
               {tier.badge && (
                 <div style={{
                   position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)",
-                  background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
+                  background: `linear-gradient(135deg, ${primary}, #e07850)`,
                   color: "#fff", fontSize: 11, fontWeight: 800,
                   padding: "4px 18px", borderRadius: 100,
                   letterSpacing: "0.1em", textTransform: "uppercase", whiteSpace: "nowrap",
@@ -470,7 +470,7 @@ function PricingBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
                 <a href={tier.buttonUrl ?? "#"} style={{
                   display: "block", textAlign: "center",
                   padding: "13px 24px", borderRadius: 12,
-                  background: tier.highlight ? `linear-gradient(135deg, ${primary}, #8b5cf6)` : "transparent",
+                  background: tier.highlight ? `linear-gradient(135deg, ${primary}, #e07850)` : "transparent",
                   border: tier.highlight ? "none" : `1px solid ${cardBorder}`,
                   color: tier.highlight ? "#fff" : textColor,
                   fontWeight: 800, fontSize: 14, textDecoration: "none",
@@ -560,7 +560,7 @@ function FAQBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme })
               <a href={props.ctaButtonUrl ?? "#"} style={{
                 display: "inline-flex", alignItems: "center", gap: 8,
                 padding: "13px 28px", borderRadius: 12,
-                background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
+                background: `linear-gradient(135deg, ${primary}, #e07850)`,
                 color: "#fff", fontWeight: 800, fontSize: 14, textDecoration: "none",
               }}>
                 {props.ctaButtonText}
@@ -579,7 +579,7 @@ function FAQBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme })
 
 function CTABlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? `linear-gradient(135deg, ${primary}ee 0%, #8b5cf6ee 100%)`;
+  const bg = props.bgColor ?? `linear-gradient(135deg, ${primary}ee 0%, #e07850ee 100%)`;
   const trustItems: string[] = props.trustItems ?? [];
 
   return (
@@ -763,7 +763,7 @@ function ProcessBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
               )}
               <div style={{
                 width: 52, height: 52, borderRadius: "50%", margin: "0 auto 20px",
-                background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
+                background: `linear-gradient(135deg, ${primary}, #e07850)`,
                 display: "flex", alignItems: "center", justifyContent: "center",
                 color: "#fff", fontWeight: 900, fontSize: step.icon ? 22 : 18,
                 boxShadow: `0 8px 24px ${primary}44`,
@@ -822,7 +822,7 @@ function BeforeAfterBlock({ props, theme }: { props: Block["props"]; theme: Site
           </div>
           {/* After */}
           <div style={{
-            background: isDark ? `rgba(6,182,212,0.06)` : "#f0fdf4",
+            background: isDark ? `rgba(245,166,35,0.06)` : "#f0fdf4",
             border: `1px solid ${primary}33`,
             borderRadius: 20, padding: "28px 24px",
           }}>
@@ -1089,7 +1089,7 @@ function FormBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
             ))}
             <button type="submit" style={{
               width: "100%", padding: "15px", borderRadius: 12, border: "none",
-              background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
+              background: `linear-gradient(135deg, ${primary}, #e07850)`,
               color: "#fff", fontWeight: 800, fontSize: 16, cursor: "pointer",
               boxShadow: `0 8px 24px ${primary}40`, marginTop: 8,
             }}>
@@ -1169,7 +1169,7 @@ function CheckoutBlock({ props, theme }: { props: Block["props"]; theme: SiteThe
 
           <button type="button" style={{
             width: "100%", padding: "18px", borderRadius: 14, border: "none",
-            background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
+            background: `linear-gradient(135deg, ${primary}, #e07850)`,
             color: "#fff", fontWeight: 900, fontSize: 17, cursor: "pointer",
             boxShadow: `0 8px 32px ${primary}50`,
           }}>
@@ -1322,7 +1322,7 @@ function ProductsBlock({
                         borderRadius: 14,
                         border: "none",
                         cursor: preview ? "default" : "pointer",
-                        background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
+                        background: `linear-gradient(135deg, ${primary}, #e07850)`,
                         color: "#ffffff",
                         fontSize: 14,
                         fontWeight: 800,
@@ -1463,7 +1463,7 @@ function PaymentBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
           rel="noopener noreferrer"
           style={{
             display: "inline-block", padding: "18px 48px", borderRadius: 14, border: "none",
-            background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
+            background: `linear-gradient(135deg, ${primary}, #e07850)`,
             color: "#fff", fontWeight: 800, fontSize: 18, cursor: "pointer",
             textDecoration: "none",
             boxShadow: `0 12px 32px ${primary}40`,
@@ -1568,7 +1568,7 @@ export default function BlockRenderer({ block, theme, preview, selected, onClick
       style={{
         position: "relative",
         cursor: "pointer",
-        outline: selected ? `2px solid #06b6d4` : "none",
+        outline: selected ? `2px solid #f5a623` : "none",
         outlineOffset: -2,
         transition: "outline 0.1s",
       }}
@@ -1578,7 +1578,7 @@ export default function BlockRenderer({ block, theme, preview, selected, onClick
         <>
           <div style={{
             position: "absolute", top: 8, right: 8,
-            background: "#06b6d4", color: "#050a14",
+            background: "#f5a623", color: "#050a14",
             fontSize: 10, fontWeight: 800, padding: "3px 8px",
             borderRadius: 6, textTransform: "uppercase", letterSpacing: "0.1em", pointerEvents: "none",
           }}>

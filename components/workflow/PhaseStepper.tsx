@@ -22,7 +22,7 @@ export default function PhaseStepper({ currentPhase, onPhaseClick }: PhaseSteppe
                 {/* Progress Line */}
                 <div className="absolute top-1/2 left-0 w-full h-[1px] bg-white/10 -translate-y-1/2 z-0" />
                 <div
-                    className="absolute top-1/2 left-0 h-[1px] bg-cyan-500 transition-all duration-700 -translate-y-1/2 z-0"
+                    className="absolute top-1/2 left-0 h-[1px] bg-[#f5a623] transition-all duration-700 -translate-y-1/2 z-0"
                     style={{ width: `${((currentPhase - 1) / (PHASES.length - 1)) * 100}%` }}
                 />
 
@@ -35,16 +35,16 @@ export default function PhaseStepper({ currentPhase, onPhaseClick }: PhaseSteppe
                         <div key={phase.id} className="relative z-10 flex flex-col items-center gap-2 group cursor-pointer" onClick={() => onPhaseClick?.(phase.id)}>
                             <div
                                 className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-500 border-2 font-black text-xs ${isActive
-                                        ? "bg-cyan-500 border-cyan-400 text-[#050a14] shadow-[0_0_20px_rgba(6,182,212,0.4)] scale-110"
+                                        ? "bg-[#f5a623] border-cyan-400 text-[#050a14] shadow-[0_0_20px_rgba(245,166,35,0.4)] scale-110"
                                         : isCompleted
-                                            ? "bg-[#050a14] border-cyan-500 text-cyan-500"
+                                            ? "bg-[#050a14] border-[#f5a623] text-cyan-500"
                                             : "bg-[#050a14] border-white/10 text-white/20 group-hover:border-white/30"
                                     }`}
                             >
                                 {isCompleted ? <Check className="w-5 h-5" /> : <Icon className="w-4 h-4" />}
                             </div>
                             <div className="text-center">
-                                <p className={`text-[9px] font-black uppercase tracking-[0.2em] transition-colors ${isActive ? "text-cyan-400" : isCompleted ? "text-cyan-600" : "text-white/20"
+                                <p className={`text-[9px] font-black uppercase tracking-[0.2em] transition-colors ${isActive ? "text-[#f5a623]" : isCompleted ? "text-cyan-600" : "text-white/20"
                                     }`}>
                                     {phase.label}
                                 </p>

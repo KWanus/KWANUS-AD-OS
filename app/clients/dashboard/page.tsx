@@ -105,7 +105,7 @@ function StageFunnel({ clients }: { clients: Client[] }) {
   const STAGES = ["lead", "qualified", "proposal", "active", "won", "churned"];
   const STAGE_COLORS: Record<string, string> = {
     lead: "bg-white/20",
-    qualified: "bg-cyan-500",
+    qualified: "bg-[#f5a623]",
     proposal: "bg-blue-500",
     active: "bg-green-500",
     won: "bg-emerald-500",
@@ -166,7 +166,7 @@ function RecentlyAdded({ clients }: { clients: Client[] }) {
     <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-xs font-black uppercase tracking-widest text-white/30">Recently Added</h3>
-        <Link href="/clients" className="text-[10px] text-cyan-400/60 hover:text-cyan-400 transition">View all →</Link>
+        <Link href="/clients" className="text-[10px] text-[#f5a623]/60 hover:text-[#f5a623] transition">View all →</Link>
       </div>
       <div className="space-y-2">
         {recent.length === 0 && (
@@ -175,7 +175,7 @@ function RecentlyAdded({ clients }: { clients: Client[] }) {
         {recent.map((client) => {
           const STAGE_COLORS_MAP: Record<string, string> = {
             lead: "text-white/30",
-            qualified: "text-cyan-400",
+            qualified: "text-[#f5a623]",
             proposal: "text-blue-400",
             active: "text-green-400",
             won: "text-emerald-400",
@@ -187,7 +187,7 @@ function RecentlyAdded({ clients }: { clients: Client[] }) {
               href={`/clients/${client.id}`}
               className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/[0.03] transition group"
             >
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-500/20 to-purple-600/20 flex items-center justify-center text-xs font-black text-white/60 shrink-0">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-500/20 to-[#e07850]/20 flex items-center justify-center text-xs font-black text-white/60 shrink-0">
                 {client.name.charAt(0).toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
@@ -195,7 +195,7 @@ function RecentlyAdded({ clients }: { clients: Client[] }) {
                 {client.company && <p className="text-[10px] text-white/25 truncate">{client.company}</p>}
               </div>
               <span className={`text-[10px] font-black uppercase tracking-[0.2em] ${
-                client.executionTier === "core" ? "text-white/25" : "text-cyan-300/70"
+                client.executionTier === "core" ? "text-white/25" : "text-[#f5a623]/70"
               }`}>
                 {client.executionTier ?? "elite"}
               </span>
@@ -290,7 +290,7 @@ export default function ClientDashboardPage() {
         <div className="space-y-6">
           {/* Top metrics */}
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
-            <MetricCard label="Total Clients" value={total} icon={Users} color="text-cyan-400" href="/clients" />
+            <MetricCard label="Total Clients" value={total} icon={Users} color="text-[#f5a623]" href="/clients" />
             <MetricCard label="Active" value={active} icon={Zap} color="text-green-400" />
             <MetricCard label="Won" value={won} icon={CheckCircle} color="text-emerald-400" />
             <MetricCard label="At Risk" value={atRisk.length} icon={AlertTriangle} color="text-red-400" />
@@ -311,7 +311,7 @@ export default function ClientDashboardPage() {
 
           {/* Second row */}
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <MetricCard label="Avg Health" value={`${avgHealth}/100`} icon={Activity} color="text-cyan-400" />
+            <MetricCard label="Avg Health" value={`${avgHealth}/100`} icon={Activity} color="text-[#f5a623]" />
             <MetricCard label="Need Follow-up" value={overdueFollowUps.length} icon={Clock} color="text-amber-400" sub="No contact in 14+ days" />
             <MetricCard
               label="Win Rate"
@@ -331,13 +331,13 @@ export default function ClientDashboardPage() {
 
           {/* Weighted pipeline */}
           {pipelineStats && pipelineStats.weightedPipeline > 0 && (
-            <div className="bg-cyan-500/5 border border-cyan-500/15 rounded-2xl p-4 flex items-center justify-between">
+            <div className="bg-[#f5a623]/5 border border-[#f5a623]/15 rounded-2xl p-4 flex items-center justify-between">
               <div>
-                <p className="text-[10px] font-black uppercase tracking-widest text-cyan-400/50">Weighted Pipeline</p>
+                <p className="text-[10px] font-black uppercase tracking-widest text-[#f5a623]/50">Weighted Pipeline</p>
                 <p className="text-lg font-black text-white mt-1">${pipelineStats.weightedPipeline.toLocaleString()}</p>
                 <p className="text-[10px] text-white/30 mt-0.5">Probability-adjusted value across all active stages</p>
               </div>
-              <Link href="/clients/pipeline" className="text-xs font-bold text-cyan-400/60 hover:text-cyan-400 transition">View pipeline →</Link>
+              <Link href="/clients/pipeline" className="text-xs font-bold text-[#f5a623]/60 hover:text-[#f5a623] transition">View pipeline →</Link>
             </div>
           )}
 
@@ -424,7 +424,7 @@ export default function ClientDashboardPage() {
               <p className="text-sm text-white/30 font-medium mb-4">Add your first client to see dashboard data.</p>
               <Link
                 href="/clients/new"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition-opacity"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition-opacity"
               >
                 Add First Client
               </Link>

@@ -70,7 +70,7 @@ export default function RunHistoryCard({ run }: { run: RunSummary }) {
               </span>
             )}
             {run.executionState && !run.executionState.completedAt && run.executionState.steps && (
-              <span className="inline-flex items-center gap-0.5 text-[9px] text-cyan-400/50">
+              <span className="inline-flex items-center gap-0.5 text-[9px] text-[#f5a623]/50">
                 <PlayCircle className="w-2.5 h-2.5" />
                 {run.executionState.steps.filter((s) => s.status === "done").length}/{run.executionState.steps.length} steps
               </span>

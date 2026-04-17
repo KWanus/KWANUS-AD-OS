@@ -182,7 +182,7 @@ export default function KonvaCanvas({ state, onChange, selectedId, onSelect, sca
                 id={layer.id}
                 x={layer.x} y={layer.y}
                 width={layer.width} height={layer.height}
-                fill={layer.fill ?? "#06b6d4"}
+                fill={layer.fill ?? "#f5a623"}
                 stroke={layer.stroke}
                 strokeWidth={layer.strokeWidth}
                 cornerRadius={layer.cornerRadius ?? 12}
@@ -226,9 +226,9 @@ export default function KonvaCanvas({ state, onChange, selectedId, onSelect, sca
             if (Math.abs(newBox.width) < 10 || Math.abs(newBox.height) < 10) return oldBox;
             return newBox;
           }}
-          anchorStroke="#06b6d4"
-          borderStroke="#06b6d4"
-          anchorFill="#06b6d4"
+          anchorStroke="#f5a623"
+          borderStroke="#f5a623"
+          anchorFill="#f5a623"
           anchorSize={8}
         />
       </Layer>

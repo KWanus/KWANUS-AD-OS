@@ -118,7 +118,7 @@ function AnalysisRow({ analysis, onDelete }: { analysis: Analysis; onDelete: (id
       {/* Title + URL */}
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2 mb-0.5">
-          <p className="text-sm font-bold text-white truncate group-hover:text-cyan-300 transition-colors">
+          <p className="text-sm font-bold text-white truncate group-hover:text-[#f5a623] transition-colors">
             {analysis.title || analysis.inputUrl}
           </p>
           <span className={`text-[10px] font-black uppercase px-1.5 py-0.5 rounded-md border ${verdict.bg} ${verdict.border} ${verdict.color}`}>
@@ -134,7 +134,7 @@ function AnalysisRow({ analysis, onDelete }: { analysis: Analysis; onDelete: (id
             {analysis.mode}
           </span>
           {analysis._count.assetPackages > 0 && (
-            <span className="text-[10px] text-purple-400/60 flex items-center gap-0.5">
+            <span className="text-[10px] text-[#e07850]/60 flex items-center gap-0.5">
               <Zap className="w-2.5 h-2.5" /> {analysis._count.assetPackages} asset{analysis._count.assetPackages !== 1 ? "s" : ""}
             </span>
           )}
@@ -146,7 +146,7 @@ function AnalysisRow({ analysis, onDelete }: { analysis: Analysis; onDelete: (id
         <div className="hidden md:block shrink-0 text-right">
           <p className="text-[10px] font-bold text-white/30 uppercase tracking-wider">{opp.status}</p>
           {opp.totalScore !== null && (
-            <p className="text-xs font-black text-cyan-400/70">{opp.totalScore}/100</p>
+            <p className="text-xs font-black text-[#f5a623]/70">{opp.totalScore}/100</p>
           )}
         </div>
       )}
@@ -222,8 +222,8 @@ function SkeletonRow() {
 function EmptyState({ filtered }: { filtered: boolean }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center px-4">
-      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-purple-600/20 border border-white/10 flex items-center justify-center mb-5">
-        <ScanSearch className="w-7 h-7 text-cyan-400/70" />
+      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-[#e07850]/20 border border-white/10 flex items-center justify-center mb-5">
+        <ScanSearch className="w-7 h-7 text-[#f5a623]/70" />
       </div>
       {filtered ? (
         <>
@@ -238,7 +238,7 @@ function EmptyState({ filtered }: { filtered: boolean }) {
           </p>
           <Link
             href="/scan"
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition-opacity"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition-opacity"
           >
             <ScanSearch className="w-4 h-4" /> Run First Scan
           </Link>
@@ -315,7 +315,7 @@ export default function AnalysesPage() {
   const withAssets = analyses.filter(a => a._count.assetPackages > 0).length;
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-t-bg text-white">
       <AppNav />
       <ScanSubNav />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
@@ -334,9 +334,9 @@ export default function AnalysesPage() {
           {analyses.length > 0 && !loading && (
             <div className="flex gap-3">
               {[
-                { label: "Avg Score", value: avgScore, color: "text-cyan-400" },
+                { label: "Avg Score", value: avgScore, color: "text-[#f5a623]" },
                 { label: "Pursue", value: pursued, color: "text-emerald-400" },
-                { label: "With Assets", value: withAssets, color: "text-purple-400" },
+                { label: "With Assets", value: withAssets, color: "text-[#e07850]" },
               ].map(({ label, value, color }) => (
                 <div key={label} className="bg-white/[0.03] border border-white/[0.06] rounded-xl px-4 py-2 text-center">
                   <p className={`text-base font-black ${color}`}>{value}</p>
@@ -352,7 +352,7 @@ export default function AnalysesPage() {
                 onClick={() => { setCompareMode(v => !v); setCompareIds([]); setCompareResult(null); }}
                 className={`flex items-center gap-1.5 px-3 py-2.5 rounded-xl border text-xs font-semibold transition ${
                   compareMode
-                    ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-400"
+                    ? "border-[#f5a623]/40 bg-[#f5a623]/10 text-[#f5a623]"
                     : "border-white/[0.08] bg-white/[0.03] text-white/50 hover:text-white hover:border-white/20"
                 }`}
               >
@@ -369,7 +369,7 @@ export default function AnalysesPage() {
             )}
             <Link
               href="/scan"
-              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition-opacity"
+              className="flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition-opacity"
             >
               <ScanSearch className="w-4 h-4" /> New Scan
             </Link>
@@ -378,8 +378,8 @@ export default function AnalysesPage() {
 
         {/* Compare bar */}
         {compareMode && (
-          <div className="mb-4 flex items-center gap-3 px-4 py-3 rounded-2xl bg-cyan-500/10 border border-cyan-500/20">
-            <span className="text-xs font-bold text-cyan-300">
+          <div className="mb-4 flex items-center gap-3 px-4 py-3 rounded-2xl bg-[#f5a623]/10 border border-[#f5a623]/20">
+            <span className="text-xs font-bold text-[#f5a623]">
               {compareIds.length === 0 ? "Select 2 scans to compare" : compareIds.length === 1 ? "Select 1 more scan" : "Ready to compare"}
             </span>
             {compareIds.length === 2 && (
@@ -397,7 +397,7 @@ export default function AnalysesPage() {
                   } catch { /* non-fatal */ } finally { setComparing(false); }
                 }}
                 disabled={comparing}
-                className="px-3 py-1.5 rounded-lg bg-cyan-500/20 border border-cyan-500/30 text-cyan-400 text-xs font-bold hover:bg-cyan-500/30 transition disabled:opacity-40"
+                className="px-3 py-1.5 rounded-lg bg-[#f5a623]/20 border border-[#f5a623]/30 text-[#f5a623] text-xs font-bold hover:bg-[#f5a623]/30 transition disabled:opacity-40"
               >
                 {comparing ? "Comparing..." : "Compare Now"}
               </button>
@@ -417,25 +417,25 @@ export default function AnalysesPage() {
               <div className="bg-white/[0.02] rounded-xl p-3 text-center">
                 <p className="text-[10px] text-white/30 font-bold">A</p>
                 <p className="text-sm font-black text-white truncate">{compareResult.analysisA.title}</p>
-                <p className="text-lg font-black text-cyan-400">{compareResult.analysisA.score}/100</p>
+                <p className="text-lg font-black text-[#f5a623]">{compareResult.analysisA.score}/100</p>
               </div>
               <div className="bg-white/[0.02] rounded-xl p-3 text-center">
                 <p className="text-[10px] text-white/30 font-bold">B</p>
                 <p className="text-sm font-black text-white truncate">{compareResult.analysisB.title}</p>
-                <p className="text-lg font-black text-purple-400">{compareResult.analysisB.score}/100</p>
+                <p className="text-lg font-black text-[#e07850]">{compareResult.analysisB.score}/100</p>
               </div>
             </div>
             <div className="space-y-1.5">
               {compareResult.comparison.map(c => (
                 <div key={c.dimension} className="flex items-center gap-3 text-xs">
                   <span className="w-32 text-white/40 truncate">{c.dimension}</span>
-                  <span className={`w-10 text-right font-bold ${c.winner === "a" ? "text-cyan-400" : "text-white/30"}`}>{c.a}</span>
+                  <span className={`w-10 text-right font-bold ${c.winner === "a" ? "text-[#f5a623]" : "text-white/30"}`}>{c.a}</span>
                   <div className="flex-1 h-1.5 bg-white/[0.04] rounded-full overflow-hidden relative">
-                    <div className="absolute inset-y-0 left-0 bg-cyan-500/50 rounded-full" style={{ width: `${c.a}%` }} />
+                    <div className="absolute inset-y-0 left-0 bg-[#f5a623]/50 rounded-full" style={{ width: `${c.a}%` }} />
                     <div className="absolute inset-y-0 right-0 bg-purple-500/50 rounded-full" style={{ width: `${c.b}%` }} />
                   </div>
-                  <span className={`w-10 font-bold ${c.winner === "b" ? "text-purple-400" : "text-white/30"}`}>{c.b}</span>
-                  <span className={`w-12 text-right text-[10px] font-bold ${c.diff > 0 ? "text-purple-400" : c.diff < 0 ? "text-cyan-400" : "text-white/20"}`}>
+                  <span className={`w-10 font-bold ${c.winner === "b" ? "text-[#e07850]" : "text-white/30"}`}>{c.b}</span>
+                  <span className={`w-12 text-right text-[10px] font-bold ${c.diff > 0 ? "text-[#e07850]" : c.diff < 0 ? "text-[#f5a623]" : "text-white/20"}`}>
                     {c.diff > 0 ? `+${c.diff}` : c.diff}
                   </span>
                 </div>
@@ -458,7 +458,7 @@ export default function AnalysesPage() {
                 onClick={() => { if (chip.active) { setVerdictFilter(""); setSortBy("createdAt"); } else chip.filter(); }}
                 className={`px-3 py-1.5 rounded-lg text-[10px] font-bold transition ${
                   chip.active
-                    ? "bg-cyan-500/15 text-cyan-400 border border-cyan-500/30"
+                    ? "bg-[#f5a623]/15 text-[#f5a623] border border-[#f5a623]/30"
                     : "bg-white/[0.03] text-white/30 border border-white/[0.06] hover:text-white/50 hover:border-white/[0.12]"
                 }`}
               >
@@ -482,14 +482,14 @@ export default function AnalysesPage() {
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search by URL or title..."
-              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition"
+              className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl pl-9 pr-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#f5a623]/50 transition"
             />
           </div>
 
           <select
             value={verdictFilter}
             onChange={(e) => setVerdictFilter(e.target.value)}
-            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-cyan-500/50 transition appearance-none cursor-pointer"
+            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-[#f5a623]/50 transition appearance-none cursor-pointer"
           >
             <option value="">All Verdicts</option>
             <option value="Pursue" className="bg-[#0d1525]">Pursue</option>
@@ -500,7 +500,7 @@ export default function AnalysesPage() {
           <select
             value={modeFilter}
             onChange={(e) => setModeFilter(e.target.value)}
-            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-cyan-500/50 transition appearance-none cursor-pointer"
+            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-[#f5a623]/50 transition appearance-none cursor-pointer"
           >
             <option value="">All Modes</option>
             <option value="operator" className="bg-[#0d1525]">Operator</option>
@@ -510,7 +510,7 @@ export default function AnalysesPage() {
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
-            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-cyan-500/50 transition appearance-none cursor-pointer"
+            className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-[#f5a623]/50 transition appearance-none cursor-pointer"
           >
             <option value="createdAt" className="bg-[#0d1525]">Most Recent</option>
             <option value="score" className="bg-[#0d1525]">Highest Score</option>
@@ -548,7 +548,7 @@ export default function AnalysesPage() {
                       });
                     }}
                     className={`absolute left-2 top-1/2 -translate-y-1/2 z-10 w-5 h-5 rounded-md border-2 flex items-center justify-center transition ${
-                      compareIds.includes(analysis.id) ? "border-cyan-500 bg-cyan-500 text-white" : "border-white/20 bg-transparent"
+                      compareIds.includes(analysis.id) ? "border-[#f5a623] bg-[#f5a623] text-white" : "border-white/20 bg-transparent"
                     }`}
                   >
                     {compareIds.includes(analysis.id) && <span className="text-[10px] font-black">{compareIds.indexOf(analysis.id) + 1}</span>}
