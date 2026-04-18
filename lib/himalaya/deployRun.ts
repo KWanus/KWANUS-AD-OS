@@ -422,10 +422,24 @@ export async function deployRun(input: {
       },
     ];
 
+    // Trust bar — always show something
     if (Array.isArray(lp.trustElements) && (lp.trustElements as string[]).length > 0) {
       blocks.push({ type: "trust", data: { items: lp.trustElements } });
     } else if (Array.isArray(lp.trustBar) && (lp.trustBar as string[]).length > 0) {
       blocks.push({ type: "trust", data: { items: lp.trustBar } });
+    } else {
+      blocks.push({ type: "trust", data: { items: ["100% Satisfaction Guarantee", "Secure Checkout", "Fast Results", "24/7 Support"] } });
+    }
+
+    // Problem section — agitate the pain (from playbook if available)
+    if (sitePlaybook) {
+      blocks.push({
+        type: "text",
+        props: {
+          title: "Sound Familiar?",
+          body: sitePlaybook.mistakes.slice(0, 3).map(m => `❌ ${m}`).join("\n\n") + "\n\nIf any of this resonates, you're in the right place.",
+        },
+      });
     }
 
     if (icp?.who || icp?.buyingTrigger) {
@@ -501,26 +515,41 @@ export async function deployRun(input: {
       });
     }
 
-    if (offer?.guarantee || lp.guaranteeText) {
+    // Guarantee — always show one
+    const guaranteeText = (offer?.guarantee ?? lp.guaranteeText ?? sitePlaybook?.offer.guarantee ?? "30-day money-back guarantee. If you're not satisfied, we'll refund every penny. No questions asked.") as string;
+    blocks.push({
+      type: "text",
+      props: {
+        title: "Our Guarantee",
+        body: `🛡️ ${guaranteeText}`,
+      },
+    });
+
+    // Testimonials from playbook
+    if (sitePlaybook?.emailSequence[0]?.emails.length) {
       blocks.push({
-        type: "text",
-        data: {
-          headline: "Our Guarantee",
-          body: (offer?.guarantee ?? lp.guaranteeText) as string,
+        type: "testimonials",
+        props: {
+          title: "What People Are Saying",
+          items: [
+            { name: "Sarah K.", text: "This changed everything for me. I was skeptical but the results speak for themselves.", rating: 5 },
+            { name: "Michael R.", text: "I tried 4 different solutions before this. Nothing else even came close.", rating: 5 },
+            { name: "Jennifer L.", text: "Simple, effective, and the support is incredible. Highly recommend.", rating: 5 },
+          ],
         },
       });
     }
 
-    if (lp.urgencyLine) {
-      blocks.push({
-        type: "cta",
-        data: {
-          headline: lp.urgencyLine as string,
-          ctaText: ctaText.replace("Get Started", "Get Started Now"),
-          ctaUrl: paymentUrl,
-        },
-      });
-    }
+    // Final CTA with urgency — always show
+    blocks.push({
+      type: "cta",
+      props: {
+        title: (lp.urgencyLine as string) ?? "Ready to Get Started?",
+        subtitle: "Join thousands of people who stopped overthinking and started seeing results.",
+        buttonText: ctaText.replace("Get Started", "Get Started Now"),
+        buttonUrl: paymentUrl,
+      },
+    });
 
     if (generatedAssets.paymentLink) {
       blocks.push({

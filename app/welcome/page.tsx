@@ -17,6 +17,7 @@ export default function WelcomePage() {
             <span className="text-sm font-black text-[#f5f0e8]">Himalaya</span>
           </div>
           <div className="flex items-center gap-3">
+            <Link href="/pricing" className="text-xs text-[#f5f0e8]/40 hover:text-[#f5f0e8]/70 transition font-semibold">Pricing</Link>
             <Link href="/sign-in" className="text-xs text-[#f5f0e8]/40 hover:text-[#f5f0e8]/70 transition font-semibold">Log in</Link>
             <Link href="/sign-up" className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-xs font-bold text-[#0c0a08] hover:opacity-90 transition">
               Start Free →

@@ -44,6 +44,7 @@ const isPublicRoute = createRouteMatcher([
   "/api/automations/process-delayed(.*)",
   "/api/email-flows/process-delayed(.*)",
   "/welcome(.*)",
+  "/pricing(.*)",
   "/privacy(.*)",
   "/terms(.*)",
   "/dashboard(.*)",
