@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Mountain, Loader2, ChevronRight } from "lucide-react";
+import { useAppMode } from "@/lib/theme/ModeProvider";
 
 export default function SetupPage() {
   const router = useRouter();
+  const { setMode } = useAppMode();
   const [phase, setPhase] = useState<"pick" | "tell" | "building">("pick");
   const [entry, setEntry] = useState<"fresh" | "have" | "scale" | null>(null);
   const [input, setInput] = useState("");
@@ -136,7 +138,7 @@ export default function SetupPage() {
               { id: "have" as const, label: "I already have a business", sub: "Tell us what you do — we fix what's broken and grow it" },
               { id: "scale" as const, label: "I'm making money, I want more", sub: "We find what's leaking and multiply what's working" },
             ].map(opt => (
-              <button key={opt.id} onClick={() => { setEntry(opt.id); setPhase("tell"); }}
+              <button key={opt.id} onClick={() => { setEntry(opt.id); setPhase("tell"); setMode(opt.id === "fresh" ? "simple" : "pro"); }}
                 className="w-full text-left rounded-2xl border border-t-border bg-t-bg-raised px-6 py-5 hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.03] transition group">
                 <div className="flex items-center justify-between">
                   <div>
