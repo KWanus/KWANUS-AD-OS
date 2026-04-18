@@ -8,6 +8,7 @@ import GlobalSearch from "@/components/GlobalSearch";
 import RecentPageTracker from "@/components/RecentPageTracker";
 import ScrollToTop from "@/components/ScrollToTop";
 import ThemeProvider from "@/lib/theme/ThemeProvider";
+import ModeProvider from "@/lib/theme/ModeProvider";
 import "./globals.css";
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
@@ -32,7 +33,9 @@ export default function RootLayout({
         </head>
         <body className={`${inter.variable} ${outfit.variable} antialiased`}>
           <ThemeProvider>
+          <ModeProvider>
           {children}
+          </ModeProvider>
           <GlobalCopilotDock />
           <KeyboardShortcuts />
           <GlobalSearch />

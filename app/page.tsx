@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import AppNav from "@/components/AppNav";
+import SimpleMode from "@/components/SimpleMode";
+import { useAppMode } from "@/lib/theme/ModeProvider";
 import {
   ArrowRight, Sparkles, Mountain, Send, Loader2,
   Zap, Globe, Mail, Users, Flame, BarChart2,
-  Target, ExternalLink, Trash2,
+  Target, ExternalLink, Trash2, ToggleLeft, ToggleRight,
 } from "lucide-react";
 
 type Project = {
@@ -27,6 +29,7 @@ type Command = { id: string; priority: number; action: string; details: string; 
 
 export default function Home() {
   const { isSignedIn, isLoaded, user } = useUser();
+  const { mode, setMode } = useAppMode();
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -106,6 +109,44 @@ export default function Home() {
     );
   }
 
+  // Simple Mode — Duolingo-style one action at a time
+  if (mode === "simple") {
+    return (
+      <main className="min-h-screen bg-t-bg text-t-text">
+        <AppNav />
+        <div className="px-4 sm:px-6 pb-20">
+          {/* Mode toggle + greeting */}
+          <div className="max-w-md mx-auto pt-8 pb-4">
+            <div className="flex items-center justify-between mb-4">
+              <h1 className="text-xl font-black">{greeting || `Hey ${name}.`}</h1>
+              <button onClick={() => setMode("pro")}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-t-border text-[10px] font-bold text-t-text-faint hover:text-t-text transition">
+                <ToggleLeft className="w-3.5 h-3.5" /> Pro Mode
+              </button>
+            </div>
+          </div>
+
+          <SimpleMode />
+
+          {/* Build new */}
+          <div className="max-w-md mx-auto mt-8">
+            <div className="relative">
+              <input ref={inputRef} type="text" value={goal} onChange={e => setGoal(e.target.value)}
+                onKeyDown={e => { if (e.key === "Enter") void run(goal); }}
+                placeholder="Build another business..."
+                className="w-full rounded-2xl border border-t-border bg-t-bg-raised px-5 py-3.5 pr-20 text-sm placeholder-t-text-faint outline-none focus:border-[#f5a623]/30 transition" />
+              <button onClick={() => void run(goal)} disabled={!goal.trim()}
+                className="absolute right-2.5 top-1/2 -translate-y-1/2 flex items-center gap-1 px-3 py-2 rounded-xl bg-[#f5a623] text-xs font-bold text-[#0c0a08] disabled:opacity-20">
+                <Send className="w-3 h-3" /> Go
+              </button>
+            </div>
+          </div>
+        </div>
+      </main>
+    );
+  }
+
+  // Pro Mode — full dashboard with all features
   return (
     <main className="min-h-screen bg-t-bg text-t-text">
       <AppNav />
@@ -125,9 +166,15 @@ export default function Home() {
                 {greeting || `Hey ${name}.`}
               </h1>
             </div>
-            <Link href="/dashboard" className="text-xs text-t-text-faint hover:text-t-text-muted transition">
-              Dashboard →
-            </Link>
+            <div className="flex items-center gap-2">
+              <button onClick={() => setMode("simple")}
+                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-t-border text-[10px] font-bold text-t-text-faint hover:text-t-text transition">
+                <ToggleRight className="w-3.5 h-3.5" /> Simple
+              </button>
+              <Link href="/dashboard" className="text-xs text-t-text-faint hover:text-t-text-muted transition">
+                Dashboard →
+              </Link>
+            </div>
           </div>
         </div>
 
