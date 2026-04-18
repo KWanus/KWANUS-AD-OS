@@ -1,0 +1,136 @@
+import { NextResponse } from "next/server";
+import { auth } from "@clerk/nextjs/server";
+
+export async function GET() {
+  try {
+    const { userId } = await auth();
+    if (!userId) return NextResponse.json({ ok: false }, { status: 401 });
+
+    const keys = [
+      {
+        name: "Groq AI",
+        envVar: "GROQ_API_KEY",
+        isSet: !!process.env.GROQ_API_KEY,
+        isWorking: null as boolean | null,
+        required: true,
+        description: "Free AI for content generation, scripts, emails, and business strategy.",
+        getKeyUrl: "https://console.groq.com/keys",
+        getKeyLabel: "Get Free Key",
+        cost: "Free",
+        unlocks: "AI-powered content generation, personalized scripts, smart business advice",
+      },
+      {
+        name: "Anthropic Claude",
+        envVar: "ANTHROPIC_API_KEY",
+        isSet: !!process.env.ANTHROPIC_API_KEY,
+        isWorking: null,
+        required: false,
+        description: "Premium AI for highest quality content. Falls back to Groq if not set.",
+        getKeyUrl: "https://console.anthropic.com/settings/keys",
+        getKeyLabel: "Get Key",
+        cost: "Pay per use",
+        unlocks: "Highest quality AI generation (Claude)",
+      },
+      {
+        name: "OpenAI",
+        envVar: "OPENAI_API_KEY",
+        isSet: !!process.env.OPENAI_API_KEY,
+        isWorking: null,
+        required: false,
+        description: "AI fallback + image generation with GPT Image.",
+        getKeyUrl: "https://platform.openai.com/api-keys",
+        getKeyLabel: "Get Key",
+        cost: "Pay per use",
+        unlocks: "GPT-4o AI + AI-generated ad images",
+      },
+      {
+        name: "fal.ai",
+        envVar: "FAL_KEY",
+        isSet: !!process.env.FAL_KEY,
+        isWorking: null,
+        required: false,
+        description: "AI image generation for ad creatives. Falls back to HTML images if not set.",
+        getKeyUrl: "https://fal.ai/dashboard/keys",
+        getKeyLabel: "Get Key",
+        cost: "$5 starter",
+        unlocks: "AI-generated ad images (SDXL, Flux)",
+      },
+      {
+        name: "Resend",
+        envVar: "RESEND_API_KEY",
+        isSet: !!process.env.RESEND_API_KEY,
+        isWorking: null,
+        required: false,
+        description: "Email sending with best deliverability. Falls back to Gmail SMTP.",
+        getKeyUrl: "https://resend.com/api-keys",
+        getKeyLabel: "Get Free Key",
+        cost: "Free",
+        unlocks: "Professional email sending with tracking",
+      },
+      {
+        name: "Gmail SMTP",
+        envVar: "GMAIL_USER",
+        isSet: !!(process.env.GMAIL_USER && process.env.GMAIL_APP_PASSWORD),
+        isWorking: null,
+        required: false,
+        description: "Free email sending via your Gmail account. Needs App Password.",
+        getKeyUrl: "https://myaccount.google.com/apppasswords",
+        getKeyLabel: "Create App Password",
+        cost: "Free",
+        unlocks: "Free unlimited email sending",
+      },
+      {
+        name: "Stripe",
+        envVar: "STRIPE_SECRET_KEY",
+        isSet: !!process.env.STRIPE_SECRET_KEY,
+        isWorking: !!process.env.STRIPE_SECRET_KEY && !!process.env.STRIPE_WEBHOOK_SECRET,
+        required: false,
+        description: "Payment processing for customer purchases.",
+        getKeyUrl: "https://dashboard.stripe.com/apikeys",
+        getKeyLabel: "Get Keys",
+        cost: "2.9% per charge",
+        unlocks: "Accept payments, process orders, create subscriptions",
+      },
+      {
+        name: "Meta (Facebook) Ads",
+        envVar: "META_APP_ID",
+        isSet: !!(process.env.META_APP_ID && process.env.META_APP_SECRET),
+        isWorking: !!(process.env.META_APP_ID && process.env.META_APP_SECRET),
+        required: false,
+        description: "Push ads to Facebook and Instagram. Requires OAuth app.",
+        getKeyUrl: "https://developers.facebook.com/apps",
+        getKeyLabel: "Create App",
+        cost: "Free (ad spend separate)",
+        unlocks: "Auto-create Facebook/Instagram ad campaigns",
+      },
+      {
+        name: "Google Ads",
+        envVar: "GOOGLE_CLIENT_ID",
+        isSet: !!(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET),
+        isWorking: !!(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET),
+        required: false,
+        description: "Push ads to Google Search and Display.",
+        getKeyUrl: "https://console.cloud.google.com/apis/credentials",
+        getKeyLabel: "Create Credentials",
+        cost: "Free (ad spend separate)",
+        unlocks: "Auto-create Google Search and Display ads",
+      },
+      {
+        name: "TikTok Ads",
+        envVar: "TIKTOK_APP_ID",
+        isSet: !!(process.env.TIKTOK_APP_ID && process.env.TIKTOK_APP_SECRET),
+        isWorking: !!(process.env.TIKTOK_APP_ID && process.env.TIKTOK_APP_SECRET),
+        required: false,
+        description: "Push ads to TikTok. Requires Business API app.",
+        getKeyUrl: "https://business-api.tiktok.com/portal/auth",
+        getKeyLabel: "Create App",
+        cost: "Free (ad spend separate)",
+        unlocks: "Auto-create TikTok ad campaigns",
+      },
+    ];
+
+    return NextResponse.json({ ok: true, keys });
+  } catch {
+    return NextResponse.json({ ok: false }, { status: 500 });
+  }
+}
