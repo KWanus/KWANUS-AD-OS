@@ -46,6 +46,8 @@ const MORE = [
   { href: "/dropship",   label: "Dropship",   icon: ShoppingCart },
   { href: "/agency",     label: "Agency",     icon: Building2 },
   { href: "/my-system",  label: "My System",  icon: Settings },
+  { href: "/guide",      label: "Guide",      icon: Settings },
+  { href: "/pricing",    label: "Pricing",    icon: Settings },
 ];
 
 export default function AppNav() {
