@@ -131,7 +131,8 @@ export default function Home() {
 
           <SimpleMode />
 
-          {/* Build new */}
+          {/* Build new — only show after first business is built */}
+          {projects.length > 0 && (
           <div className="max-w-md mx-auto mt-8">
             <div className="relative">
               <input ref={inputRef} type="text" value={goal} onChange={e => setGoal(e.target.value)}
@@ -144,6 +145,7 @@ export default function Home() {
               </button>
             </div>
           </div>
+          )}
         </div>
       </main>
     );

@@ -17,6 +17,8 @@ type DayAction = {
   href?: string;
   completed: boolean;
   estimatedTime: string;
+  whyItMatters?: string;
+  canSkip?: boolean;
 };
 
 type SimpleData = {
@@ -66,33 +68,49 @@ export default function SimpleMode() {
       const project = projects[0];
       const siteUrl = project?.site?.published ? `/s/${project.site.slug}` : undefined;
 
-      const actions: DayAction[] = commands.slice(0, 5).map((cmd, i) => ({
-        id: cmd.id ?? `action-${i}`,
-        title: cmd.action,
-        description: cmd.details,
-        type: cmd.category === "post" ? "post" : cmd.category === "outreach" ? "follow_up" : cmd.href ? "check" : "setup",
-        content: cmd.content,
-        href: cmd.href,
-        completed: false,
-        estimatedTime: cmd.estimatedTime ?? "5 min",
-      }));
+      const WHY_MAP: Record<string, string> = {
+        post: "Every post is a chance to reach 1,000+ people for free. The algorithm rewards consistency.",
+        check: "Knowing your numbers tells you what's working. Don't guess — look at the data.",
+        share: "The more people who see your link, the more leads you get. Simple math.",
+        setup: "This sets the foundation. Everything else builds on top of it.",
+        follow_up: "80% of sales happen after the 5th follow-up. Most people quit after 1. Don't be most people.",
+        review: "Small improvements compound. A 1% better conversion rate = thousands more over time.",
+      };
+
+      const actions: DayAction[] = commands.slice(0, 5).map((cmd, i) => {
+        const type = cmd.category === "post" ? "post" : cmd.category === "outreach" ? "follow_up" : cmd.category === "review" ? "check" : cmd.href ? "check" : "setup";
+        return {
+          id: cmd.id ?? `action-${i}`,
+          title: cmd.action,
+          description: cmd.details,
+          type: type as DayAction["type"],
+          content: cmd.content,
+          href: cmd.href,
+          completed: false,
+          estimatedTime: cmd.estimatedTime ?? "5 min",
+          whyItMatters: WHY_MAP[type] ?? "This moves your business forward.",
+          canSkip: i > 0, // First action can't be skipped
+        };
+      });
 
       // If no commands, create default first actions
       if (actions.length === 0 && !project) {
         actions.push({
           id: "build",
           title: "Build your first business",
-          description: "Tell Himalaya what you want and it builds everything in 60 seconds.",
+          description: "Type what you want to do. Himalaya creates your website, ads, emails, and content — all in 60 seconds.",
           type: "setup",
           href: "/himalaya",
           completed: false,
           estimatedTime: "2 min",
+          whyItMatters: "This is the starting line. Everything else comes after this one step.",
+          canSkip: false,
         });
       } else if (actions.length === 0) {
         actions.push(
-          { id: "share", title: "Share your site link with 5 people", description: `Send your link to friends, family, or potential customers: ${siteUrl ?? "your site"}`, type: "share", completed: false, estimatedTime: "5 min" },
-          { id: "post", title: "Post your first video", description: "Record Script #1 from your project page. 15 seconds on your phone.", type: "post", href: project ? "/" : "/himalaya", completed: false, estimatedTime: "10 min" },
-          { id: "check", title: "Check your site analytics", description: "See if anyone visited your site today.", type: "check", href: "/dashboard", completed: false, estimatedTime: "2 min" },
+          { id: "share", title: "Share your site link with 5 people", description: `Text or DM this link to 5 people you know: ${siteUrl ?? "your site"}. Ask them to check it out.`, type: "share", completed: false, estimatedTime: "5 min", whyItMatters: "Your first visitors come from people you already know. This is the fastest way to get real feedback.", canSkip: false },
+          { id: "post", title: "Record and post your first video", description: "Open your project → Create tab → pick Script #1. Record it on your phone (15 seconds). Post to TikTok + Instagram.", type: "post", href: "/", completed: false, estimatedTime: "10 min", whyItMatters: "One viral video can bring 10,000 visitors. The algorithm rewards you for posting. Start today.", canSkip: true },
+          { id: "check", title: "Check if anyone visited your site", description: "Open your dashboard and look at the 'Views' number. Even 1 view means someone found you.", type: "check", href: "/dashboard", completed: false, estimatedTime: "2 min", whyItMatters: "Knowing your numbers early builds good habits. The best entrepreneurs check daily.", canSkip: true },
         );
       }
 
@@ -296,13 +314,29 @@ export default function SimpleMode() {
                       </div>
                     )}
 
-                    {/* Action button */}
-                    {action.href && !action.completed && (
-                      <Link href={action.href}
-                        className="mt-2 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#f5a623]/10 border border-[#f5a623]/20 text-xs font-bold text-[#f5a623] hover:bg-[#f5a623]/20 transition">
-                        Open <ChevronRight className="w-3 h-3" />
-                      </Link>
+                    {/* Why it matters */}
+                    {action.whyItMatters && !action.completed && isNext && (
+                      <div className="mt-2 flex items-start gap-2 rounded-lg bg-[#f5a623]/[0.04] border border-[#f5a623]/10 px-3 py-2">
+                        <span className="text-[10px]">💡</span>
+                        <p className="text-[11px] text-[#f5a623]/70 leading-relaxed">{action.whyItMatters}</p>
+                      </div>
                     )}
+
+                    {/* Action button + skip */}
+                    <div className="flex items-center gap-2 mt-2">
+                      {action.href && !action.completed && (
+                        <Link href={action.href}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#f5a623]/10 border border-[#f5a623]/20 text-xs font-bold text-[#f5a623] hover:bg-[#f5a623]/20 transition">
+                          Open <ChevronRight className="w-3 h-3" />
+                        </Link>
+                      )}
+                      {action.canSkip && !action.completed && (
+                        <button onClick={() => void completeAction(action.id)}
+                          className="text-[10px] text-t-text-faint hover:text-t-text-muted transition">
+                          Skip for now →
+                        </button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
