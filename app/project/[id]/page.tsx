@@ -97,14 +97,11 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
   const appUrl = typeof window !== "undefined" ? window.location.origin : "";
   const siteUrl = p?.site?.published ? `${appUrl}/s/${p.site.slug}` : null;
 
+  // Simplified to 3 tabs (was 7 — audit found it overwhelming)
   const TABS: { id: Tab; label: string; icon: React.ElementType }[] = [
     { id: "overview", label: "Overview", icon: Mountain },
-    { id: "scripts", label: "Scripts", icon: Play },
-    { id: "ads", label: "Ads", icon: Zap },
-    { id: "site", label: "Site", icon: Globe },
-    { id: "emails", label: "Emails", icon: Mail },
-    { id: "tools", label: "Tools", icon: Wrench },
-    { id: "analytics", label: "Analytics", icon: BarChart2 },
+    { id: "ads", label: "Create", icon: Zap },       // Merged: scripts + ads + video
+    { id: "site", label: "Launch", icon: Globe },     // Merged: site + emails + analytics
   ];
 
   return (
@@ -131,6 +128,29 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
               )}
               {p?.revenue ? <span className="text-lg font-black text-emerald-500">${p.revenue.toLocaleString()}</span> : null}
             </div>
+          </div>
+        </div>
+
+        {/* Next Step banner — contextual guidance */}
+        <div className="rounded-xl border border-[#f5a623]/15 bg-[#f5a623]/[0.03] px-4 py-3 mb-4 flex items-center gap-3">
+          <div className="w-8 h-8 rounded-full bg-[#f5a623]/10 flex items-center justify-center shrink-0">
+            <span className="text-sm font-black text-[#f5a623]">→</span>
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-xs font-bold">
+              {!p?.site?.published ? "Publish your site to start getting traffic" :
+               !p?.campaign || p.campaign.variationCount === 0 ? "Create your first ad to drive visitors" :
+               (p?.leadCount ?? 0) === 0 ? "Share your site link to get your first leads" :
+               (p?.revenue ?? 0) === 0 ? "Follow up with your leads to make your first sale" :
+               "Keep posting daily content to scale your revenue"}
+            </p>
+            <p className="text-[10px] text-t-text-faint">
+              {!p?.site?.published ? "Go to Launch tab → publish your website" :
+               !p?.campaign || p.campaign.variationCount === 0 ? "Go to Create tab → make an ad image or video" :
+               (p?.leadCount ?? 0) === 0 ? "Post on social media with your scripts from the Create tab" :
+               (p?.revenue ?? 0) === 0 ? "Check your leads and follow up today" :
+               "You're making money! Use the tools to scale faster"}
+            </p>
           </div>
         </div>
 
@@ -206,8 +226,8 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
           </div>
         )}
 
-        {/* ═══ SCRIPTS TAB ═══ */}
-        {tab === "scripts" && (
+        {/* ═══ SCRIPTS (inside Create tab) ═══ */}
+        {tab === "ads" && scripts.length > 0 && (
           <div className="space-y-3">
             {scripts.length === 0 ? (
               <div className="rounded-xl border border-t-border bg-t-bg-raised p-6 text-center">
@@ -290,7 +310,7 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
           </div>
         )}
 
-        {/* ═══ SITE TAB ═══ */}
+        {/* ═══ SITE (inside Launch tab) ═══ */}
         {tab === "site" && (
           <div className="space-y-4">
             {p?.site ? (
@@ -331,8 +351,8 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
           </div>
         )}
 
-        {/* ═══ EMAILS TAB ═══ */}
-        {tab === "emails" && (
+        {/* ═══ EMAILS (inside Launch tab) ═══ */}
+        {tab === "site" && p?.emailFlow && (
           <div className="space-y-4">
             {p?.emailFlow ? (
               <>
@@ -365,8 +385,8 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
           </div>
         )}
 
-        {/* ═══ TOOLS TAB ═══ */}
-        {tab === "tools" && (
+        {/* ═══ TOOLS (inside Create tab) ═══ */}
+        {tab === "ads" && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
               {[
@@ -416,8 +436,8 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
           </div>
         )}
 
-        {/* ═══ ANALYTICS TAB ═══ */}
-        {tab === "analytics" && (
+        {/* ═══ ANALYTICS (inside Launch tab) ═══ */}
+        {tab === "site" && (
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
               <div className="rounded-xl border border-t-border bg-t-bg-raised p-4 text-center">

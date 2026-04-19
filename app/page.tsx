@@ -119,10 +119,13 @@ export default function Home() {
           <div className="max-w-md mx-auto pt-8 pb-4">
             <div className="flex items-center justify-between mb-4">
               <h1 className="text-xl font-black">{greeting || `Hey ${name}.`}</h1>
-              <button onClick={() => setMode("pro")}
-                className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-t-border text-[10px] font-bold text-t-text-faint hover:text-t-text transition">
-                <ToggleLeft className="w-3.5 h-3.5" /> Pro Mode
-              </button>
+              {/* Only show Pro toggle after user has built at least one business */}
+              {projects.length > 0 && (
+                <button onClick={() => setMode("pro")}
+                  className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg border border-t-border text-[10px] font-bold text-t-text-faint hover:text-t-text transition">
+                  <ToggleLeft className="w-3.5 h-3.5" /> Pro Mode
+                </button>
+              )}
             </div>
           </div>
 

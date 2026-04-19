@@ -29,25 +29,16 @@ const NAV = [
 
 // ── More menu ────────────────────────────────────────────────────────────────
 
+// Pruned from 18 to 8 items (audit: 16+ items is overwhelming)
 const MORE = [
   { href: "/inbox",      label: "Inbox",      icon: MessageSquareText },
-  { href: "/ads",        label: "Ads",        icon: TrendingUp },
   { href: "/analytics",  label: "Analytics",  icon: BarChart3 },
-  { href: "/bookings",   label: "Bookings",   icon: Briefcase },
-  { href: "/forms",      label: "Forms",      icon: FileText },
   { href: "/revenue",    label: "Revenue",    icon: TrendingUp },
   { href: "/tools",      label: "Tools",      icon: Wrench },
-  { href: "/content",    label: "Content",    icon: LayoutGrid },
-  { href: "/proposals",  label: "Proposals",  icon: Briefcase },
-  { href: "/products",   label: "Products",   icon: Package },
-  { href: "/consult",    label: "Consult",    icon: Briefcase },
-  { href: "/local",      label: "Local",      icon: MapPin },
-  { href: "/affiliate",  label: "Affiliate",  icon: TrendingUp },
-  { href: "/dropship",   label: "Dropship",   icon: ShoppingCart },
-  { href: "/agency",     label: "Agency",     icon: Building2 },
+  { href: "/leads",      label: "Leads",      icon: TrendingUp },
+  { href: "/guide",      label: "Guide",      icon: Briefcase },
   { href: "/my-system",  label: "My System",  icon: Settings },
-  { href: "/guide",      label: "Guide",      icon: Settings },
-  { href: "/pricing",    label: "Pricing",    icon: Settings },
+  { href: "/notifications", label: "Notifications", icon: MessageSquareText },
 ];
 
 export default function AppNav() {
