@@ -218,6 +218,138 @@ export const AD_TEMPLATES: AdTemplate[] = [
       </svg>`;
     },
   },
+
+  // ── PROBLEM/SOLUTION (1:1) ──
+  {
+    id: "problem-solution", name: "Problem → Solution", category: "hook", aspectRatio: "1:1", platform: "universal",
+    fields: [
+      { name: "problem", type: "text", default: "Tired of struggling with no results?", placeholder: "The problem", maxLength: 50 },
+      { name: "solution", type: "text", default: "There's a better way.", placeholder: "The solution", maxLength: 40 },
+      { name: "cta", type: "text", default: "See How →", placeholder: "Button text", maxLength: 20 },
+      { name: "brandColor", type: "color", default: "#f5a623", placeholder: "Color" },
+    ],
+    render: (v) => {
+      const w = 1080, h = 1080;
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+        <rect width="${w}" height="${h}" fill="#0c0a08"/>
+        <rect width="${w}" height="${h/2}" fill="#1a0808" opacity="0.4"/>
+        ${wrapText(v.problem, w/2, h*0.28, 48, w-120, "rgba(255,255,255,0.6)")}
+        <line x1="${w*0.3}" y1="${h/2}" x2="${w*0.7}" y2="${h/2}" stroke="${v.brandColor}" stroke-width="3"/>
+        <text x="${w/2}" y="${h/2+10}" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" fill="${v.brandColor}">↓</text>
+        ${wrapText(v.solution, w/2, h*0.68, 52, w-120, "#ffffff")}
+        <rect x="${w/2-120}" y="${h*0.85}" width="240" height="56" rx="14" fill="${v.brandColor}"/>
+        <text x="${w/2}" y="${h*0.85+38}" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-weight="800" fill="#0c0a08">${esc(v.cta)}</text>
+      </svg>`;
+    },
+  },
+
+  // ── LIST/TIPS (4:5) ──
+  {
+    id: "tips-list", name: "Tips List", category: "hook", aspectRatio: "4:5", platform: "instagram",
+    fields: [
+      { name: "title", type: "text", default: "3 Things You Must Know", placeholder: "List title", maxLength: 30 },
+      { name: "tip1", type: "text", default: "1. Stop guessing — use data", placeholder: "Tip 1", maxLength: 40 },
+      { name: "tip2", type: "text", default: "2. Start with one channel", placeholder: "Tip 2", maxLength: 40 },
+      { name: "tip3", type: "text", default: "3. Consistency beats talent", placeholder: "Tip 3", maxLength: 40 },
+      { name: "brandColor", type: "color", default: "#f5a623", placeholder: "Color" },
+    ],
+    render: (v) => {
+      const w = 1080, h = 1350;
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+        <rect width="${w}" height="${h}" fill="#0c0a08"/>
+        <rect x="0" y="0" width="${w}" height="6" fill="${v.brandColor}"/>
+        <text x="${w/2}" y="200" text-anchor="middle" font-family="Arial,sans-serif" font-size="52" font-weight="900" fill="#ffffff">${esc(v.title)}</text>
+        <text x="100" y="420" font-family="Arial,sans-serif" font-size="34" fill="rgba(255,255,255,0.8)">${esc(v.tip1)}</text>
+        <text x="100" y="560" font-family="Arial,sans-serif" font-size="34" fill="rgba(255,255,255,0.8)">${esc(v.tip2)}</text>
+        <text x="100" y="700" font-family="Arial,sans-serif" font-size="34" fill="rgba(255,255,255,0.8)">${esc(v.tip3)}</text>
+        <text x="${w/2}" y="${h-120}" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" fill="${v.brandColor}">Save this for later 📌</text>
+      </svg>`;
+    },
+  },
+
+  // ── SOCIAL PROOF (1:1) ──
+  {
+    id: "social-proof-count", name: "Social Proof Counter", category: "testimonial", aspectRatio: "1:1", platform: "universal",
+    fields: [
+      { name: "count", type: "text", default: "10,000+", placeholder: "Number", maxLength: 15 },
+      { name: "label", type: "text", default: "People Already Getting Results", placeholder: "What are they doing", maxLength: 40 },
+      { name: "cta", type: "text", default: "Join Them →", placeholder: "CTA", maxLength: 20 },
+      { name: "brandColor", type: "color", default: "#f5a623", placeholder: "Color" },
+    ],
+    render: (v) => {
+      const w = 1080, h = 1080;
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+        <rect width="${w}" height="${h}" fill="#0c0a08"/>
+        <text x="${w/2}" y="${h*0.35}" text-anchor="middle" font-family="Arial,sans-serif" font-size="120" font-weight="900" fill="${v.brandColor}">${esc(v.count)}</text>
+        ${wrapText(v.label, w/2, h*0.52, 36, w-160, "#ffffff", "700")}
+        <rect x="${w/2-140}" y="${h*0.72}" width="280" height="56" rx="14" fill="${v.brandColor}"/>
+        <text x="${w/2}" y="${h*0.72+38}" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-weight="800" fill="#0c0a08">${esc(v.cta)}</text>
+      </svg>`;
+    },
+  },
+
+  // ── QUESTION HOOK (9:16) ──
+  {
+    id: "question-hook", name: "Question Hook", category: "hook", aspectRatio: "9:16", platform: "tiktok",
+    fields: [
+      { name: "question", type: "text", default: "Are you making this mistake?", placeholder: "The question", maxLength: 40 },
+      { name: "answer", type: "text", default: "90% of people are. Here's the fix.", placeholder: "Teaser answer", maxLength: 50 },
+      { name: "brandColor", type: "color", default: "#f5a623", placeholder: "Color" },
+    ],
+    render: (v) => {
+      const w = 1080, h = 1920;
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+        <rect width="${w}" height="${h}" fill="#0c0a08"/>
+        <text x="${w/2}" y="${h*0.30}" text-anchor="middle" font-family="Arial,sans-serif" font-size="140" fill="${v.brandColor}" opacity="0.15">?</text>
+        ${wrapText(v.question, w/2, h*0.38, 56, w-120, "#ffffff")}
+        <rect x="${w*0.15}" y="${h*0.52}" width="${w*0.7}" height="3" fill="${v.brandColor}" opacity="0.3"/>
+        ${wrapText(v.answer, w/2, h*0.62, 36, w-120, "rgba(255,255,255,0.6)", "500")}
+        <text x="${w/2}" y="${h*0.80}" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" fill="${v.brandColor}">Link in bio ↓</text>
+      </svg>`;
+    },
+  },
+
+  // ── GUARANTEE (1:1) ──
+  {
+    id: "guarantee-badge", name: "Guarantee Badge", category: "urgency", aspectRatio: "1:1", platform: "universal",
+    fields: [
+      { name: "guarantee", type: "text", default: "30-Day Money-Back Guarantee", placeholder: "Your guarantee", maxLength: 40 },
+      { name: "subtext", type: "text", default: "If you don't see results, full refund. No questions.", placeholder: "Supporting text", maxLength: 60 },
+      { name: "brandColor", type: "color", default: "#22c55e", placeholder: "Shield color" },
+    ],
+    render: (v) => {
+      const w = 1080, h = 1080;
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+        <rect width="${w}" height="${h}" fill="#0c0a08"/>
+        <text x="${w/2}" y="${h*0.32}" text-anchor="middle" font-family="Arial,sans-serif" font-size="100" fill="${v.brandColor}">🛡️</text>
+        ${wrapText(v.guarantee, w/2, h*0.50, 44, w-160, "#ffffff")}
+        ${wrapText(v.subtext, w/2, h*0.68, 26, w-160, "rgba(255,255,255,0.5)", "400")}
+        <text x="${w/2}" y="${h*0.85}" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" fill="${v.brandColor}">Zero Risk. Full Protection.</text>
+      </svg>`;
+    },
+  },
+
+  // ── CAROUSEL SLIDE (1:1) ──
+  {
+    id: "carousel-slide", name: "Carousel Slide", category: "hook", aspectRatio: "1:1", platform: "instagram",
+    fields: [
+      { name: "slideNumber", type: "text", default: "01", placeholder: "Slide #", maxLength: 5 },
+      { name: "title", type: "text", default: "The Foundation", placeholder: "Slide title", maxLength: 30 },
+      { name: "body", type: "text", default: "Everything starts with understanding your audience. Who are they? What do they want?", placeholder: "Slide content", maxLength: 100 },
+      { name: "brandColor", type: "color", default: "#f5a623", placeholder: "Color" },
+    ],
+    render: (v) => {
+      const w = 1080, h = 1080;
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+        <rect width="${w}" height="${h}" fill="#0c0a08"/>
+        <text x="80" y="160" font-family="Arial,sans-serif" font-size="100" font-weight="900" fill="${v.brandColor}" opacity="0.2">${esc(v.slideNumber)}</text>
+        <text x="80" y="360" font-family="Arial,sans-serif" font-size="48" font-weight="900" fill="#ffffff">${esc(v.title)}</text>
+        <rect x="80" y="390" width="80" height="4" rx="2" fill="${v.brandColor}"/>
+        ${wrapText(v.body, w/2, 520, 30, w-160, "rgba(255,255,255,0.7)", "400")}
+        <text x="${w-80}" y="${h-80}" text-anchor="end" font-family="Arial,sans-serif" font-size="18" fill="rgba(255,255,255,0.2)">Swipe →</text>
+      </svg>`;
+    },
+  },
 ];
 
 export function getTemplatesByCategory(category?: string): AdTemplate[] {
