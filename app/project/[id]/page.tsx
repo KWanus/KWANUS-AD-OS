@@ -245,10 +245,16 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
         {tab === "ads" && (
           <div className="space-y-4">
             {/* Create new ad */}
-            <Link href={`/project/${id}/create`}
-              className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-4 py-3.5 text-sm font-bold text-[#0c0a08] hover:opacity-90 transition">
-              <ImageIcon className="w-4 h-4" /> Create New Ad Image
-            </Link>
+            <div className="grid grid-cols-2 gap-2">
+              <Link href={`/project/${id}/create`}
+                className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-4 py-3.5 text-sm font-bold text-[#0c0a08] hover:opacity-90 transition">
+                <ImageIcon className="w-4 h-4" /> Create Image
+              </Link>
+              <Link href={`/project/${id}/video`}
+                className="flex items-center justify-center gap-2 rounded-xl border border-[#f5a623]/20 bg-[#f5a623]/[0.04] px-4 py-3.5 text-sm font-bold text-[#f5a623] hover:bg-[#f5a623]/[0.08] transition">
+                <Play className="w-4 h-4" /> Create Video
+              </Link>
+            </div>
 
             {p?.campaign ? (
               <>
