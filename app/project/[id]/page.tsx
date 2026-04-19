@@ -9,6 +9,7 @@ import {
   ArrowLeft, Globe, Zap, Mail, Users, ExternalLink, Copy, Check,
   Play, DollarSign, Calendar, Shield, Mountain, Loader2, ChevronDown,
   BarChart2, Settings, Wrench, Target, Trash2, ChevronRight,
+  Image as ImageIcon,
 } from "lucide-react";
 
 type Project = {
@@ -243,6 +244,12 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
         {/* ═══ ADS TAB ═══ */}
         {tab === "ads" && (
           <div className="space-y-4">
+            {/* Create new ad */}
+            <Link href={`/project/${id}/create`}
+              className="flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-4 py-3.5 text-sm font-bold text-[#0c0a08] hover:opacity-90 transition">
+              <ImageIcon className="w-4 h-4" /> Create New Ad Image
+            </Link>
+
             {p?.campaign ? (
               <>
                 <div className="rounded-xl border border-t-border bg-t-bg-raised p-4">
