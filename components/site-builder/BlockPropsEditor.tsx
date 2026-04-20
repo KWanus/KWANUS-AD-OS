@@ -357,6 +357,212 @@ function FooterProps({ block, onChange }: { block: Block; onChange: (b: Block) =
   );
 }
 
+function StatsProps({ block, onChange }: { block: Block; onChange: (b: Block) => void }) {
+  const set = sp(block, onChange);
+  const items: { value?: string; label?: string; suffix?: string }[] = p(block, "items", []);
+
+  function updateItem(i: number, key: string, val: string) {
+    const next = [...items]; next[i] = { ...next[i], [key]: val }; set("items", next);
+  }
+
+  return (
+    <div className="space-y-4">
+      <Field label="Section Title"><TextInput value={p(block, "title")} onChange={v => set("title", v)} placeholder="Our Results" /></Field>
+      <div>
+        <label className="block text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">Stats</label>
+        <div className="space-y-3">
+          {items.map((item, i) => (
+            <div key={i} className="bg-white/[0.03] border border-white/[0.07] rounded-xl p-3 space-y-2">
+              <div className="flex justify-between"><span className="text-xs text-white/40">Stat {i + 1}</span><button onClick={() => set("items", items.filter((_, j) => j !== i))} className="text-white/20 hover:text-red-400 transition"><Trash2 className="w-3 h-3" /></button></div>
+              <input type="text" value={item.value ?? ""} onChange={e => updateItem(i, "value", e.target.value)} placeholder="500+" className="w-full bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none" />
+              <input type="text" value={item.label ?? ""} onChange={e => updateItem(i, "label", e.target.value)} placeholder="Clients Served" className="w-full bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none" />
+              <input type="text" value={item.suffix ?? ""} onChange={e => updateItem(i, "suffix", e.target.value)} placeholder="Suffix (optional, e.g. %)" className="w-full bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none" />
+            </div>
+          ))}
+          <button onClick={() => set("items", [...items, { value: "100+", label: "Happy Clients" }])} className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-dashed border-white/[0.12] hover:border-cyan-500/40 text-white/30 hover:text-white/60 text-xs font-semibold transition"><Plus className="w-3 h-3" /> Add Stat</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function GuaranteeProps({ block, onChange }: { block: Block; onChange: (b: Block) => void }) {
+  const set = sp(block, onChange);
+  return (
+    <div className="space-y-4">
+      <Field label="Title"><TextInput value={p(block, "title")} onChange={v => set("title", v)} placeholder="100% Money-Back Guarantee" /></Field>
+      <Field label="Body"><TextInput value={p(block, "body")} onChange={v => set("body", v)} placeholder="If you're not satisfied..." multiline /></Field>
+      <Field label="Badge Text"><TextInput value={p(block, "badgeText")} onChange={v => set("badgeText", v)} placeholder="30-Day Guarantee" /></Field>
+      <Field label="Icon Emoji"><TextInput value={p(block, "icon")} onChange={v => set("icon", v)} placeholder="🛡️" /></Field>
+    </div>
+  );
+}
+
+function TrustBadgesProps({ block, onChange }: { block: Block; onChange: (b: Block) => void }) {
+  const set = sp(block, onChange);
+  const items: { icon?: string; label?: string }[] = p(block, "items", []);
+
+  function updateItem(i: number, key: string, val: string) {
+    const next = [...items]; next[i] = { ...next[i], [key]: val }; set("items", next);
+  }
+
+  return (
+    <div className="space-y-4">
+      <Field label="Title"><TextInput value={p(block, "title")} onChange={v => set("title", v)} placeholder="Trusted By Thousands" /></Field>
+      <div>
+        <label className="block text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">Badges</label>
+        <div className="space-y-3">
+          {items.map((item, i) => (
+            <div key={i} className="flex gap-2 items-center">
+              <input type="text" value={item.icon ?? ""} onChange={e => updateItem(i, "icon", e.target.value)} placeholder="🔒" className="w-12 bg-white/[0.05] border border-white/[0.1] rounded-lg px-2 py-2 text-sm text-white text-center focus:outline-none" />
+              <input type="text" value={item.label ?? ""} onChange={e => updateItem(i, "label", e.target.value)} placeholder="SSL Secure" className="flex-1 bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none" />
+              <button onClick={() => set("items", items.filter((_, j) => j !== i))} className="text-white/20 hover:text-red-400 transition"><Trash2 className="w-3 h-3" /></button>
+            </div>
+          ))}
+          <button onClick={() => set("items", [...items, { icon: "✓", label: "Verified" }])} className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-dashed border-white/[0.12] hover:border-cyan-500/40 text-white/30 hover:text-white/60 text-xs font-semibold transition"><Plus className="w-3 h-3" /> Add Badge</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProcessProps({ block, onChange }: { block: Block; onChange: (b: Block) => void }) {
+  const set = sp(block, onChange);
+  const steps: { icon?: string; title?: string; body?: string }[] = p(block, "steps", []);
+
+  function updateStep(i: number, key: string, val: string) {
+    const next = [...steps]; next[i] = { ...next[i], [key]: val }; set("steps", next);
+  }
+
+  return (
+    <div className="space-y-4">
+      <Field label="Section Title"><TextInput value={p(block, "title")} onChange={v => set("title", v)} placeholder="How It Works" /></Field>
+      <Field label="Subtitle"><TextInput value={p(block, "subtitle")} onChange={v => set("subtitle", v)} placeholder="3 simple steps..." /></Field>
+      <div>
+        <label className="block text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">Steps</label>
+        <div className="space-y-3">
+          {steps.map((step, i) => (
+            <div key={i} className="bg-white/[0.03] border border-white/[0.07] rounded-xl p-3 space-y-2">
+              <div className="flex justify-between"><span className="text-xs text-white/40 font-bold">Step {i + 1}</span><button onClick={() => set("steps", steps.filter((_, j) => j !== i))} className="text-white/20 hover:text-red-400 transition"><Trash2 className="w-3 h-3" /></button></div>
+              <input type="text" value={step.icon ?? ""} onChange={e => updateStep(i, "icon", e.target.value)} placeholder="Emoji" className="w-full bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none" />
+              <input type="text" value={step.title ?? ""} onChange={e => updateStep(i, "title", e.target.value)} placeholder="Step title" className="w-full bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none" />
+              <textarea value={step.body ?? ""} onChange={e => updateStep(i, "body", e.target.value)} placeholder="Description..." rows={2} className="w-full bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none resize-none" />
+            </div>
+          ))}
+          <button onClick={() => set("steps", [...steps, { icon: "📋", title: "New Step", body: "Description" }])} className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-dashed border-white/[0.12] hover:border-cyan-500/40 text-white/30 hover:text-white/60 text-xs font-semibold transition"><Plus className="w-3 h-3" /> Add Step</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function BeforeAfterProps({ block, onChange }: { block: Block; onChange: (b: Block) => void }) {
+  const set = sp(block, onChange);
+  const beforeItems: string[] = p(block, "beforeItems", []);
+  const afterItems: string[] = p(block, "afterItems", []);
+
+  return (
+    <div className="space-y-4">
+      <Field label="Section Title"><TextInput value={p(block, "title")} onChange={v => set("title", v)} placeholder="The Transformation" /></Field>
+      <Field label="Before Label"><TextInput value={p(block, "beforeLabel")} onChange={v => set("beforeLabel", v)} placeholder="Before" /></Field>
+      <div>
+        <label className="block text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">Before Items</label>
+        <div className="space-y-2">
+          {beforeItems.map((item, i) => (
+            <div key={i} className="flex gap-2">
+              <input type="text" value={item} onChange={e => { const n = [...beforeItems]; n[i] = e.target.value; set("beforeItems", n); }} placeholder="Pain point..." className="flex-1 bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none" />
+              <button onClick={() => set("beforeItems", beforeItems.filter((_, j) => j !== i))} className="text-white/20 hover:text-red-400 transition"><Trash2 className="w-3 h-3" /></button>
+            </div>
+          ))}
+          <button onClick={() => set("beforeItems", [...beforeItems, ""])} className="text-[11px] text-white/30 hover:text-cyan-400 transition flex items-center gap-1"><Plus className="w-3 h-3" /> Add</button>
+        </div>
+      </div>
+      <Field label="After Label"><TextInput value={p(block, "afterLabel")} onChange={v => set("afterLabel", v)} placeholder="After" /></Field>
+      <div>
+        <label className="block text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">After Items</label>
+        <div className="space-y-2">
+          {afterItems.map((item, i) => (
+            <div key={i} className="flex gap-2">
+              <input type="text" value={item} onChange={e => { const n = [...afterItems]; n[i] = e.target.value; set("afterItems", n); }} placeholder="Result..." className="flex-1 bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none" />
+              <button onClick={() => set("afterItems", afterItems.filter((_, j) => j !== i))} className="text-white/20 hover:text-red-400 transition"><Trash2 className="w-3 h-3" /></button>
+            </div>
+          ))}
+          <button onClick={() => set("afterItems", [...afterItems, ""])} className="text-[11px] text-white/30 hover:text-cyan-400 transition flex items-center gap-1"><Plus className="w-3 h-3" /> Add</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function UrgencyProps({ block, onChange }: { block: Block; onChange: (b: Block) => void }) {
+  const set = sp(block, onChange);
+  return (
+    <div className="space-y-4">
+      <Field label="Main Text"><TextInput value={p(block, "text")} onChange={v => set("text", v)} placeholder="⚡ Limited spots available" /></Field>
+      <Field label="Subtext"><TextInput value={p(block, "subtext")} onChange={v => set("subtext", v)} placeholder="Offer expires in 24 hours" /></Field>
+      <Field label="Button Text"><TextInput value={p(block, "buttonText")} onChange={v => set("buttonText", v)} placeholder="Claim Your Spot" /></Field>
+      <Field label="Button URL"><TextInput value={p(block, "buttonUrl")} onChange={v => set("buttonUrl", v)} placeholder="https://..." /></Field>
+      <Field label="Background Color"><TextInput value={p(block, "bgColor")} onChange={v => set("bgColor", v)} placeholder="#dc2626" /></Field>
+    </div>
+  );
+}
+
+function FormProps({ block, onChange }: { block: Block; onChange: (b: Block) => void }) {
+  const set = sp(block, onChange);
+  const fields: { name?: string; type?: string; placeholder?: string; required?: boolean }[] = p(block, "fields", []);
+
+  function updateField(i: number, key: string, val: unknown) {
+    const next = [...fields]; next[i] = { ...next[i], [key]: val }; set("fields", next);
+  }
+
+  return (
+    <div className="space-y-4">
+      <Field label="Title"><TextInput value={p(block, "title")} onChange={v => set("title", v)} placeholder="Get Started Free" /></Field>
+      <Field label="Subtitle"><TextInput value={p(block, "subtitle")} onChange={v => set("subtitle", v)} placeholder="Enter your details below" /></Field>
+      <Field label="Button Text"><TextInput value={p(block, "buttonText")} onChange={v => set("buttonText", v)} placeholder="Submit" /></Field>
+      <Field label="Privacy Text"><TextInput value={p(block, "privacyText")} onChange={v => set("privacyText", v)} placeholder="We'll never spam you." /></Field>
+      <div>
+        <label className="block text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">Form Fields</label>
+        <div className="space-y-3">
+          {fields.map((field, i) => (
+            <div key={i} className="bg-white/[0.03] border border-white/[0.07] rounded-xl p-3 space-y-2">
+              <div className="flex justify-between"><span className="text-xs text-white/40">Field {i + 1}</span><button onClick={() => set("fields", fields.filter((_, j) => j !== i))} className="text-white/20 hover:text-red-400 transition"><Trash2 className="w-3 h-3" /></button></div>
+              <input type="text" value={field.name ?? ""} onChange={e => updateField(i, "name", e.target.value)} placeholder="Field name (e.g. email)" className="w-full bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none" />
+              <select value={field.type ?? "text"} onChange={e => updateField(i, "type", e.target.value)} className="w-full bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white focus:outline-none">
+                <option value="text">Text</option><option value="email">Email</option><option value="tel">Phone</option><option value="textarea">Textarea</option>
+              </select>
+              <input type="text" value={field.placeholder ?? ""} onChange={e => updateField(i, "placeholder", e.target.value)} placeholder="Placeholder text" className="w-full bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none" />
+              <div className="flex items-center gap-2">
+                <input type="checkbox" checked={field.required ?? false} onChange={e => updateField(i, "required", e.target.checked)} />
+                <label className="text-xs text-white/50">Required</label>
+              </div>
+            </div>
+          ))}
+          <button onClick={() => set("fields", [...fields, { name: "email", type: "email", placeholder: "Your email", required: true }])} className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-dashed border-white/[0.12] hover:border-cyan-500/40 text-white/30 hover:text-white/60 text-xs font-semibold transition"><Plus className="w-3 h-3" /> Add Field</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+function ProductsProps({ block, onChange }: { block: Block; onChange: (b: Block) => void }) {
+  const set = sp(block, onChange);
+  return (
+    <div className="space-y-4">
+      <Field label="Section Title"><TextInput value={p(block, "title")} onChange={v => set("title", v)} placeholder="Our Products" /></Field>
+      <Field label="Subtitle"><TextInput value={p(block, "subtitle")} onChange={v => set("subtitle", v)} placeholder="Browse our collection" /></Field>
+      <Field label="Columns">
+        <select value={p(block, "columns", 3)} onChange={e => set("columns", Number(e.target.value))} className="w-full bg-white/[0.05] border border-white/[0.1] rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none">
+          <option value={2}>2</option><option value={3}>3</option><option value={4}>4</option>
+        </select>
+      </Field>
+      <Field label="Button Text"><TextInput value={p(block, "buttonText")} onChange={v => set("buttonText", v)} placeholder="Shop Now" /></Field>
+      <Field label="Button URL"><TextInput value={p(block, "buttonUrl")} onChange={v => set("buttonUrl", v)} placeholder="https://..." /></Field>
+      <p className="text-xs text-white/30">Products are pulled from your store automatically.</p>
+    </div>
+  );
+}
+
 function GenericProps() {
   return <p className="text-sm text-white/30">Select a block to edit its properties.</p>;
 }
@@ -401,6 +607,14 @@ export default function BlockPropsEditor({ block, onChange, onDelete }: Props) {
       case "divider": return <DividerProps block={block} onChange={onChange} />;
       case "checkout": return <CheckoutProps block={block} onChange={onChange} />;
       case "footer": return <FooterProps block={block} onChange={onChange} />;
+      case "stats": return <StatsProps block={block} onChange={onChange} />;
+      case "guarantee": return <GuaranteeProps block={block} onChange={onChange} />;
+      case "trust_badges": return <TrustBadgesProps block={block} onChange={onChange} />;
+      case "process": return <ProcessProps block={block} onChange={onChange} />;
+      case "before_after": return <BeforeAfterProps block={block} onChange={onChange} />;
+      case "urgency": return <UrgencyProps block={block} onChange={onChange} />;
+      case "form": return <FormProps block={block} onChange={onChange} />;
+      case "products": return <ProductsProps block={block} onChange={onChange} />;
       default: return <GenericProps />;
     }
   }
