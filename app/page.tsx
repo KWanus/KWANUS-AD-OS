@@ -85,7 +85,7 @@ export default function Home() {
       });
       const data = await res.json() as { ok: boolean; runId?: string };
       clearInterval(iv);
-      if (data.ok && data.runId) router.push(`/himalaya/run/${data.runId}`);
+      if (data.ok && data.runId) router.push(`/built/${data.runId}`);
       else router.push("/himalaya");
     } catch { clearInterval(iv); router.push("/himalaya"); }
   }

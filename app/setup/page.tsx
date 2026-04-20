@@ -80,7 +80,7 @@ export default function SetupPage() {
 
       if (data.ok && data.runId) {
         setStage("Your business is ready!");
-        setTimeout(() => router.push(`/himalaya/run/${data.runId}`), 800);
+        setTimeout(() => router.push(`/built/${data.runId}`), 800);
       } else {
         setStage("Done!");
         setTimeout(() => router.push("/"), 800);

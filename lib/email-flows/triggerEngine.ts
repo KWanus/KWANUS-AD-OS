@@ -7,6 +7,7 @@
 
 import { prisma } from "@/lib/prisma";
 import { executeFlowForContact } from "./executeFlow";
+import { attributeOrder } from "@/lib/email/revenueAttribution";
 
 export type TriggerEvent = {
   type: "signup" | "purchase" | "abandoned_cart" | "browse_abandon" | "win_back" | "custom" | "form_submit";
@@ -40,6 +41,16 @@ export async function fireTrigger(event: TriggerEvent): Promise<{
 
     if (flows.length === 0) {
       return { enrolled: 0, errors: [] };
+    }
+
+    // On purchase events, attribute revenue to email touches
+    if (event.type === "purchase" && event.metadata?.orderId) {
+      attributeOrder(event.userId, {
+        id: event.metadata.orderId as string,
+        customerEmail: event.email,
+        amountCents: (event.metadata.amountCents as number) ?? 0,
+        createdAt: new Date(),
+      }).catch(() => {}); // non-blocking
     }
 
     // Ensure contact exists

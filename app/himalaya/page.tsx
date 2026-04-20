@@ -144,7 +144,7 @@ export default function HimalayaPage() {
             ? `Your business is live! Score: ${data.buildScore}/100`
             : "Done. Loading your results..."
         );
-        setTimeout(() => router.push(`/himalaya/run/${data.runId}`), 800);
+        setTimeout(() => router.push(`/built/${data.runId}`), 800);
       } else {
         alert(data.error ?? "Something went wrong. Try again.");
         setBuilding(false);

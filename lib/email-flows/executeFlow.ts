@@ -12,6 +12,8 @@
 
 import { prisma } from "@/lib/prisma";
 import { sendEmail, markdownToHtml } from "@/lib/email/send";
+import { recordEngagement } from "@/lib/email/sendTimeOptimization";
+import { executeSmsNode } from "@/lib/email/smsEngine";
 
 type FlowNode = {
   id: string;
@@ -179,6 +181,8 @@ export async function executeFlowForContact(
 
       if (result.ok) {
         emailsSent++;
+        // Track engagement for send-time optimization
+        recordEngagement(contact.email, "open", new Date()).catch(() => {});
       } else {
         errors.push(`Node ${node.id}: ${result.error ?? "send failed"}`);
       }
@@ -218,6 +222,21 @@ export async function executeFlowForContact(
       const result = evaluateCondition(node.data?.condition, contactTags);
       const next = edgeMap.get(currentId);
       currentId = result ? (next?.yes ?? next?.default) : (next?.no ?? undefined);
+      continue;
+    }
+
+    if (type === "sms") {
+      // Execute SMS node via unified SMS engine
+      if (flow.userId && node.data) {
+        try {
+          const smsNodeData = { id: node.id, type: node.type ?? "sms", data: node.data };
+          await executeSmsNode(smsNodeData, { email: contact.email, firstName: contact.firstName ?? undefined, lastName: contact.lastName ?? undefined }, flow.userId);
+        } catch (err) {
+          errors.push(`SMS node ${node.id}: ${err instanceof Error ? err.message : "send failed"}`);
+        }
+      }
+      const next = edgeMap.get(currentId);
+      currentId = next?.default;
       continue;
     }
 

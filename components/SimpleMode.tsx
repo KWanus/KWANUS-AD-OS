@@ -74,7 +74,7 @@ export default function SimpleMode() {
         share: "The more people who see your link, the more leads you get. Simple math.",
         setup: "This sets the foundation. Everything else builds on top of it.",
         follow_up: "80% of sales happen after the 5th follow-up. Most people quit after 1. Don't be most people.",
-        review: "Small improvements compound. A 1% better conversion rate = thousands more over time.",
+        review: "Everything is already built. You just need to approve it — small edits go a long way.",
       };
 
       const actions: DayAction[] = commands.slice(0, 5).map((cmd, i) => {
@@ -108,8 +108,9 @@ export default function SimpleMode() {
         });
       } else if (actions.length === 0) {
         actions.push(
+          { id: "review", title: "Review your ads and scripts", description: "Himalaya already created your ads, scripts, and emails. Open your project and approve them — or edit anything you want to change.", type: "check", href: "/", completed: false, estimatedTime: "3 min", whyItMatters: "Everything is already built for you. Just review, approve, and it goes live.", canSkip: false },
           { id: "share", title: "Share your site link with 5 people", description: `Text or DM this link to 5 people you know: ${siteUrl ?? "your site"}. Ask them to check it out.`, type: "share", completed: false, estimatedTime: "5 min", whyItMatters: "Your first visitors come from people you already know. This is the fastest way to get real feedback.", canSkip: false },
-          { id: "post", title: "Record and post your first video", description: "Open your project → Create tab → pick Script #1. Record it on your phone (15 seconds). Post to TikTok + Instagram.", type: "post", href: "/", completed: false, estimatedTime: "10 min", whyItMatters: "One viral video can bring 10,000 visitors. The algorithm rewards you for posting. Start today.", canSkip: true },
+          { id: "post", title: "Record and post your first video", description: "Open your project → Review tab → pick Script #1. Record it on your phone (15 seconds). Post to TikTok + Instagram.", type: "post", href: "/", completed: false, estimatedTime: "10 min", whyItMatters: "One viral video can bring 10,000 visitors. The algorithm rewards you for posting. Start today.", canSkip: true },
           { id: "check", title: "Check if anyone visited your site", description: "Open your dashboard and look at the 'Views' number. Even 1 view means someone found you.", type: "check", href: "/dashboard", completed: false, estimatedTime: "2 min", whyItMatters: "Knowing your numbers early builds good habits. The best entrepreneurs check daily.", canSkip: true },
         );
       }
