@@ -1,12 +1,14 @@
 "use client";
 
+import { useState } from "react";
 import { Block, BlockType } from "./BlockRenderer";
-import { Trash2, Plus, GripVertical } from "lucide-react";
+import { Trash2, Plus, GripVertical, Sparkles, Loader2 } from "lucide-react";
 
 interface Props {
   block: Block;
   onChange: (updated: Block) => void;
   onDelete: () => void;
+  siteId?: string;
 }
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
@@ -33,6 +35,43 @@ function AlignSelect({ value, onChange }: { value: string; onChange: (v: string)
       <option value="left">Left</option>
       <option value="right">Right</option>
     </select>
+  );
+}
+
+function ImageFieldWithAI({ value, onChange, siteId, blockType, label }: { value: string; onChange: (v: string) => void; siteId?: string; blockType?: string; label?: string }) {
+  const [generating, setGenerating] = useState(false);
+
+  async function generateImage() {
+    if (!siteId || generating) return;
+    setGenerating(true);
+    try {
+      const res = await fetch(`/api/sites/${siteId}/generate-image`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ blockType: blockType ?? "hero" }),
+      });
+      const data = await res.json();
+      if (data.ok && data.url) onChange(data.url);
+    } catch { /* silent */ }
+    setGenerating(false);
+  }
+
+  return (
+    <div>
+      <label className="block text-[10px] font-black uppercase tracking-widest text-white/30 mb-1.5">{label ?? "Image URL"}</label>
+      <div className="flex gap-2">
+        <input type="text" value={value} onChange={e => onChange(e.target.value)} placeholder="https://..."
+          className="flex-1 bg-white/[0.05] border border-white/[0.1] rounded-xl px-3 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-cyan-500/50 transition" />
+        {siteId && (
+          <button type="button" onClick={generateImage} disabled={generating}
+            className="shrink-0 flex items-center gap-1 px-3 py-2 rounded-xl border border-purple-500/30 bg-purple-500/10 text-purple-200 text-xs font-bold hover:bg-purple-500/20 transition disabled:opacity-50"
+            title="Generate with AI">
+            {generating ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
+            AI
+          </button>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -130,11 +169,11 @@ function TextProps({ block, onChange }: { block: Block; onChange: (b: Block) => 
   );
 }
 
-function ImageProps({ block, onChange }: { block: Block; onChange: (b: Block) => void }) {
+function ImageProps({ block, onChange, siteId }: { block: Block; onChange: (b: Block) => void; siteId?: string }) {
   const set = sp(block, onChange);
   return (
     <div className="space-y-4">
-      <Field label="Image URL"><TextInput value={p(block, "src")} onChange={v => set("src", v)} placeholder="https://..." /></Field>
+      <ImageFieldWithAI value={p(block, "src")} onChange={v => set("src", v)} siteId={siteId} blockType="image" label="Image URL" />
       <Field label="Alt Text"><TextInput value={p(block, "alt")} onChange={v => set("alt", v)} placeholder="Image description" /></Field>
       <Field label="Caption"><TextInput value={p(block, "caption")} onChange={v => set("caption", v)} placeholder="Optional caption..." /></Field>
       <div className="flex items-center gap-3">
@@ -590,7 +629,7 @@ const BLOCK_LABELS: Record<BlockType, string> = {
   urgency: "Urgency Bar",
 };
 
-export default function BlockPropsEditor({ block, onChange, onDelete }: Props) {
+export default function BlockPropsEditor({ block, onChange, onDelete, siteId }: Props) {
   const label = BLOCK_LABELS[block.type] ?? block.type;
 
   function renderEditor() {
@@ -598,7 +637,7 @@ export default function BlockPropsEditor({ block, onChange, onDelete }: Props) {
       case "hero": return <HeroProps block={block} onChange={onChange} />;
       case "features": return <FeaturesProps block={block} onChange={onChange} />;
       case "text": return <TextProps block={block} onChange={onChange} />;
-      case "image": return <ImageProps block={block} onChange={onChange} />;
+      case "image": return <ImageProps block={block} onChange={onChange} siteId={siteId} />;
       case "cta": return <CTAProps block={block} onChange={onChange} />;
       case "testimonials": return <TestimonialsProps block={block} onChange={onChange} />;
       case "pricing": return <PricingProps block={block} onChange={onChange} />;

@@ -174,7 +174,7 @@ export default async function PublicSiteSubPage({
             </div>
           ) : (
             blocks.map((block) => (
-              <BlockRenderer key={block.id} block={block} theme={theme} preview={false} products={products} />
+              <BlockRenderer key={block.id} block={block.type === "form" ? { ...block, props: { ...block.props, __siteId: site.id, __pageId: currentPage.id, __blockId: block.id } } : block} theme={theme} preview={false} products={products} />
             ))
           )}
         </div>

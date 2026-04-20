@@ -731,10 +731,14 @@ function TrustBadgesBlock({ props, theme }: { props: Block["props"]; theme: Site
             {props.title}
           </p>
         )}
-        <div style={{
+        <div className="hm-animate-in" style={{
           display: "flex", gap: 0, justifyContent: "center",
-          border: `1px solid ${borderColor}`, borderRadius: 14, overflow: "hidden",
+          overflow: "hidden",
           flexWrap: "wrap",
+          ...glass.subtle(isDark),
+          border: `1px solid ${borderColor}`,
+          borderRadius: radii.lg,
+          boxShadow: isDark ? shadows.sm : "none",
         }}>
           {badges.map((badge, i) => (
             <div key={i} style={{
@@ -820,17 +824,18 @@ function BeforeAfterBlock({ props, theme }: { props: Block["props"]; theme: Site
   const afterItems: string[] = props.afterItems ?? [];
 
   return (
-    <section style={sectionBase(bg)}>
+    <section className="hm-animate-in" style={sectionBase(bg)}>
       <div style={container(860)}>
         {props.title && (
           <h2 style={{ ...headingStyle(textColor), textAlign: "center", marginBottom: 48 }}>{props.title}</h2>
         )}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
           {/* Before */}
-          <div style={{
-            background: isDark ? "rgba(239,68,68,0.06)" : "#fff5f5",
+          <div className="hm-hover-lift" style={{
+            ...glass.card(isDark),
             border: `1px solid rgba(239,68,68,0.2)`,
-            borderRadius: 20, padding: "28px 24px",
+            borderRadius: radii.xl, padding: "28px 24px",
+            boxShadow: "0 8px 24px rgba(239,68,68,0.08)",
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
               <span style={{ fontSize: 20 }}>❌</span>
@@ -847,10 +852,11 @@ function BeforeAfterBlock({ props, theme }: { props: Block["props"]; theme: Site
             </ul>
           </div>
           {/* After */}
-          <div style={{
-            background: isDark ? `rgba(6,182,212,0.06)` : "#f0fdf4",
+          <div className="hm-hover-lift" style={{
+            ...glass.card(isDark),
             border: `1px solid ${primary}33`,
-            borderRadius: 20, padding: "28px 24px",
+            borderRadius: radii.xl, padding: "28px 24px",
+            boxShadow: shadows.glow(primary, 0.15),
           }}>
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
               <span style={{ fontSize: 20 }}>✅</span>
@@ -882,10 +888,13 @@ function UrgencyBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
   const items: string[] = props.items ?? [];
 
   return (
-    <div style={{
+    <div className="hm-shimmer-bg" style={{
       background: bg, padding: "12px 24px",
       display: "flex", alignItems: "center", justifyContent: "center", gap: 24,
       flexWrap: "wrap",
+      backgroundSize: "200% 100%",
+      boxShadow: "0 4px 20px rgba(220,38,38,0.3)",
+      borderRadius: radii.md,
     }}>
       {props.icon && <span style={{ fontSize: 18 }}>{props.icon}</span>}
       <span style={{ color: "#ffffff", fontWeight: 800, fontSize: 14, textAlign: "center" }}>
@@ -1118,10 +1127,11 @@ function CheckoutBlock({ props, theme }: { props: Block["props"]; theme: SiteThe
   return (
     <section style={sectionBase(bg)}>
       <div style={{ ...container(600) }}>
-        <div style={{
-          background: cardBg, borderRadius: 24, padding: "44px 40px",
+        <div className="hm-animate-in" style={{
+          ...glass.prominent(isDark),
+          borderRadius: 24, padding: "44px 40px",
           border: `1px solid ${borderColor}`,
-          boxShadow: isDark ? "0 32px 64px rgba(0,0,0,0.5)" : "0 32px 64px rgba(0,0,0,0.08)",
+          boxShadow: shadows.xl,
         }}>
           {/* Header */}
           <div style={{ textAlign: "center", marginBottom: 32 }}>
@@ -1162,11 +1172,12 @@ function CheckoutBlock({ props, theme }: { props: Block["props"]; theme: SiteThe
             </div>
           )}
 
-          <button type="button" style={{
+          <button type="button" className="hm-pulse-btn" style={{
             width: "100%", padding: "18px", borderRadius: 14, border: "none",
             background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
             color: "#fff", fontWeight: 900, fontSize: 17, cursor: "pointer",
             boxShadow: `0 8px 32px ${primary}50`,
+            ["--hm-pulse-color" as string]: primary + "44",
           }}>
             {props.buttonText ?? "Complete Purchase →"}
           </button>
@@ -1342,6 +1353,7 @@ function FooterBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme
 
   return (
     <footer style={{ background: bg, padding: "60px 24px 32px" }}>
+      <div style={{ height: 1, background: `linear-gradient(90deg, transparent, ${primary}40, transparent)` }} />
       <div style={container()}>
         {/* Multi-column footer */}
         {columns.length > 0 && (

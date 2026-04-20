@@ -1017,6 +1017,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                 block={selectedBlock}
                 onChange={updateBlock}
                 onDelete={() => deleteBlock(selectedBlock.id)}
+                siteId={siteId}
               />
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-center px-4">
