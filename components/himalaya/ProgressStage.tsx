@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { Check, Loader2, AlertCircle, AlertTriangle, RefreshCw } from "lucide-react";
 
-export type UiRunStage = "diagnosis" | "strategy" | "generation" | "save";
-export type UiStageState = "waiting" | "active" | "complete" | "partial" | "fallback" | "failed";
+export type UiRunStage = "diagnosis" | "strategy" | "research" | "generation" | "save";
+export type UiStageState = "waiting" | "active" | "complete" | "partial" | "fallback" | "failed" | "skipped";
 
 const STAGE_META: Record<UiRunStage, { label: string; description: string }> = {
   diagnosis: {
@@ -15,9 +15,13 @@ const STAGE_META: Record<UiRunStage, { label: string; description: string }> = {
     label: "Strategy",
     description: "Determining what matters most and what should be built first.",
   },
+  research: {
+    label: "Research",
+    description: "Scanning competitors in your niche to find winning patterns.",
+  },
   generation: {
     label: "Generation",
-    description: "Creating structured assets based on your diagnosis and strategy.",
+    description: "Creating structured assets informed by competitor intelligence.",
   },
   save: {
     label: "Save",
@@ -25,7 +29,7 @@ const STAGE_META: Record<UiRunStage, { label: string; description: string }> = {
   },
 };
 
-const STAGE_ORDER: UiRunStage[] = ["diagnosis", "strategy", "generation", "save"];
+const STAGE_ORDER: UiRunStage[] = ["diagnosis", "strategy", "research", "generation", "save"];
 
 function StageIcon({ state }: { state: UiStageState }) {
   switch (state) {
@@ -55,6 +59,8 @@ function StageIcon({ state }: { state: UiStageState }) {
           <AlertCircle className="w-3 h-3 text-white" />
         </div>
       );
+    case "skipped":
+      return <div className="w-5 h-5 rounded-full border-2 border-white/[0.06] bg-white/[0.03]" />;
     default:
       return <div className="w-5 h-5 rounded-full border-2 border-white/10" />;
   }
@@ -65,6 +71,7 @@ function stageStatusLabel(state: UiStageState): string | null {
     case "partial": return "Completed with gaps";
     case "fallback": return "Used fallback";
     case "failed": return "Failed";
+    case "skipped": return "Skipped";
     default: return null;
   }
 }
@@ -91,7 +98,7 @@ export function ProgressStage({ stages, currentStage, error, onRetry, onCancel }
 
   const allDone = STAGE_ORDER.every((s) => {
     const st = stages[s];
-    return st === "complete" || st === "partial" || st === "fallback" || st === "failed";
+    return st === "complete" || st === "partial" || st === "fallback" || st === "failed" || st === "skipped";
   });
 
   useEffect(() => {

@@ -28,6 +28,7 @@ export interface RunTrace {
   stages: {
     diagnosis: StageTrace;
     strategy: StageTrace;
+    research?: StageTrace;
     generation: StageTrace;
     save: StageTrace;
   };

@@ -79,7 +79,7 @@ export async function POST(
       quality: "hd",
     });
 
-    const imageUrl = response.data[0]?.url;
+    const imageUrl = response.data?.[0]?.url;
     if (!imageUrl) {
       return NextResponse.json({ ok: false, error: "No image generated" }, { status: 500 });
     }

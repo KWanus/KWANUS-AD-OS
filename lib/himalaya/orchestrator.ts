@@ -41,6 +41,8 @@ import type {
   RunTrace,
 } from "./contracts";
 import { extractJson, withTimeout } from "./utils";
+import { runFullResearch, type NicheIntelligence } from "@/lib/sites/competitorResearch";
+import { enrichPromptWithResearch } from "@/lib/sites/researchInformedGeneration";
 
 const anthropic = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
@@ -134,7 +136,13 @@ export async function runHimalaya(
   const runId = generateRunId();
   const startedAt = new Date().toISOString();
 
-  const traces = {
+  const traces: {
+    diagnosis: StageTrace;
+    strategy: StageTrace;
+    research?: StageTrace;
+    generation: StageTrace;
+    save: StageTrace;
+  } = {
     diagnosis: newStageTrace(),
     strategy: newStageTrace(),
     generation: newStageTrace(),
@@ -159,10 +167,28 @@ export async function runHimalaya(
   traces.strategy.warnings = stratWarnings;
   const strategy: StrategyPayload = { ...strategyRaw, status: stratStatus, warnings: stratWarnings };
 
+  // Step 2.5: Research (competitor intelligence for site generation)
+  let nicheIntelligence: NicheIntelligence | null = null;
+  const shouldResearch = input.mode === "scratch" && strategy.generateQueue?.includes("site");
+  if (shouldResearch) {
+    traces.research = newStageTrace();
+    try {
+      const niche = (input as ScratchInput).niche;
+      const { intelligence } = await runFullResearch(niche);
+      nicheIntelligence = intelligence;
+      completeStage(traces.research, "success");
+    } catch (e) {
+      completeStage(traces.research, "fallback");
+      traces.research.fallbackUsed = true;
+      traces.research.warnings = ["Research failed, generating without competitor data"];
+      traces.research.error = e instanceof Error ? e.message : "Research failed";
+    }
+  }
+
   // Step 3: Generate
   let generated: GenerationPayload;
   try {
-    const genRaw = await generate(diagnosis, strategy);
+    const genRaw = await generate(diagnosis, strategy, nicheIntelligence);
     const genWarnings = validateGeneration(genRaw);
     const genStatus = deriveStatus(genWarnings, false);
     completeStage(traces.generation, genStatus);
@@ -433,7 +459,8 @@ function fallbackStrategy(diagnosis: DiagnosisPayload): StrategyPayload {
 
 async function generate(
   diagnosis: DiagnosisPayload,
-  strategy: StrategyPayload
+  strategy: StrategyPayload,
+  nicheIntelligence?: NicheIntelligence | null
 ): Promise<ScratchGeneration | ImproveGeneration> {
   if (!process.env.ANTHROPIC_API_KEY) {
     throw new Error("AI not configured. Set ANTHROPIC_API_KEY.");
@@ -445,9 +472,13 @@ async function generate(
     ? IMPROVE_GENERATION_SYSTEM
     : SCRATCH_GENERATION_SYSTEM;
 
-  const userPrompt = isImprove
+  let userPrompt = isImprove
     ? `DIAGNOSIS:\n${JSON.stringify(diagnosis, null, 2)}\n\nSTRATEGY:\n${JSON.stringify(strategy, null, 2)}\n\nFix the biggest weaknesses. Rewrite homepage. Create follow-up emails. Generate ad angles. Build action roadmap.`
     : `BUSINESS TYPE: ${diagnosis.businessType}\nNICHE: ${diagnosis.niche}\nGOAL: ${diagnosis.goal}\nDESCRIPTION: ${(diagnosis as ScratchDiagnosis).description || "none"}\nARCHETYPE: ${JSON.stringify((diagnosis as ScratchDiagnosis).archetype)}\n\nSTRATEGY:\n${JSON.stringify(strategy, null, 2)}\n\nGenerate everything. Be specific to the niche. Write copy that converts.`;
+
+  if (nicheIntelligence) {
+    userPrompt = enrichPromptWithResearch(userPrompt, nicheIntelligence);
+  }
 
   const msg = await withTimeout(
     anthropic.messages.create({

@@ -7,6 +7,7 @@ import type { UiRunStage, UiStageState } from "@/components/himalaya/ProgressSta
 const INITIAL_STAGES: Record<UiRunStage, UiStageState> = {
   diagnosis: "waiting",
   strategy: "waiting",
+  research: "waiting",
   generation: "waiting",
   save: "waiting",
 };
@@ -69,6 +70,28 @@ export function useHimalayaRun({ mode, buildDiagnoseBody, buildSaveInput }: UseH
       if (!stratData.ok) throw new Error(stratData.error || "Strategy failed");
       updateStage("strategy", stateForStatus(stratData.strategy?.status));
 
+      // Research (competitor intelligence — only for scratch mode with site generation)
+      let researchData: { intelligence?: unknown } = {};
+      const shouldResearch = mode === "scratch" && stratData.strategy?.generateQueue?.includes("site");
+      if (shouldResearch) {
+        activeStage = "research";
+        setCurrentStage("research");
+        updateStage("research", "active");
+        try {
+          const researchRes = await fetch("/api/sites/research", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ niche: diagData.diagnosis?.niche }),
+          });
+          researchData = await researchRes.json();
+          updateStage("research", researchData.intelligence ? "complete" : "fallback");
+        } catch {
+          updateStage("research", "fallback");
+        }
+      } else {
+        updateStage("research", "skipped");
+      }
+
       // Generation
       activeStage = "generation";
       setCurrentStage("generation");
@@ -76,7 +99,7 @@ export function useHimalayaRun({ mode, buildDiagnoseBody, buildSaveInput }: UseH
       const genRes = await fetch("/api/himalaya/generate", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode, diagnosis: diagData.diagnosis, strategy: stratData.strategy }),
+        body: JSON.stringify({ mode, diagnosis: diagData.diagnosis, strategy: stratData.strategy, nicheIntelligence: researchData.intelligence ?? null }),
       });
       const genData = await genRes.json();
       if (!genData.ok) throw new Error(genData.error || "Generation failed");

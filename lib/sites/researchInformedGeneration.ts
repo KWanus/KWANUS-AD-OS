@@ -128,7 +128,7 @@ export function buildResearchEnrichedSections(intelligence: NicheIntelligence): 
       if (lower.includes("stat") || lower.includes("number")) return "stats";
       if (lower.includes("before") || lower.includes("after") || lower.includes("comparison")) return "before_after";
       return null;
-    }).filter((s): s is string => s !== null);
+    }).filter((s) => s !== null) as string[];
 
     const unique = [...new Set([...base, ...mapped])];
     if (!unique.includes("cta")) unique.push("cta");
