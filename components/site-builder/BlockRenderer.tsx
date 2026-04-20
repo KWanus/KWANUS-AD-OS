@@ -1,5 +1,8 @@
 "use client";
 
+import { shadows, glass, gradients, radii } from "./designTokens";
+import { ANIMATION_STYLES, staggerDelay } from "./blockAnimations";
+
 // ---------------------------------------------------------------------------
 // BlockRenderer — World-class block designs for Himalaya site builder
 // ---------------------------------------------------------------------------
@@ -87,15 +90,16 @@ function eyebrowStyle(color: string): React.CSSProperties {
 }
 
 // ---------------------------------------------------------------------------
-// HERO — Cinematic gradient hero with social proof and dual CTAs
+// HERO — Cinematic mesh gradient hero with glassmorphism and animated elements
 // ---------------------------------------------------------------------------
 
 function HeroBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark
-    ? `radial-gradient(ellipse 80% 60% at 50% -10%, ${primary}22 0%, transparent 60%), #050a14`
-    : `radial-gradient(ellipse 80% 60% at 50% -10%, ${primary}15 0%, transparent 60%), #ffffff`);
+  const meshBg = isDark
+    ? `${gradients.mesh(primary)}, radial-gradient(ellipse 80% 60% at 50% -10%, ${primary}22 0%, transparent 60%), #050a14`
+    : `${gradients.mesh(primary)}, radial-gradient(ellipse 80% 60% at 50% -10%, ${primary}15 0%, transparent 60%), #ffffff`;
+  const bg = props.bgColor ?? meshBg;
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.55)" : "rgba(15,23,42,0.6)";
   const align = props.textAlign ?? "center";
@@ -103,46 +107,58 @@ function HeroBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
   const trustItems: string[] = props.trustItems ?? [];
 
   return (
-    <section style={{ ...sectionBase(bg, "110px 24px 100px"), textAlign: align as "center" | "left" }}>
-      <div style={{ ...container(860), display: "flex", flexDirection: "column", alignItems: align === "center" ? "center" : "flex-start", gap: 0 }}>
+    <section style={{ ...sectionBase(bg, "120px 24px 110px"), textAlign: align as "center" | "left", position: "relative", overflow: "hidden" }}>
+      {/* Ambient glow orbs */}
+      <div style={{ position: "absolute", top: "-20%", left: "10%", width: "40%", height: "60%", background: `radial-gradient(circle, ${primary}12 0%, transparent 70%)`, pointerEvents: "none", filter: "blur(60px)" }} />
+      <div style={{ position: "absolute", bottom: "-10%", right: "15%", width: "30%", height: "50%", background: "radial-gradient(circle, #8b5cf612 0%, transparent 70%)", pointerEvents: "none", filter: "blur(60px)" }} />
 
-        {/* Social proof pill */}
+      <div style={{ ...container(860), display: "flex", flexDirection: "column", alignItems: align === "center" ? "center" : "flex-start", gap: 0, position: "relative" }}>
+
+        {/* Social proof pill with glass effect */}
         {socialProof && (
-          <div style={{
+          <div className="hm-animate-in" style={{
             display: "inline-flex", alignItems: "center", gap: 8,
-            background: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.05)",
-            border: `1px solid ${isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.08)"}`,
-            borderRadius: 100, padding: "6px 14px", marginBottom: 28,
+            ...glass.subtle(isDark),
+            borderRadius: radii.pill, padding: "8px 18px", marginBottom: 28,
           }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#22c55e", display: "inline-block", flexShrink: 0, boxShadow: "0 0 6px #22c55e" }} />
-            <span style={{ color: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)", fontSize: 12, fontWeight: 600 }}>{socialProof}</span>
+            <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#22c55e", display: "inline-block", flexShrink: 0, boxShadow: "0 0 8px #22c55e, 0 0 16px #22c55e44" }} />
+            <span style={{ color: isDark ? "rgba(255,255,255,0.75)" : "rgba(0,0,0,0.6)", fontSize: 12, fontWeight: 600 }}>{socialProof}</span>
           </div>
         )}
 
         {props.eyebrow && (
-          <p style={{ ...eyebrowStyle(primary), marginBottom: 16 }}>{props.eyebrow}</p>
+          <p className="hm-animate-in hm-stagger-1" style={{ ...eyebrowStyle(primary), marginBottom: 16 }}>{props.eyebrow}</p>
         )}
 
-        <h1 style={{ ...headingStyle(textColor, "clamp(2.2rem,5.5vw,4rem)"), maxWidth: 800, textAlign: align as "center" | "left", marginBottom: 24 }}>
+        <h1 className="hm-animate-up" style={{
+          ...headingStyle(textColor, "clamp(2.4rem,5.5vw,4.2rem)"),
+          maxWidth: 820, textAlign: align as "center" | "left", marginBottom: 24,
+          background: props.gradientText !== false ? `linear-gradient(135deg, ${textColor} 30%, ${primary} 100%)` : undefined,
+          backgroundClip: props.gradientText !== false ? "text" : undefined,
+          WebkitBackgroundClip: props.gradientText !== false ? "text" : undefined,
+          WebkitTextFillColor: props.gradientText !== false ? "transparent" : undefined,
+          letterSpacing: "-0.02em",
+        }}>
           {props.headline || "Your Headline Here"}
         </h1>
 
         {props.subheadline && (
-          <p style={{ color: subColor, fontSize: "clamp(1rem,2vw,1.2rem)", maxWidth: 600, lineHeight: 1.7, marginBottom: 40, textAlign: align as "center" | "left" }}>
+          <p className="hm-animate-in hm-stagger-2" style={{ color: subColor, fontSize: "clamp(1.05rem,2vw,1.25rem)", maxWidth: 620, lineHeight: 1.75, marginBottom: 44, textAlign: align as "center" | "left" }}>
             {props.subheadline}
           </p>
         )}
 
-        {/* CTAs */}
+        {/* CTAs with glow */}
         {props.buttonText && (
-          <div style={{ display: "flex", gap: 14, justifyContent: align === "center" ? "center" : "flex-start", flexWrap: "wrap", marginBottom: trustItems.length ? 48 : 0 }}>
-            <a href={props.buttonUrl ?? "#"} style={{
+          <div className="hm-animate-in hm-stagger-3" style={{ display: "flex", gap: 16, justifyContent: align === "center" ? "center" : "flex-start", flexWrap: "wrap", marginBottom: trustItems.length ? 48 : 0 }}>
+            <a href={props.buttonUrl ?? "#"} className="hm-pulse-btn" style={{
               display: "inline-flex", alignItems: "center", gap: 8,
-              padding: "15px 34px", borderRadius: 14,
+              padding: "16px 38px", borderRadius: radii.md,
               background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
-              boxShadow: `0 8px 32px ${primary}55`,
+              boxShadow: `0 8px 32px ${primary}55, 0 2px 8px rgba(0,0,0,0.2)`,
               color: "#fff", fontWeight: 800, fontSize: 15, textDecoration: "none",
               letterSpacing: "0.01em",
+              ["--hm-pulse-color" as string]: `${primary}55`,
             }}>
               {props.buttonText}
               <span style={{ fontSize: 16 }}>→</span>
@@ -150,10 +166,9 @@ function HeroBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
             {props.secondaryButtonText && (
               <a href={props.secondaryButtonUrl ?? "#"} style={{
                 display: "inline-flex", alignItems: "center", gap: 8,
-                padding: "15px 34px", borderRadius: 14,
-                border: `1px solid ${isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.15)"}`,
+                padding: "16px 38px", borderRadius: radii.md,
+                ...glass.card(isDark),
                 color: textColor, fontWeight: 700, fontSize: 15, textDecoration: "none",
-                background: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.02)",
               }}>
                 {props.secondaryButtonText}
               </a>
@@ -161,12 +176,12 @@ function HeroBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
           </div>
         )}
 
-        {/* Trust items */}
+        {/* Trust items with stagger */}
         {trustItems.length > 0 && (
-          <div style={{ display: "flex", gap: 20, flexWrap: "wrap", justifyContent: align === "center" ? "center" : "flex-start", marginTop: props.buttonText ? 0 : 0 }}>
+          <div style={{ display: "flex", gap: 24, flexWrap: "wrap", justifyContent: align === "center" ? "center" : "flex-start" }}>
             {trustItems.map((item: string, i: number) => (
-              <span key={i} style={{ display: "flex", alignItems: "center", gap: 6, color: isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.45)", fontSize: 12, fontWeight: 600 }}>
-                <span style={{ color: "#22c55e" }}>✓</span> {item}
+              <span key={i} className="hm-animate-in" style={{ display: "flex", alignItems: "center", gap: 7, color: isDark ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.45)", fontSize: 13, fontWeight: 600, animationDelay: staggerDelay(i + 4) }}>
+                <span style={{ color: "#22c55e", textShadow: "0 0 4px #22c55e66" }}>✓</span> {item}
               </span>
             ))}
           </div>
@@ -177,7 +192,7 @@ function HeroBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
 }
 
 // ---------------------------------------------------------------------------
-// FEATURES — Gradient icon grid with hover-ready cards
+// FEATURES — Glassmorphism cards with hover-lift and gradient icon panels
 // ---------------------------------------------------------------------------
 
 function FeaturesBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
@@ -186,17 +201,15 @@ function FeaturesBlock({ props, theme }: { props: Block["props"]; theme: SiteThe
   const bg = props.bgColor ?? (isDark ? "#07101f" : "#f8fafc");
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.5)" : "rgba(15,23,42,0.55)";
-  const cardBg = isDark ? "rgba(255,255,255,0.03)" : "#ffffff";
-  const cardBorder = isDark ? "rgba(255,255,255,0.07)" : "#e2e8f0";
   const cols = props.columns ?? 3;
   const items: { icon?: string; title?: string; body?: string; number?: string }[] = props.items ?? [];
-  const layout = props.layout ?? "grid"; // "grid" | "list" | "icon-top"
+  const layout = props.layout ?? "grid";
 
   return (
     <section style={sectionBase(bg)}>
       <div style={container()}>
         {(props.eyebrow || props.title) && (
-          <div style={{ textAlign: "center", marginBottom: 60 }}>
+          <div className="hm-animate-in" style={{ textAlign: "center", marginBottom: 64 }}>
             {props.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
             {props.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
             {props.subtitle && <p style={{ color: subColor, fontSize: 17, maxWidth: 560, margin: "0 auto", lineHeight: 1.7 }}>{props.subtitle}</p>}
@@ -207,42 +220,45 @@ function FeaturesBlock({ props, theme }: { props: Block["props"]; theme: SiteThe
           gridTemplateColumns: layout === "list"
             ? "1fr"
             : `repeat(${Math.min(cols, items.length || cols)}, 1fr)`,
-          gap: layout === "list" ? 12 : 20,
+          gap: layout === "list" ? 14 : 22,
         }}>
           {items.map((item, i) => (
-            <div key={i} style={{
-              background: cardBg,
-              border: `1px solid ${cardBorder}`,
-              borderRadius: 20,
-              padding: layout === "list" ? "20px 24px" : "32px 28px",
+            <div key={i} className="hm-hover-lift hm-animate-in" style={{
+              ...glass.card(isDark),
+              borderRadius: radii.lg,
+              padding: layout === "list" ? "22px 26px" : "34px 30px",
               display: "flex",
               flexDirection: layout === "list" ? "row" : "column",
-              gap: layout === "list" ? 16 : 18,
+              gap: layout === "list" ? 16 : 20,
               alignItems: layout === "list" ? "flex-start" : undefined,
+              animationDelay: staggerDelay(i),
+              boxShadow: isDark ? shadows.md : shadows.sm,
             }}>
               {item.icon && (
                 <div style={{
-                  width: 52, height: 52, borderRadius: 14, flexShrink: 0,
-                  background: `linear-gradient(135deg, ${primary}22, #8b5cf622)`,
-                  border: `1px solid ${primary}33`,
-                  display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24,
+                  width: 56, height: 56, borderRadius: radii.md, flexShrink: 0,
+                  background: `linear-gradient(135deg, ${primary}20, #8b5cf620)`,
+                  border: `1px solid ${primary}30`,
+                  display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26,
+                  boxShadow: `0 4px 16px ${primary}20`,
                 }}>
                   {item.icon}
                 </div>
               )}
               {!item.icon && item.number && (
                 <div style={{
-                  width: 40, height: 40, borderRadius: "50%", flexShrink: 0,
+                  width: 44, height: 44, borderRadius: "50%", flexShrink: 0,
                   background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
                   display: "flex", alignItems: "center", justifyContent: "center",
                   color: "#fff", fontWeight: 900, fontSize: 15,
+                  boxShadow: shadows.glow(primary, 0.3),
                 }}>
                   {item.number ?? i + 1}
                 </div>
               )}
               <div>
                 {item.title && <h3 style={{ color: textColor, fontSize: 17, fontWeight: 800, marginBottom: 8 }}>{item.title}</h3>}
-                {item.body && <p style={{ color: subColor, fontSize: 14, lineHeight: 1.7, margin: 0 }}>{item.body}</p>}
+                {item.body && <p style={{ color: subColor, fontSize: 14, lineHeight: 1.75, margin: 0 }}>{item.body}</p>}
               </div>
             </div>
           ))}
@@ -253,18 +269,16 @@ function FeaturesBlock({ props, theme }: { props: Block["props"]; theme: SiteThe
 }
 
 // ---------------------------------------------------------------------------
-// STATS / NUMBERS — Social proof bar (new top-1% conversion block)
+// STATS / NUMBERS — Animated counter bar with glass dividers
 // ---------------------------------------------------------------------------
 
 function StatsBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
   const bg = props.bgColor ?? (isDark
-    ? `linear-gradient(135deg, ${primary}18 0%, transparent 50%), #06101e`
-    : `linear-gradient(135deg, ${primary}0a 0%, transparent 50%), #f0f9ff`);
-  const textColor = isDark ? "#ffffff" : "#0f172a";
+    ? `${gradients.aurora(primary)}, #06101e`
+    : `linear-gradient(135deg, ${primary}08 0%, transparent 50%), #f0f9ff`);
   const subColor = isDark ? "rgba(255,255,255,0.45)" : "rgba(15,23,42,0.5)";
-  const borderColor = isDark ? "rgba(255,255,255,0.07)" : "#e2e8f0";
   const stats: { number?: string; label?: string; suffix?: string }[] = props.stats ?? [
     { number: "500+", label: "Happy Clients" },
     { number: "98%", label: "Satisfaction Rate" },
@@ -273,25 +287,31 @@ function StatsBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme 
   ];
 
   return (
-    <section style={sectionBase(bg, "72px 24px")}>
+    <section style={sectionBase(bg, "80px 24px")}>
       <div style={container()}>
         <div style={{
           display: "grid",
           gridTemplateColumns: `repeat(${Math.min(stats.length, 4)}, 1fr)`,
           gap: 0,
-          border: `1px solid ${borderColor}`,
-          borderRadius: 20, overflow: "hidden",
+          ...glass.prominent(isDark),
+          borderRadius: radii.xl, overflow: "hidden",
+          boxShadow: isDark ? shadows.lg : shadows.md,
         }}>
           {stats.map((stat, i) => (
-            <div key={i} style={{
-              padding: "36px 24px",
+            <div key={i} className="hm-animate-in" style={{
+              padding: "40px 24px",
               textAlign: "center",
-              borderRight: i < stats.length - 1 ? `1px solid ${borderColor}` : "none",
+              borderRight: i < stats.length - 1 ? `1px solid ${isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)"}` : "none",
+              animationDelay: staggerDelay(i),
             }}>
-              <div style={{ fontSize: "clamp(2rem,4vw,3rem)", fontWeight: 900, color: primary, lineHeight: 1, marginBottom: 8 }}>
+              <div style={{
+                fontSize: "clamp(2.2rem,4.5vw,3.2rem)", fontWeight: 900, lineHeight: 1, marginBottom: 10,
+                background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
+                backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+              }}>
                 {stat.number}{stat.suffix}
               </div>
-              <div style={{ color: subColor, fontSize: 13, fontWeight: 600, textTransform: "uppercase", letterSpacing: "0.1em" }}>
+              <div style={{ color: subColor, fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em" }}>
                 {stat.label}
               </div>
             </div>
@@ -306,7 +326,7 @@ function StatsBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme 
 }
 
 // ---------------------------------------------------------------------------
-// TESTIMONIALS — Masonry-style with verified badges and large quotes
+// TESTIMONIALS — Glass cards with gradient borders and hover lift
 // ---------------------------------------------------------------------------
 
 function TestimonialsBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
@@ -315,37 +335,37 @@ function TestimonialsBlock({ props, theme }: { props: Block["props"]; theme: Sit
   const bg = props.bgColor ?? (isDark ? "#050a14" : "#f8fafc");
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.65)" : "rgba(15,23,42,0.65)";
-  const cardBg = isDark ? "rgba(255,255,255,0.035)" : "#ffffff";
-  const cardBorder = isDark ? "rgba(255,255,255,0.08)" : "#e2e8f0";
   const items: { name?: string; role?: string; company?: string; quote?: string; avatar?: string; stars?: number; verified?: boolean; result?: string }[] = props.items ?? [];
 
   return (
     <section style={sectionBase(bg)}>
       <div style={container()}>
         {(props.eyebrow || props.title) && (
-          <div style={{ textAlign: "center", marginBottom: 60 }}>
+          <div className="hm-animate-in" style={{ textAlign: "center", marginBottom: 64 }}>
             {props.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
             {props.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
             {props.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 540, margin: "0 auto" }}>{props.subtitle}</p>}
           </div>
         )}
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 20 }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 22 }}>
           {items.map((item, i) => (
-            <div key={i} style={{
-              background: cardBg,
-              border: `1px solid ${cardBorder}`,
-              borderRadius: 20, padding: "32px 28px",
+            <div key={i} className="hm-hover-lift hm-animate-in" style={{
+              ...glass.card(isDark),
+              borderRadius: radii.xl, padding: "34px 30px",
               display: "flex", flexDirection: "column", gap: 20,
               position: "relative",
+              boxShadow: isDark ? shadows.md : shadows.sm,
+              animationDelay: staggerDelay(i),
             }}>
-              {/* Result callout */}
+              {/* Result callout with glow */}
               {item.result && (
                 <div style={{
                   position: "absolute", top: -1, right: 20,
                   background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
                   color: "#fff", fontSize: 11, fontWeight: 800,
-                  padding: "4px 12px", borderRadius: "0 0 10px 10px",
+                  padding: "5px 14px", borderRadius: "0 0 12px 12px",
                   letterSpacing: "0.05em",
+                  boxShadow: shadows.glow(primary, 0.25),
                 }}>
                   {item.result}
                 </div>
@@ -353,25 +373,26 @@ function TestimonialsBlock({ props, theme }: { props: Block["props"]; theme: Sit
               {/* Stars */}
               <div style={{ display: "flex", gap: 3 }}>
                 {[...Array(item.stars ?? 5)].map((_, j) => (
-                  <span key={j} style={{ color: "#f59e0b", fontSize: 16 }}>★</span>
+                  <span key={j} style={{ color: "#f59e0b", fontSize: 16, textShadow: "0 0 4px #f59e0b44" }}>★</span>
                 ))}
               </div>
               {/* Quote */}
               <div>
-                <div style={{ color: primary, fontSize: 48, lineHeight: 0.6, fontFamily: "Georgia, serif", opacity: 0.4, marginBottom: 8 }}>&ldquo;</div>
-                {item.quote && <p style={{ color: subColor, fontSize: 15, lineHeight: 1.75, margin: 0 }}>{item.quote}</p>}
+                <div style={{ color: primary, fontSize: 52, lineHeight: 0.6, fontFamily: "Georgia, serif", opacity: 0.3, marginBottom: 10 }}>&ldquo;</div>
+                {item.quote && <p style={{ color: subColor, fontSize: 15, lineHeight: 1.8, margin: 0 }}>{item.quote}</p>}
               </div>
               {/* Author */}
-              <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: "auto" }}>
+              <div style={{ display: "flex", alignItems: "center", gap: 12, marginTop: "auto", paddingTop: 8, borderTop: `1px solid ${isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.05)"}` }}>
                 {item.avatar ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={item.avatar} alt={item.name ?? ""} style={{ width: 44, height: 44, borderRadius: "50%", objectFit: "cover", flexShrink: 0 }} />
+                  <img src={item.avatar} alt={item.name ?? ""} style={{ width: 46, height: 46, borderRadius: "50%", objectFit: "cover", flexShrink: 0, border: `2px solid ${primary}33` }} />
                 ) : (
                   <div style={{
-                    width: 44, height: 44, borderRadius: "50%", flexShrink: 0,
+                    width: 46, height: 46, borderRadius: "50%", flexShrink: 0,
                     background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    color: "#fff", fontWeight: 800, fontSize: 15,
+                    color: "#fff", fontWeight: 800, fontSize: 16,
+                    boxShadow: shadows.glow(primary, 0.2),
                   }}>
                     {(item.name ?? "A").charAt(0).toUpperCase()}
                   </div>
@@ -380,7 +401,7 @@ function TestimonialsBlock({ props, theme }: { props: Block["props"]; theme: Sit
                   <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
                     {item.name && <span style={{ color: textColor, fontSize: 14, fontWeight: 700 }}>{item.name}</span>}
                     {item.verified !== false && (
-                      <span style={{ color: "#3b82f6", fontSize: 14 }}>✓</span>
+                      <span style={{ color: "#3b82f6", fontSize: 13, background: "#3b82f615", borderRadius: 4, padding: "1px 4px" }}>✓</span>
                     )}
                   </div>
                   {(item.role || item.company) && (
@@ -399,7 +420,7 @@ function TestimonialsBlock({ props, theme }: { props: Block["props"]; theme: Sit
 }
 
 // ---------------------------------------------------------------------------
-// PRICING — 3-tier with highlighted popular tier, feature list, shadow
+// PRICING — Glass tier cards with prominent popular tier and glow
 // ---------------------------------------------------------------------------
 
 function PricingBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
@@ -408,79 +429,80 @@ function PricingBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
   const bg = props.bgColor ?? (isDark ? "#07101f" : "#f8fafc");
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.45)" : "rgba(15,23,42,0.5)";
-  const cardBg = isDark ? "rgba(255,255,255,0.025)" : "#ffffff";
-  const cardBorder = isDark ? "rgba(255,255,255,0.08)" : "#e2e8f0";
   const tiers: { label?: string; price?: string; period?: string; description?: string; features?: string[]; buttonText?: string; buttonUrl?: string; highlight?: boolean; badge?: string; strikePrice?: string }[] = props.tiers ?? [];
 
   return (
-    <section style={sectionBase(bg)}>
-      <div style={container()}>
+    <section style={{ ...sectionBase(bg), position: "relative", overflow: "hidden" }}>
+      {/* Background glow for pricing */}
+      <div style={{ position: "absolute", top: "30%", left: "50%", width: "50%", height: "50%", transform: "translateX(-50%)", background: `radial-gradient(circle, ${primary}08 0%, transparent 70%)`, pointerEvents: "none", filter: "blur(80px)" }} />
+      <div style={{ ...container(), position: "relative" }}>
         {(props.eyebrow || props.title) && (
-          <div style={{ textAlign: "center", marginBottom: 60 }}>
+          <div className="hm-animate-in" style={{ textAlign: "center", marginBottom: 64 }}>
             {props.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
             {props.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
             {props.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 520, margin: "0 auto" }}>{props.subtitle}</p>}
           </div>
         )}
-        <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(tiers.length || 3, 3)}, 1fr)`, gap: 20, alignItems: "start" }}>
+        <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(tiers.length || 3, 3)}, 1fr)`, gap: 22, alignItems: "start" }}>
           {tiers.map((tier, i) => (
-            <div key={i} style={{
-              background: tier.highlight
-                ? isDark ? "rgba(255,255,255,0.06)" : "#ffffff"
-                : cardBg,
-              border: `1px solid ${tier.highlight ? primary : cardBorder}`,
-              borderRadius: 22,
-              padding: "36px 28px",
+            <div key={i} className="hm-hover-lift hm-animate-in" style={{
+              ...(tier.highlight ? glass.prominent(isDark) : glass.card(isDark)),
+              borderRadius: radii.xl,
+              padding: "40px 30px",
               display: "flex", flexDirection: "column", gap: 24,
               position: "relative",
               boxShadow: tier.highlight
-                ? `0 20px 60px ${primary}25, 0 0 0 1px ${primary}40`
-                : "none",
-              transform: tier.highlight ? "scale(1.03)" : "none",
+                ? `${shadows.glow(primary, 0.2)}, ${shadows.lg}`
+                : shadows.sm,
+              transform: tier.highlight ? "scale(1.04)" : "none",
+              borderColor: tier.highlight ? `${primary}60` : undefined,
+              animationDelay: staggerDelay(i),
             }}>
-              {/* Popular badge */}
+              {/* Popular badge with glow */}
               {tier.badge && (
                 <div style={{
                   position: "absolute", top: -14, left: "50%", transform: "translateX(-50%)",
                   background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
                   color: "#fff", fontSize: 11, fontWeight: 800,
-                  padding: "4px 18px", borderRadius: 100,
+                  padding: "5px 20px", borderRadius: radii.pill,
                   letterSpacing: "0.1em", textTransform: "uppercase", whiteSpace: "nowrap",
+                  boxShadow: shadows.glow(primary, 0.35),
                 }}>
                   {tier.badge}
                 </div>
               )}
 
               <div>
-                {tier.label && <p style={{ color: tier.highlight ? primary : subColor, fontSize: 12, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", margin: "0 0 12px" }}>{tier.label}</p>}
+                {tier.label && <p style={{ color: tier.highlight ? primary : subColor, fontSize: 12, fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.12em", margin: "0 0 14px" }}>{tier.label}</p>}
                 <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
                   {tier.strikePrice && (
                     <span style={{ color: isDark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.25)", fontSize: 20, textDecoration: "line-through", marginRight: 4 }}>{tier.strikePrice}</span>
                   )}
-                  <span style={{ color: textColor, fontSize: 42, fontWeight: 900, lineHeight: 1 }}>{tier.price}</span>
-                  {tier.period && <span style={{ color: subColor, fontSize: 14 }}>{tier.period}</span>}
+                  <span style={{ color: textColor, fontSize: 44, fontWeight: 900, lineHeight: 1 }}>{tier.price}</span>
+                  {tier.period && <span style={{ color: subColor, fontSize: 14, marginLeft: 4 }}>{tier.period}</span>}
                 </div>
-                {tier.description && <p style={{ color: subColor, fontSize: 14, marginTop: 10, lineHeight: 1.6, margin: "10px 0 0" }}>{tier.description}</p>}
+                {tier.description && <p style={{ color: subColor, fontSize: 14, marginTop: 12, lineHeight: 1.6, margin: "12px 0 0" }}>{tier.description}</p>}
               </div>
 
               {tier.buttonText && (
-                <a href={tier.buttonUrl ?? "#"} style={{
+                <a href={tier.buttonUrl ?? "#"} className={tier.highlight ? "hm-pulse-btn" : ""} style={{
                   display: "block", textAlign: "center",
-                  padding: "13px 24px", borderRadius: 12,
+                  padding: "14px 24px", borderRadius: radii.md,
                   background: tier.highlight ? `linear-gradient(135deg, ${primary}, #8b5cf6)` : "transparent",
-                  border: tier.highlight ? "none" : `1px solid ${cardBorder}`,
+                  border: tier.highlight ? "none" : `1px solid ${isDark ? "rgba(255,255,255,0.12)" : "#e2e8f0"}`,
                   color: tier.highlight ? "#fff" : textColor,
                   fontWeight: 800, fontSize: 14, textDecoration: "none",
-                  boxShadow: tier.highlight ? `0 4px 20px ${primary}40` : "none",
+                  boxShadow: tier.highlight ? shadows.glow(primary, 0.35) : "none",
+                  ["--hm-pulse-color" as string]: tier.highlight ? `${primary}44` : "transparent",
                 }}>
                   {tier.buttonText}
                 </a>
               )}
 
-              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 11 }}>
+              <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 12 }}>
                 {(tier.features ?? []).map((f: string, j: number) => (
                   <li key={j} style={{ display: "flex", alignItems: "flex-start", gap: 10, color: isDark ? "rgba(255,255,255,0.7)" : "rgba(15,23,42,0.7)", fontSize: 14, lineHeight: 1.5 }}>
-                    <span style={{ color: tier.highlight ? primary : "#22c55e", fontSize: 16, flexShrink: 0, marginTop: 1 }}>✓</span>
+                    <span style={{ color: tier.highlight ? primary : "#22c55e", fontSize: 15, flexShrink: 0, marginTop: 1 }}>✓</span>
                     {f}
                   </li>
                 ))}
@@ -489,8 +511,8 @@ function PricingBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
           ))}
         </div>
         {props.guarantee && (
-          <p style={{ color: subColor, textAlign: "center", fontSize: 13, marginTop: 32 }}>
-            🔒 {props.guarantee}
+          <p className="hm-animate-in hm-stagger-4" style={{ color: subColor, textAlign: "center", fontSize: 13, marginTop: 36, display: "flex", alignItems: "center", justifyContent: "center", gap: 6 }}>
+            <span style={{ fontSize: 14 }}>🔒</span> {props.guarantee}
           </p>
         )}
       </div>
@@ -571,48 +593,54 @@ function FAQBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme })
 }
 
 // ---------------------------------------------------------------------------
-// CTA — High-urgency conversion section with gradient bg and guarantee
+// CTA — High-impact conversion with animated gradient and glass button
 // ---------------------------------------------------------------------------
 
 function CTABlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? `linear-gradient(135deg, ${primary}ee 0%, #8b5cf6ee 100%)`;
+  const bg = props.bgColor ?? `linear-gradient(135deg, ${primary}ee 0%, #8b5cf6ee 50%, ${primary}dd 100%)`;
   const trustItems: string[] = props.trustItems ?? [];
 
   return (
-    <section style={{ background: bg, padding: "100px 24px", textAlign: "center", position: "relative", overflow: "hidden" }}>
-      {/* Subtle noise overlay */}
+    <section style={{ background: bg, backgroundSize: "200% 200%", padding: "110px 24px", textAlign: "center", position: "relative", overflow: "hidden" }}>
+      {/* Ambient light orbs */}
+      <div style={{ position: "absolute", top: "-30%", right: "-10%", width: "50%", height: "80%", background: "radial-gradient(circle, rgba(255,255,255,0.08) 0%, transparent 60%)", pointerEvents: "none" }} />
+      <div style={{ position: "absolute", bottom: "-20%", left: "-10%", width: "40%", height: "60%", background: "radial-gradient(circle, rgba(255,255,255,0.06) 0%, transparent 60%)", pointerEvents: "none" }} />
+      {/* Noise texture */}
       <div style={{
-        position: "absolute", inset: 0, opacity: 0.05,
+        position: "absolute", inset: 0, opacity: 0.04,
         backgroundImage: "url(\"data:image/svg+xml,%3Csvg width='40' height='40' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)'/%3E%3C/svg%3E\")",
         pointerEvents: "none",
       }} />
-      <div style={{ ...container(720), position: "relative" }}>
-        {props.eyebrow && <p style={{ ...eyebrowStyle("rgba(255,255,255,0.7)"), marginBottom: 16 }}>{props.eyebrow}</p>}
-        <h2 style={{ ...headingStyle("#ffffff", "clamp(2rem,4.5vw,3.25rem)"), marginBottom: 20 }}>
+      <div style={{ ...container(740), position: "relative" }}>
+        {props.eyebrow && <p className="hm-animate-in" style={{ ...eyebrowStyle("rgba(255,255,255,0.75)"), marginBottom: 18 }}>{props.eyebrow}</p>}
+        <h2 className="hm-animate-up" style={{ ...headingStyle("#ffffff", "clamp(2.2rem,5vw,3.5rem)"), marginBottom: 22, letterSpacing: "-0.02em" }}>
           {props.headline || "Ready to get started?"}
         </h2>
         {props.subheadline && (
-          <p style={{ color: "rgba(255,255,255,0.8)", fontSize: 18, lineHeight: 1.7, marginBottom: 40, maxWidth: 560, margin: "0 auto 40px" }}>
+          <p className="hm-animate-in hm-stagger-2" style={{ color: "rgba(255,255,255,0.82)", fontSize: 18, lineHeight: 1.75, marginBottom: 44, maxWidth: 580, margin: "0 auto 44px" }}>
             {props.subheadline}
           </p>
         )}
         {props.buttonText && (
-          <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap", marginBottom: 28 }}>
-            <a href={props.buttonUrl ?? "#"} style={{
+          <div className="hm-animate-in hm-stagger-3" style={{ display: "flex", gap: 16, justifyContent: "center", flexWrap: "wrap", marginBottom: 32 }}>
+            <a href={props.buttonUrl ?? "#"} className="hm-pulse-btn" style={{
               display: "inline-flex", alignItems: "center", gap: 8,
-              padding: "16px 40px", borderRadius: 14,
+              padding: "18px 44px", borderRadius: radii.md,
               background: "#ffffff",
               color: "#0f172a", fontWeight: 900, fontSize: 16, textDecoration: "none",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
+              boxShadow: "0 12px 40px rgba(0,0,0,0.3), 0 4px 12px rgba(0,0,0,0.1)",
+              ["--hm-pulse-color" as string]: "rgba(255,255,255,0.3)",
             }}>
               {props.buttonText} <span style={{ fontSize: 18 }}>→</span>
             </a>
             {props.secondaryButtonText && (
               <a href={props.secondaryButtonUrl ?? "#"} style={{
                 display: "inline-flex", alignItems: "center", gap: 8,
-                padding: "16px 40px", borderRadius: 14,
-                border: "1px solid rgba(255,255,255,0.35)",
+                padding: "18px 44px", borderRadius: radii.md,
+                border: "1px solid rgba(255,255,255,0.3)",
+                background: "rgba(255,255,255,0.08)",
+                backdropFilter: "blur(8px)",
                 color: "#ffffff", fontWeight: 700, fontSize: 16, textDecoration: "none",
               }}>
                 {props.secondaryButtonText}
@@ -621,10 +649,10 @@ function CTABlock({ props, theme }: { props: Block["props"]; theme: SiteTheme })
           </div>
         )}
         {trustItems.length > 0 && (
-          <div style={{ display: "flex", gap: 20, flexWrap: "wrap", justifyContent: "center" }}>
+          <div className="hm-animate-in hm-stagger-4" style={{ display: "flex", gap: 22, flexWrap: "wrap", justifyContent: "center" }}>
             {trustItems.map((item: string, i: number) => (
-              <span key={i} style={{ display: "flex", alignItems: "center", gap: 6, color: "rgba(255,255,255,0.65)", fontSize: 13, fontWeight: 600 }}>
-                <span>✓</span> {item}
+              <span key={i} style={{ display: "flex", alignItems: "center", gap: 6, color: "rgba(255,255,255,0.7)", fontSize: 13, fontWeight: 600 }}>
+                <span style={{ textShadow: "0 0 4px rgba(255,255,255,0.4)" }}>✓</span> {item}
               </span>
             ))}
           </div>
@@ -635,7 +663,7 @@ function CTABlock({ props, theme }: { props: Block["props"]; theme: SiteTheme })
 }
 
 // ---------------------------------------------------------------------------
-// GUARANTEE — Trust shield block
+// GUARANTEE — Glass trust shield with gradient accent
 // ---------------------------------------------------------------------------
 
 function GuaranteeBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
@@ -644,31 +672,31 @@ function GuaranteeBlock({ props, theme }: { props: Block["props"]; theme: SiteTh
   const bg = props.bgColor ?? (isDark ? "#050a14" : "#ffffff");
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.6)" : "rgba(15,23,42,0.6)";
-  const borderColor = isDark ? "rgba(255,255,255,0.08)" : "#e2e8f0";
 
   return (
     <section style={sectionBase(bg, "72px 24px")}>
-      <div style={{ ...container(680) }}>
-        <div style={{
+      <div style={{ ...container(700) }}>
+        <div className="hm-animate-in" style={{
           display: "flex", gap: 28, alignItems: "flex-start",
-          background: isDark ? "rgba(255,255,255,0.03)" : "#f8fafc",
-          border: `2px solid ${borderColor}`,
-          borderRadius: 24, padding: "40px 36px",
+          ...glass.prominent(isDark),
+          borderRadius: radii.xl, padding: "44px 40px",
+          boxShadow: isDark ? shadows.lg : shadows.md,
         }}>
-          <div style={{
-            width: 72, height: 72, borderRadius: "50%", flexShrink: 0,
-            background: `linear-gradient(135deg, ${primary}22, #22c55e22)`,
-            border: `2px solid ${primary}44`,
+          <div className="hm-float" style={{
+            width: 76, height: 76, borderRadius: "50%", flexShrink: 0,
+            background: `linear-gradient(135deg, ${primary}25, #22c55e25)`,
+            border: `2px solid ${primary}40`,
             display: "flex", alignItems: "center", justifyContent: "center",
-            fontSize: 32,
+            fontSize: 34,
+            boxShadow: `0 8px 24px ${primary}20`,
           }}>
             {props.icon ?? "🛡️"}
           </div>
           <div>
-            <h3 style={{ color: textColor, fontSize: 22, fontWeight: 900, marginBottom: 10 }}>
+            <h3 style={{ color: textColor, fontSize: 22, fontWeight: 900, marginBottom: 12 }}>
               {props.headline ?? "100% Money-Back Guarantee"}
             </h3>
-            <p style={{ color: subColor, fontSize: 15, lineHeight: 1.75, margin: 0 }}>
+            <p style={{ color: subColor, fontSize: 15, lineHeight: 1.8, margin: 0 }}>
               {props.body ?? "If you're not completely satisfied within 30 days, we'll refund every penny. No questions asked. No hassle. We stand behind our work 100%."}
             </p>
           </div>
@@ -726,7 +754,7 @@ function TrustBadgesBlock({ props, theme }: { props: Block["props"]; theme: Site
 }
 
 // ---------------------------------------------------------------------------
-// PROCESS — Numbered steps with connector lines
+// PROCESS — Numbered steps with gradient connector lines and glass cards
 // ---------------------------------------------------------------------------
 
 function ProcessBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
@@ -735,40 +763,41 @@ function ProcessBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
   const bg = props.bgColor ?? (isDark ? "#07101f" : "#f8fafc");
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.5)" : "rgba(15,23,42,0.55)";
-  const borderColor = isDark ? "rgba(255,255,255,0.07)" : "#e2e8f0";
   const steps: { icon?: string; title?: string; body?: string }[] = props.steps ?? [];
 
   return (
     <section style={sectionBase(bg)}>
       <div style={container()}>
         {(props.eyebrow || props.title) && (
-          <div style={{ textAlign: "center", marginBottom: 60 }}>
+          <div className="hm-animate-in" style={{ textAlign: "center", marginBottom: 64 }}>
             {props.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
             {props.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
             {props.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 520, margin: "0 auto" }}>{props.subtitle}</p>}
           </div>
         )}
-        <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(steps.length || 3, 4)}, 1fr)`, gap: 20, position: "relative" }}>
+        <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(steps.length || 3, 4)}, 1fr)`, gap: 22, position: "relative" }}>
           {steps.map((step, i) => (
-            <div key={i} style={{ textAlign: "center", padding: "0 12px", position: "relative" }}>
-              {/* Connector line */}
+            <div key={i} className="hm-animate-in" style={{ textAlign: "center", padding: "0 12px", position: "relative", animationDelay: staggerDelay(i) }}>
+              {/* Gradient connector line */}
               {i < steps.length - 1 && (
                 <div style={{
-                  position: "absolute", top: 26, left: "calc(50% + 26px)", right: "calc(-50% + 26px)",
-                  height: 1, background: `linear-gradient(90deg, ${primary}66, ${primary}00)`,
+                  position: "absolute", top: 28, left: "calc(50% + 30px)", right: "calc(-50% + 30px)",
+                  height: 2, background: `linear-gradient(90deg, ${primary}80, #8b5cf660, ${primary}20)`,
+                  borderRadius: 1,
                 }} />
               )}
               <div style={{
-                width: 52, height: 52, borderRadius: "50%", margin: "0 auto 20px",
+                width: 56, height: 56, borderRadius: "50%", margin: "0 auto 22px",
                 background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
                 display: "flex", alignItems: "center", justifyContent: "center",
-                color: "#fff", fontWeight: 900, fontSize: step.icon ? 22 : 18,
-                boxShadow: `0 8px 24px ${primary}44`,
+                color: "#fff", fontWeight: 900, fontSize: step.icon ? 24 : 18,
+                boxShadow: `${shadows.glow(primary, 0.35)}, 0 4px 12px rgba(0,0,0,0.2)`,
+                position: "relative", zIndex: 1,
               }}>
                 {step.icon ?? (i + 1)}
               </div>
               {step.title && <h3 style={{ color: textColor, fontSize: 17, fontWeight: 800, marginBottom: 10 }}>{step.title}</h3>}
-              {step.body && <p style={{ color: subColor, fontSize: 14, lineHeight: 1.7 }}>{step.body}</p>}
+              {step.body && <p style={{ color: subColor, fontSize: 14, lineHeight: 1.75 }}>{step.body}</p>}
             </div>
           ))}
         </div>
@@ -973,7 +1002,7 @@ function VideoBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme 
 }
 
 // ---------------------------------------------------------------------------
-// FORM — Lead capture / contact form
+// FORM — Lead capture with live submission and glass container
 // ---------------------------------------------------------------------------
 
 function FormBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
@@ -990,45 +1019,83 @@ function FormBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
     { name: "phone", type: "tel", placeholder: "Phone (optional)" },
   ];
 
+  const siteId = props.__siteId;
+  const pageId = props.__pageId;
+  const blockId = props.__blockId;
+
+  const handleSubmit = siteId ? `
+    (function(e){
+      e.preventDefault();
+      var btn=e.target.querySelector('button[type=submit]');
+      btn.disabled=true;btn.textContent='Sending...';
+      var data={};
+      e.target.querySelectorAll('input,textarea').forEach(function(el){
+        if(el.name)data[el.name]=el.value;
+      });
+      fetch('/api/sites/'+${JSON.stringify(siteId)}+'/submissions',{
+        method:'POST',headers:{'Content-Type':'application/json'},
+        body:JSON.stringify({data:data,pageId:${JSON.stringify(pageId ?? null)},blockId:${JSON.stringify(blockId ?? null)}})
+      }).then(function(r){return r.json()}).then(function(r){
+        if(r.ok){
+          e.target.reset();btn.textContent='Sent ✓';btn.style.background='#22c55e';
+          setTimeout(function(){btn.textContent=${JSON.stringify(props.buttonText ?? "Submit")};btn.disabled=false;btn.style.background='';},3000);
+        }else{btn.textContent='Try again';btn.disabled=false;}
+      }).catch(function(){btn.textContent='Try again';btn.disabled=false;});
+    })(event)
+  ` : undefined;
+
   return (
     <section style={sectionBase(bg)}>
       <div style={{ ...container(560) }}>
         {(props.eyebrow || props.title) && (
-          <div style={{ textAlign: "center", marginBottom: 40 }}>
+          <div className="hm-animate-in" style={{ textAlign: "center", marginBottom: 40 }}>
             {props.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
             {props.title && <h2 style={{ ...headingStyle(textColor, "clamp(1.5rem,3vw,2rem)"), marginBottom: 12 }}>{props.title}</h2>}
             {props.subtitle && <p style={{ color: subColor, fontSize: 15, lineHeight: 1.7 }}>{props.subtitle}</p>}
           </div>
         )}
-        <div style={{
-          background: isDark ? "rgba(255,255,255,0.025)" : "#ffffff",
-          border: `1px solid ${isDark ? "rgba(255,255,255,0.08)" : "#e2e8f0"}`,
-          borderRadius: 24, padding: "40px 36px",
+        <div className="hm-animate-in hm-stagger-2" style={{
+          ...glass.prominent(isDark),
+          borderRadius: radii.xl, padding: "44px 38px",
+          boxShadow: isDark ? shadows.lg : shadows.md,
         }}>
-          <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            {fields.map((field, i) => (
-              <div key={i}>
-                {field.type === "textarea" ? (
-                  <textarea placeholder={field.placeholder ?? field.name} rows={4}
-                    style={{ width: "100%", background: inputBg, border: `1px solid ${inputBorder}`, borderRadius: 12, padding: "13px 16px", color: textColor, fontSize: 15, outline: "none", resize: "vertical", fontFamily: "inherit" }} />
-                ) : (
-                  <input type={field.type ?? "text"} placeholder={field.placeholder ?? field.name}
-                    style={{ width: "100%", background: inputBg, border: `1px solid ${inputBorder}`, borderRadius: 12, padding: "13px 16px", color: textColor, fontSize: 15, outline: "none" }} />
-                )}
-              </div>
-            ))}
-            <button type="button" style={{
-              width: "100%", padding: "15px", borderRadius: 12, border: "none",
-              background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
-              color: "#fff", fontWeight: 800, fontSize: 16, cursor: "pointer",
-              boxShadow: `0 8px 24px ${primary}40`, marginTop: 8,
-            }}>
-              {props.buttonText ?? "Submit"}
-            </button>
-            {props.privacyText && (
-              <p style={{ color: subColor, fontSize: 12, textAlign: "center", margin: "4px 0 0" }}>{props.privacyText}</p>
-            )}
-          </div>
+          <form onSubmit={handleSubmit ? undefined : (e) => e.preventDefault()}
+            {...(handleSubmit ? { dangerouslySetInnerHTML: undefined } : {})}
+            action="javascript:void(0)"
+            data-hm-submit={handleSubmit ? "true" : undefined}
+          >
+            <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+              {fields.map((field, i) => (
+                <div key={i}>
+                  {field.type === "textarea" ? (
+                    <textarea name={field.name} placeholder={field.placeholder ?? field.name} rows={4} required={field.required}
+                      style={{ width: "100%", background: inputBg, border: `1px solid ${inputBorder}`, borderRadius: radii.md, padding: "14px 16px", color: textColor, fontSize: 15, outline: "none", resize: "vertical", fontFamily: "inherit", transition: "border-color 0.2s" }} />
+                  ) : (
+                    <input type={field.type ?? "text"} name={field.name} placeholder={field.placeholder ?? field.name} required={field.required}
+                      style={{ width: "100%", background: inputBg, border: `1px solid ${inputBorder}`, borderRadius: radii.md, padding: "14px 16px", color: textColor, fontSize: 15, outline: "none", transition: "border-color 0.2s" }} />
+                  )}
+                </div>
+              ))}
+              <button type="submit" className="hm-pulse-btn" style={{
+                width: "100%", padding: "16px", borderRadius: radii.md, border: "none",
+                background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
+                color: "#fff", fontWeight: 800, fontSize: 16, cursor: "pointer",
+                boxShadow: shadows.glow(primary, 0.35), marginTop: 10,
+                transition: "transform 0.2s, box-shadow 0.2s",
+                ["--hm-pulse-color" as string]: `${primary}44`,
+              }}>
+                {props.buttonText ?? "Submit"}
+              </button>
+              {props.privacyText && (
+                <p style={{ color: subColor, fontSize: 12, textAlign: "center", margin: "4px 0 0" }}>{props.privacyText}</p>
+              )}
+            </div>
+          </form>
+          {handleSubmit && (
+            <script dangerouslySetInnerHTML={{ __html: `
+              document.currentScript.previousElementSibling.addEventListener('submit', function(event){${handleSubmit}});
+            ` }} />
+          )}
         </div>
       </div>
     </section>
@@ -1312,6 +1379,10 @@ function FooterBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme
 // Main renderer
 // ---------------------------------------------------------------------------
 
+function AnimationStyles() {
+  return <style dangerouslySetInnerHTML={{ __html: ANIMATION_STYLES }} />;
+}
+
 export default function BlockRenderer({ block, theme, preview, selected, onClick, products, overlayActions }: Props) {
   const t = { ...DEFAULT_THEME, ...theme };
 
@@ -1341,7 +1412,7 @@ export default function BlockRenderer({ block, theme, preview, selected, onClick
     }
   })();
 
-  if (!preview) return rendered;
+  if (!preview) return <><AnimationStyles />{rendered}</>;
 
   return (
     <div
@@ -1354,6 +1425,7 @@ export default function BlockRenderer({ block, theme, preview, selected, onClick
         transition: "outline 0.1s",
       }}
     >
+      <AnimationStyles />
       {rendered}
       {selected && (
         <>
