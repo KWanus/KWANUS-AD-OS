@@ -1,4 +1,5 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
+import { NextResponse } from "next/server";
 
 const isPublicRoute = createRouteMatcher([
   "/",
@@ -54,7 +55,28 @@ const isPublicRoute = createRouteMatcher([
   "/setup(.*)",
 ]);
 
+// Known app hostnames — requests from custom domains get rewritten to /s/[slug]
+const APP_HOSTS = new Set([
+  "localhost",
+  "himalaya.app", "www.himalaya.app",
+  // Add your Vercel deployment URLs here
+]);
+
 export default clerkMiddleware(async (auth, request) => {
+  const hostname = request.headers.get("host")?.split(":")[0] ?? "";
+
+  // Custom domain routing: if the hostname isn't our app, rewrite to /s/ path
+  // This lets users point their domain at our app and have their site served
+  if (hostname && !APP_HOSTS.has(hostname) && !hostname.endsWith(".vercel.app")) {
+    const url = new URL(request.url);
+    // Only rewrite non-API, non-asset requests
+    if (!url.pathname.startsWith("/api/") && !url.pathname.startsWith("/_next/")) {
+      // Rewrite to the custom domain lookup endpoint
+      url.pathname = `/s/_domain/${hostname}${url.pathname === "/" ? "" : url.pathname}`;
+      return NextResponse.rewrite(url);
+    }
+  }
+
   if (!isPublicRoute(request)) {
     await auth.protect({
       unauthenticatedUrl: new URL("/sign-in", request.url).toString(),

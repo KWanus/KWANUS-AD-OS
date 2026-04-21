@@ -63,10 +63,18 @@ export async function GET() {
         if (f) emailFlow = { id: f.id, status: f.status, enrolled: f.enrolled, sent: f.sent };
       }
 
-      // Get lead count for this project's site
+      // Get lead count for this project's site (not all user leads)
       let leadCount = 0;
       if (dep.siteId) {
-        leadCount = await prisma.lead.count({ where: { userId: user.id } }).catch(() => 0);
+        // Count leads whose profileJson.siteId matches this project's site
+        const allLeads = await prisma.lead.findMany({
+          where: { userId: user.id },
+          select: { profileJson: true },
+        }).catch(() => []);
+        leadCount = allLeads.filter(l => {
+          const pj = l.profileJson as Record<string, unknown> | null;
+          return pj?.siteId === dep.siteId;
+        }).length;
       }
 
       // Get revenue from orders on this site

@@ -42,7 +42,7 @@ export default function Home() {
   const [running, setRunning] = useState(false);
   const [stage, setStage] = useState("");
 
-  useEffect(() => { if (isLoaded && !isSignedIn) router.replace("/sign-in"); }, [isLoaded, isSignedIn, router]);
+  // Don't redirect — show landing page for logged-out users
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -90,7 +90,113 @@ export default function Home() {
     } catch { clearInterval(iv); router.push("/himalaya"); }
   }
 
-  if (!isLoaded || !isSignedIn) return null;
+  if (!isLoaded) return null;
+
+  // ═══ PUBLIC LANDING PAGE (logged out) ═══
+  if (!isSignedIn) {
+    return (
+      <main className="min-h-screen bg-[#0c0a08] text-[#f5f0e8]">
+        {/* Nav */}
+        <nav className="flex items-center justify-between px-6 py-4 max-w-6xl mx-auto">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#f5a623] to-[#e07850] flex items-center justify-center">
+              <Mountain className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-lg font-black">Himalaya</span>
+          </div>
+          <Link href="/sign-in"
+            className="px-4 py-2 rounded-xl bg-[#f5a623] text-sm font-bold text-[#0c0a08] hover:opacity-90 transition">
+            Get Started
+          </Link>
+        </nav>
+
+        {/* Hero */}
+        <section className="max-w-3xl mx-auto px-6 pt-16 pb-20 text-center">
+          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-[#f5a623]/10 border border-[#f5a623]/20 mb-6">
+            <Sparkles className="w-3.5 h-3.5 text-[#f5a623]" />
+            <span className="text-[11px] font-bold text-[#f5a623]">AI-Powered Business Builder</span>
+          </div>
+          <h1 className="text-4xl sm:text-5xl font-black leading-tight mb-4">
+            Tell us your goal.<br />
+            <span className="text-[#f5a623]">We build the business.</span>
+          </h1>
+          <p className="text-lg text-[#f5f0e8]/50 max-w-xl mx-auto mb-8">
+            Website, ads, emails, scripts, funnels — built in 60 seconds.
+            You just approve and launch. No skills required.
+          </p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
+            <Link href="/sign-up"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-base font-bold text-[#0c0a08] hover:opacity-90 transition">
+              <Mountain className="w-5 h-5" /> Start Free — Build in 60 Seconds
+            </Link>
+            <Link href="/sign-in"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 rounded-2xl border border-[#f5f0e8]/10 text-base font-bold text-[#f5f0e8]/60 hover:text-[#f5f0e8] hover:border-[#f5f0e8]/20 transition">
+              I have an account <ArrowRight className="w-4 h-4" />
+            </Link>
+          </div>
+        </section>
+
+        {/* What you get */}
+        <section className="max-w-5xl mx-auto px-6 pb-20">
+          <p className="text-[10px] font-black text-[#f5a623] tracking-[0.3em] text-center mb-8">EVERYTHING BUILT FOR YOU</p>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+            {[
+              { icon: Globe, label: "Website", desc: "Conversion-optimized landing page", color: "text-[#e07850]" },
+              { icon: Zap, label: "Ad Creatives", desc: "Images + copy for every platform", color: "text-[#f5a623]" },
+              { icon: Mail, label: "Email Flows", desc: "Welcome, cart recovery, follow-up", color: "text-blue-400" },
+              { icon: Target, label: "Video Scripts", desc: "15-sec TikTok/Reels scripts", color: "text-emerald-400" },
+            ].map(f => (
+              <div key={f.label} className="rounded-2xl border border-[#f5f0e8]/[0.06] bg-[#f5f0e8]/[0.02] p-5">
+                <f.icon className={`w-6 h-6 ${f.color} mb-3`} />
+                <p className="text-sm font-black mb-1">{f.label}</p>
+                <p className="text-xs text-[#f5f0e8]/30">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* How it works */}
+        <section className="max-w-3xl mx-auto px-6 pb-20">
+          <p className="text-[10px] font-black text-[#f5a623] tracking-[0.3em] text-center mb-8">HOW IT WORKS</p>
+          <div className="space-y-4">
+            {[
+              { step: "1", title: "Tell us your goal", desc: "\"I want to make $10k/month coaching\" or paste your website URL. That's all we need." },
+              { step: "2", title: "We build everything", desc: "In 60 seconds: website, ads, emails, scripts, funnels — all customized to your niche." },
+              { step: "3", title: "You approve and launch", desc: "Review what we built. Edit anything you want. Hit approve. You're live." },
+            ].map(s => (
+              <div key={s.step} className="flex gap-4 rounded-2xl border border-[#f5f0e8]/[0.06] bg-[#f5f0e8]/[0.02] p-5">
+                <div className="w-10 h-10 rounded-full bg-[#f5a623]/10 border border-[#f5a623]/20 flex items-center justify-center shrink-0">
+                  <span className="text-sm font-black text-[#f5a623]">{s.step}</span>
+                </div>
+                <div>
+                  <p className="text-sm font-black mb-1">{s.title}</p>
+                  <p className="text-xs text-[#f5f0e8]/40 leading-relaxed">{s.desc}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* CTA */}
+        <section className="max-w-2xl mx-auto px-6 pb-20 text-center">
+          <div className="rounded-2xl border border-[#f5a623]/15 bg-gradient-to-br from-[#f5a623]/[0.06] to-transparent p-8">
+            <h2 className="text-2xl font-black mb-2">Ready to start?</h2>
+            <p className="text-sm text-[#f5f0e8]/40 mb-6">No credit card. No technical skills. Just tell us your goal.</p>
+            <Link href="/sign-up"
+              className="inline-flex items-center gap-2 px-6 py-3.5 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-base font-bold text-[#0c0a08] hover:opacity-90 transition">
+              <Mountain className="w-5 h-5" /> Build My Business Now
+            </Link>
+          </div>
+        </section>
+
+        {/* Footer */}
+        <footer className="border-t border-[#f5f0e8]/[0.06] py-6 text-center">
+          <p className="text-[10px] text-[#f5f0e8]/20">Himalaya — The autonomous business operating system</p>
+        </footer>
+      </main>
+    );
+  }
+
   const name = user?.firstName ?? user?.username ?? "there";
 
   if (running) {
