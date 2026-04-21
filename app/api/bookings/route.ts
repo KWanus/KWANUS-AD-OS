@@ -31,6 +31,51 @@ export async function GET(req: NextRequest) {
   return NextResponse.json({ ok: true, userId: user.id, slots, bookings });
 }
 
+/** PATCH — update availability config */
+export async function PATCH(req: NextRequest) {
+  try {
+    const { userId: clerkId } = await auth();
+    if (!clerkId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const user = await getOrCreateUser();
+    if (!user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+
+    const body = await req.json() as {
+      workDays?: number[];
+      startHour?: number;
+      endHour?: number;
+      slotDuration?: number;
+      timezone?: string;
+      blockedDates?: string[];
+    };
+
+    // Upsert the booking config
+    const existing = await prisma.himalayaFunnelEvent.findFirst({
+      where: { userId: user.id, event: "booking_config" },
+      orderBy: { createdAt: "desc" },
+    });
+
+    if (existing) {
+      await prisma.himalayaFunnelEvent.update({
+        where: { id: existing.id },
+        data: { metadata: { ...((existing.metadata as Record<string, unknown>) ?? {}), ...body } },
+      });
+    } else {
+      await prisma.himalayaFunnelEvent.create({
+        data: {
+          userId: user.id,
+          event: "booking_config",
+          metadata: body,
+        },
+      });
+    }
+
+    return NextResponse.json({ ok: true });
+  } catch (err) {
+    console.error("Booking config error:", err);
+    return NextResponse.json({ ok: false, error: "Failed" }, { status: 500 });
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json() as {

@@ -25,6 +25,7 @@ import {
   Link2,
   ChevronUp,
   ChevronDown,
+  BarChart2,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -852,6 +853,15 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
               <Megaphone className="h-5 w-5 text-[#f5a623]" />
               <p className="mt-3 text-sm font-black text-white">Create Launch Campaign</p>
               <p className="mt-2 text-xs leading-5 text-white/40">Spin this site into your next Google, Facebook, or offer campaign instead of leaving it idle.</p>
+            </Link>
+
+            <Link
+              href={`/websites/${siteId}/analytics`}
+              className="rounded-2xl border border-emerald-500/15 bg-emerald-500/[0.04] p-4 transition hover:border-emerald-500/25 hover:bg-emerald-500/[0.08]"
+            >
+              <BarChart2 className="h-5 w-5 text-emerald-400" />
+              <p className="mt-3 text-sm font-black text-white">View Analytics</p>
+              <p className="mt-2 text-xs leading-5 text-white/40">See views, leads, conversions, and revenue from this site in real time.</p>
             </Link>
 
             <Link
