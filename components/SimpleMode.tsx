@@ -30,6 +30,7 @@ type SimpleData = {
   todaysActions: DayAction[];
   completedToday: number;
   totalToday: number;
+  projectId?: string;
   projectName?: string;
   siteUrl?: string;
   totalRevenue: number;
@@ -62,7 +63,7 @@ export default function SimpleMode() {
       const success = successRes.status === "fulfilled" ? successRes.value : {};
 
       const commands = (cmds.commands ?? []) as { id: string; action: string; details: string; estimatedTime: string; content?: string; href?: string; category?: string }[];
-      const projects = (projs.projects ?? []) as { name: string; site?: { slug: string; published: boolean }; revenue: number; leadCount: number }[];
+      const projects = (projs.projects ?? []) as { id: string; name: string; site?: { slug: string; published: boolean }; revenue: number; leadCount: number }[];
       const streak = cmds.stats?.streak ?? 0;
 
       const project = projects[0];
@@ -108,10 +109,10 @@ export default function SimpleMode() {
         });
       } else if (actions.length === 0) {
         actions.push(
-          { id: "review", title: "Review your ads and scripts", description: "Himalaya already created your ads, scripts, and emails. Open your project and approve them — or edit anything you want to change.", type: "check", href: "/", completed: false, estimatedTime: "3 min", whyItMatters: "Everything is already built for you. Just review, approve, and it goes live.", canSkip: false },
+          { id: "review", title: "Review your ads and scripts", description: "Himalaya already created your ads, scripts, and emails. Open your project and approve them — or edit anything you want to change.", type: "check", href: project?.id ? `/project/${project.id}` : "/", completed: false, estimatedTime: "3 min", whyItMatters: "Everything is already built for you. Just review, approve, and it goes live.", canSkip: false },
           { id: "share", title: "Share your site link with 5 people", description: `Text or DM this link to 5 people you know: ${siteUrl ?? "your site"}. Ask them to check it out.`, type: "share", completed: false, estimatedTime: "5 min", whyItMatters: "Your first visitors come from people you already know. This is the fastest way to get real feedback.", canSkip: false },
-          { id: "post", title: "Record and post your first video", description: "Open your project → Review tab → pick Script #1. Record it on your phone (15 seconds). Post to TikTok + Instagram.", type: "post", href: "/", completed: false, estimatedTime: "10 min", whyItMatters: "One viral video can bring 10,000 visitors. The algorithm rewards you for posting. Start today.", canSkip: true },
-          { id: "check", title: "Check if anyone visited your site", description: "Open your dashboard and look at the 'Views' number. Even 1 view means someone found you.", type: "check", href: "/dashboard", completed: false, estimatedTime: "2 min", whyItMatters: "Knowing your numbers early builds good habits. The best entrepreneurs check daily.", canSkip: true },
+          { id: "post", title: "Record and post your first video", description: "Open your project → Scripts tab → pick Script #1. Record it on your phone (15 seconds). Post to TikTok + Instagram.", type: "post", href: project?.id ? `/project/${project.id}` : "/", completed: false, estimatedTime: "10 min", whyItMatters: "One viral video can bring 10,000 visitors. The algorithm rewards you for posting. Start today.", canSkip: true },
+          { id: "check", title: "Check if anyone visited your site", description: "Open your project and check the analytics. Even 1 view means someone found you.", type: "check", href: project?.id ? `/project/${project.id}` : "/dashboard", completed: false, estimatedTime: "2 min", whyItMatters: "Knowing your numbers early builds good habits. The best entrepreneurs check daily.", canSkip: true },
         );
       }
 
@@ -135,6 +136,7 @@ export default function SimpleMode() {
         todaysActions: actions,
         completedToday: 0,
         totalToday: actions.length,
+        projectId: project?.id,
         projectName: project?.name,
         siteUrl,
         totalRevenue,
@@ -239,6 +241,21 @@ export default function SimpleMode() {
           <span className="text-[9px] text-t-text-faint">$$$</span>
         </div>
       </div>
+
+      {/* Project hub link */}
+      {d.projectId && (
+        <Link href={`/project/${d.projectId}`}
+          className="flex items-center justify-between rounded-xl border border-[#f5a623]/15 bg-[#f5a623]/[0.03] px-4 py-3 mb-4 group hover:border-[#f5a623]/25 transition">
+          <div className="flex items-center gap-2.5">
+            <Mountain className="w-4 h-4 text-[#f5a623]" />
+            <div>
+              <p className="text-xs font-bold">{d.projectName ?? "Your Business"}</p>
+              <p className="text-[10px] text-t-text-faint">Site, ads, scripts, emails — all in one place</p>
+            </div>
+          </div>
+          <ChevronRight className="w-4 h-4 text-[#f5a623]/40 group-hover:text-[#f5a623] transition" />
+        </Link>
+      )}
 
       {/* Stats row */}
       {(d.totalRevenue > 0 || d.totalLeads > 0) && (
