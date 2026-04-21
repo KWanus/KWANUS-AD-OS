@@ -546,7 +546,10 @@ export async function runHimalaya(
             adHooks: generation!.adHooks ?? [],
             adScripts: generation!.adScripts ?? [],
             landingPage: (siteHandoff ?? generation!.websiteBlueprint ?? {}) as object,
-            emailSequences: (emailHandoff ? { welcome: emailHandoff.emails } : {}) as object,
+            emailSequences: (emailHandoff ? {
+              welcome: emailHandoff.emails,
+              // abandonedCart and postPurchase use proven defaults in deployRun when empty
+            } : {}) as object,
             executionChecklist: (generation!.actionRoadmap ? { phases: generation!.actionRoadmap } : {}) as object,
           },
         });

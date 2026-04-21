@@ -67,6 +67,75 @@ export async function POST(req: NextRequest) {
       console.log(`✓ Added ${credits} credits to user ${userId} (new balance: ${updatedUser.credits})`);
     }
 
+    // ── Product purchase via site checkout (Stripe Connect) ──
+    const checkoutSiteId = session.metadata?.siteId;
+    const checkoutProductId = session.metadata?.productId;
+    if (checkoutSiteId && checkoutProductId && session.amount_total && session.amount_total > 0) {
+      const customerEmail = session.customer_details?.email ?? session.customer_email;
+      const customerName = session.customer_details?.name;
+
+      try {
+        const site = await prisma.site.findUnique({ where: { id: checkoutSiteId }, select: { id: true, userId: true } });
+        if (site) {
+          const stripePaymentId = (typeof session.payment_intent === "string" && session.payment_intent) || session.id;
+
+          // Create order (skip if already exists)
+          const existingCheckoutOrder = await prisma.siteOrder.findFirst({ where: { stripePaymentId } });
+          if (!existingCheckoutOrder) {
+            await prisma.siteOrder.create({
+              data: {
+                siteId: checkoutSiteId,
+                productId: checkoutProductId,
+                customerEmail: customerEmail ?? "unknown",
+                customerName: customerName ?? null,
+                amountCents: session.amount_total,
+                currency: session.currency ?? "usd",
+                status: "paid",
+                stripePaymentId,
+              },
+            });
+          }
+
+          // Enroll in post-purchase flow
+          if (customerEmail && site.userId) {
+            await prisma.emailContact.upsert({
+              where: { userId_email: { userId: site.userId, email: customerEmail } },
+              update: { status: "subscribed", tags: { push: "customer" } },
+              create: { userId: site.userId, email: customerEmail, firstName: customerName ?? null, source: "checkout", tags: ["customer", "purchaser"] },
+            }).catch(() => {});
+
+            const postPurchaseFlow = await prisma.emailFlow.findFirst({
+              where: { userId: site.userId, trigger: "purchase", status: "active" },
+              orderBy: { createdAt: "desc" },
+            });
+            if (postPurchaseFlow) {
+              await enrollContact({ flowId: postPurchaseFlow.id, contactEmail: customerEmail, userId: site.userId, contactName: customerName ?? undefined }).catch(() => {});
+            }
+
+            // Fire email trigger
+            const { fireTrigger } = await import("@/lib/email-flows/triggerEngine");
+            fireTrigger({
+              type: "purchase",
+              email: customerEmail,
+              firstName: customerName?.split(" ")[0],
+              userId: site.userId,
+              metadata: { orderId: stripePaymentId, amountCents: session.amount_total, siteId: checkoutSiteId, productId: checkoutProductId },
+            }).catch(() => {});
+          }
+
+          // Notify site owner
+          if (site.userId) {
+            notifyPayment(site.userId, session.amount_total, customerEmail ?? "unknown").catch(() => {});
+            recordWin({ userId: site.userId, niche: "checkout", type: "offer_angle", content: `Sale: $${(session.amount_total / 100).toFixed(2)}`, conversionRate: 100, channel: "stripe" }).catch(() => {});
+          }
+
+          console.log(`✓ Site checkout: $${(session.amount_total / 100).toFixed(2)} from ${customerEmail} for site ${checkoutSiteId}`);
+        }
+      } catch (err) {
+        console.error("Site checkout processing error:", err);
+      }
+    }
+
     // ── Product/service purchase via Himalaya payment link ──
     if (userId && runId && session.amount_total && session.amount_total > 0) {
       const customerEmail = session.customer_details?.email ?? session.customer_email;

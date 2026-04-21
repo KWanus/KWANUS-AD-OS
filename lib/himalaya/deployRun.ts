@@ -707,8 +707,53 @@ export async function deployRun(input: {
         yPos += 150;
       }
 
-      const abandonedEmails = (sequences.abandonedCart ?? []) as typeof welcomeEmails;
-      const postPurchaseEmails = (sequences.postPurchase ?? []) as typeof welcomeEmails;
+      // Use provided sequences or generate proven defaults
+      const businessName = run.title ?? "us";
+      const abandonedEmails = ((sequences.abandonedCart ?? []) as typeof welcomeEmails).length > 0
+        ? (sequences.abandonedCart as typeof welcomeEmails)
+        : [
+            {
+              subject: `Did something go wrong?`,
+              purpose: "Cart recovery — gentle reminder",
+              body: `Hey there,\n\nLooks like you started checking out but didn't finish. No worries — your cart is still saved.\n\nIf you had any questions or ran into an issue, just reply to this email and we'll help.\n\nOtherwise, you can pick up where you left off anytime.\n\n— The ${businessName} Team`,
+              timing: "1 hour after cart abandoned",
+            },
+            {
+              subject: `Your cart is about to expire`,
+              purpose: "Urgency — create time pressure",
+              body: `Hey,\n\nJust a heads up — we can only hold your cart for a limited time.\n\nWe don't want you to miss out. Hundreds of people have already made this same decision and seen real results.\n\nClick below to complete your order before it expires.\n\n— The ${businessName} Team`,
+              timing: "24 hours after cart abandoned",
+            },
+            {
+              subject: `Last chance — this is going away`,
+              purpose: "Final push with social proof",
+              body: `This is the last time we'll bug you about this.\n\nYour cart is about to be cleared. If now isn't the right time, no hard feelings.\n\nBut if the only thing stopping you was a question or concern — reply to this email. We answer every one.\n\nHundreds of people chose to move forward. The ones who did are already seeing results.\n\n— The ${businessName} Team`,
+              timing: "48 hours after cart abandoned",
+            },
+          ];
+
+      const postPurchaseEmails = ((sequences.postPurchase ?? []) as typeof welcomeEmails).length > 0
+        ? (sequences.postPurchase as typeof welcomeEmails)
+        : [
+            {
+              subject: `You're in! Here's what happens next`,
+              purpose: "Order confirmation + set expectations",
+              body: `Welcome! Your order is confirmed.\n\nHere's what happens next:\n1. Check your email for access details (arriving shortly)\n2. Get started with the quick-start guide\n3. Reach out if you need anything — we're here\n\nYou made a great decision. Let's make sure you get the most out of it.\n\n— The ${businessName} Team`,
+              timing: "Immediately after purchase",
+            },
+            {
+              subject: `Quick tip to get results faster`,
+              purpose: "Engagement — prevent buyer's remorse",
+              body: `Hey,\n\nMost people who get the best results do one thing in their first 48 hours: they actually start.\n\nSounds obvious, but the #1 reason people don't see results isn't the product — it's procrastination.\n\nOpen it up today. Spend 15 minutes. You'll be ahead of 90% of people who bought.\n\n— The ${businessName} Team`,
+              timing: "2 days after purchase",
+            },
+            {
+              subject: `How's it going? (Quick check-in)`,
+              purpose: "Retention + upsell opportunity",
+              body: `Hey,\n\nJust checking in — how's everything going?\n\nIf you've hit any snags, reply to this email and we'll sort it out.\n\nIf things are going well, we'd love a quick review. It helps us help more people like you.\n\nAnd if you're ready for the next level — we've got something coming that you'll want to see first.\n\n— The ${businessName} Team`,
+              timing: "7 days after purchase",
+            },
+          ];
 
       const flow = await prisma.emailFlow.create({
         data: {
