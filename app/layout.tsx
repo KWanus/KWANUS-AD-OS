@@ -15,6 +15,7 @@ const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 
 export const metadata: Metadata = {
+  metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://himalaya.app"),
   title: "Himalaya — AI Marketing OS",
   description: "The complete marketing engine: AI-powered funnel builder, ad creatives, email automations, and competitive intelligence. All in one platform.",
 };

@@ -42,7 +42,9 @@ export default function Home() {
   const [running, setRunning] = useState(false);
   const [stage, setStage] = useState("");
 
-  // Don't redirect — show landing page for logged-out users
+  // Don't redirect logged-out users — show landing page
+  // But redirect NEW signed-in users to onboarding if they have no projects
+  const [checkedOnboarding, setCheckedOnboarding] = useState(false);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -60,7 +62,18 @@ export default function Home() {
     } finally { setLoading(false); }
   }, []);
 
-  useEffect(() => { if (isSignedIn) void load(); }, [load, isSignedIn]);
+  useEffect(() => {
+    if (!isSignedIn) return;
+    void load();
+    // Check if new user needs onboarding
+    fetch("/api/settings").then(r => r.json()).then(data => {
+      if (data.ok && !data.settings?.onboardingCompleted) {
+        router.replace("/setup");
+      } else {
+        setCheckedOnboarding(true);
+      }
+    }).catch(() => setCheckedOnboarding(true));
+  }, [load, isSignedIn, router]);
 
   async function deleteProject(projectId: string) {
     if (!confirm("Delete this business? This removes the site, campaign, and emails. This cannot be undone.")) return;
@@ -91,6 +104,7 @@ export default function Home() {
   }
 
   if (!isLoaded) return null;
+  if (isSignedIn && !checkedOnboarding) return null; // Wait for onboarding check
 
   // ═══ PUBLIC LANDING PAGE (logged out) ═══
   if (!isSignedIn) {
