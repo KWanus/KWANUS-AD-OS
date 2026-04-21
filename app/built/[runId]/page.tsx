@@ -69,6 +69,10 @@ export default function BuiltPage({ params }: { params: Promise<{ runId: string 
         emailCount: ((project as Record<string, unknown>)?.emailCount as number) ?? 5,
       });
     }).finally(() => setLoading(false));
+
+    // Timeout: if data doesn't load in 15s, stop loading and show what we have
+    const timeout = setTimeout(() => setLoading(false), 15000);
+    return () => clearTimeout(timeout);
   }, [isSignedIn, runId]);
 
   if (!isLoaded || !isSignedIn) return null;
@@ -85,7 +89,7 @@ export default function BuiltPage({ params }: { params: Promise<{ runId: string 
     );
   }
 
-  const d = data;
+  const d = data ?? { name: "Your Business", niche: "", scriptCount: 0, adCount: 0, emailCount: 0 };
   const STEPS = [
     {
       title: "Your website is live",

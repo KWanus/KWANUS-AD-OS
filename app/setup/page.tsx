@@ -87,8 +87,8 @@ export default function SetupPage() {
       }
     } catch {
       clearInterval(iv);
-      setStage("Done!");
-      setTimeout(() => router.push("/"), 800);
+      setStage("Something went wrong. Redirecting...");
+      setTimeout(() => router.push("/himalaya"), 1500);
     }
   }
 
