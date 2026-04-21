@@ -1,7 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { Block, BlockType } from "./BlockRenderer";
-import { Trash2, Plus, GripVertical } from "lucide-react";
+import { Trash2, Plus, GripVertical, Sparkles } from "lucide-react";
 
 interface Props {
   block: Block;
@@ -132,9 +133,43 @@ function TextProps({ block, onChange }: { block: Block; onChange: (b: Block) => 
 
 function ImageProps({ block, onChange }: { block: Block; onChange: (b: Block) => void }) {
   const set = sp(block, onChange);
+  const [aiLoading, setAiLoading] = useState(false);
+
+  async function handleAiGenerate() {
+    setAiLoading(true);
+    try {
+      const description = (p(block, "alt") as string) || (p(block, "caption") as string) || "professional business image";
+      const res = await fetch("/api/himalaya/tools", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tool: "image_prompt", params: { niche: "business", description } }),
+      });
+      const data = await res.json();
+      if (data.ok && data.result?.url) {
+        set("src", data.result.url);
+      }
+    } catch (err) {
+      console.error("AI image generation failed:", err);
+    } finally {
+      setAiLoading(false);
+    }
+  }
+
   return (
     <div className="space-y-4">
-      <Field label="Image URL"><TextInput value={p(block, "src")} onChange={v => set("src", v)} placeholder="https://..." /></Field>
+      <Field label="Image URL">
+        <div className="space-y-2">
+          <TextInput value={p(block, "src")} onChange={v => set("src", v)} placeholder="https://..." />
+          <button
+            onClick={handleAiGenerate}
+            disabled={aiLoading}
+            className="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-gradient-to-r from-[#f5a623]/20 to-purple-500/20 border border-[#f5a623]/30 hover:border-[#f5a623]/60 text-[#f5a623] text-xs font-bold transition disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            <Sparkles className="w-3.5 h-3.5" />
+            {aiLoading ? "Generating..." : "AI Generate"}
+          </button>
+        </div>
+      </Field>
       <Field label="Alt Text"><TextInput value={p(block, "alt")} onChange={v => set("alt", v)} placeholder="Image description" /></Field>
       <Field label="Caption"><TextInput value={p(block, "caption")} onChange={v => set("caption", v)} placeholder="Optional caption..." /></Field>
       <div className="flex items-center gap-3">

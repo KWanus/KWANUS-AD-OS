@@ -724,46 +724,52 @@ function fallbackSection(section: TemplateSection, context: SectionContext): Sit
 async function generateHero(context: SectionContext) {
   if (!process.env.ANTHROPIC_API_KEY) return fallbackHero(context);
 
-  const prompt = `You are writing only the hero section for a conversion-first website.
-Business: ${context.input.businessName}
-Niche: ${context.input.niche}
-Location: ${context.input.location}
-Mode: ${context.input.mode}
-Audience: ${context.businessProfile.primaryAudience}
-Pains: ${context.businessProfile.pains.join(", ")}
-Desires: ${context.businessProfile.desires.join(", ")}
-Primary CTA: ${context.businessProfile.primaryCta}
-Secondary CTA: ${context.businessProfile.secondaryCta}
-Current issues: ${Object.values(context.analysis.issues).flat().join(" | ") || "none"}
-Reference images: ${context.input.currentSite?.images.join(" | ") || "none"}
+  const prompt = `You are an elite conversion copywriter who has generated $500M+ in client revenue. You charge $50,000 per landing page because your hero sections convert 3-5x industry average.
 
-Rules:
-- Clear outcome
-- Clear audience
-- No vague fluff
-- Local relevance where helpful
-- Execution tier: ${context.input.executionTier}
-- ${context.input.executionTier === "elite" ? "Write like the top-performing operator in this niche. Be sharper, more specific, more credible, and more expensive-feeling without sounding fake." : "Keep the hero clean, strong, and launch-ready."}
-- ${context.input.mode === "scan_improve" ? "Elevate the source site. The result should feel more premium, clearer, and more conversion-focused than the original." : "Make the result feel premium and high-converting from scratch."}
-- Return JSON only
+BUSINESS: ${context.input.businessName}
+NICHE: ${context.input.niche}
+LOCATION: ${context.input.location}
+MODE: ${context.input.mode}
+TARGET AUDIENCE: ${context.businessProfile.primaryAudience}
+THEIR PAIN POINTS: ${context.businessProfile.pains.join(" | ")}
+WHAT THEY WANT: ${context.businessProfile.desires.join(" | ")}
+PRIMARY CTA: ${context.businessProfile.primaryCta}
+SECONDARY CTA: ${context.businessProfile.secondaryCta}
+CURRENT SITE ISSUES: ${Object.values(context.analysis.issues).flat().join(" | ") || "none"}
 
-Return:
+YOUR HERO SECTION RULES (non-negotiable):
+
+HEADLINE:
+- Must name a SPECIFIC outcome, not a vague promise ("Get 3x More Clients in 90 Days" not "Grow Your Business")
+- Must pass the "would I stop scrolling?" test
+- If local: weave in the city/area naturally ("Austin's #1 Rated..." not "The Best...")
+- Never use: "Welcome to", "We are", "Your trusted", "Quality service"
+- ${context.input.executionTier === "elite" ? "Use power framing: specific number, specific timeframe, specific result. The headline alone should make the visitor think 'this is for me.'" : "Clear outcome + clear audience in under 10 words."}
+
+SUBHEADLINE:
+- Explain the MECHANISM — how they get the result
+- Address the #1 objection in advance
+- Create an information gap that makes the CTA irresistible
+- ${context.input.executionTier === "elite" ? "Use the 'even if' or 'without' pattern to neutralize their biggest fear: 'Even if you've tried everything else' or 'Without spending a fortune on ads'" : "Keep it to 1-2 sentences that support the headline."}
+
+CTAs:
+- Primary: action + outcome ("Get My Free Quote" not "Submit" / "Book My Strategy Call" not "Contact Us")
+- Secondary: lower commitment ("See How It Works" / "View Our Results")
+
+${context.input.mode === "scan_improve" ? "You are UPGRADING an existing site. Don't paraphrase — dramatically elevate the positioning, specificity, and conversion power. Make it feel like a $50k agency rewrote it." : ""}
+
+Return ONLY this JSON:
 {
   "headline": "",
   "subheadline": "",
   "primary_cta": "",
   "secondary_cta": ""
-}
-
-ELITE MODE: ${context.input.executionTier === "elite"
-      ? "IDENTITY: High-ticket direct-response expert. OBJECTIVE: 0.5s clarity + 2s punch. Make the benefit visceral."
-      : "IDENTITY: Conversion assistant. OBJECTIVE: Clarity and structure."
-    }`;
+}`;
 
   const response = await anthropic.messages.create({
     model: "claude-sonnet-4-6-20250514",
-    max_tokens: 280,
-    temperature: 0.6,
+    max_tokens: 400,
+    temperature: 0.7,
     messages: [{ role: "user", content: prompt }],
   });
 
@@ -775,13 +781,13 @@ async function generateSection(section: TemplateSection, context: SectionContext
   if (!process.env.ANTHROPIC_API_KEY) return fallbackSection(section, context);
 
   const sectionRules: Record<SectionType, string> = {
-    problem: "Name the pain clearly, make it feel real, and connect it to the cost of not acting.",
-    solution: "Position the business as the clear, trustworthy solution without sounding generic.",
-    benefits: "List specific benefits tied to outcomes, not vague features.",
-    trust: "Use reviews, guarantees, local proof, process clarity, or certifications to reduce doubt.",
-    process: "Make the next steps feel simple, low-friction, and reassuring.",
-    faq: "Answer objections that block conversion in a direct, useful way.",
-    cta: "Create a strong final push with a visible next step and low-friction action.",
+    problem: `AGITATE the pain. Make the reader feel the cost of inaction in their gut. Use specifics: "Every day you wait, you're losing $X to competitors who..." Don't just describe the problem — make them feel the urgency of solving it NOW. Use the "what happens if you don't" frame.`,
+    solution: `Position the business as the ONLY logical choice. Don't say "we help" — say "we built a system that guarantees..." Use mechanism language: proprietary process, proven framework, battle-tested method. Make competitors feel like amateurs by implication, never by name.`,
+    benefits: `Every benefit must follow the "so you can..." pattern. Never list features — list TRANSFORMATIONS. "24/7 support" → "Sleep soundly knowing someone's always watching your back." Use specific numbers where possible. Each benefit should address a different desire from the audience profile.`,
+    trust: `Stack proof types: social proof (reviews with names), authority proof (certifications, years), risk reversal (guarantees), specificity proof (exact numbers served). Every trust element should answer a specific objection. "500+ 5-star reviews" beats "Highly rated". Include the guarantee — it's the #1 conversion lever most sites miss.`,
+    process: `Make it feel like ordering pizza — absurdly simple. 3 steps max. Each step: action verb + what happens + what they feel. "Step 1: Book your free call (takes 30 seconds)" not "Step 1: Contact us." End with what they GET, not what they DO.`,
+    faq: `Every FAQ must address a real buying objection disguised as a question. "How much does it cost?" → answer with value framing. "How long does it take?" → answer with speed + quality assurance. Never be defensive. Be specific, confident, and close with a micro-CTA. The FAQ section should handle the 5 objections that kill 80% of sales.`,
+    cta: `Create genuine urgency without being sleazy. Use deadline, scarcity, or social proof pressure: "Only 3 spots left this month" or "Join 2,847 others who already..." Restate the transformation. CTA button should be action + outcome: "Get My Free Strategy Session" not "Submit".`,
   };
 
   const prompt = `You are writing one section of a conversion-first website.
@@ -820,21 +826,31 @@ Process:
 FAQ:
 { "headline": "", "items": [{ "question": "", "answer": "" }] }`;
 
-  const system = `You are a world-class conversion engineer generating one section of a high-performance landing page.
-Business: ${context.input.businessName} in ${context.input.location}.
-Tier: ${context.input.executionTier.toUpperCase()}.
+  const system = `You are a $50,000/page conversion strategist and direct-response copywriter. You've built landing pages for 8-figure businesses across every niche. Your pages convert 3-5x industry average because you understand buyer psychology at a molecular level.
+
+BUSINESS: ${context.input.businessName} in ${context.input.location}
+TIER: ${context.input.executionTier.toUpperCase()}
 
 ${context.input.executionTier === "elite"
-      ? "ELITE DIRECTIVE: Use razor-sharp specificity. Name the exact pain. Name the exact transformation. Avoid all corporate fluff. Think like a top 1% operator who knows their customers' deepest fears and desires. Make the copy sound expensive and authoritative."
-      : "CORE DIRECTIVE: Use proven best practices. Focus on clarity, structure, and a clear path to action. Ensure the copy is professional and launch-ready."
+      ? `ELITE DIRECTIVE — write like the world's best operator in this exact niche:
+- Every word must earn its place. Cut anything that doesn't move the reader toward action.
+- Use specifics that create instant credibility: exact numbers, named processes, concrete timeframes.
+- Frame every benefit as a transformation: before state → after state.
+- Objection-handle preemptively — weave trust into every section so doubt never builds up.
+- Sound expensive, authoritative, and deeply knowledgeable. Not salesy — inevitable.
+- Use the language your audience actually uses (not corporate speak).`
+      : `CORE DIRECTIVE — professional, clear, conversion-ready:
+- Clean structure, proven patterns, clear calls to action.
+- Focus on clarity over cleverness.
+- Ensure every section has a clear purpose and moves toward conversion.`
     }
 
-Return ONLY valid JSON.`;
+CRITICAL: Return ONLY valid JSON. No markdown, no explanation, no commentary.`;
 
   const response = await anthropic.messages.create({
     model: "claude-sonnet-4-6-20250514",
-    max_tokens: 480,
-    temperature: 0.65,
+    max_tokens: 600,
+    temperature: 0.7,
     system,
     messages: [{ role: "user", content: prompt }],
   });
