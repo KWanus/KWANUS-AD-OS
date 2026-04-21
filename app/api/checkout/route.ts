@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getConnectedAccountId, getPlatformFeePercent } from "@/lib/stripe/getConnectedAccount";
 import Stripe from "stripe";
 
 function getStripe() {
@@ -34,8 +35,12 @@ export async function POST(req: NextRequest) {
             return NextResponse.json({ ok: false, error: "Product does not belong to site" }, { status: 403 });
         }
 
+        // Look up site owner's Stripe Connect account
+        const connectedAccountId = await getConnectedAccountId(site.userId);
+        const platformFee = getPlatformFeePercent();
+
         // Set up Stripe checkout session
-        const session = await stripe.checkout.sessions.create({
+        const sessionConfig: Stripe.Checkout.SessionCreateParams = {
             payment_method_types: ["card"],
             line_items: [
                 {
@@ -58,9 +63,17 @@ export async function POST(req: NextRequest) {
                 siteId,
                 productId,
             },
-            // IMPORTANT: No application_fee_amount means 0% transaction fees for KWANUS
-            // Users keep 100% of their revenue
-        });
+        };
+
+        // If user has connected Stripe, route payment to them with platform fee
+        if (connectedAccountId) {
+            sessionConfig.payment_intent_data = {
+                application_fee_amount: Math.round(product.price * platformFee / 100),
+                transfer_data: { destination: connectedAccountId },
+            };
+        }
+
+        const session = await stripe.checkout.sessions.create(sessionConfig);
 
         return NextResponse.json({ ok: true, url: session.url });
     } catch (err) {

@@ -152,6 +152,8 @@ export default function SettingsPage() {
   const [savingAccounts, setSavingAccounts] = useState(false);
   const [emailDeliveryAlert, setEmailDeliveryAlert] = useState<EmailDeliveryAlert | null>(null);
   const [oauthStatus, setOauthStatus] = useState<OAuthStatusResponse["platforms"] | null>(null);
+  const [stripeStatus, setStripeStatus] = useState<{ connected: boolean; verified?: boolean; accountId?: string; businessName?: string; email?: string } | null>(null);
+  const [stripeLoading, setStripeLoading] = useState(false);
 
   useEffect(() => {
     fetch("/api/settings")
@@ -182,6 +184,13 @@ export default function SettingsPage() {
       .then((r) => r.json() as Promise<OAuthStatusResponse>)
       .then((data) => {
         if (data.ok && data.platforms) setOauthStatus(data.platforms);
+      })
+      .catch(() => {});
+
+    fetch("/api/stripe/connect")
+      .then((r) => r.json())
+      .then((data: any) => {
+        if (data.ok) setStripeStatus(data);
       })
       .catch(() => {});
   }, []);
@@ -238,6 +247,70 @@ export default function SettingsPage() {
     }
   }
 
+  async function stripeConnect() {
+    setStripeLoading(true);
+    try {
+      const res = await fetch("/api/stripe/connect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "create_account" }),
+      });
+      const data = await res.json() as { ok: boolean; url?: string };
+      if (data.ok && data.url) {
+        window.location.href = data.url;
+      } else {
+        toast.error("Failed to start Stripe onboarding");
+      }
+    } catch {
+      toast.error("Network error");
+    } finally {
+      setStripeLoading(false);
+    }
+  }
+
+  async function stripeDisconnect() {
+    setStripeLoading(true);
+    try {
+      const res = await fetch("/api/stripe/connect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "disconnect" }),
+      });
+      const data = await res.json() as { ok: boolean };
+      if (data.ok) {
+        setStripeStatus({ connected: false });
+        toast.success("Stripe disconnected");
+      } else {
+        toast.error("Failed to disconnect");
+      }
+    } catch {
+      toast.error("Network error");
+    } finally {
+      setStripeLoading(false);
+    }
+  }
+
+  async function stripeDashboard() {
+    setStripeLoading(true);
+    try {
+      const res = await fetch("/api/stripe/connect", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "create_login_link" }),
+      });
+      const data = await res.json() as { ok: boolean; url?: string };
+      if (data.ok && data.url) {
+        window.open(data.url, "_blank");
+      } else {
+        toast.error("Failed to open dashboard");
+      }
+    } catch {
+      toast.error("Network error");
+    } finally {
+      setStripeLoading(false);
+    }
+  }
+
   const planCfg = PLAN_CONFIG[settings.plan] ?? PLAN_CONFIG.free;
   const PlanIcon = planCfg.icon;
   const connectedOAuthCount = Object.values(oauthStatus ?? {}).filter((platform) => platform.connected).length;
@@ -261,6 +334,7 @@ export default function SettingsPage() {
     { href: "#pixels", label: "Tracking" },
     { href: "#ad-connections", label: "Ad Connections" },
     { href: "#automation", label: "Automation" },
+    { href: "#payments", label: "Payments" },
     { href: "#accounts", label: "Accounts" },
     { href: "#integrations", label: "Integrations" },
   ];
@@ -731,6 +805,89 @@ export default function SettingsPage() {
               {saving ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Webhook className="w-3.5 h-3.5" />}
               Save Automation Settings
             </button>
+          </div>
+        </Section>
+
+        {/* Stripe Payments */}
+        <Section id="payments" title="Stripe Payments" sub="Accept payments and manage payouts through Stripe Connect">
+          <div className="space-y-4">
+            {stripeStatus === null ? (
+              <div className="flex items-center gap-2 text-white/30 text-xs">
+                <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                Loading payment status...
+              </div>
+            ) : stripeStatus.connected && stripeStatus.verified ? (
+              <>
+                <div className="flex items-center gap-3 p-3 rounded-xl border border-emerald-500/20 bg-emerald-500/5">
+                  <Check className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <div className="flex-1">
+                    <div className="flex items-center gap-2">
+                      <p className="text-xs font-bold text-emerald-400">Connected</p>
+                      <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-emerald-500/20 text-[9px] font-black uppercase tracking-wider text-emerald-400">Verified</span>
+                    </div>
+                    {stripeStatus.businessName && (
+                      <p className="text-[11px] text-white/40 mt-0.5">{stripeStatus.businessName}{stripeStatus.email ? ` — ${stripeStatus.email}` : ""}</p>
+                    )}
+                  </div>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  <button
+                    onClick={() => void stripeDashboard()}
+                    disabled={stripeLoading}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#f5a623]/20 hover:bg-[#f5a623]/30 border border-[#f5a623]/30 text-[#f5a623] text-xs font-bold transition disabled:opacity-40"
+                  >
+                    {stripeLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ExternalLink className="w-3.5 h-3.5" />}
+                    Open Stripe Dashboard
+                  </button>
+                  <button
+                    onClick={() => void stripeDisconnect()}
+                    disabled={stripeLoading}
+                    className="flex items-center gap-2 px-4 py-2 rounded-xl bg-white/[0.05] hover:bg-red-500/10 border border-white/[0.08] hover:border-red-500/20 text-xs font-bold text-white/50 hover:text-red-400 transition disabled:opacity-40"
+                  >
+                    Disconnect
+                  </button>
+                </div>
+              </>
+            ) : stripeStatus.connected && !stripeStatus.verified ? (
+              <>
+                <div className="flex items-center gap-3 p-3 rounded-xl border border-amber-500/20 bg-amber-500/5">
+                  <AlertTriangle className="w-4 h-4 text-amber-400 shrink-0" />
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <p className="text-xs font-bold text-amber-400">Setup Incomplete</p>
+                      <span className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-amber-500/20 text-[9px] font-black uppercase tracking-wider text-amber-400">Action Needed</span>
+                    </div>
+                    <p className="text-[10px] text-white/30 mt-0.5">Stripe requires additional verification before you can accept payments</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => void stripeConnect()}
+                  disabled={stripeLoading}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#f5a623]/20 hover:bg-[#f5a623]/30 border border-[#f5a623]/30 text-[#f5a623] text-xs font-bold transition disabled:opacity-40"
+                >
+                  {stripeLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <ExternalLink className="w-3.5 h-3.5" />}
+                  Complete Setup
+                </button>
+              </>
+            ) : (
+              <>
+                <div className="flex items-center gap-3 p-3 rounded-xl border border-white/[0.06] bg-black/20">
+                  <Zap className="w-4 h-4 text-white/30 shrink-0" />
+                  <div>
+                    <p className="text-xs font-bold text-white/50">Not connected</p>
+                    <p className="text-[10px] text-white/30">Connect Stripe to accept payments and receive payouts for your products and services</p>
+                  </div>
+                </div>
+                <button
+                  onClick={() => void stripeConnect()}
+                  disabled={stripeLoading}
+                  className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#f5a623]/20 hover:bg-[#f5a623]/30 border border-[#f5a623]/30 text-[#f5a623] text-xs font-bold transition disabled:opacity-40"
+                >
+                  {stripeLoading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Zap className="w-3.5 h-3.5" />}
+                  Connect Stripe
+                </button>
+              </>
+            )}
           </div>
         </Section>
 
