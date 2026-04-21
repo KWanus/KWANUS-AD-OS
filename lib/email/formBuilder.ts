@@ -86,7 +86,7 @@ function buildBaseStyles(style: FormStyle): string {
 }
 
 function buildSubmitScript(formId: string, config: FormConfig): string {
-  const endpoint = "/api/email-contacts/form-submit";
+  const endpoint = "/api/forms/submit";
   return `
 <script>
 (function() {

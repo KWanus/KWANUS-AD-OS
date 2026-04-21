@@ -64,9 +64,9 @@ export default function BuiltPage({ params }: { params: Promise<{ runId: string 
         campaignId: ((project as Record<string, unknown>)?.campaign as Record<string, string>)?.id,
         emailFlowId: ((project as Record<string, unknown>)?.emailFlow as Record<string, string>)?.id,
         projectId: project?.id,
-        scriptCount: 10,
+        scriptCount: ((project as Record<string, unknown>)?.scriptCount as number) ?? 10,
         adCount: ((project as Record<string, unknown>)?.campaign as Record<string, number>)?.variationCount ?? 0,
-        emailCount: 5,
+        emailCount: ((project as Record<string, unknown>)?.emailCount as number) ?? 5,
       });
     }).finally(() => setLoading(false));
   }, [isSignedIn, runId]);

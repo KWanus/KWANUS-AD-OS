@@ -200,62 +200,75 @@ export default function Home() {
         {/* ── Your Projects ── */}
         {!loading && projects.length > 0 && (
           <div className="mb-6">
-            <p className="text-xs font-bold text-t-text-faint mb-3">YOUR BUSINESSES</p>
+            <p className="text-[10px] font-black text-t-text-faint tracking-widest mb-3">YOUR BUSINESSES</p>
             <div className="space-y-3">
               {projects.map(project => {
                 const appUrl = typeof window !== "undefined" ? window.location.origin : "";
                 const siteUrl = project.site?.published ? `${appUrl}/s/${project.site.slug}` : null;
                 return (
-                  <div key={project.id} className="rounded-2xl border border-t-border bg-t-bg-raised p-4">
-                    <div className="flex items-start justify-between gap-3 mb-3">
-                      <Link href={`/project/${project.id}`} className="hover:opacity-80 transition">
-                        <h3 className="text-base font-black">{project.name}</h3>
-                        <p className="text-xs text-t-text-faint">{project.niche}</p>
-                      </Link>
+                  <div key={project.id} className="rounded-2xl border border-t-border bg-t-bg-raised overflow-hidden hover:border-[#f5a623]/15 transition group">
+                    {/* Main clickable area → project hub */}
+                    <Link href={`/project/${project.id}`} className="block p-5">
+                      <div className="flex items-start justify-between gap-3 mb-3">
+                        <div>
+                          <h3 className="text-base font-black group-hover:text-[#f5a623] transition">{project.name}</h3>
+                          <p className="text-xs text-t-text-faint">{project.niche}</p>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          {project.revenue > 0 && (
+                            <div className="text-right">
+                              <p className="text-lg font-black text-emerald-400">${project.revenue.toLocaleString()}</p>
+                              <p className="text-[8px] text-emerald-400/60">Revenue</p>
+                            </div>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Status badges */}
+                      <div className="flex flex-wrap gap-1.5 mb-3">
+                        {project.site?.published && <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">Site Live</span>}
+                        {!project.site?.published && project.site && <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded-full bg-[#f5a623]/10 text-[#f5a623] border border-[#f5a623]/20">Site Ready</span>}
+                        {(project.campaign?.variationCount ?? 0) > 0 && <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded-full bg-[#f5a623]/10 text-[#f5a623] border border-[#f5a623]/20">{project.campaign?.variationCount} Ads</span>}
+                        {project.emailFlow && <span className="text-[8px] font-black uppercase px-2 py-0.5 rounded-full bg-blue-400/10 text-blue-400 border border-blue-400/20">Emails Active</span>}
+                      </div>
+
+                      {/* Quick stats row */}
+                      <div className="grid grid-cols-4 gap-2">
+                        {[
+                          { icon: Globe, val: project.site?.views ?? 0, label: "Views", color: "text-[#e07850]" },
+                          { icon: Zap, val: project.campaign?.variationCount ?? 0, label: "Ads", color: "text-[#f5a623]" },
+                          { icon: Mail, val: project.emailFlow?.sent ?? 0, label: "Emails", color: "text-blue-400" },
+                          { icon: Users, val: project.leadCount, label: "Leads", color: "text-emerald-400" },
+                        ].map(m => (
+                          <div key={m.label} className="rounded-lg bg-t-bg-card border border-t-border px-2 py-2 text-center">
+                            <m.icon className={`w-3 h-3 ${m.color} mx-auto mb-0.5`} />
+                            <p className="text-sm font-black">{m.val}</p>
+                            <p className="text-[8px] text-t-text-faint">{m.label}</p>
+                          </div>
+                        ))}
+                      </div>
+                    </Link>
+
+                    {/* Action bar */}
+                    <div className="flex items-center justify-between px-5 py-2.5 border-t border-t-border bg-t-bg-card/50">
                       <div className="flex items-center gap-2">
-                        {project.revenue > 0 && <span className="text-lg font-black text-emerald-500">${project.revenue.toLocaleString()}</span>}
-                        <button onClick={() => void deleteProject(project.id)} title="Delete business"
-                          className="p-1.5 rounded-lg text-t-text-faint hover:text-red-400 hover:bg-red-500/10 transition">
-                          <Trash2 className="w-3.5 h-3.5" />
+                        {siteUrl && (
+                          <a href={siteUrl} target="_blank" rel="noopener noreferrer"
+                            className="flex items-center gap-1 text-[10px] font-bold text-emerald-500 hover:text-emerald-400 transition">
+                            <ExternalLink className="w-3 h-3" /> View Site
+                          </a>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-3">
+                        <Link href={`/project/${project.id}`}
+                          className="flex items-center gap-1 text-[10px] font-bold text-[#f5a623] hover:text-[#e07850] transition">
+                          Open Hub <ArrowRight className="w-3 h-3" />
+                        </Link>
+                        <button onClick={(e) => { e.preventDefault(); void deleteProject(project.id); }} title="Delete business"
+                          className="p-1 rounded text-t-text-faint/30 hover:text-red-400 transition">
+                          <Trash2 className="w-3 h-3" />
                         </button>
                       </div>
-                    </div>
-                    <div className="grid grid-cols-4 gap-2 mb-3">
-                      {[
-                        { icon: Globe, val: project.site?.views ?? 0, label: "Views", color: "text-[#e07850]" },
-                        { icon: Zap, val: project.campaign?.variationCount ?? 0, label: "Ads", color: "text-[#f5a623]" },
-                        { icon: Mail, val: project.emailFlow?.sent ?? 0, label: "Emails", color: "text-blue-400" },
-                        { icon: Users, val: project.leadCount, label: "Leads", color: "text-emerald-400" },
-                      ].map(m => (
-                        <div key={m.label} className="rounded-xl bg-t-bg-card px-3 py-2 text-center">
-                          <m.icon className={`w-3 h-3 ${m.color} mx-auto mb-0.5`} />
-                          <p className="text-sm font-bold">{m.val}</p>
-                          <p className="text-[9px] text-t-text-faint">{m.label}</p>
-                        </div>
-                      ))}
-                    </div>
-                    <div className="flex flex-wrap gap-2">
-                      {siteUrl && (
-                        <a href={siteUrl} target="_blank" rel="noopener noreferrer"
-                          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-500 hover:bg-emerald-500/20 transition">
-                          <ExternalLink className="w-3 h-3" /> Live Site
-                        </a>
-                      )}
-                      {project.site && !project.site.published && (
-                        <Link href={`/websites/${project.site.id}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-t-bg-card border border-t-border text-[10px] font-bold text-t-text-muted hover:text-t-text transition">
-                          <Globe className="w-3 h-3" /> Edit Site
-                        </Link>
-                      )}
-                      {project.campaign && (
-                        <Link href={`/campaigns/${project.campaign.id}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-t-bg-card border border-t-border text-[10px] font-bold text-t-text-muted hover:text-t-text transition">
-                          <Zap className="w-3 h-3" /> Ads
-                        </Link>
-                      )}
-                      {project.emailFlow && (
-                        <Link href={`/emails/flows/${project.emailFlow.id}`} className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-t-bg-card border border-t-border text-[10px] font-bold text-t-text-muted hover:text-t-text transition">
-                          <Mail className="w-3 h-3" /> Emails
-                        </Link>
-                      )}
                     </div>
                   </div>
                 );
@@ -266,14 +279,16 @@ export default function Home() {
 
         {/* ── Empty state ── */}
         {!loading && projects.length === 0 && (
-          <div className="mb-6 rounded-2xl border border-t-border bg-t-bg-raised p-6 text-center">
-            <Mountain className="w-8 h-8 text-t-text-faint mx-auto mb-3" />
-            <h3 className="text-base font-bold mb-1">No businesses yet</h3>
-            <p className="text-sm text-t-text-muted mb-4">Type your goal above and we&apos;ll build your first business in 60 seconds.</p>
+          <div className="mb-6 rounded-2xl border border-[#f5a623]/15 bg-gradient-to-br from-[#f5a623]/[0.04] to-transparent p-8 text-center">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#f5a623] to-[#e07850] flex items-center justify-center mx-auto mb-4 shadow-[0_0_40px_rgba(245,166,35,0.15)]">
+              <Mountain className="w-7 h-7 text-white" />
+            </div>
+            <h3 className="text-lg font-black mb-1">Build your first business</h3>
+            <p className="text-sm text-t-text-muted mb-5">Type your goal above. Himalaya builds your site, ads, emails, and scripts — you just approve.</p>
             <div className="flex flex-wrap gap-2 justify-center">
-              {["Make $10k/month", "Start dropshipping", "Get more clients", "Build an agency"].map(s => (
+              {["Make $10k/month coaching", "Start a dropshipping store", "Get more clients for my agency", "Build an affiliate business"].map(s => (
                 <button key={s} onClick={() => { setGoal(s); inputRef.current?.focus(); }}
-                  className="px-3 py-1.5 rounded-xl border border-t-border text-xs text-t-text-muted hover:text-t-text transition">{s}</button>
+                  className="px-3.5 py-2 rounded-xl border border-t-border bg-t-bg-card text-xs font-bold text-t-text-muted hover:text-[#f5a623] hover:border-[#f5a623]/20 transition">{s}</button>
               ))}
             </div>
           </div>
@@ -282,27 +297,29 @@ export default function Home() {
         {/* ── Commands ── */}
         {commands.length > 0 && !loading && (
           <div className="mb-6">
-            <p className="text-xs font-bold text-t-text-faint mb-2">DO THIS NOW</p>
+            <p className="text-[10px] font-black text-t-text-faint tracking-widest mb-3">DO THIS NOW</p>
             <div className="space-y-2">
               {commands.slice(0, 4).map((cmd, i) => (
-                <div key={cmd.id} className={`rounded-2xl border px-4 py-3.5 ${cmd.priority === 1 ? "border-[#f5a623]/15 bg-[#f5a623]/[0.03]" : "border-t-border"}`}>
+                <div key={cmd.id} className={`rounded-xl border px-4 py-3.5 ${cmd.priority === 1 ? "border-[#f5a623]/15 bg-[#f5a623]/[0.03]" : "border-t-border bg-t-bg-raised"}`}>
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-start gap-3 min-w-0">
-                      <div className={`w-6 h-6 rounded-full border flex items-center justify-center shrink-0 mt-0.5 ${cmd.priority === 1 ? "border-[#f5a623]/30 text-[#f5a623]" : "border-t-border text-t-text-faint"}`}>
+                      <div className={`w-7 h-7 rounded-full border-2 flex items-center justify-center shrink-0 mt-0.5 ${cmd.priority === 1 ? "border-[#f5a623] text-[#f5a623]" : "border-t-border text-t-text-faint"}`}>
                         <span className="text-[10px] font-black">{i + 1}</span>
                       </div>
                       <div className="min-w-0">
                         <p className="text-sm font-bold">{cmd.action}</p>
                         <p className="text-xs text-t-text-faint mt-0.5">{cmd.details}</p>
                         {cmd.content && (
-                          <div className="mt-2 rounded-xl bg-t-bg-card border border-t-border px-3 py-2">
+                          <div className="mt-2 rounded-lg bg-t-bg-card border border-t-border px-3 py-2">
                             <p className="text-xs text-t-text-muted italic">&ldquo;{cmd.content}&rdquo;</p>
                           </div>
                         )}
                       </div>
                     </div>
                     {cmd.href && (
-                      <Link href={cmd.href} className="shrink-0 text-xs font-bold text-[#f5a623]/60 hover:text-[#f5a623] transition">Do it →</Link>
+                      <Link href={cmd.href} className="shrink-0 flex items-center gap-1 px-3 py-1.5 rounded-lg bg-[#f5a623]/10 border border-[#f5a623]/20 text-[10px] font-bold text-[#f5a623] hover:bg-[#f5a623]/20 transition">
+                        Do it <ArrowRight className="w-3 h-3" />
+                      </Link>
                     )}
                   </div>
                 </div>
@@ -313,7 +330,7 @@ export default function Home() {
 
         {/* ── Tools ── */}
         <div className="mb-6">
-          <p className="text-xs font-bold text-t-text-faint mb-2">TOOLS</p>
+          <p className="text-[10px] font-black text-t-text-faint tracking-widest mb-3">QUICK ACCESS</p>
           <div className="grid grid-cols-3 gap-2">
             {[
               { l: "Campaigns", h: "/campaigns", i: Zap, c: "text-[#f5a623]" },
@@ -324,9 +341,9 @@ export default function Home() {
               { l: "Tools", h: "/tools", i: Target, c: "text-pink-400" },
             ].map(item => (
               <Link key={item.l} href={item.h}
-                className="flex items-center gap-2.5 rounded-xl border border-t-border px-3 py-3 hover:bg-t-bg-raised transition group">
+                className="flex items-center gap-2.5 rounded-xl border border-t-border bg-t-bg-raised px-3 py-3 hover:border-[#f5a623]/15 transition group">
                 <item.i className={`w-4 h-4 ${item.c}`} />
-                <span className="text-xs font-semibold text-t-text-muted group-hover:text-t-text transition">{item.l}</span>
+                <span className="text-xs font-bold text-t-text-muted group-hover:text-t-text transition">{item.l}</span>
               </Link>
             ))}
           </div>
