@@ -8,7 +8,7 @@ import {
   ArrowLeft, Globe, Zap, Mail, Users, ExternalLink, Copy, Check,
   Play, DollarSign, Shield, Mountain, Loader2, ChevronDown,
   BarChart2, Settings, ChevronRight, Wrench,
-  Image as ImageIcon, Monitor, Smartphone, Eye,
+  Image as ImageIcon, Monitor, Smartphone, Eye, FileText,
 } from "lucide-react";
 
 type Project = {
@@ -541,8 +541,13 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
                     </Link>
                   </div>
 
-                  {/* Email features */}
+                  {/* Email & lead features */}
                   <div className="grid grid-cols-2 gap-3">
+                    <Link href="/websites/submissions" className="rounded-xl border border-emerald-500/15 bg-emerald-500/[0.03] p-4 hover:border-emerald-500/25 transition">
+                      <FileText className="w-4 h-4 text-emerald-400 mb-2" />
+                      <p className="text-xs font-bold text-emerald-400">Submissions</p>
+                      <p className="text-[10px] text-t-text-faint">Form leads from your site</p>
+                    </Link>
                     <Link href="/emails/contacts" className="rounded-xl border border-t-border bg-t-bg-raised p-4 hover:border-[#f5a623]/15 transition">
                       <Users className="w-4 h-4 text-t-text-faint mb-2" />
                       <p className="text-xs font-bold">Contacts</p>
@@ -552,11 +557,6 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
                       <Mail className="w-4 h-4 text-t-text-faint mb-2" />
                       <p className="text-xs font-bold">Broadcasts</p>
                       <p className="text-[10px] text-t-text-faint">One-off sends</p>
-                    </Link>
-                    <Link href="/emails/templates" className="rounded-xl border border-t-border bg-t-bg-raised p-4 hover:border-[#f5a623]/15 transition">
-                      <ImageIcon className="w-4 h-4 text-t-text-faint mb-2" />
-                      <p className="text-xs font-bold">Templates</p>
-                      <p className="text-[10px] text-t-text-faint">Pre-built flows</p>
                     </Link>
                     <Link href="/emails/analytics" className="rounded-xl border border-t-border bg-t-bg-raised p-4 hover:border-[#f5a623]/15 transition">
                       <BarChart2 className="w-4 h-4 text-t-text-faint mb-2" />

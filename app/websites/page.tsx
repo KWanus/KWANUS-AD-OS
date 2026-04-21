@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Plus, Globe, Loader2, Settings, ExternalLink, Sparkles, Copy, Check, BotMessageSquare, Radar, Wand2, Megaphone, Trash2 } from "lucide-react";
+import { Plus, Globe, Loader2, Settings, ExternalLink, Sparkles, Copy, Check, BotMessageSquare, Radar, Wand2, Megaphone, Trash2, Users } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -947,6 +947,10 @@ export default function WebsitesDashboard() {
                                             >
                                                 <Trash2 className="w-4 h-4" />
                                             </button>
+                                            <Link href={`/websites/submissions`}
+                                                className="p-2 rounded-xl bg-white/[0.04] hover:bg-emerald-500/10 border border-white/[0.06] hover:border-emerald-500/20 text-white/40 hover:text-emerald-400 transition" title="View leads">
+                                                <Users className="w-4 h-4" />
+                                            </Link>
                                             <Link href={`/websites/${site.id}`}
                                                 className="p-2 rounded-xl bg-white/[0.04] hover:bg-white/[0.09] border border-white/[0.06] text-white/40 hover:text-white transition">
                                                 <Settings className="w-4 h-4" />

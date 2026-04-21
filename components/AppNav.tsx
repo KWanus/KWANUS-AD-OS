@@ -34,11 +34,11 @@ const MORE = [
   { href: "/inbox",      label: "Inbox",      icon: MessageSquareText },
   { href: "/analytics",  label: "Analytics",  icon: BarChart3 },
   { href: "/revenue",    label: "Revenue",    icon: TrendingUp },
+  { href: "/websites/submissions", label: "Submissions", icon: FileText },
   { href: "/tools",      label: "Tools",      icon: Wrench },
   { href: "/leads",      label: "Leads",      icon: TrendingUp },
   { href: "/guide",      label: "Guide",      icon: Briefcase },
   { href: "/my-system",  label: "My System",  icon: Settings },
-  { href: "/notifications", label: "Notifications", icon: MessageSquareText },
 ];
 
 export default function AppNav() {
