@@ -223,6 +223,99 @@ export default async function PublicSitePage({
           document.addEventListener('focus',function(e){if(e.target&&(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'))signal('form_start',{field:e.target.name||e.target.type});},true);
         })();
       `}</Script>
+      {/* ── Comprehensive Analytics Tracking ── */}
+      <Script id="himalaya-analytics" strategy="afterInteractive">{`
+        (function(){
+          var SITE_ID='${site.id}';
+          var ENDPOINT='/api/analytics/track';
+          var vid=localStorage.getItem('_hv_id');
+          if(!vid){vid=crypto.randomUUID?crypto.randomUUID():(Math.random().toString(36).slice(2)+Math.random().toString(36).slice(2));localStorage.setItem('_hv_id',vid)}
+
+          function getUTM(){
+            var p=new URLSearchParams(location.search);
+            var u={};
+            ['utm_source','utm_medium','utm_campaign','utm_term','utm_content'].forEach(function(k){var v=p.get(k);if(v)u[k]=v});
+            return u;
+          }
+          var utm=getUTM();
+
+          function track(event,props){
+            var payload=JSON.stringify({siteId:SITE_ID,visitorId:vid,event:event,properties:Object.assign({},props||{},utm,{url:location.href,timestamp:Date.now()})});
+            try{navigator.sendBeacon(ENDPOINT,new Blob([payload],{type:'application/json'}))}catch(e){fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:payload,keepalive:true}).catch(function(){})}
+          }
+
+          // 1. Page view
+          track('page_view',{path:location.pathname,referrer:document.referrer,title:document.title});
+
+          // 2. Scroll depth
+          var scrollMarkers={25:false,50:false,75:false,100:false};
+          function checkScroll(){
+            var h=Math.max(document.body.scrollHeight,document.documentElement.scrollHeight)-window.innerHeight;
+            if(h<=0)return;
+            var pct=Math.round((window.scrollY/h)*100);
+            [25,50,75,100].forEach(function(m){if(pct>=m&&!scrollMarkers[m]){scrollMarkers[m]=true;track('scroll_depth',{depth:m})}});
+          }
+          window.addEventListener('scroll',checkScroll,{passive:true});
+
+          // 3. CTA clicks
+          document.addEventListener('click',function(e){
+            var el=e.target;while(el&&el!==document){
+              if(el.hasAttribute&&el.hasAttribute('data-cta')||(el.className&&typeof el.className==='string'&&el.className.indexOf('cta')!==-1)){
+                track('cta_click',{text:(el.textContent||'').trim().slice(0,100),tag:el.tagName,href:el.href||''});return;
+              }
+              // 5. Checkout clicks
+              if(el.tagName==='A'&&el.href){
+                var lh=el.href.toLowerCase();
+                if(lh.indexOf('checkout')!==-1||lh.indexOf('buy')!==-1||lh.indexOf('stripe')!==-1){
+                  track('checkout_click',{href:el.href,text:(el.textContent||'').trim().slice(0,100)});return;
+                }
+                // 7. Outbound clicks
+                if(el.hostname&&el.hostname!==location.hostname){
+                  track('outbound_click',{href:el.href,text:(el.textContent||'').trim().slice(0,100)});return;
+                }
+              }
+              el=el.parentElement;
+            }
+          },true);
+
+          // 4. Form interactions
+          var formStarted={};
+          document.addEventListener('focus',function(e){
+            var t=e.target;
+            if(t&&(t.tagName==='INPUT'||t.tagName==='TEXTAREA'||t.tagName==='SELECT')){
+              var f=t.closest('form');var fk=f?f.id||f.action||'form':'field';
+              if(!formStarted[fk]){formStarted[fk]=true;track('form_start',{form:fk,field:t.name||t.type})}
+            }
+          },true);
+          document.addEventListener('submit',function(e){
+            if(e.target&&e.target.tagName==='FORM'){
+              track('form_submit',{form:e.target.id||e.target.action||'form'});
+            }
+          },true);
+
+          // 6. Time on page
+          var timeMarkers=[30,60,120,300];
+          timeMarkers.forEach(function(s){
+            setTimeout(function(){track('time_on_page',{seconds:s})},s*1000);
+          });
+
+          // 8. Video plays
+          document.addEventListener('play',function(e){
+            if(e.target&&e.target.tagName==='VIDEO'){
+              track('video_play',{src:(e.target.currentSrc||e.target.src||'').slice(0,200),duration:e.target.duration||0});
+            }
+          },true);
+
+          // Page unload — send final time
+          window.addEventListener('visibilitychange',function(){
+            if(document.visibilityState==='hidden'){
+              var elapsed=Math.round((Date.now()-performance.timing.navigationStart)/1000);
+              var payload=JSON.stringify({siteId:SITE_ID,visitorId:vid,event:'page_leave',properties:Object.assign({},{path:location.pathname,timeSpent:elapsed},utm)});
+              navigator.sendBeacon(ENDPOINT,new Blob([payload],{type:'application/json'}));
+            }
+          });
+        })();
+      `}</Script>
     </>
   );
 }

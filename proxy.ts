@@ -32,6 +32,8 @@ const isPublicRoute = createRouteMatcher([
   "/book(.*)",
   "/api/compliance/unsubscribe(.*)",
   "/api/intent(.*)",
+  "/api/analytics/track(.*)",
+  "/api/discounts(.*)",
   "/api/mcp(.*)",
   "/api/oauth/callback(.*)",
   "/api/debug(.*)",
