@@ -602,12 +602,63 @@ function ProductsProps({ block, onChange }: { block: Block; onChange: (b: Block)
   );
 }
 
+function VideoHeroProps({ block, onChange }: { block: Block; onChange: (b: Block) => void }) {
+  const set = sp(block, onChange);
+  return (
+    <div className="space-y-4">
+      <Field label="Social Proof"><TextInput value={p(block, "socialProofText")} onChange={v => set("socialProofText", v)} placeholder="Over 10,000 students enrolled" /></Field>
+      <Field label="Eyebrow"><TextInput value={p(block, "eyebrow")} onChange={v => set("eyebrow", v)} placeholder="Optional label" /></Field>
+      <Field label="Headline"><TextInput value={p(block, "headline")} onChange={v => set("headline", v)} placeholder="See How It Works" multiline /></Field>
+      <Field label="Subheadline"><TextInput value={p(block, "subheadline")} onChange={v => set("subheadline", v)} placeholder="Supporting text..." multiline /></Field>
+      <Field label="Video URL"><TextInput value={p(block, "videoUrl")} onChange={v => set("videoUrl", v)} placeholder="https://youtube.com/watch?v=..." /></Field>
+      <Field label="Layout">
+        <select value={p(block, "layout", "side")} onChange={e => set("layout", e.target.value)}
+          className="w-full bg-white/[0.05] border border-white/[0.1] rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none">
+          <option value="side">Side by Side</option>
+          <option value="stacked">Stacked</option>
+        </select>
+      </Field>
+      <Field label="Button Text"><TextInput value={p(block, "buttonText")} onChange={v => set("buttonText", v)} placeholder="Join Free" /></Field>
+      <Field label="Button URL"><TextInput value={p(block, "buttonUrl")} onChange={v => set("buttonUrl", v)} placeholder="https://..." /></Field>
+      <Field label="Background Color"><TextInput value={p(block, "bgColor")} onChange={v => set("bgColor", v)} placeholder="Auto (gradient)" /></Field>
+    </div>
+  );
+}
+
+function CountdownProps({ block, onChange }: { block: Block; onChange: (b: Block) => void }) {
+  const set = sp(block, onChange);
+  const targetDate = p(block, "targetDate", "");
+  const localDate = targetDate ? new Date(targetDate as string).toISOString().slice(0, 16) : "";
+
+  return (
+    <div className="space-y-4">
+      <Field label="Eyebrow"><TextInput value={p(block, "eyebrow")} onChange={v => set("eyebrow", v)} placeholder="Doors closing soon" /></Field>
+      <Field label="Headline"><TextInput value={p(block, "headline")} onChange={v => set("headline", v)} placeholder="Don't Miss Your Chance" multiline /></Field>
+      <Field label="Subheadline"><TextInput value={p(block, "subheadline")} onChange={v => set("subheadline", v)} placeholder="This offer expires..." multiline /></Field>
+      <Field label="Target Date & Time">
+        <input type="datetime-local" value={localDate} onChange={e => set("targetDate", new Date(e.target.value).toISOString())}
+          className="w-full bg-white/[0.05] border border-white/[0.1] rounded-xl px-3 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500/50 transition" />
+      </Field>
+      <Field label="Button Text"><TextInput value={p(block, "buttonText")} onChange={v => set("buttonText", v)} placeholder="Claim Your Spot →" /></Field>
+      <Field label="Button URL"><TextInput value={p(block, "buttonUrl")} onChange={v => set("buttonUrl", v)} placeholder="https://..." /></Field>
+      <Field label="Compact Mode">
+        <label className="flex items-center gap-2 text-sm text-white/50 cursor-pointer">
+          <input type="checkbox" checked={p(block, "compact", false)} onChange={e => set("compact", e.target.checked)} className="rounded" />
+          Compact (smaller, fits as a bar)
+        </label>
+      </Field>
+      <Field label="Background Color"><TextInput value={p(block, "bgColor")} onChange={v => set("bgColor", v)} placeholder="Auto (gradient)" /></Field>
+    </div>
+  );
+}
+
 function GenericProps() {
   return <p className="text-sm text-white/30">Select a block to edit its properties.</p>;
 }
 
 const BLOCK_LABELS: Record<BlockType, string> = {
   hero: "Hero Section",
+  video_hero: "Video Hero",
   features: "Features Grid",
   text: "Text Block",
   image: "Image",
@@ -627,6 +678,7 @@ const BLOCK_LABELS: Record<BlockType, string> = {
   process: "Process Steps",
   before_after: "Before / After",
   urgency: "Urgency Bar",
+  countdown: "Countdown Timer",
 };
 
 export default function BlockPropsEditor({ block, onChange, onDelete, siteId }: Props) {
@@ -635,6 +687,8 @@ export default function BlockPropsEditor({ block, onChange, onDelete, siteId }: 
   function renderEditor() {
     switch (block.type) {
       case "hero": return <HeroProps block={block} onChange={onChange} />;
+      case "video_hero": return <VideoHeroProps block={block} onChange={onChange} />;
+      case "countdown": return <CountdownProps block={block} onChange={onChange} />;
       case "features": return <FeaturesProps block={block} onChange={onChange} />;
       case "text": return <TextProps block={block} onChange={onChange} />;
       case "image": return <ImageProps block={block} onChange={onChange} siteId={siteId} />;

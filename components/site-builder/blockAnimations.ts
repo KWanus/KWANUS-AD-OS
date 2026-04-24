@@ -44,6 +44,15 @@ export const ANIMATION_STYLES = `
   0%, 100% { opacity: 0.5; }
   50% { opacity: 1; }
 }
+@keyframes hm-tick {
+  0% { transform: scale(1); }
+  15% { transform: scale(1.12); }
+  30% { transform: scale(1); }
+}
+@keyframes hm-urgentPulse {
+  0%, 100% { box-shadow: 0 0 0 0 var(--hm-urgent-color, rgba(239,68,68,0.5)); }
+  50% { box-shadow: 0 0 0 8px var(--hm-urgent-color, rgba(239,68,68,0)); }
+}
 @keyframes hm-borderRotate {
   0% { --angle: 0deg; }
   100% { --angle: 360deg; }
@@ -63,6 +72,8 @@ export const ANIMATION_STYLES = `
 .hm-shimmer-bg { animation: hm-shimmer 3s linear infinite; background-size: 200% 100%; }
 .hm-float { animation: hm-float 4s ease-in-out infinite; }
 .hm-gradient-text { background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.hm-tick { animation: hm-tick 1s ease-in-out infinite; }
+.hm-urgent-pulse { animation: hm-urgentPulse 2s infinite; }
 `;
 
 export function staggerDelay(index: number, base = 0.1): string {

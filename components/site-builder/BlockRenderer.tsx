@@ -9,6 +9,7 @@ import { ANIMATION_STYLES, staggerDelay } from "./blockAnimations";
 
 export type BlockType =
   | "hero"
+  | "video_hero"
   | "features"
   | "text"
   | "image"
@@ -27,7 +28,8 @@ export type BlockType =
   | "trust_badges"
   | "process"
   | "before_after"
-  | "urgency";
+  | "urgency"
+  | "countdown";
 
 export interface Block {
   id: string;
@@ -187,6 +189,255 @@ function HeroBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
           </div>
         )}
       </div>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// VIDEO HERO — Full hero with embedded video, Gadzhi-style
+// ---------------------------------------------------------------------------
+
+function VideoHeroBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
+  const isDark = theme.mode !== "light";
+  const primary = px(theme.primaryColor!);
+  const meshBg = isDark
+    ? `${gradients.mesh(primary)}, radial-gradient(ellipse 80% 60% at 50% -10%, ${primary}22 0%, transparent 60%), #050a14`
+    : `${gradients.mesh(primary)}, radial-gradient(ellipse 80% 60% at 50% -10%, ${primary}15 0%, transparent 60%), #ffffff`;
+  const bg = props.bgColor ?? meshBg;
+  const textColor = isDark ? "#ffffff" : "#0f172a";
+  const subColor = isDark ? "rgba(255,255,255,0.55)" : "rgba(15,23,42,0.6)";
+  const layout = props.layout ?? "side"; // "side" = text+video side by side, "stacked" = text above video
+  const trustItems: string[] = props.trustItems ?? [];
+
+  function getEmbedUrl(url: string) {
+    try {
+      if (url.includes("youtube.com") || url.includes("youtu.be")) {
+        const id = url.includes("youtu.be")
+          ? url.split("youtu.be/")[1]?.split("?")[0]
+          : new URL(url).searchParams.get("v");
+        return `https://www.youtube.com/embed/${id}?rel=0&modestbranding=1`;
+      }
+      if (url.includes("vimeo.com")) {
+        const id = url.split("vimeo.com/")[1]?.split("?")[0];
+        return `https://player.vimeo.com/video/${id}`;
+      }
+      return url;
+    } catch { return url; }
+  }
+
+  const videoEl = props.videoUrl ? (
+    <div className="hm-animate-scale hm-stagger-3" style={{
+      position: "relative", paddingTop: "56.25%", borderRadius: radii.lg,
+      overflow: "hidden", boxShadow: `0 32px 80px rgba(0,0,0,0.5), ${shadows.glow(primary, 0.15)}`,
+      border: `1px solid ${isDark ? "rgba(255,255,255,0.08)" : "rgba(0,0,0,0.06)"}`,
+    }}>
+      <iframe src={getEmbedUrl(props.videoUrl as string)}
+        style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowFullScreen />
+    </div>
+  ) : (
+    <div className="hm-animate-scale hm-stagger-3" style={{
+      width: "100%", aspectRatio: "16/9",
+      background: isDark ? "rgba(255,255,255,0.04)" : "#f1f5f9",
+      borderRadius: radii.lg, display: "flex", alignItems: "center", justifyContent: "center",
+      border: `2px dashed ${isDark ? "rgba(255,255,255,0.1)" : "#e2e8f0"}`,
+    }}>
+      <div style={{ textAlign: "center" }}>
+        <div style={{ fontSize: 48, marginBottom: 8 }}>▶</div>
+        <span style={{ color: isDark ? "rgba(255,255,255,0.3)" : "rgba(0,0,0,0.35)", fontSize: 14 }}>Add a video URL</span>
+      </div>
+    </div>
+  );
+
+  return (
+    <section style={{ ...sectionBase(bg, "100px 24px"), position: "relative", overflow: "hidden" }}>
+      {/* Ambient orbs */}
+      <div style={{ position: "absolute", top: "-15%", left: "5%", width: "35%", height: "50%", background: `radial-gradient(circle, ${primary}15 0%, transparent 70%)`, pointerEvents: "none", filter: "blur(60px)" }} />
+      <div style={{ position: "absolute", bottom: "-10%", right: "10%", width: "30%", height: "45%", background: "radial-gradient(circle, #8b5cf612 0%, transparent 70%)", pointerEvents: "none", filter: "blur(60px)" }} />
+
+      <div style={{
+        ...container(1200), display: "flex",
+        flexDirection: layout === "side" ? "row" : "column",
+        alignItems: layout === "side" ? "center" : "center",
+        gap: layout === "side" ? 64 : 48,
+        position: "relative",
+      }}>
+        {/* Text side */}
+        <div style={{ flex: layout === "side" ? "0 0 45%" : "none", maxWidth: layout === "side" ? "45%" : 780, textAlign: layout === "side" ? "left" : "center" }}>
+          {props.socialProofText && (
+            <div className="hm-animate-in" style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              ...glass.subtle(isDark),
+              borderRadius: radii.pill, padding: "8px 18px", marginBottom: 28,
+            }}>
+              <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#22c55e", display: "inline-block", boxShadow: "0 0 8px #22c55e, 0 0 16px #22c55e44" }} />
+              <span style={{ color: isDark ? "rgba(255,255,255,0.75)" : "rgba(0,0,0,0.6)", fontSize: 12, fontWeight: 600 }}>{props.socialProofText}</span>
+            </div>
+          )}
+
+          {props.eyebrow && (
+            <p className="hm-animate-in hm-stagger-1" style={{ ...eyebrowStyle(primary), marginBottom: 16 }}>{props.eyebrow}</p>
+          )}
+
+          <h1 className="hm-animate-up" style={{
+            ...headingStyle(textColor, "clamp(2rem,4.5vw,3.4rem)"),
+            marginBottom: 20,
+            background: `linear-gradient(135deg, ${textColor} 30%, ${primary} 100%)`,
+            backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent",
+            letterSpacing: "-0.02em",
+          }}>
+            {props.headline || "Watch How It Works"}
+          </h1>
+
+          {props.subheadline && (
+            <p className="hm-animate-in hm-stagger-2" style={{
+              color: subColor, fontSize: "clamp(1rem,1.8vw,1.15rem)", lineHeight: 1.75, marginBottom: 32,
+            }}>
+              {props.subheadline}
+            </p>
+          )}
+
+          {props.buttonText && (
+            <div className="hm-animate-in hm-stagger-3" style={{ display: "flex", gap: 16, flexWrap: "wrap", justifyContent: layout === "side" ? "flex-start" : "center", marginBottom: trustItems.length ? 32 : 0 }}>
+              <a href={props.buttonUrl ?? "#"} className="hm-pulse-btn" style={{
+                display: "inline-flex", alignItems: "center", gap: 8,
+                padding: "16px 38px", borderRadius: radii.md,
+                background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
+                boxShadow: `0 8px 32px ${primary}55, 0 2px 8px rgba(0,0,0,0.2)`,
+                color: "#fff", fontWeight: 800, fontSize: 15, textDecoration: "none",
+                ["--hm-pulse-color" as string]: `${primary}55`,
+              }}>
+                {props.buttonText} <span style={{ fontSize: 16 }}>→</span>
+              </a>
+            </div>
+          )}
+
+          {trustItems.length > 0 && (
+            <div style={{ display: "flex", gap: 20, flexWrap: "wrap", justifyContent: layout === "side" ? "flex-start" : "center" }}>
+              {trustItems.map((item: string, i: number) => (
+                <span key={i} className="hm-animate-in" style={{ display: "flex", alignItems: "center", gap: 7, color: isDark ? "rgba(255,255,255,0.45)" : "rgba(0,0,0,0.45)", fontSize: 13, fontWeight: 600, animationDelay: staggerDelay(i + 4) }}>
+                  <span style={{ color: "#22c55e", textShadow: "0 0 4px #22c55e66" }}>✓</span> {item}
+                </span>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Video side */}
+        <div style={{ flex: layout === "side" ? 1 : "none", width: layout === "side" ? undefined : "100%", maxWidth: layout === "stacked" ? 900 : undefined, margin: layout === "stacked" ? "0 auto" : undefined }}>
+          {videoEl}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// COUNTDOWN — Live countdown timer with glassmorphism digit cards
+// ---------------------------------------------------------------------------
+
+function CountdownBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
+  const isDark = theme.mode !== "light";
+  const primary = px(theme.primaryColor!);
+  const bg = props.bgColor ?? (isDark
+    ? `${gradients.aurora(primary)}, #050a14`
+    : `linear-gradient(135deg, #f8fafc, #e2e8f0)`);
+  const textColor = isDark ? "#ffffff" : "#0f172a";
+  const subColor = isDark ? "rgba(255,255,255,0.5)" : "rgba(15,23,42,0.55)";
+  const targetDate = props.targetDate ?? "";
+  const compact = props.compact ?? false;
+
+  const countdownScript = `
+(function(){
+  var el=document.getElementById('hm-cd-${props.__blockId ?? "timer"}');
+  if(!el)return;
+  var target=new Date('${targetDate}').getTime();
+  function update(){
+    var now=Date.now(),diff=Math.max(0,target-now);
+    var d=Math.floor(diff/86400000),h=Math.floor((diff%86400000)/3600000),
+        m=Math.floor((diff%3600000)/60000),s=Math.floor((diff%60000)/1000);
+    var spans=el.querySelectorAll('[data-cd]');
+    if(spans[0])spans[0].textContent=String(d).padStart(2,'0');
+    if(spans[1])spans[1].textContent=String(h).padStart(2,'0');
+    if(spans[2])spans[2].textContent=String(m).padStart(2,'0');
+    if(spans[3]){spans[3].textContent=String(s).padStart(2,'0');spans[3].style.animation='none';void spans[3].offsetWidth;spans[3].style.animation='hm-tick 1s ease-in-out';}
+    if(diff<=0){clearInterval(tid);el.querySelectorAll('[data-cd]').forEach(function(s){s.textContent='00'});}
+  }
+  var tid=setInterval(update,1000);update();
+})();`;
+
+  const units = ["Days", "Hours", "Minutes", "Seconds"];
+  const placeholders = ["00", "00", "00", "00"];
+
+  const digitCardStyle = (i: number): React.CSSProperties => ({
+    display: "flex", flexDirection: "column", alignItems: "center", gap: compact ? 4 : 8,
+    animationDelay: staggerDelay(i + 1),
+  });
+
+  const digitStyle: React.CSSProperties = {
+    ...glass.prominent(isDark),
+    borderRadius: radii.md,
+    padding: compact ? "12px 16px" : "20px 24px",
+    minWidth: compact ? 56 : 80,
+    textAlign: "center",
+    fontSize: compact ? "clamp(1.4rem,3vw,2rem)" : "clamp(2rem,5vw,3.5rem)",
+    fontWeight: 900,
+    color: textColor,
+    fontVariantNumeric: "tabular-nums",
+    boxShadow: `${shadows.lg}, ${shadows.glow(primary, 0.1)}`,
+    letterSpacing: "-0.02em",
+  };
+
+  const labelStyle: React.CSSProperties = {
+    color: subColor, fontSize: compact ? 10 : 12,
+    fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.12em",
+  };
+
+  const separatorStyle: React.CSSProperties = {
+    fontSize: compact ? 24 : 36, fontWeight: 900,
+    color: isDark ? "rgba(255,255,255,0.2)" : "rgba(0,0,0,0.15)",
+    alignSelf: "flex-start", paddingTop: compact ? 12 : 20,
+  };
+
+  return (
+    <section style={{ ...sectionBase(bg, compact ? "48px 24px" : "80px 24px"), position: "relative", overflow: "hidden" }}>
+      <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", width: "60%", height: "100%", background: `radial-gradient(circle, ${primary}10 0%, transparent 60%)`, pointerEvents: "none", filter: "blur(80px)" }} />
+
+      <div style={{ ...container(900), textAlign: "center", position: "relative" }}>
+        {props.eyebrow && <p className="hm-animate-in" style={{ ...eyebrowStyle(primary), marginBottom: 8 }}>{props.eyebrow}</p>}
+        {props.headline && <h2 className="hm-animate-up" style={{ ...headingStyle(textColor, compact ? "clamp(1.3rem,3vw,1.8rem)" : "clamp(1.6rem,4vw,2.4rem)"), marginBottom: compact ? 16 : 24 }}>{props.headline}</h2>}
+        {props.subheadline && !compact && <p className="hm-animate-in hm-stagger-1" style={{ color: subColor, fontSize: 16, maxWidth: 560, margin: "0 auto 32px", lineHeight: 1.7 }}>{props.subheadline}</p>}
+
+        <div id={`hm-cd-${props.__blockId ?? "timer"}`} style={{ display: "flex", justifyContent: "center", alignItems: "flex-start", gap: compact ? 8 : 16, flexWrap: "wrap" }}>
+          {placeholders.map((ph, i) => (
+            <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: compact ? 8 : 16 }}>
+              <div className="hm-animate-in" style={digitCardStyle(i)}>
+                <span data-cd="" style={digitStyle}>{ph}</span>
+                <span style={labelStyle}>{units[i]}</span>
+              </div>
+              {i < 3 && <span style={separatorStyle}>:</span>}
+            </div>
+          ))}
+        </div>
+
+        {props.buttonText && (
+          <div className="hm-animate-in hm-stagger-5" style={{ marginTop: compact ? 20 : 40 }}>
+            <a href={props.buttonUrl ?? "#"} className="hm-pulse-btn" style={{
+              display: "inline-flex", alignItems: "center", gap: 8,
+              padding: compact ? "12px 28px" : "16px 38px", borderRadius: radii.md,
+              background: `linear-gradient(135deg, ${primary}, #8b5cf6)`,
+              boxShadow: `0 8px 32px ${primary}55`,
+              color: "#fff", fontWeight: 800, fontSize: compact ? 14 : 16, textDecoration: "none",
+              ["--hm-pulse-color" as string]: `${primary}55`,
+            }}>
+              {props.buttonText} <span>→</span>
+            </a>
+          </div>
+        )}
+      </div>
+
+      {targetDate && <script dangerouslySetInnerHTML={{ __html: countdownScript }} />}
     </section>
   );
 }
@@ -1401,6 +1652,8 @@ export default function BlockRenderer({ block, theme, preview, selected, onClick
   const rendered = (() => {
     switch (block.type) {
       case "hero": return <HeroBlock props={block.props} theme={t} />;
+      case "video_hero": return <VideoHeroBlock props={block.props} theme={t} />;
+      case "countdown": return <CountdownBlock props={block.props} theme={t} />;
       case "features": return <FeaturesBlock props={block.props} theme={t} />;
       case "stats": return <StatsBlock props={block.props} theme={t} />;
       case "text": return <TextBlock props={block.props} theme={t} />;
