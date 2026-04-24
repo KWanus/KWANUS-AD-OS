@@ -75,7 +75,7 @@ function renderPage(message: string, success: boolean): string {
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Unsubscribe</title>
   <style>
-    body { background: #050a14; color: white; font-family: system-ui, -apple-system, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+    body { background: #0c0a08; color: white; font-family: system-ui, -apple-system, sans-serif; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
     .card { max-width: 400px; text-align: center; padding: 40px; border-radius: 24px; border: 1px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); }
     .icon { font-size: 48px; margin-bottom: 16px; }
     h1 { font-size: 18px; margin: 0 0 8px; }

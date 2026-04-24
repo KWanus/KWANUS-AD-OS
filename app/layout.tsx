@@ -16,8 +16,28 @@ const outfit = Outfit({ subsets: ["latin"], variable: "--font-outfit" });
 
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL ?? "https://himalaya.app"),
-  title: "Himalaya — AI Marketing OS",
-  description: "The complete marketing engine: AI-powered funnel builder, ad creatives, email automations, and competitive intelligence. All in one platform.",
+  title: {
+    default: "Himalaya — Build a Business in 60 Seconds",
+    template: "%s | Himalaya",
+  },
+  description: "Tell us your goal. We build the entire business — website, ads, emails, scripts, funnels. You just approve and launch. No skills required.",
+  keywords: ["business builder", "AI marketing", "website builder", "email automation", "ad creator", "landing page", "CRM", "sales funnel"],
+  openGraph: {
+    title: "Himalaya — Build a Business in 60 Seconds",
+    description: "Website, ads, emails, scripts, funnels — built with AI. No skills required. Start free.",
+    siteName: "Himalaya",
+    locale: "en_US",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Himalaya — Build a Business in 60 Seconds",
+    description: "Website, ads, emails, scripts, funnels — built with AI. No skills required.",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 };
 
 export default function RootLayout({

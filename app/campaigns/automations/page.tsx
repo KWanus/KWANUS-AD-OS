@@ -26,7 +26,7 @@ import "reactflow/dist/style.css";
 function TriggerNode({ data, selected }: { data: any; selected: boolean }) {
     return (
         <div className={`px-4 py-3 rounded-xl border-2 ${selected ? "border-[#f5a623]" : "border-white/10"} bg-t-bg shadow-xl min-w-[200px]`}>
-            <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-[#f5a623] border-2 border-[#050a14]" />
+            <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-[#f5a623] border-2 border-[#0c0a08]" />
             <div className="flex items-center gap-2 mb-2 text-[#f5a623]">
                 <Zap className="w-4 h-4" />
                 <span className="text-[10px] font-black uppercase tracking-widest text-[#f5a623]/80">Trigger</span>
@@ -40,8 +40,8 @@ function TriggerNode({ data, selected }: { data: any; selected: boolean }) {
 function EmailNode({ data, selected }: { data: any; selected: boolean }) {
     return (
         <div className={`px-4 py-3 rounded-xl border-2 ${selected ? "border-purple-500" : "border-white/10"} bg-t-bg shadow-xl min-w-[200px]`}>
-            <Handle type="target" position={Position.Top} className="w-3 h-3 bg-purple-500 border-2 border-[#050a14]" />
-            <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-purple-500 border-2 border-[#050a14]" />
+            <Handle type="target" position={Position.Top} className="w-3 h-3 bg-purple-500 border-2 border-[#0c0a08]" />
+            <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-purple-500 border-2 border-[#0c0a08]" />
             <div className="flex items-center gap-2 mb-2 text-[#e07850]">
                 <Mail className="w-4 h-4" />
                 <span className="text-[10px] font-black uppercase tracking-widest text-[#e07850]/80">Send Email</span>
@@ -55,8 +55,8 @@ function EmailNode({ data, selected }: { data: any; selected: boolean }) {
 function DelayNode({ data, selected }: { data: any; selected: boolean }) {
     return (
         <div className={`px-4 py-3 rounded-xl border-2 ${selected ? "border-orange-500" : "border-white/10"} bg-t-bg shadow-xl min-w-[200px]`}>
-            <Handle type="target" position={Position.Top} className="w-3 h-3 bg-orange-500 border-2 border-[#050a14]" />
-            <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-orange-500 border-2 border-[#050a14]" />
+            <Handle type="target" position={Position.Top} className="w-3 h-3 bg-orange-500 border-2 border-[#0c0a08]" />
+            <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-orange-500 border-2 border-[#0c0a08]" />
             <div className="flex items-center gap-2 mb-2 text-orange-400">
                 <Clock className="w-4 h-4" />
                 <span className="text-[10px] font-black uppercase tracking-widest text-orange-400/80">Time Delay</span>
@@ -69,9 +69,9 @@ function DelayNode({ data, selected }: { data: any; selected: boolean }) {
 function ConditionNode({ data, selected }: { data: any; selected: boolean }) {
     return (
         <div className={`px-4 py-3 rounded-xl border-2 ${selected ? "border-green-500" : "border-white/10"} bg-t-bg shadow-xl min-w-[200px]`}>
-            <Handle type="target" position={Position.Top} className="w-3 h-3 bg-green-500 border-2 border-[#050a14]" />
-            <Handle type="source" position={Position.Bottom} id="yes" style={{ left: '25%' }} className="w-3 h-3 bg-green-500 border-2 border-[#050a14]" />
-            <Handle type="source" position={Position.Bottom} id="no" style={{ left: '75%' }} className="w-3 h-3 bg-red-500 border-2 border-[#050a14]" />
+            <Handle type="target" position={Position.Top} className="w-3 h-3 bg-green-500 border-2 border-[#0c0a08]" />
+            <Handle type="source" position={Position.Bottom} id="yes" style={{ left: '25%' }} className="w-3 h-3 bg-green-500 border-2 border-[#0c0a08]" />
+            <Handle type="source" position={Position.Bottom} id="no" style={{ left: '75%' }} className="w-3 h-3 bg-red-500 border-2 border-[#0c0a08]" />
 
             <div className="flex items-center gap-2 mb-2 text-green-400">
                 <SplitSquareHorizontal className="w-4 h-4" />
@@ -556,7 +556,7 @@ export default function AutomationsBuilder() {
                             <button
                                 onClick={handleAutoGenerate}
                                 disabled={!selectedCampaignId || loading}
-                                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-[#f5a623] to-[#e07850] text-[#050a14] text-xs font-black disabled:opacity-50 transition shadow-[0_0_15px_rgba(245,166,35,0.3)] hover:shadow-[0_0_20px_rgba(245,166,35,0.5)]"
+                                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-[#f5a623] to-[#e07850] text-[#0c0a08] text-xs font-black disabled:opacity-50 transition shadow-[0_0_15px_rgba(245,166,35,0.3)] hover:shadow-[0_0_20px_rgba(245,166,35,0.5)]"
                             >
                                 GENERATE FLOW
                             </button>

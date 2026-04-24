@@ -214,7 +214,7 @@ export default function ContactsPage() {
               <Upload className="w-3.5 h-3.5" /> Import
             </button>
             <button onClick={() => setShowAdd(true)}
-              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#f5a623] hover:bg-[#e07850] text-[#050a14] text-xs font-black transition">
+              className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#f5a623] hover:bg-[#e07850] text-[#0c0a08] text-xs font-black transition">
               <Plus className="w-3.5 h-3.5" /> Add Contact
             </button>
           </div>
@@ -278,7 +278,7 @@ export default function ContactsPage() {
               <p className="text-sm text-white/25 max-w-xs">Add contacts manually or import a CSV to get started.</p>
             </div>
             <button onClick={() => setShowAdd(true)}
-              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#f5a623] hover:bg-[#e07850] text-[#050a14] text-sm font-black transition">
+              className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#f5a623] hover:bg-[#e07850] text-[#0c0a08] text-sm font-black transition">
               <Plus className="w-4 h-4" /> Add Your First Contact
             </button>
           </div>
@@ -414,7 +414,7 @@ export default function ContactsPage() {
               <button onClick={() => setShowAdd(false)}
                 className="flex-1 py-2.5 rounded-xl border border-white/10 text-sm text-white/50 hover:text-white transition">Cancel</button>
               <button onClick={() => void addContact()} disabled={adding || !newEmail.trim()}
-                className="flex-1 py-2.5 rounded-xl bg-[#f5a623] hover:bg-[#e07850] text-[#050a14] text-sm font-black disabled:opacity-40 transition">
+                className="flex-1 py-2.5 rounded-xl bg-[#f5a623] hover:bg-[#e07850] text-[#0c0a08] text-sm font-black disabled:opacity-40 transition">
                 {adding ? "Adding..." : "Add Contact"}
               </button>
             </div>
@@ -464,7 +464,7 @@ export default function ContactsPage() {
               <button onClick={() => { setShowImport(false); setImportResult(null); setImportText(""); }}
                 className="flex-1 py-2.5 rounded-xl border border-white/10 text-sm text-white/50 hover:text-white transition">Close</button>
               <button onClick={() => void handleBulkImport()} disabled={importing || !importText.trim()}
-                className="flex-1 py-2.5 rounded-xl bg-[#f5a623] hover:bg-[#e07850] text-[#050a14] text-sm font-black disabled:opacity-40 transition">
+                className="flex-1 py-2.5 rounded-xl bg-[#f5a623] hover:bg-[#e07850] text-[#0c0a08] text-sm font-black disabled:opacity-40 transition">
                 {importing ? "Importing..." : "Import Contacts"}
               </button>
             </div>

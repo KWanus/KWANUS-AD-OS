@@ -681,7 +681,7 @@ export default function WebsitesDashboard() {
 
                         <div className="relative w-24 h-24 rounded-3xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 border border-white/[0.07] flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(139,92,246,0.15)]">
                             <Globe className="w-10 h-10 text-[#e07850]/60" />
-                            <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-r from-cyan-500 to-purple-500 flex items-center justify-center">
+                            <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-r from-[#f5a623] to-[#e07850] flex items-center justify-center">
                                 <Sparkles className="w-3 h-3 text-white" />
                             </div>
                         </div>

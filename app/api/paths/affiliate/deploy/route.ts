@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
         userId: user.id,
         name: `${product.name} Review`,
         slug,
-        theme: { font: "Inter", primaryColor: "#06b6d4", backgroundColor: "#050a14", textColor: "#ffffff" },
+        theme: { font: "Inter", primaryColor: "#06b6d4", backgroundColor: "#0c0a08", textColor: "#ffffff" },
         published: false,
       },
     });

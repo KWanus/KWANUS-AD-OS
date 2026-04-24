@@ -816,7 +816,7 @@ function AnalyzeContent() {
                   {LOADING_STEPS[loadingStep]}
                 </div>
                 <div className="w-64 h-1 bg-white/[0.05] rounded-full overflow-hidden">
-                  <div className="h-full bg-gradient-to-r from-cyan-500 to-purple-500 transition-all duration-500" style={{ width: loadingStep === 'fetching' ? '30%' : loadingStep === 'diagnosing' ? '60%' : '90%' }} />
+                  <div className="h-full bg-gradient-to-r from-[#f5a623] to-[#e07850] transition-all duration-500" style={{ width: loadingStep === 'fetching' ? '30%' : loadingStep === 'diagnosing' ? '60%' : '90%' }} />
                 </div>
               </div>
             )}

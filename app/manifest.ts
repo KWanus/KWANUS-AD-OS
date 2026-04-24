@@ -7,7 +7,7 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "The complete marketing engine: AI-powered funnel builder, ad creatives, email automations, and competitive intelligence.",
     start_url: "/",
     display: "standalone",
-    background_color: "#050a14",
+    background_color: "#0c0a08",
     theme_color: "#06b6d4",
     icons: [
       {

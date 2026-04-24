@@ -114,7 +114,7 @@ function SourcePhase({ project }: { project: any }) {
                 <p className="text-sm font-mono text-white/60 truncate">{project.sourceUrl}</p>
             </div>
 
-            <button className="px-8 py-4 rounded-2xl bg-[#f5a623] hover:bg-[#e07850] text-[#050a14] font-black uppercase tracking-widest transition flex items-center gap-3 group shadow-[0_0_30px_rgba(245,166,35,0.3)]">
+            <button className="px-8 py-4 rounded-2xl bg-[#f5a623] hover:bg-[#e07850] text-[#0c0a08] font-black uppercase tracking-widest transition flex items-center gap-3 group shadow-[0_0_30px_rgba(245,166,35,0.3)]">
                 Start Deep Audit Analysis <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </button>
         </div>

@@ -408,12 +408,12 @@ function WinnerCard({ winner, onRemix, isLoading }: { winner: WinnerAd; onRemix:
             <div className="aspect-[4/5] relative overflow-hidden bg-black/50">
                 <img src={winner.thumbnail} alt={winner.title}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700 opacity-75" />
-                <div className="absolute inset-0 bg-gradient-to-t from-[#050a14] via-[#050a14]/20 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-[#0c0a08] via-[#0c0a08]/20 to-transparent" />
 
                 {/* CTAs — always visible on mobile, hover-reveal on desktop */}
                 <div className="absolute inset-x-0 bottom-3 px-3 sm:translate-y-3 sm:opacity-0 sm:group-hover:translate-y-0 sm:group-hover:opacity-100 transition-all duration-200 flex flex-col gap-2">
                     <Link href={`/analyze?url=${encodeURIComponent(winner.url)}`}
-                        className="w-full bg-[#f5a623] hover:bg-[#e07850] text-[#050a14] py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition flex items-center justify-center gap-1.5 shadow-[0_0_20px_rgba(245,166,35,0.4)]">
+                        className="w-full bg-[#f5a623] hover:bg-[#e07850] text-[#0c0a08] py-2.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition flex items-center justify-center gap-1.5 shadow-[0_0_20px_rgba(245,166,35,0.4)]">
                         <BarChart3 className="w-3.5 h-3.5" /> Analyze with AI
                     </Link>
                     <button onClick={onRemix} disabled={isLoading}

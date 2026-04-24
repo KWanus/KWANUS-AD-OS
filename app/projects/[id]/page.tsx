@@ -470,7 +470,7 @@ function SourcePhase({
         <button
           onClick={handleAnalyze}
           disabled={!project.sourceUrl}
-          className="px-10 py-4 rounded-2xl bg-[#f5a623] hover:bg-[#e07850] disabled:opacity-30 disabled:cursor-not-allowed text-[#050a14] font-black uppercase tracking-[0.2em] transition-all duration-200 flex items-center gap-3 shadow-[0_0_40px_rgba(245,166,35,0.25)] hover:shadow-[0_0_60px_rgba(245,166,35,0.4)] group"
+          className="px-10 py-4 rounded-2xl bg-[#f5a623] hover:bg-[#e07850] disabled:opacity-30 disabled:cursor-not-allowed text-[#0c0a08] font-black uppercase tracking-[0.2em] transition-all duration-200 flex items-center gap-3 shadow-[0_0_40px_rgba(245,166,35,0.25)] hover:shadow-[0_0_60px_rgba(245,166,35,0.4)] group"
         >
           <Zap className="w-5 h-5" />
           Analyze This
@@ -619,7 +619,7 @@ function AuditPhase({
         <button
           onClick={handleAdvance}
           disabled={advancing}
-          className="px-10 py-4 rounded-2xl bg-[#f5a623] hover:bg-[#e07850] disabled:opacity-50 text-[#050a14] font-black uppercase tracking-[0.2em] transition-all duration-200 flex items-center gap-3 shadow-[0_0_40px_rgba(245,166,35,0.2)] hover:shadow-[0_0_60px_rgba(245,166,35,0.35)] group"
+          className="px-10 py-4 rounded-2xl bg-[#f5a623] hover:bg-[#e07850] disabled:opacity-50 text-[#0c0a08] font-black uppercase tracking-[0.2em] transition-all duration-200 flex items-center gap-3 shadow-[0_0_40px_rgba(245,166,35,0.2)] hover:shadow-[0_0_60px_rgba(245,166,35,0.35)] group"
         >
           {advancing ? (
             <Loader2 className="w-5 h-5 animate-spin" />
@@ -932,7 +932,7 @@ function ProducePhase({
         <button
           onClick={handleAdvance}
           disabled={advancing}
-          className="px-10 py-4 rounded-2xl bg-[#f5a623] hover:bg-[#e07850] disabled:opacity-50 text-[#050a14] font-black uppercase tracking-[0.2em] transition-all duration-200 flex items-center gap-3 shadow-[0_0_40px_rgba(245,166,35,0.2)] hover:shadow-[0_0_60px_rgba(245,166,35,0.35)] group"
+          className="px-10 py-4 rounded-2xl bg-[#f5a623] hover:bg-[#e07850] disabled:opacity-50 text-[#0c0a08] font-black uppercase tracking-[0.2em] transition-all duration-200 flex items-center gap-3 shadow-[0_0_40px_rgba(245,166,35,0.2)] hover:shadow-[0_0_60px_rgba(245,166,35,0.35)] group"
         >
           {advancing ? (
             <Loader2 className="w-5 h-5 animate-spin" />
@@ -1123,7 +1123,7 @@ function DeployPhase({
           <button
             onClick={handleMarkLive}
             disabled={launching}
-            className="flex-1 px-6 py-4 rounded-xl bg-[#f5a623] hover:bg-[#e07850] disabled:opacity-50 text-[#050a14] font-black uppercase tracking-[0.2em] text-sm transition flex items-center justify-center gap-3 shadow-[0_0_30px_rgba(245,166,35,0.2)] hover:shadow-[0_0_50px_rgba(245,166,35,0.4)] group"
+            className="flex-1 px-6 py-4 rounded-xl bg-[#f5a623] hover:bg-[#e07850] disabled:opacity-50 text-[#0c0a08] font-black uppercase tracking-[0.2em] text-sm transition flex items-center justify-center gap-3 shadow-[0_0_30px_rgba(245,166,35,0.2)] hover:shadow-[0_0_50px_rgba(245,166,35,0.4)] group"
           >
             {launching ? (
               <Loader2 className="w-5 h-5 animate-spin" />

@@ -205,7 +205,7 @@ export async function POST(req: NextRequest) {
     const site = await prisma.site.create({
       data: {
         userId: user.id, name: siteName, slug,
-        theme: { font: "Inter", primaryColor: "#06b6d4", backgroundColor: "#050a14", textColor: "#ffffff" },
+        theme: { font: "Inter", primaryColor: "#06b6d4", backgroundColor: "#0c0a08", textColor: "#ffffff" },
         published: false,
       },
     });

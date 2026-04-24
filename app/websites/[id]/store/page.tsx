@@ -243,7 +243,7 @@ export default function StoreDashboard({ params }: { params: Promise<{ id: strin
                         <p className="text-sm text-white/40 max-w-xs mb-6">Start building your store catalogue by adding your first product.</p>
                         <button
                             onClick={() => setShowAddModal(true)}
-                            className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black bg-white text-[#050a14] hover:bg-white/90 transition shadow-lg"
+                            className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-black bg-white text-[#0c0a08] hover:bg-white/90 transition shadow-lg"
                         >
                             <Plus className="w-4 h-4" />
                             Add Product

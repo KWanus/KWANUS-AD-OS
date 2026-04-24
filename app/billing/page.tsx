@@ -102,7 +102,7 @@ const SUBSCRIPTION_TIERS = [
     badge: "Most Popular",
     color: "border-[#f5a623]/40",
     headerColor: "text-[#f5a623]",
-    buttonClass: "bg-[#f5a623] hover:bg-[#e07850] text-[#050a14] shadow-[0_0_20px_rgba(245,166,35,0.25)]",
+    buttonClass: "bg-[#f5a623] hover:bg-[#e07850] text-[#0c0a08] shadow-[0_0_20px_rgba(245,166,35,0.25)]",
     buttonLabel: "Upgrade to Pro →",
     features: [
       "Unlimited clients",
@@ -124,7 +124,7 @@ const SUBSCRIPTION_TIERS = [
     badge: "Best Value",
     color: "border-amber-500/30",
     headerColor: "text-amber-300",
-    buttonClass: "bg-amber-500 hover:bg-amber-400 text-[#050a14]",
+    buttonClass: "bg-amber-500 hover:bg-amber-400 text-[#0c0a08]",
     buttonLabel: "Upgrade to Elite →",
     features: [
       "Everything in Pro",
@@ -250,7 +250,7 @@ function BillingContent() {
               >
                 {tier.badge && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
-                    <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${tier.key === "pro" ? "bg-[#f5a623] text-[#050a14]" : "bg-amber-500 text-[#050a14]"}`}>
+                    <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${tier.key === "pro" ? "bg-[#f5a623] text-[#0c0a08]" : "bg-amber-500 text-[#0c0a08]"}`}>
                       {tier.badge}
                     </span>
                   </div>
@@ -378,7 +378,7 @@ function BillingContent() {
               {b.badge && (
                 <div className="absolute -top-3 left-1/2 -translate-x-1/2">
                   <span className={`px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest
-                    ${b.badge === "Most Popular" ? "bg-[#f5a623] text-[#050a14]" : "bg-amber-500 text-[#050a14]"}`}>
+                    ${b.badge === "Most Popular" ? "bg-[#f5a623] text-[#0c0a08]" : "bg-amber-500 text-[#0c0a08]"}`}>
                     {b.badge}
                   </span>
                 </div>
@@ -407,9 +407,9 @@ function BillingContent() {
                 disabled={loading !== null}
                 className={`w-full py-3 rounded-xl text-sm font-black uppercase tracking-widest transition flex items-center justify-center gap-2
                   ${b.badge === "Most Popular"
-                    ? "bg-[#f5a623] hover:bg-[#e07850] text-[#050a14] shadow-[0_0_20px_rgba(245,166,35,0.3)]"
+                    ? "bg-[#f5a623] hover:bg-[#e07850] text-[#0c0a08] shadow-[0_0_20px_rgba(245,166,35,0.3)]"
                     : b.badge === "Best Value"
-                    ? "bg-amber-500 hover:bg-amber-400 text-[#050a14]"
+                    ? "bg-amber-500 hover:bg-amber-400 text-[#0c0a08]"
                     : "bg-white/8 hover:bg-white/12 text-white border border-white/10"
                   } disabled:opacity-50`}
               >

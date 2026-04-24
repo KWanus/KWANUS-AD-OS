@@ -1,7 +1,7 @@
 import { ImageResponse } from "next/og";
 
 export const runtime = "edge";
-export const alt = "Himalaya — AI Marketing OS";
+export const alt = "Himalaya — Build a Business in 60 Seconds";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
@@ -10,82 +10,112 @@ export default function OGImage() {
     (
       <div
         style={{
-          background: "linear-gradient(135deg, #050a14 0%, #0a1628 50%, #050a14 100%)",
           width: "100%",
           height: "100%",
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
           justifyContent: "center",
-          fontFamily: "system-ui, sans-serif",
+          background: "linear-gradient(135deg, #0c0a08 0%, #1a1510 50%, #0c0a08 100%)",
+          fontFamily: "system-ui, -apple-system, sans-serif",
         }}
       >
+        {/* Gold accent line */}
+        <div
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            right: 0,
+            height: 6,
+            background: "linear-gradient(90deg, #f5a623, #e07850)",
+          }}
+        />
+
         {/* Logo */}
         <div
           style={{
             width: 80,
             height: 80,
             borderRadius: 20,
-            background: "linear-gradient(135deg, #06b6d4, #8b5cf6)",
+            background: "linear-gradient(135deg, #f5a623, #e07850)",
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            marginBottom: 24,
-            boxShadow: "0 0 60px rgba(6, 182, 212, 0.4)",
+            marginBottom: 32,
+            boxShadow: "0 0 60px rgba(245, 166, 35, 0.3)",
           }}
         >
-          <span style={{ fontSize: 40, color: "white" }}>⚡</span>
+          <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+            <path d="m8 3 4 8 5-5 5 15H2L8 3z" />
+          </svg>
         </div>
 
         {/* Title */}
-        <h1
+        <div
           style={{
             fontSize: 56,
             fontWeight: 900,
-            color: "white",
-            margin: 0,
-            letterSpacing: "-0.02em",
+            color: "#f5f0e8",
+            textAlign: "center",
+            lineHeight: 1.1,
+            marginBottom: 16,
+            letterSpacing: -2,
           }}
         >
-          Himalaya
-        </h1>
+          Build a Business in 60 Seconds
+        </div>
 
         {/* Subtitle */}
-        <p
+        <div
           style={{
             fontSize: 24,
-            color: "rgba(255, 255, 255, 0.5)",
-            margin: "8px 0 0",
-            fontWeight: 600,
+            color: "rgba(245, 240, 232, 0.4)",
+            textAlign: "center",
+            maxWidth: 700,
           }}
         >
-          AI Marketing OS
-        </p>
+          Website, ads, emails, scripts, funnels — built with AI. No skills required.
+        </div>
 
-        {/* Features */}
+        {/* Feature pills */}
         <div
           style={{
             display: "flex",
-            gap: 24,
+            gap: 12,
             marginTop: 40,
           }}
         >
-          {["Scan & Analyze", "Build & Launch", "Track & Grow"].map((text) => (
+          {["Website", "Ads", "Emails", "Scripts", "Analytics", "CRM"].map((f) => (
             <div
-              key={text}
+              key={f}
               style={{
-                padding: "10px 20px",
-                borderRadius: 12,
-                border: "1px solid rgba(6, 182, 212, 0.3)",
-                background: "rgba(6, 182, 212, 0.1)",
-                color: "rgba(6, 182, 212, 0.9)",
+                padding: "8px 20px",
+                borderRadius: 100,
+                border: "1px solid rgba(245, 166, 35, 0.2)",
+                background: "rgba(245, 166, 35, 0.06)",
+                color: "#f5a623",
                 fontSize: 16,
                 fontWeight: 700,
               }}
             >
-              {text}
+              {f}
             </div>
           ))}
+        </div>
+
+        {/* Brand name */}
+        <div
+          style={{
+            position: "absolute",
+            bottom: 32,
+            fontSize: 18,
+            fontWeight: 800,
+            color: "rgba(245, 240, 232, 0.15)",
+            letterSpacing: 6,
+          }}
+        >
+          HIMALAYA
         </div>
       </div>
     ),
