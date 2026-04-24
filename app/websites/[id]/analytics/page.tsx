@@ -14,6 +14,7 @@ import {
   FileText,
   Globe,
   BarChart3,
+  Filter,
 } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -86,13 +87,20 @@ export default function SiteAnalyticsPage({
   const [data, setData] = useState<SiteAnalytics | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [funnel, setFunnel] = useState<{steps: {name: string; count: number; rate: number}[]} | null>(null);
 
   useEffect(() => {
-    fetch(`/api/sites/${id}/analytics`)
-      .then((r) => r.json())
-      .then((j) => {
-        if (j.ok) setData(j.analytics);
-        else setError(j.error ?? "Unknown error");
+    Promise.all([
+      fetch(`/api/sites/${id}/analytics`).then((r) => r.json()),
+      fetch(`/api/analytics/dashboard?siteId=${id}`).then((r) => r.json()).catch(() => null),
+    ])
+      .then(([analyticsJson, dashboardJson]) => {
+        if (analyticsJson.ok) setData(analyticsJson.analytics);
+        else setError(analyticsJson.error ?? "Unknown error");
+
+        if (dashboardJson?.ok && dashboardJson.funnel) {
+          setFunnel(dashboardJson.funnel);
+        }
       })
       .catch(() => setError("Failed to load analytics"))
       .finally(() => setLoading(false));
@@ -259,6 +267,72 @@ export default function SiteAnalyticsPage({
               </span>
             </div>
           </div>
+
+          {/* ── Conversion Funnel ─────────────────────────────────────── */}
+          {funnel && funnel.steps.length > 0 && (() => {
+            const maxCount = funnel.steps[0]?.count || 1;
+            const FUNNEL_COLORS = [
+              "#f5a623",
+              "#e8983a",
+              "#db8a51",
+              "#ce7c68",
+              "#5cb87a",
+              "#34d399",
+            ];
+            return (
+              <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-6">
+                <div className="flex items-center gap-3 mb-6">
+                  <Filter className="w-5 h-5 text-[#f5a623]" />
+                  <span className="text-xs font-medium tracking-widest uppercase text-[#f5f0e8]/50">
+                    Conversion Funnel
+                  </span>
+                </div>
+                <div className="space-y-3">
+                  {funnel.steps.map((step, i) => {
+                    const widthPct = Math.max((step.count / maxCount) * 100, 4);
+                    const color = FUNNEL_COLORS[i] ?? FUNNEL_COLORS[FUNNEL_COLORS.length - 1];
+                    return (
+                      <div key={step.name}>
+                        <div className="flex items-center justify-between mb-1.5">
+                          <span className="text-sm font-medium text-[#f5f0e8]/80">{step.name}</span>
+                          <div className="flex items-center gap-3">
+                            <span className="text-sm font-bold tabular-nums" style={{ color }}>
+                              {step.count.toLocaleString()}
+                            </span>
+                            <span className="text-xs text-[#f5f0e8]/40 tabular-nums w-12 text-right">
+                              {i === 0 ? "100%" : `${step.rate}%`}
+                            </span>
+                          </div>
+                        </div>
+                        <div className="h-7 rounded-lg bg-white/[0.03] overflow-hidden">
+                          <div
+                            className="h-full rounded-lg transition-all duration-500"
+                            style={{
+                              width: `${widthPct}%`,
+                              backgroundColor: color,
+                              opacity: 0.8,
+                            }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+                {funnel.steps.length >= 2 && (
+                  <div className="mt-4 pt-4 border-t border-white/[0.06] flex items-center justify-between">
+                    <span className="text-xs text-[#f5f0e8]/40">
+                      Overall conversion
+                    </span>
+                    <span className="text-sm font-bold text-emerald-400">
+                      {maxCount > 0
+                        ? ((funnel.steps[funnel.steps.length - 1].count / maxCount) * 100).toFixed(1)
+                        : "0"}%
+                    </span>
+                  </div>
+                )}
+              </div>
+            );
+          })()}
 
           {/* ── Two-Column: Top Pages + Sources ────────────────────────── */}
           <div className="grid lg:grid-cols-2 gap-6">

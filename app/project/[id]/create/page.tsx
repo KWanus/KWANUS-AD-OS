@@ -30,6 +30,7 @@ export default function CreativeStudioPage({ params }: { params: Promise<{ id: s
   const [tab, setTab] = useState<"templates" | "editor" | "saved">("templates");
   const [filterCategory, setFilterCategory] = useState("all");
   const [previewDevice, setPreviewDevice] = useState<"phone" | "desktop">("phone");
+  const [mockupPlatform, setMockupPlatform] = useState<"raw" | "instagram" | "facebook" | "tiktok">("raw");
   const [brandColor, setBrandColor] = useState("#f5a623");
   const [generating, setGenerating] = useState(false);
 
@@ -291,25 +292,150 @@ export default function CreativeStudioPage({ params }: { params: Promise<{ id: s
                 </button>
               </div>
 
-              {/* Platform mockup */}
-              <div className={`rounded-xl border border-t-border bg-t-bg-card overflow-hidden ${previewDevice === "phone" ? "max-w-xs mx-auto" : ""}`}>
-                {/* Phone frame */}
-                {previewDevice === "phone" && (
-                  <div className="bg-t-bg-card px-3 py-2 border-b border-t-border flex items-center justify-between">
-                    <span className="text-[9px] text-t-text-faint">Instagram</span>
-                    <span className="text-[9px] text-t-text-faint">Sponsored</span>
-                  </div>
-                )}
-                {preview && (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={preview} alt="Ad preview" className="w-full" />
-                )}
-                {previewDevice === "phone" && (
-                  <div className="bg-t-bg-card px-3 py-2 border-t border-t-border">
-                    <span className="text-[10px] text-t-text-faint">❤️ 🗨️ ↗️ &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 🔖</span>
-                  </div>
-                )}
+              {/* Platform mockup selector */}
+              <div className="flex gap-1 mb-2">
+                {(["raw", "instagram", "facebook", "tiktok"] as const).map((p) => (
+                  <button key={p} onClick={() => setMockupPlatform(p)}
+                    className={`px-2.5 py-1 rounded-lg text-[10px] font-bold transition ${
+                      mockupPlatform === p
+                        ? "bg-[#f5a623]/10 text-[#f5a623] border border-[#f5a623]/20"
+                        : "text-t-text-faint border border-t-border hover:text-t-text-muted"
+                    }`}>
+                    {p === "raw" ? "Raw" : p === "instagram" ? "Instagram" : p === "facebook" ? "Facebook" : "TikTok"}
+                  </button>
+                ))}
               </div>
+
+              {/* Raw preview */}
+              {mockupPlatform === "raw" && (
+                <div className={`rounded-xl border border-t-border bg-t-bg-card overflow-hidden ${previewDevice === "phone" ? "max-w-xs mx-auto" : ""}`}>
+                  {preview && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={preview} alt="Ad preview" className="w-full" />
+                  )}
+                </div>
+              )}
+
+              {/* Instagram mockup */}
+              {mockupPlatform === "instagram" && (
+                <div className="max-w-xs mx-auto rounded-2xl border-2 border-neutral-700 bg-black overflow-hidden">
+                  {/* IG header */}
+                  <div className="flex items-center gap-2.5 px-3 py-2.5">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 via-pink-500 to-yellow-500 p-[2px]">
+                      <div className="w-full h-full rounded-full bg-black flex items-center justify-center">
+                        <span className="text-[8px] text-white font-bold">AD</span>
+                      </div>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[11px] font-bold text-white truncate">your_brand</p>
+                      <p className="text-[9px] text-neutral-400">Sponsored</p>
+                    </div>
+                    <span className="text-white/50 text-sm">...</span>
+                  </div>
+                  {/* Ad image */}
+                  {preview && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={preview} alt="Ad preview" className="w-full" />
+                  )}
+                  {/* IG actions */}
+                  <div className="px-3 py-2.5 flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                      <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" /></svg>
+                      <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" /></svg>
+                      <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" /></svg>
+                    </div>
+                    <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" /></svg>
+                  </div>
+                  <div className="px-3 pb-3">
+                    <p className="text-[10px] text-neutral-400">Liked by <span className="font-bold text-white">2,847 others</span></p>
+                  </div>
+                </div>
+              )}
+
+              {/* Facebook mockup */}
+              {mockupPlatform === "facebook" && (
+                <div className="max-w-xs mx-auto rounded-xl border border-neutral-700 bg-[#242526] overflow-hidden">
+                  {/* FB header */}
+                  <div className="flex items-center gap-2.5 px-3 py-2.5">
+                    <div className="w-10 h-10 rounded-full bg-blue-600 flex items-center justify-center">
+                      <span className="text-[10px] text-white font-bold">AD</span>
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="text-[12px] font-bold text-white">Your Brand</p>
+                      <p className="text-[10px] text-neutral-400">Sponsored · <span className="inline-block w-2.5 h-2.5 align-middle">🌐</span></p>
+                    </div>
+                    <span className="text-neutral-400 text-lg">...</span>
+                  </div>
+                  {/* Post text */}
+                  <div className="px-3 pb-2">
+                    <p className="text-[11px] text-neutral-300 leading-relaxed">Check out our latest offer. Click to learn more.</p>
+                  </div>
+                  {/* Ad image */}
+                  {preview && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={preview} alt="Ad preview" className="w-full" />
+                  )}
+                  {/* FB actions */}
+                  <div className="px-3 py-2 border-t border-neutral-600">
+                    <div className="flex items-center justify-between">
+                      <button className="flex items-center gap-1.5 px-4 py-1.5 text-[11px] font-bold text-neutral-400 hover:bg-neutral-700 rounded transition">
+                        <span>👍</span> Like
+                      </button>
+                      <button className="flex items-center gap-1.5 px-4 py-1.5 text-[11px] font-bold text-neutral-400 hover:bg-neutral-700 rounded transition">
+                        <span>💬</span> Comment
+                      </button>
+                      <button className="flex items-center gap-1.5 px-4 py-1.5 text-[11px] font-bold text-neutral-400 hover:bg-neutral-700 rounded transition">
+                        <span>↗️</span> Share
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* TikTok mockup */}
+              {mockupPlatform === "tiktok" && (
+                <div className="max-w-xs mx-auto rounded-2xl border-2 border-neutral-700 bg-black overflow-hidden relative" style={{ aspectRatio: "9/16" }}>
+                  {/* Ad fills the screen */}
+                  {preview && (
+                    // eslint-disable-next-line @next/next/no-img-element
+                    <img src={preview} alt="Ad preview" className="w-full h-full object-cover" />
+                  )}
+                  {/* TikTok overlay — right side icons */}
+                  <div className="absolute right-2 bottom-24 flex flex-col items-center gap-4">
+                    <div className="flex flex-col items-center">
+                      <div className="w-9 h-9 rounded-full bg-white/10 backdrop-blur flex items-center justify-center">
+                        <svg className="w-5 h-5 text-white" fill="currentColor" viewBox="0 0 24 24"><path d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" /></svg>
+                      </div>
+                      <span className="text-[9px] text-white font-bold mt-0.5">24.5K</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <div className="w-9 h-9 rounded-full bg-white/10 backdrop-blur flex items-center justify-center">
+                        <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M12 20.25c4.97 0 9-3.694 9-8.25s-4.03-8.25-9-8.25S3 7.444 3 12c0 2.104.859 4.023 2.273 5.48.432.447.74 1.04.586 1.641a4.483 4.483 0 01-.923 1.785A5.969 5.969 0 006 21c1.282 0 2.47-.402 3.445-1.087.81.22 1.668.337 2.555.337z" /></svg>
+                      </div>
+                      <span className="text-[9px] text-white font-bold mt-0.5">1,203</span>
+                    </div>
+                    <div className="flex flex-col items-center">
+                      <div className="w-9 h-9 rounded-full bg-white/10 backdrop-blur flex items-center justify-center">
+                        <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.5}><path d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" /></svg>
+                      </div>
+                      <span className="text-[9px] text-white font-bold mt-0.5">Share</span>
+                    </div>
+                  </div>
+                  {/* TikTok overlay — bottom info */}
+                  <div className="absolute left-3 bottom-4 right-14">
+                    <p className="text-[12px] font-bold text-white mb-0.5">@yourbrand</p>
+                    <p className="text-[10px] text-white/80 leading-snug line-clamp-2">Your ad caption goes here. Check out our latest offer! #ad #sponsored</p>
+                    <div className="mt-1.5 flex items-center gap-1.5">
+                      <span className="text-[9px] text-white/60">🎵</span>
+                      <p className="text-[9px] text-white/60">Promotional Audio - Your Brand</p>
+                    </div>
+                  </div>
+                  {/* Sponsored label */}
+                  <div className="absolute top-3 left-3">
+                    <span className="text-[9px] font-bold text-white/80 bg-white/10 backdrop-blur px-2 py-0.5 rounded">Sponsored</span>
+                  </div>
+                </div>
+              )}
 
               <div className="flex gap-2 mt-3">
                 <button onClick={downloadImage}

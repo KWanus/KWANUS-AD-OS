@@ -428,6 +428,73 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
 }
 
 // ---------------------------------------------------------------------------
+// Quick Templates
+// ---------------------------------------------------------------------------
+
+const QUICK_TEMPLATES = [
+  {
+    id: "welcome-sequence",
+    name: "Welcome Sequence",
+    emailCount: 5,
+    description: "5-email onboarding series",
+    trigger: "signup" as TriggerType,
+    border: "border-[#f5a623]/30",
+    bg: "bg-[#f5a623]/8",
+    text: "text-[#f5a623]",
+  },
+  {
+    id: "cart-recovery",
+    name: "Cart Recovery",
+    emailCount: 3,
+    description: "3-email abandon cart sequence",
+    trigger: "abandoned_cart" as TriggerType,
+    border: "border-yellow-500/30",
+    bg: "bg-yellow-500/8",
+    text: "text-yellow-400",
+  },
+  {
+    id: "post-purchase",
+    name: "Post-Purchase",
+    emailCount: 3,
+    description: "3-email follow-up + upsell",
+    trigger: "purchase" as TriggerType,
+    border: "border-green-500/30",
+    bg: "bg-green-500/8",
+    text: "text-green-400",
+  },
+  {
+    id: "nurture-series",
+    name: "Nurture Series",
+    emailCount: 5,
+    description: "5-email value-first nurturing",
+    trigger: "signup" as TriggerType,
+    border: "border-[#e07850]/30",
+    bg: "bg-[#e07850]/8",
+    text: "text-[#e07850]",
+  },
+  {
+    id: "sales-sequence",
+    name: "Sales Sequence",
+    emailCount: 4,
+    description: "4-email promotional campaign",
+    trigger: "custom" as TriggerType,
+    border: "border-white/20",
+    bg: "bg-white/5",
+    text: "text-white/60",
+  },
+  {
+    id: "re-engagement",
+    name: "Re-Engagement",
+    emailCount: 3,
+    description: "3-email win-back series",
+    trigger: "win_back" as TriggerType,
+    border: "border-purple-500/30",
+    bg: "bg-purple-500/8",
+    text: "text-purple-400",
+  },
+];
+
+// ---------------------------------------------------------------------------
 // Create Flow Modal
 // ---------------------------------------------------------------------------
 
@@ -444,6 +511,7 @@ function CreateFlowModal({
   const [name, setName] = useState("");
   const [trigger, setTrigger] = useState<TriggerType>("signup");
   const [creating, setCreating] = useState(false);
+  const [creatingFromTemplate, setCreatingFromTemplate] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [selectedTemplate, setSelectedTemplate] = useState<string | null>(null);
   const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
@@ -453,6 +521,7 @@ function CreateFlowModal({
       setName("");
       setTrigger("signup");
       setCreating(false);
+      setCreatingFromTemplate(null);
       setError(null);
       setSelectedTemplate(null);
       setExecutionTier("elite");
@@ -463,6 +532,27 @@ function CreateFlowModal({
     setSelectedTemplate(tpl.id);
     if (!name) setName(tpl.name);
     setTrigger(tpl.trigger as TriggerType);
+  }
+
+  async function handleQuickTemplate(qt: (typeof QUICK_TEMPLATES)[number]) {
+    setCreatingFromTemplate(qt.id);
+    setError(null);
+    try {
+      const res = await fetch("/api/email-flows/from-template", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ templateId: qt.id }),
+      });
+      const data = (await res.json()) as { ok: boolean; flow?: EmailFlow; error?: string };
+      if (!data.ok || !data.flow) {
+        throw new Error(data.error ?? "Failed to create flow from template");
+      }
+      onCreated(data.flow);
+      router.push(`/emails/flows/${data.flow.id}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Something went wrong");
+      setCreatingFromTemplate(null);
+    }
   }
 
   async function handleCreate() {
@@ -521,7 +611,7 @@ function CreateFlowModal({
         <div className="sticky top-0 bg-[#0a1628] border-b border-white/[0.06] px-6 py-4 flex items-center justify-between z-10">
           <div>
             <h2 className="text-base font-black text-white">Create Email Flow</h2>
-            <p className="text-xs text-white/35 mt-0.5">Name it, pick a trigger, or start from a template</p>
+            <p className="text-xs text-white/35 mt-0.5">Pick a template to start fast, or build from scratch</p>
           </div>
           <button
             onClick={onClose}
@@ -532,6 +622,50 @@ function CreateFlowModal({
         </div>
 
         <div className="p-6 space-y-6">
+          {/* ── Quick Template Picker ─────────────────────────────────── */}
+          <div>
+            <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-1">
+              Start from a Template
+            </label>
+            <p className="text-[11px] text-white/25 mb-3">Pick one to create a pre-built flow instantly</p>
+            <div className="grid grid-cols-2 gap-2">
+              {QUICK_TEMPLATES.map((qt) => {
+                const isLoading = creatingFromTemplate === qt.id;
+                return (
+                  <button
+                    key={qt.id}
+                    onClick={() => void handleQuickTemplate(qt)}
+                    disabled={creatingFromTemplate !== null}
+                    className={`relative flex flex-col gap-1.5 p-4 rounded-xl border text-left transition-all ${qt.border} hover:${qt.bg} ${
+                      isLoading ? qt.bg : "bg-white/[0.02]"
+                    } disabled:opacity-50 disabled:cursor-not-allowed`}
+                  >
+                    {isLoading && (
+                      <div className="absolute inset-0 flex items-center justify-center rounded-xl bg-black/40 backdrop-blur-[2px]">
+                        <div className="flex items-center gap-2">
+                          <Loader2 className="w-4 h-4 animate-spin text-[#f5a623]" />
+                          <span className="text-xs font-semibold text-white/70">Creating flow...</span>
+                        </div>
+                      </div>
+                    )}
+                    <div className="flex items-center justify-between">
+                      <span className={`text-sm font-bold ${qt.text}`}>{qt.name}</span>
+                      <span className="text-[10px] text-white/25 font-medium">{qt.emailCount} emails</span>
+                    </div>
+                    <p className="text-[11px] text-white/30 leading-relaxed">{qt.description}</p>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* ── Divider ──────────────────────────────────────────────── */}
+          <div className="flex items-center gap-3">
+            <div className="flex-1 h-px bg-white/[0.06]" />
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/20">or build from scratch</span>
+            <div className="flex-1 h-px bg-white/[0.06]" />
+          </div>
+
           {/* Name */}
           <div>
             <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-2">
@@ -628,12 +762,12 @@ function CreateFlowModal({
             </div>
           </div>
 
-          {/* Templates */}
+          {/* Advanced Templates (from data file) */}
           <div>
             <label className="block text-xs font-semibold text-white/50 uppercase tracking-wider mb-1">
-              Start from a Template
+              Advanced Templates
             </label>
-            <p className="text-[11px] text-white/25 mb-3">Optional — pre-built flows you can customise</p>
+            <p className="text-[11px] text-white/25 mb-3">Optional — pre-built flows with full node graphs</p>
             <div className="grid grid-cols-1 gap-2">
               {EMAIL_FLOW_TEMPLATES.map((tpl) => {
                 const tCfg = TRIGGER_CONFIG[tpl.trigger as TriggerType];

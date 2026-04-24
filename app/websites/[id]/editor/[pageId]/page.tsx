@@ -37,6 +37,9 @@ import {
   Copy,
   Trash2,
   LayoutTemplate,
+  Monitor,
+  Tablet,
+  Smartphone,
 } from "lucide-react";
 import BlockRenderer, { Block, BlockType } from "@/components/site-builder/BlockRenderer";
 import BlockPropsEditor from "@/components/site-builder/BlockPropsEditor";
@@ -365,6 +368,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
   const [autoFillingSeo, setAutoFillingSeo] = useState(false);
   const [addCategory, setAddCategory] = useState("Layout");
   const [previewMode, setPreviewMode] = useState(false);
+  const [previewWidth, setPreviewWidth] = useState<"desktop" | "tablet" | "mobile">("desktop");
   const [publishing, setPublishing] = useState(false);
   const [queuedCopilotInstruction, setQueuedCopilotInstruction] = useState<{ id: number; text: string } | null>(null);
   const [bizData, setBizData] = useState<{
@@ -752,7 +756,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
           {saved && <><Check className="w-3 h-3 text-green-400" /><span className="text-[11px] text-green-400/70">Saved</span></>}
         </div>
 
-        {/* Preview toggle */}
+        {/* Preview toggle + responsive breakpoints */}
         <button
           onClick={() => setPreviewMode(!previewMode)}
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold transition-all ${previewMode ? "bg-[#f5a623]/20 text-[#f5a623] border border-[#f5a623]/30" : "bg-white/[0.05] text-white/40 hover:text-white/60 border border-white/[0.08]"}`}
@@ -760,6 +764,29 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
           <Eye className="w-3.5 h-3.5" />
           Preview
         </button>
+
+        {previewMode && (
+          <div className="flex items-center gap-0.5 shrink-0">
+            {([
+              ["desktop", Monitor, "Desktop (1200px)"] as const,
+              ["tablet", Tablet, "Tablet (768px)"] as const,
+              ["mobile", Smartphone, "Mobile (375px)"] as const,
+            ]).map(([key, Icon, title]) => (
+              <button
+                key={key}
+                onClick={() => setPreviewWidth(key)}
+                title={title}
+                className={`p-1.5 rounded-lg transition-all ${
+                  previewWidth === key
+                    ? "bg-[#f5a623]/20 text-[#f5a623]"
+                    : "text-white/30 hover:text-white/60"
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Publish */}
         <button
@@ -1303,25 +1330,34 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
               </button>
             </div>
           ) : (
-            <div
-              className="min-h-full"
-              style={{ fontFamily: (theme.font as string) === "inter" ? "Inter, sans-serif" : "inherit" }}
-            >
-              {page.blocks.map((block) => (
-                <BlockRenderer
-                  key={block.id}
-                  block={block}
-                  theme={theme as { primaryColor?: string; font?: string; mode?: "dark" | "light" }}
-                  preview={!previewMode}
-                  selected={selectedId === block.id && !previewMode}
-                  overlayActions={selectedId === block.id && !previewMode ? [
-                    { label: "Regenerate", onClick: () => queueCopilotInstruction(`regenerate this ${block.type} section`) },
-                    { label: "Improve Copy", onClick: () => queueCopilotInstruction(`improve the copy in this ${block.type} section`) },
-                    { label: "Swap Variant", onClick: () => queueCopilotInstruction(`swap the variant of this ${block.type} section while keeping its goal`) },
-                  ] : undefined}
-                  onClick={() => !previewMode && setSelectedId(block.id === selectedId ? null : block.id)}
-                />
-              ))}
+            <div className={`min-h-full ${previewMode && previewWidth !== "desktop" ? "flex justify-center" : ""}`}>
+              <div
+                className={`min-h-full ${previewMode && previewWidth !== "desktop" ? "border-x border-white/[0.08] shadow-2xl" : ""}`}
+                style={{
+                  fontFamily: (theme.font as string) === "inter" ? "Inter, sans-serif" : "inherit",
+                  maxWidth: previewMode
+                    ? previewWidth === "tablet" ? "768px" : previewWidth === "mobile" ? "375px" : "100%"
+                    : undefined,
+                  width: previewMode && previewWidth !== "desktop" ? "100%" : undefined,
+                  transition: "max-width 0.3s ease",
+                }}
+              >
+                {page.blocks.map((block) => (
+                  <BlockRenderer
+                    key={block.id}
+                    block={block}
+                    theme={theme as { primaryColor?: string; font?: string; mode?: "dark" | "light" }}
+                    preview={!previewMode}
+                    selected={selectedId === block.id && !previewMode}
+                    overlayActions={selectedId === block.id && !previewMode ? [
+                      { label: "Regenerate", onClick: () => queueCopilotInstruction(`regenerate this ${block.type} section`) },
+                      { label: "Improve Copy", onClick: () => queueCopilotInstruction(`improve the copy in this ${block.type} section`) },
+                      { label: "Swap Variant", onClick: () => queueCopilotInstruction(`swap the variant of this ${block.type} section while keeping its goal`) },
+                    ] : undefined}
+                    onClick={() => !previewMode && setSelectedId(block.id === selectedId ? null : block.id)}
+                  />
+                ))}
+              </div>
             </div>
           )}
         </main>
