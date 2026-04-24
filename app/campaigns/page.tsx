@@ -48,7 +48,7 @@ type StatsSummary = {
 };
 
 const STATUS_STYLES: Record<string, { border: string; text: string; bg: string; dot: string; glow: string }> = {
-  draft: { border: "border-white/10", text: "text-white/40", bg: "bg-white/5", dot: "bg-white/30", glow: "" },
+  draft: { border: "border-white/10", text: "text-white/40", bg: "bg-white/[0.03]", dot: "bg-white/30", glow: "" },
   active: { border: "border-cyan-500/40", text: "text-cyan-400", bg: "bg-cyan-500/10", dot: "bg-cyan-400", glow: "shadow-[0_0_6px_rgba(6,182,212,0.4)]" },
   testing: { border: "border-yellow-500/40", text: "text-yellow-400", bg: "bg-yellow-500/10", dot: "bg-yellow-400", glow: "shadow-[0_0_6px_rgba(234,179,8,0.4)]" },
   scaling: { border: "border-green-500/40", text: "text-green-400", bg: "bg-green-500/10", dot: "bg-green-400", glow: "shadow-[0_0_6px_rgba(34,197,94,0.4)]" },
@@ -482,7 +482,7 @@ export default function CampaignsPage() {
                         className={`rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.18em] ${
                           executionTier === "elite"
                             ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-300"
-                            : "border-white/10 bg-white/5 text-white/45"
+                            : "border-white/10 bg-white/[0.03] text-white/45"
                         }`}
                       >
                         {executionTier}

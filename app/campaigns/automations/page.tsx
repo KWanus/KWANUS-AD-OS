@@ -341,7 +341,7 @@ export default function AutomationsBuilder() {
                     <span className={`px-2.5 py-1 rounded-md border text-[10px] font-black uppercase tracking-wider ${
                         automationStatus === "active"
                             ? "bg-green-500/10 border-green-500/20 text-green-400"
-                            : "bg-white/5 border-white/10 text-white/50"
+                            : "bg-white/[0.03] border-white/10 text-white/50"
                     }`}>
                         {automationStatus}
                     </span>
@@ -349,7 +349,7 @@ export default function AutomationsBuilder() {
                     <span className={`px-2.5 py-1 rounded-md border text-[10px] font-black uppercase tracking-wider ${
                         executionTier === "elite"
                             ? "border-cyan-500/40 bg-cyan-500/10 text-cyan-200"
-                            : "border-white/10 bg-white/5 text-white/50"
+                            : "border-white/10 bg-white/[0.03] text-white/50"
                     }`}>
                         {executionTier} lane
                     </span>
@@ -513,7 +513,7 @@ export default function AutomationsBuilder() {
                                         <span className={`rounded-md px-2 py-1 text-[10px] font-black uppercase tracking-[0.18em] ${
                                             executionTier === "elite"
                                                 ? "bg-cyan-500/10 text-cyan-200 border border-cyan-500/30"
-                                                : "bg-white/5 text-white/55 border border-white/10"
+                                                : "bg-white/[0.03] text-white/55 border border-white/10"
                                         }`}>
                                             {executionTier}
                                         </span>

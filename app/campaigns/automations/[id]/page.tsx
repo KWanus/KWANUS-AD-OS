@@ -175,7 +175,7 @@ export default function AutomationDetailPage({ params }: { params: Promise<{ id:
             <span className={`px-2.5 py-1 rounded-md border text-[10px] font-black uppercase tracking-wider ${
               stats.status === "active"
                 ? "bg-green-500/10 border-green-500/20 text-green-400"
-                : "bg-white/5 border-white/10 text-white/50"
+                : "bg-white/[0.03] border-white/10 text-white/50"
             }`}>
               {stats.status}
             </span>

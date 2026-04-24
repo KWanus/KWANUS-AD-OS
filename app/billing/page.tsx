@@ -314,7 +314,7 @@ function BillingContent() {
                 label: "Core Lane",
                 badge: "Included",
                 border: "border-white/[0.08]",
-                badgeClass: "border-white/10 bg-white/5 text-white/45",
+                badgeClass: "border-white/10 bg-white/[0.03] text-white/45",
                 bullets: [
                   "Strong practical generation that ships fast",
                   "Clean conversion structure and usable defaults",

@@ -174,7 +174,7 @@ const ai = proposal.aiJson as Record<string, any> | null;
   return (
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4" onClick={onClose}>
       <div
-        className="bg-[#0b1120] border border-white/[0.08] rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6"
+        className="bg-[#020509] border border-white/[0.08] rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between mb-5">
@@ -387,7 +387,7 @@ function PackagesTab() {
               className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-cyan-500/40 transition flex-1"
             >
               {["hourly", "retainer", "project", "productized", "vip_day"].map((t) => (
-                <option key={t} value={t} className="bg-[#0b1120]">{t.replace("_", " ")}</option>
+                <option key={t} value={t} className="bg-[#020509]">{t.replace("_", " ")}</option>
               ))}
             </select>
           </div>

@@ -61,7 +61,7 @@ interface ResearchResult {
 // ─── Constants ────────────────────────────────────────────────────────────────
 
 const STATUS_STYLE: Record<ProductStatus, string> = {
-  researching: "text-white/40 bg-white/5 border-white/10",
+  researching: "text-white/40 bg-white/[0.03] border-white/10",
   testing:     "text-yellow-400 bg-yellow-500/10 border-yellow-500/30",
   winning:     "text-green-400 bg-green-500/10 border-green-500/30",
   scaling:     "text-cyan-400 bg-cyan-500/10 border-cyan-500/30",

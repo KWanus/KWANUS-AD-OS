@@ -657,7 +657,7 @@ export default function OnboardingPage() {
                                   </div>
                                   <div className="flex gap-1 mt-2 flex-wrap">
                                     {p.marketing.bestPlatform.map((pl) => (
-                                      <span key={pl} className="text-[9px] uppercase tracking-wider bg-white/5 border border-white/[0.06] text-white/30 px-1.5 py-0.5 rounded">
+                                      <span key={pl} className="text-[9px] uppercase tracking-wider bg-white/[0.03] border border-white/[0.06] text-white/30 px-1.5 py-0.5 rounded">
                                         {pl}
                                       </span>
                                     ))}

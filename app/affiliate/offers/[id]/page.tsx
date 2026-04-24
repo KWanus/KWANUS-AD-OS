@@ -1168,7 +1168,7 @@ export default function AffiliateOfferPage() {
                         <button
                           key={s}
                           onClick={() => { void patchOffer({ status: s }); setShowStatusMenu(false); }}
-                          className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-bold hover:bg-white/5 transition ${STATUS_BADGE[s]}`}
+                          className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-bold hover:bg-white/[0.03] transition ${STATUS_BADGE[s]}`}
                         >
                           {offer.status === s && <Check className="w-3 h-3" />}
                           {offer.status !== s && <div className="w-3" />}

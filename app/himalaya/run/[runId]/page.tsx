@@ -357,7 +357,7 @@ export default function HimalayaRunPage() {
               {(homepage.sections as Array<Record<string, unknown>> | undefined)?.map((section, i) => (
                 <div key={i} className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-4">
                   <div className="flex items-center gap-2 mb-2">
-                    <span className="text-xs px-2 py-0.5 rounded-full bg-white/5 text-white/40 uppercase tracking-wider">
+                    <span className="text-xs px-2 py-0.5 rounded-full bg-white/[0.03] text-white/40 uppercase tracking-wider">
                       {String(section.type)}
                     </span>
                     {section.title && <p className="text-white text-sm font-medium">{String(section.title)}</p>}

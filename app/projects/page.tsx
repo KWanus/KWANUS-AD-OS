@@ -141,7 +141,7 @@ export default function ProjectsPage() {
           <div className="flex flex-wrap gap-3">
             <Link
               href="/winners"
-              className="rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-black text-white/70 transition hover:bg-white/10 hover:text-white"
+              className="rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-black text-white/70 transition hover:bg-white/10 hover:text-white"
             >
               Browse Winners
             </Link>
@@ -244,14 +244,14 @@ export default function ProjectsPage() {
                           <PhaseIcon className="h-3 w-3" />
                           {phase.label}
                         </span>
-                        <span className="rounded-full border border-white/10 bg-white/5 px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-white/45">
+                        <span className="rounded-full border border-white/10 bg-white/[0.03] px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-white/45">
                           {project.mode}
                         </span>
                         <span
                           className={`rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.2em] ${
                             executionTier === "elite"
                               ? "border-cyan-500/20 bg-cyan-500/10 text-cyan-300"
-                              : "border-white/10 bg-white/5 text-white/45"
+                              : "border-white/10 bg-white/[0.03] text-white/45"
                           }`}
                         >
                           {executionTier}

@@ -756,7 +756,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
                       <p className="text-xs text-white/60 flex-1 leading-relaxed">{hook.hook}</p>
                       <button
                         onClick={() => copyHook(hook.hook, i)}
-                        className="shrink-0 p-1 rounded-lg hover:bg-white/5 text-white/20 hover:text-white/50 transition opacity-0 group-hover:opacity-100"
+                        className="shrink-0 p-1 rounded-lg hover:bg-white/[0.03] text-white/20 hover:text-white/50 transition opacity-0 group-hover:opacity-100"
                       >
                         {copiedHook === i ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
                       </button>

@@ -342,7 +342,7 @@ function AssetSection({ assets, onOpenStudio }: { assets: AssetPackage; onOpenSt
               </div>
               <div className="space-y-3">
                 {assets.landingPage.faqItems.map((faq, i) => (
-                  <div key={i} className="rounded-lg border border-white/5 bg-white/5 p-3">
+                  <div key={i} className="rounded-lg border border-white/5 bg-white/[0.03] p-3">
                     <div className="flex items-start justify-between gap-3">
                       <p className="text-xs font-semibold text-white/80 mb-1">{faq.question}</p>
                       <CopyButton text={`Q: ${faq.question}\nA: ${faq.answer}`} />
@@ -550,11 +550,11 @@ function SceneRow({ scene, index }: { scene: AdBriefScene; index: number }) {
       <div className="absolute -left-[5px] top-0 w-2 h-2 rounded-full bg-cyan-500 shadow-[0_0_8px_rgba(6,182,212,0.5)]" />
       <div className="flex items-center gap-3 mb-2">
         <span className="text-[10px] font-black text-cyan-400/60 uppercase">Scene {index + 1}</span>
-        <span className="px-1.5 py-0.5 rounded bg-white/5 text-[10px] font-mono text-white/40">{scene.timestamp}</span>
+        <span className="px-1.5 py-0.5 rounded bg-white/[0.03] text-[10px] font-mono text-white/40">{scene.timestamp}</span>
         <span className="text-[10px] font-bold text-white/20 uppercase tracking-wider">{scene.shotType}</span>
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div className="p-3 rounded-lg bg-white/5 border border-white/5">
+        <div className="p-3 rounded-lg bg-white/[0.03] border border-white/5">
           <p className="text-[9px] font-bold text-white/30 uppercase mb-1">Visual Action</p>
           <p className="text-sm text-white/90 leading-snug">{scene.visual}</p>
         </div>
@@ -842,11 +842,11 @@ function AnalyzeContent() {
               <span className={`text-[10px] px-2 py-1 rounded-lg border ${
                 (assets.executionTier ?? result.executionTier ?? "core") === "elite"
                   ? "border-amber-500/30 bg-amber-500/10 text-amber-300"
-                  : "border-white/10 bg-white/5 text-white/40"
+                  : "border-white/10 bg-white/[0.03] text-white/40"
               }`}>
                 {(assets.executionTier ?? result.executionTier ?? "core").toUpperCase()}
               </span>
-              <span className="text-xs px-2 py-1 rounded-lg border border-white/10 bg-white/5 text-white/40">
+              <span className="text-xs px-2 py-1 rounded-lg border border-white/10 bg-white/[0.03] text-white/40">
                 Not saved
               </span>
             </div>
@@ -855,7 +855,7 @@ function AnalyzeContent() {
 
         <button
           onClick={handleReset}
-          className="rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 px-4 py-1.5 text-xs font-semibold text-white/60 hover:text-white transition"
+          className="rounded-lg border border-white/10 bg-white/[0.03] hover:bg-white/10 px-4 py-1.5 text-xs font-semibold text-white/60 hover:text-white transition"
         >
           New Analysis
         </button>
@@ -901,7 +901,7 @@ function AnalyzeContent() {
 
           {/* Opportunity status + score */}
           {opportunity && (
-            <div className={`rounded-xl border p-4 ${STATUS_COLORS[opportunity.status] ?? "border-white/10 bg-white/5"}`}>
+            <div className={`rounded-xl border p-4 ${STATUS_COLORS[opportunity.status] ?? "border-white/10 bg-white/[0.03]"}`}>
               <div className="flex items-center justify-between">
                 <div>
                   <p className="text-[10px] uppercase tracking-widest text-white/30 mb-0.5">Opportunity</p>
@@ -1041,7 +1041,7 @@ function AnalyzeContent() {
                     </button>
                     <button
                       onClick={() => setShowSaveForm(false)}
-                      className="rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 px-3 py-2 text-xs text-white/50 transition"
+                      className="rounded-lg border border-white/10 bg-white/[0.03] hover:bg-white/10 px-3 py-2 text-xs text-white/50 transition"
                     >
                       Cancel
                     </button>

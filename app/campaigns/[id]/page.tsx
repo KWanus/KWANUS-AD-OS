@@ -113,7 +113,7 @@ type WorkspaceTab = "overview" | "briefs" | "hooks" | "landing" | "emails" | "ch
 const STATUS_OPTIONS = ["draft", "testing", "live", "winner", "dead"] as const;
 
 const STATUS_STYLES: Record<string, string> = {
-  draft: "border-white/10 text-white/40 bg-white/5",
+  draft: "border-white/10 text-white/40 bg-white/[0.03]",
   testing: "border-yellow-500/40 text-yellow-300 bg-yellow-500/10",
   live: "border-cyan-500/40 text-cyan-300 bg-cyan-500/10",
   winner: "border-green-500/40 text-green-300 bg-green-500/10",
@@ -684,14 +684,14 @@ export default function CampaignWorkspace() {
           <a
             href={`/api/campaigns/${id}/export?format=md`}
             download
-            className="block w-full text-left px-3 py-2 rounded-lg text-xs text-white/40 hover:text-white/70 hover:bg-white/5 transition"
+            className="block w-full text-left px-3 py-2 rounded-lg text-xs text-white/40 hover:text-white/70 hover:bg-white/[0.03] transition"
           >
             Export Markdown ↓
           </a>
           <a
             href={`/api/campaigns/${id}/export?format=json`}
             download
-            className="block w-full text-left px-3 py-2 rounded-lg text-xs text-white/40 hover:text-white/70 hover:bg-white/5 transition"
+            className="block w-full text-left px-3 py-2 rounded-lg text-xs text-white/40 hover:text-white/70 hover:bg-white/[0.03] transition"
           >
             Export JSON ↓
           </a>
@@ -885,7 +885,7 @@ export default function CampaignWorkspace() {
                               <span className={`text-[10px] px-2 py-0.5 rounded-full border font-medium ${
                                 v.status === "winner" ? "border-green-500/30 text-green-400 bg-green-500/10" :
                                 v.status === "live" ? "border-cyan-500/30 text-cyan-400 bg-cyan-500/10" :
-                                "border-white/10 text-white/30 bg-white/5"
+                                "border-white/10 text-white/30 bg-white/[0.03]"
                               }`}>{v.status.charAt(0).toUpperCase() + v.status.slice(1)}</span>
                             </div>
                             <div className="flex items-center gap-2 shrink-0">
@@ -1000,7 +1000,7 @@ export default function CampaignWorkspace() {
                   <input value={addPlatform} onChange={(e) => setAddPlatform(e.target.value)} placeholder="Platform (optional — TikTok, Facebook...)" className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-cyan-400/40 transition" />
                   <div className="flex gap-2">
                     <button onClick={() => void addVariation()} disabled={adding || !addContent.trim()} className="flex-1 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 disabled:opacity-50 px-4 py-2.5 text-sm font-semibold text-[#020509] transition shadow-[0_0_15px_rgba(6,182,212,0.15)] hover:shadow-[0_0_25px_rgba(6,182,212,0.25)]">{adding ? "Adding..." : "Add Variation"}</button>
-                    <button onClick={() => { setShowAddForm(false); setAddName(""); setAddContent(""); setAddPlatform(""); }} className="rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-4 py-2.5 text-sm text-white/50 transition">Cancel</button>
+                    <button onClick={() => { setShowAddForm(false); setAddName(""); setAddContent(""); setAddPlatform(""); }} className="rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/10 px-4 py-2.5 text-sm text-white/50 transition">Cancel</button>
                   </div>
                 </div>
               ) : (
@@ -1511,7 +1511,7 @@ function VariationCard({
   const borderClass = variation.status === "winner" ? "border-green-500/30 bg-green-500/5" :
     variation.status === "dead" ? "border-red-500/10 bg-red-500/5 opacity-60" :
     variation.status === "live" || variation.status === "testing" ? "border-cyan-500/20 bg-cyan-500/5" :
-    "border-white/10 bg-white/5";
+    "border-white/10 bg-white/[0.03]";
 
   return (
     <div className={`rounded-xl border overflow-hidden transition backdrop-blur-sm hover:scale-[1.005] hover:shadow-lg ${borderClass} ${isBrief ? "shadow-lg" : ""}`} style={{ boxShadow: variation.status === "winner" ? "0 0 25px rgba(34,197,94,0.08)" : variation.status === "live" || variation.status === "testing" ? "0 0 20px rgba(6,182,212,0.06)" : undefined }}>
@@ -1600,7 +1600,7 @@ function VariationCard({
                             <p className="text-xs text-yellow-300/60 ml-14">🎙 {scene.audio}</p>
                           )}
                           {scene.textOverlay && (
-                            <p className="text-xs text-white/40 ml-14 font-mono bg-white/5 px-2 py-0.5 rounded inline-block">{scene.textOverlay}</p>
+                            <p className="text-xs text-white/40 ml-14 font-mono bg-white/[0.03] px-2 py-0.5 rounded inline-block">{scene.textOverlay}</p>
                           )}
                         </div>
                       ))}
@@ -1740,7 +1740,7 @@ function EmailEditorCard({
 
   if (isEditing) {
     return (
-      <div className="rounded-xl border border-cyan-500/30 bg-[#070c1a]/80 backdrop-blur-xl overflow-hidden shadow-[0_0_30px_rgba(6,182,212,0.08)]">
+      <div className="rounded-xl border border-cyan-500/30 bg-[#020509]/80 backdrop-blur-xl overflow-hidden shadow-[0_0_30px_rgba(6,182,212,0.08)]">
         <div className="p-5 space-y-3">
           {/* Edit mode header */}
           <div className="flex items-center justify-between mb-1">
@@ -1748,7 +1748,7 @@ function EmailEditorCard({
             <div className="flex items-center gap-2">
               <button
                 onClick={onCancel}
-                className="px-3 py-1 rounded-lg border border-white/10 text-xs text-white/50 hover:text-white/80 hover:bg-white/5 transition"
+                className="px-3 py-1 rounded-lg border border-white/10 text-xs text-white/50 hover:text-white/80 hover:bg-white/[0.03] transition"
               >
                 Cancel
               </button>
@@ -2128,7 +2128,7 @@ function LandingPreview({ landing }: { landing: Partial<LandingDraft> }) {
         {trustBar.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
             {trustBar.map((item, i) => (
-              <span key={i} className="text-[10px] px-2 py-0.5 rounded-full border border-white/10 bg-white/5 text-white/50">
+              <span key={i} className="text-[10px] px-2 py-0.5 rounded-full border border-white/10 bg-white/[0.03] text-white/50">
                 {item}
               </span>
             ))}
@@ -2139,7 +2139,7 @@ function LandingPreview({ landing }: { landing: Partial<LandingDraft> }) {
         {landing.headline ? (
           <h1 className="text-xl font-black text-white leading-tight">{landing.headline}</h1>
         ) : (
-          <div className="h-7 rounded-lg bg-white/5 w-3/4" />
+          <div className="h-7 rounded-lg bg-white/[0.03] w-3/4" />
         )}
 
         {/* Subheadline */}
@@ -2147,8 +2147,8 @@ function LandingPreview({ landing }: { landing: Partial<LandingDraft> }) {
           <p className="text-sm text-white/60 leading-relaxed">{landing.subheadline}</p>
         ) : (
           <div className="space-y-1.5">
-            <div className="h-3 rounded bg-white/5 w-full" />
-            <div className="h-3 rounded bg-white/5 w-2/3" />
+            <div className="h-3 rounded bg-white/[0.03] w-full" />
+            <div className="h-3 rounded bg-white/[0.03] w-2/3" />
           </div>
         )}
 

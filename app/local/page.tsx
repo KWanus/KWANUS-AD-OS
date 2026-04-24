@@ -82,11 +82,11 @@ const SEVERITY_COLORS: Record<string, string> = {
   critical: "text-red-400 bg-red-500/10 border-red-500/20",
   high:     "text-orange-400 bg-orange-500/10 border-orange-500/20",
   medium:   "text-yellow-400 bg-yellow-500/10 border-yellow-500/20",
-  low:      "text-white/40 bg-white/5 border-white/10",
+  low:      "text-white/40 bg-white/[0.03] border-white/10",
 };
 
 const TIER_COLORS: Record<string, string> = {
-  basic: "text-white/50 bg-white/5 border-white/10",
+  basic: "text-white/50 bg-white/[0.03] border-white/10",
   pro:   "text-cyan-400 bg-cyan-500/10 border-cyan-500/20",
   elite: "text-purple-400 bg-purple-500/10 border-purple-500/20",
 };
@@ -275,7 +275,7 @@ function AuditModal({
   return (
     <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-4" onClick={onClose}>
       <div
-        className="bg-[#0b1120] border border-white/[0.08] rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6"
+        className="bg-[#020509] border border-white/[0.08] rounded-2xl max-w-2xl w-full max-h-[85vh] overflow-y-auto p-6"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-start justify-between mb-4">
@@ -722,7 +722,7 @@ function GmbTab({ audits }: { audits: LocalAudit[] }) {
     educational: "text-blue-400 bg-blue-500/10",
     testimonial: "text-green-400 bg-green-500/10",
     event:       "text-purple-400 bg-purple-500/10",
-    update:      "text-white/50 bg-white/5",
+    update:      "text-white/50 bg-white/[0.03]",
   };
 
   return (
@@ -825,9 +825,9 @@ function GmbTab({ audits }: { audits: LocalAudit[] }) {
               onChange={(e) => setSeoAuditId(e.target.value)}
               className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white outline-none focus:border-cyan-500/40 transition w-full"
             >
-              <option value="" className="bg-[#0b1120]">Select an audit...</option>
+              <option value="" className="bg-[#020509]">Select an audit...</option>
               {audits.map((a) => (
-                <option key={a.id} value={a.id} className="bg-[#0b1120]">
+                <option key={a.id} value={a.id} className="bg-[#020509]">
                   {a.businessName} — {a.location}
                 </option>
               ))}
@@ -961,7 +961,7 @@ function KeywordsTab() {
               {results.primaryKeywords.map((kw, i) => (
                 <div key={i} className="grid grid-cols-4 px-4 py-2.5 border-b border-white/[0.04] last:border-0 hover:bg-white/[0.015] transition">
                   <span className="text-xs font-bold text-white/80">{kw.keyword}</span>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-lg self-center w-fit capitalize ${INTENT_COLORS[kw.intent] ?? "text-white/40 bg-white/5"}`}>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-lg self-center w-fit capitalize ${INTENT_COLORS[kw.intent] ?? "text-white/40 bg-white/[0.03]"}`}>
                     {kw.intent}
                   </span>
                   <span className={`text-xs font-bold capitalize ${DIFFICULTY_COLORS[kw.difficulty] ?? "text-white/40"}`}>

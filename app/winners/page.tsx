@@ -343,10 +343,10 @@ export default function WinnerFinder() {
                             placeholder="Search niches, products..."
                             value={search}
                             onChange={e => setSearch(e.target.value)}
-                            className="bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-2 text-sm outline-none focus:border-cyan-400/50 transition w-64"
+                            className="bg-white/[0.03] border border-white/10 rounded-xl pl-10 pr-4 py-2 text-sm outline-none focus:border-cyan-400/50 transition w-64"
                         />
                     </div>
-                    <button className="p-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition text-white/40 hover:text-white">
+                    <button className="p-2.5 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/10 transition text-white/40 hover:text-white">
                         <Filter className="w-4 h-4" />
                     </button>
                 </div>

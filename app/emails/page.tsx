@@ -147,7 +147,7 @@ const TRIGGER_CONFIG: Record<
     description: "Any custom trigger",
     icon: Settings,
     border: "border-white/20",
-    bg: "bg-white/5",
+    bg: "bg-white/[0.03]",
     text: "text-white/60",
     emoji: "⚡",
   },
@@ -168,7 +168,7 @@ const STATUS_CONFIG: Record<
     label: "Draft",
     dot: "bg-white/30",
     text: "text-white/40",
-    bg: "bg-white/5",
+    bg: "bg-white/[0.03]",
     border: "border-white/10",
   },
   paused: {
@@ -227,12 +227,12 @@ function StatCard({
   color: string;
 }) {
   return (
-    <div className="flex-1 min-w-[140px] bg-white/[0.03] border border-white/[0.06] rounded-2xl px-5 py-4">
+    <div className="flex-1 min-w-[140px] bg-white/[0.03] backdrop-blur-sm border border-white/[0.06] rounded-2xl px-5 py-4 hover:border-white/[0.1] transition-all">
       <div className="flex items-center gap-2 mb-2">
         <Icon className={`w-3.5 h-3.5 ${color}`} />
         <span className="text-[11px] text-white/35 font-medium uppercase tracking-wider">{label}</span>
       </div>
-      <p className="text-xl font-black text-white">{value}</p>
+      <p className="text-xl font-black bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">{value}</p>
     </div>
   );
 }
@@ -271,7 +271,7 @@ function FlowCard({
   const triggerCfg = TRIGGER_CONFIG[flow.trigger];
 
   return (
-    <div className="group relative bg-white/[0.025] border border-white/[0.07] rounded-2xl p-5 hover:border-white/[0.14] hover:bg-white/[0.04] transition-all duration-200 flex flex-col gap-4">
+    <div className="group relative bg-white/[0.025] backdrop-blur-sm border border-white/[0.07] rounded-2xl p-5 hover:border-white/[0.14] hover:bg-white/[0.04] hover:shadow-[0_0_30px_rgba(6,182,212,0.04)] transition-all duration-200 flex flex-col gap-4">
       {/* Header */}
       <div className="flex items-start justify-between gap-3">
         <div className="flex-1 min-w-0">
@@ -282,7 +282,7 @@ function FlowCard({
             <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.2em] ${
               executionTier === "elite"
                 ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
-                : "border-white/10 bg-white/5 text-white/45"
+                : "border-white/10 bg-white/[0.03] text-white/45"
             }`}>
               {executionTier}
             </span>
@@ -376,7 +376,7 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center">
       <div className="relative mb-6">
-        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/20 to-purple-600/20 border border-white/10 flex items-center justify-center">
+        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/10 to-purple-600/10 border border-white/[0.08] backdrop-blur-sm flex items-center justify-center shadow-[0_0_40px_rgba(6,182,212,0.08)]">
           <Mail className="w-9 h-9 text-cyan-400/70" />
         </div>
         <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
@@ -390,7 +390,7 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
       <div className="flex flex-col sm:flex-row gap-3">
         <button
           onClick={onCreateClick}
-          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition-opacity"
+          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-sm font-bold hover:from-cyan-400 hover:to-blue-400 transition shadow-[0_0_15px_rgba(6,182,212,0.15)]"
         >
           <Plus className="w-4 h-4" />
           Create Your First Flow
@@ -503,9 +503,9 @@ function CreateFlowModal({
       />
 
       {/* Modal */}
-      <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-[#0a1628] border border-white/[0.1] rounded-2xl shadow-2xl">
+      <div className="relative w-full max-w-lg max-h-[90vh] overflow-y-auto bg-[#020509] border border-white/[0.1] rounded-2xl shadow-2xl">
         {/* Header */}
-        <div className="sticky top-0 bg-[#0a1628] border-b border-white/[0.06] px-6 py-4 flex items-center justify-between z-10">
+        <div className="sticky top-0 bg-[#020509] border-b border-white/[0.06] px-6 py-4 flex items-center justify-between z-10">
           <div>
             <h2 className="text-base font-black text-white">Create Email Flow</h2>
             <p className="text-xs text-white/35 mt-0.5">Name it, pick a trigger, or start from a template</p>
@@ -675,7 +675,7 @@ function CreateFlowModal({
         </div>
 
         {/* Footer */}
-        <div className="sticky bottom-0 bg-[#0a1628] border-t border-white/[0.06] px-6 py-4 flex gap-3">
+        <div className="sticky bottom-0 bg-[#020509] border-t border-white/[0.06] px-6 py-4 flex gap-3">
           <button
             onClick={onClose}
             className="flex-1 py-3 rounded-xl border border-white/[0.1] text-white/40 hover:text-white/60 text-sm font-semibold transition"
@@ -685,7 +685,7 @@ function CreateFlowModal({
           <button
             onClick={handleCreate}
             disabled={creating || !name.trim()}
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition"
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-bold disabled:opacity-40 disabled:cursor-not-allowed transition shadow-[0_0_15px_rgba(6,182,212,0.15)]"
           >
             {creating ? (
               <>
@@ -921,7 +921,7 @@ function EmailsPage() {
               <div className="flex flex-wrap gap-3">
                 <button
                   onClick={() => void createRecommendedFlow()}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)]"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)]"
                 >
                   <Zap className="w-4 h-4" />
                   Create Recommended Flow
@@ -949,7 +949,7 @@ function EmailsPage() {
           {flows.length > 0 && (
             <button
               onClick={() => setModalOpen(true)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition-opacity shrink-0"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-sm font-bold hover:from-cyan-400 hover:to-blue-400 transition shadow-[0_0_15px_rgba(6,182,212,0.15)] shrink-0"
             >
               <Plus className="w-4 h-4" />
               Create Flow

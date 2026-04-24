@@ -159,7 +159,7 @@ function CopyBtn({ text, label = "Copy" }: { text: string; label?: string }) {
     void navigator.clipboard.writeText(text).then(() => { setOk(true); setTimeout(() => setOk(false), 2000); });
   }
   return (
-    <button onClick={go} className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition border ${ok ? "bg-green-500/15 text-green-400 border-green-500/30" : "bg-white/5 hover:bg-white/10 text-white/40 hover:text-white/70 border-white/[0.07]"}`}>
+    <button onClick={go} className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-bold transition border ${ok ? "bg-green-500/15 text-green-400 border-green-500/30" : "bg-white/[0.03] hover:bg-white/10 text-white/40 hover:text-white/70 border-white/[0.07]"}`}>
       {ok ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
       {ok ? "Copied!" : label}
     </button>
@@ -302,7 +302,7 @@ function StoryboardMode({ brief, theme, executionTier }: { brief: StudioBrief; t
               <div className="w-10 h-10 rounded-xl flex items-center justify-center font-black text-white" style={{ background: `${theme.from}22`, border: `1px solid ${theme.from}30` }}>{active + 1}</div>
               <div>
                 <div className="flex items-center gap-2">
-                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/5 text-white/40">{scene.timestamp}</span>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white/[0.03] text-white/40">{scene.timestamp}</span>
                   <span className="text-[10px] uppercase font-bold text-white/20 tracking-widest">{scene.shotType}</span>
                 </div>
                 <p className="text-base font-bold text-white mt-0.5">Scene {active + 1} of {brief.scenes.length}</p>
@@ -650,15 +650,15 @@ function ImageStudio({ brief, theme, executionTier }: { brief: StudioBrief; them
           <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/20 mb-2">Add Layer</p>
           <div className="space-y-2">
             <div className="flex gap-2">
-              <button onClick={addTextLayer} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg border border-white/[0.07] text-[10px] text-white/40 hover:text-white/70 hover:bg-white/5 transition">
+              <button onClick={addTextLayer} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg border border-white/[0.07] text-[10px] text-white/40 hover:text-white/70 hover:bg-white/[0.03] transition">
                 <Type className="w-3 h-3" /> Text
               </button>
-              <button onClick={addRectLayer} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg border border-white/[0.07] text-[10px] text-white/40 hover:text-white/70 hover:bg-white/5 transition">
+              <button onClick={addRectLayer} className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg border border-white/[0.07] text-[10px] text-white/40 hover:text-white/70 hover:bg-white/[0.03] transition">
                 <Square className="w-3 h-3" /> Shape
               </button>
             </div>
             <button onClick={applyAutoCaption}
-              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-[10px] font-black text-cyan-400 uppercase tracking-widest transition">
+              className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/10 text-[10px] font-black text-cyan-400 uppercase tracking-widest transition">
               <Sparkles className="w-3 h-3" /> Auto-Caption TikTok
             </button>
           </div>
@@ -913,7 +913,7 @@ function VideoLab({ brief, theme, executionTier }: { brief: StudioBrief; theme: 
               <button className="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase bg-cyan-500/10 text-cyan-400 border border-cyan-500/20 flex items-center gap-1.5">
                 <div className="w-1 h-1 rounded-full bg-cyan-400" /> Auto-Captions
               </button>
-              <button className="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase bg-white/5 text-white/40 border border-white/[0.07]">
+              <button className="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase bg-white/[0.03] text-white/40 border border-white/[0.07]">
                 {executionTier === "elite" ? "Elite Framing" : "Hook First"}
               </button>
               <span className="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase text-[#050a14]" style={{ background: `linear-gradient(135deg,${theme.from},${theme.to})` }}>1080×1920</span>

@@ -61,7 +61,7 @@ export default function ProjectWorkspace() {
             {/* Header */}
             <header className="px-8 py-4 border-b border-white/[0.06] bg-black/20 backdrop-blur-xl flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                    <Link href="/projects" className="p-2 hover:bg-white/5 rounded-full transition text-white/40 hover:text-white">
+                    <Link href="/projects" className="p-2 hover:bg-white/[0.03] rounded-full transition text-white/40 hover:text-white">
                         <ChevronLeft className="w-5 h-5" />
                     </Link>
                     <div>
@@ -73,7 +73,7 @@ export default function ProjectWorkspace() {
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <div className="px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-[10px] font-bold text-white/40">
+                    <div className="px-3 py-1.5 rounded-lg bg-white/[0.03] border border-white/10 text-[10px] font-bold text-white/40">
                         AUTO-SAVED · 2S AGO
                     </div>
                 </div>

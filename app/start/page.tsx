@@ -208,7 +208,7 @@ export default function StartPage() {
               </p>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
               <p className="text-xs uppercase tracking-widest text-white/30 mb-4">What you&apos;ll get</p>
               <div className="grid grid-cols-2 gap-3">
                 {[
@@ -228,7 +228,7 @@ export default function StartPage() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
               <p className="text-xs uppercase tracking-widest text-white/30 mb-4">Execution Lane</p>
               <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
             </div>
@@ -253,7 +253,7 @@ export default function StartPage() {
             <div className="space-y-3">
               <button
                 onClick={() => selectModel("affiliate")}
-                className="w-full rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-cyan-500/5 p-6 text-left transition group"
+                className="w-full rounded-2xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/50 hover:bg-cyan-500/5 p-6 text-left transition group"
               >
                 <div className="flex items-start gap-4">
                   <span className="text-3xl shrink-0">🔗</span>
@@ -272,7 +272,7 @@ export default function StartPage() {
               </button>
               <button
                 onClick={() => selectModel("dropship")}
-                className="w-full rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-cyan-500/5 p-6 text-left transition group"
+                className="w-full rounded-2xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/50 hover:bg-cyan-500/5 p-6 text-left transition group"
               >
                 <div className="flex items-start gap-4">
                   <span className="text-3xl shrink-0">📦</span>
@@ -321,7 +321,7 @@ export default function StartPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {NICHES.map((n) => (
                 <button key={n.id} onClick={() => handleAffNiche(n.id)}
-                  className="rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-cyan-500/5 p-5 text-left transition group">
+                  className="rounded-2xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/50 hover:bg-cyan-500/5 p-5 text-left transition group">
                   <span className="text-2xl mb-2 block">{n.icon}</span>
                   <p className="text-sm font-semibold text-white group-hover:text-cyan-300 transition">{n.label}</p>
                   <p className="text-xs text-white/40 mt-1">
@@ -348,7 +348,7 @@ export default function StartPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {DROP_NICHES.map((n) => (
                 <button key={n.id} onClick={() => handleDropNiche(n.id)}
-                  className="rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-cyan-500/5 p-5 text-left transition group">
+                  className="rounded-2xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/50 hover:bg-cyan-500/5 p-5 text-left transition group">
                   <span className="text-2xl mb-2 block">{n.icon}</span>
                   <p className="text-sm font-semibold text-white group-hover:text-cyan-300 transition">{n.label}</p>
                   <p className="text-xs text-white/40 mt-1">{n.sub}</p>
@@ -369,7 +369,7 @@ export default function StartPage() {
               {BUDGET_OPTIONS.map((b) => (
                 <button key={b.value}
                   onClick={() => model === "affiliate" ? handleAffBudget(b.value) : handleDropBudget(b.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-cyan-500/5 p-5 text-left flex items-center justify-between transition group">
+                  className="w-full rounded-2xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/50 hover:bg-cyan-500/5 p-5 text-left flex items-center justify-between transition group">
                   <div>
                     <p className="text-base font-bold text-white group-hover:text-cyan-300 transition">{b.label}</p>
                     <p className="text-xs text-white/40 mt-0.5">{b.sub}</p>
@@ -394,7 +394,7 @@ export default function StartPage() {
                   onClick={() => model === "affiliate"
                     ? handleAffPlatform(p.id as AffPlatform)
                     : handleDropPlatform(p.id as DropPlatform)}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-cyan-500/5 p-5 text-left flex items-center justify-between transition group">
+                  className="w-full rounded-2xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/50 hover:bg-cyan-500/5 p-5 text-left flex items-center justify-between transition group">
                   <div>
                     <p className="text-base font-bold text-white group-hover:text-cyan-300 transition">{p.label}</p>
                     <p className="text-xs text-white/40 mt-0.5">{p.sub}</p>
@@ -529,11 +529,11 @@ function AffiliateResult({
       </div>
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
           <p className="text-xs uppercase tracking-widest text-white/40 mb-2">What you&apos;re promoting</p>
           <p className="text-sm text-white/80">{offer.whatYouSell}</p>
         </div>
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
           <p className="text-xs uppercase tracking-widest text-white/40 mb-2">Who buys it</p>
           <p className="text-sm text-white/80">{offer.whoBuysIt}</p>
         </div>
@@ -548,7 +548,7 @@ function AffiliateResult({
       <DayOnePlan budget={budget} platform={platform} network={offer.network} platformLabel={platformLabel} isDropship={false} />
 
       {allOffers.length > 1 && (
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
           <p className="text-xs uppercase tracking-widest text-white/40 mb-3">Other options in this niche</p>
           <div className="space-y-2">
             {allOffers.filter((o) => o.id !== offer.id).map((o) => (
@@ -674,12 +674,12 @@ function DropshipResult({
         </div>
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
         <p className="text-xs uppercase tracking-widest text-white/40 mb-2">What it is</p>
         <p className="text-sm text-white/80">{product.description}</p>
       </div>
 
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+      <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
         <p className="text-xs uppercase tracking-widest text-white/40 mb-2">Who buys it</p>
         <p className="text-sm text-white/80">{product.marketing.audienceSummary}</p>
       </div>
@@ -691,7 +691,7 @@ function DropshipResult({
       </div>
 
       {product.marketing.creativeAnglesAvailable.length > 0 && (
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
           <p className="text-xs uppercase tracking-widest text-white/40 mb-3">Other angles you can test</p>
           <div className="flex flex-wrap gap-2">
             {product.marketing.creativeAnglesAvailable.map((a, i) => (
@@ -717,7 +717,7 @@ function DropshipResult({
       <DayOnePlan budget={budget} platform={platform} network="CJ Dropshipping" platformLabel={platformLabel} isDropship searchTerm={product.searchTermCJ} />
 
       {alts.length > 0 && (
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
           <p className="text-xs uppercase tracking-widest text-white/40 mb-3">Other products to consider</p>
           <div className="space-y-2">
             {alts.map((p) => (
@@ -813,7 +813,7 @@ function DayOnePlan({ budget, platform, network, platformLabel, isDropship, sear
 
 function DeepDiveCTA({ executionTier }: { executionTier: ExecutionTier }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+    <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
       <p className="text-sm font-semibold text-white mb-1">Want the full package?</p>
       <p className="text-xs text-white/40 mb-4">
         Paste the product or offer page into Analyze to get full ad scripts, email sequences, landing page copy, and a 2-week checklist — built specifically for what you picked.
@@ -829,7 +829,7 @@ function DeepDiveCTA({ executionTier }: { executionTier: ExecutionTier }) {
 function ResetButton({ onReset }: { onReset: () => void }) {
   return (
     <button onClick={onReset}
-      className="w-full rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-6 py-3 text-sm font-semibold text-white/40 transition">
+      className="w-full rounded-xl border border-white/10 bg-white/[0.03] hover:bg-white/10 px-6 py-3 text-sm font-semibold text-white/40 transition">
       Start Over
     </button>
   );

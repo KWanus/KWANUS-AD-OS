@@ -646,7 +646,7 @@ export default function MySystemPage() {
                   className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-500/40"
                 >
                   {BUSINESS_TYPE_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value} className="bg-[#09111f]">
+                    <option key={option.value} value={option.value} className="bg-[#020509]">
                       {option.label}
                     </option>
                   ))}
@@ -671,7 +671,7 @@ export default function MySystemPage() {
                   className="rounded-2xl border border-white/[0.08] bg-white/[0.04] px-4 py-3 text-sm text-white outline-none transition focus:border-cyan-500/40"
                 >
                   {GOAL_OPTIONS.map((option) => (
-                    <option key={option.value} value={option.value} className="bg-[#09111f]">
+                    <option key={option.value} value={option.value} className="bg-[#020509]">
                       {option.label}
                     </option>
                   ))}

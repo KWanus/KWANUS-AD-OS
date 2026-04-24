@@ -59,7 +59,7 @@ const PLATFORM_BADGE: Record<Platform, string> = {
 };
 
 const STATUS_BADGE: Record<OfferStatus, string> = {
-  researching: "text-white/40 bg-white/5 border-white/10",
+  researching: "text-white/40 bg-white/[0.03] border-white/10",
   approved:    "text-cyan-400 bg-cyan-500/10 border-cyan-500/30",
   building:    "text-yellow-400 bg-yellow-500/10 border-yellow-500/30",
   running:     "text-green-400 bg-green-500/10 border-green-500/30",

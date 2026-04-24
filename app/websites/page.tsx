@@ -780,7 +780,7 @@ export default function WebsitesDashboard() {
                                     <div className={`absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest
                     ${site.published
                                             ? "bg-green-500/20 border border-green-500/30 text-green-400"
-                                            : "bg-white/5 border border-white/10 text-white/40"}`}>
+                                            : "bg-white/[0.03] border border-white/10 text-white/40"}`}>
                                         <div className={`w-1.5 h-1.5 rounded-full ${site.published ? "bg-green-400 animate-pulse" : "bg-white/30"}`} />
                                         {site.published ? "Live" : "Draft"}
                                     </div>

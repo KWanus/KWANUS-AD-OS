@@ -121,7 +121,7 @@ export default function NotificationBell() {
                           e.stopPropagation();
                           setDismissed(prev => new Set([...prev, action.id]));
                         }}
-                        className="shrink-0 p-1 rounded-lg hover:bg-white/5 text-white/15 hover:text-white/40 transition opacity-0 group-hover:opacity-100"
+                        className="shrink-0 p-1 rounded-lg hover:bg-white/[0.03] text-white/15 hover:text-white/40 transition opacity-0 group-hover:opacity-100"
                       >
                         <X className="w-3 h-3" />
                       </button>

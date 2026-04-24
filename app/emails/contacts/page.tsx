@@ -320,7 +320,7 @@ export default function ContactsPage() {
                   <span className={`text-[9px] px-1.5 py-0.5 rounded border font-medium ${
                     (contact.executionTier ?? "elite") === "elite"
                       ? "border-cyan-500/20 bg-cyan-500/5 text-cyan-400"
-                      : "border-white/10 bg-white/5 text-white/45"
+                      : "border-white/10 bg-white/[0.03] text-white/45"
                   }`}>
                     {contact.executionTier ?? "elite"}
                   </span>
@@ -358,7 +358,7 @@ export default function ContactsPage() {
       {/* Add Contact Modal */}
       {showAdd && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-6">
-          <div className="w-full max-w-md rounded-2xl border border-white/[0.1] bg-[#080d1a] p-6">
+          <div className="w-full max-w-md rounded-2xl border border-white/[0.1] bg-[#020509] p-6">
             <h3 className="text-lg font-black text-white mb-5">Add Contact</h3>
             <div className="space-y-3">
               <div>
@@ -425,7 +425,7 @@ export default function ContactsPage() {
       {/* Import Modal */}
       {showImport && (
         <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-6">
-          <div className="w-full max-w-lg rounded-2xl border border-white/[0.1] bg-[#080d1a] p-6">
+          <div className="w-full max-w-lg rounded-2xl border border-white/[0.1] bg-[#020509] p-6">
             <h3 className="text-lg font-black text-white mb-2">Bulk Import</h3>
             <p className="text-xs text-white/30 mb-4">Paste one contact per line: <span className="text-white/50 font-mono">email, firstname, lastname, tag1|tag2</span></p>
             <div className="mb-4 grid grid-cols-2 gap-2">

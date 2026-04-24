@@ -160,7 +160,7 @@ export default function ProjectWorkspace() {
         </div>
         <Link
           href="/winners"
-          className="px-6 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm text-white/60 hover:text-white hover:bg-white/10 transition font-black uppercase tracking-widest"
+          className="px-6 py-2.5 rounded-xl bg-white/[0.03] border border-white/10 text-sm text-white/60 hover:text-white hover:bg-white/10 transition font-black uppercase tracking-widest"
         >
           Back to Winner Finder
         </Link>
@@ -197,7 +197,7 @@ export default function ProjectWorkspace() {
         <div className="flex items-center gap-4">
           <Link
             href="/winners"
-            className="p-2 hover:bg-white/5 rounded-full transition text-white/30 hover:text-white"
+            className="p-2 hover:bg-white/[0.03] rounded-full transition text-white/30 hover:text-white"
           >
             <ChevronLeft className="w-5 h-5" />
           </Link>
@@ -270,7 +270,7 @@ export default function ProjectWorkspace() {
 
 function StatusBadge({ status }: { status: string }) {
   const styles: Record<string, string> = {
-    draft: "bg-white/5 border-white/10 text-white/30",
+    draft: "bg-white/[0.03] border-white/10 text-white/30",
     active: "bg-cyan-500/10 border-cyan-500/30 text-cyan-400",
     testing: "bg-yellow-500/10 border-yellow-500/30 text-yellow-400",
     scaling: "bg-green-500/10 border-green-500/30 text-green-400",
@@ -401,7 +401,7 @@ function SourcePhase({
           </span>
         </div>
         <div className="px-6 py-5 flex items-center gap-4">
-          <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-xl bg-white/[0.03] border border-white/10 flex items-center justify-center flex-shrink-0">
             <Globe className="w-5 h-5 text-white/30" />
           </div>
           <div className="flex-1 min-w-0">
@@ -415,7 +415,7 @@ function SourcePhase({
               href={project.sourceUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="p-2 rounded-lg bg-white/5 border border-white/10 text-white/30 hover:text-white hover:bg-white/10 transition flex-shrink-0"
+              className="p-2 rounded-lg bg-white/[0.03] border border-white/10 text-white/30 hover:text-white hover:bg-white/10 transition flex-shrink-0"
             >
               <ExternalLink className="w-4 h-4" />
             </a>
@@ -459,7 +459,7 @@ function SourcePhase({
             <p className="text-[10px] text-white/20 mt-1">This takes 10–20 seconds</p>
           </div>
           {/* Progress bar */}
-          <div className="w-64 h-1 bg-white/5 rounded-full overflow-hidden">
+          <div className="w-64 h-1 bg-white/[0.03] rounded-full overflow-hidden">
             <div
               className="h-full bg-cyan-500 rounded-full transition-all duration-700"
               style={{ width: `${((progressIdx + 1) / ANALYZE_PROGRESS_MESSAGES.length) * 100}%` }}
@@ -505,7 +505,7 @@ function AuditPhase({
         </div>
         <button
           onClick={() => onAdvance(1, {})}
-          className="px-6 py-3 rounded-xl bg-white/5 border border-white/10 text-sm font-black uppercase tracking-widest text-white/60 hover:text-white hover:bg-white/10 transition"
+          className="px-6 py-3 rounded-xl bg-white/[0.03] border border-white/10 text-sm font-black uppercase tracking-widest text-white/60 hover:text-white hover:bg-white/10 transition"
         >
           Back to Phase 1
         </button>
@@ -554,7 +554,7 @@ function AuditPhase({
         <div className="rounded-2xl bg-white/[0.025] border border-white/[0.07] p-8 flex flex-col items-center justify-center gap-2">
           <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/25">Opportunity Score</p>
           <p className={`text-7xl font-black tabular-nums ${scoreColor}`}>{audit.score}</p>
-          <div className="w-full bg-white/5 rounded-full h-1.5 mt-2">
+          <div className="w-full bg-white/[0.03] rounded-full h-1.5 mt-2">
             <div
               className={`h-full rounded-full transition-all duration-1000 ${audit.score >= 75 ? "bg-green-500" : audit.score >= 50 ? "bg-yellow-500" : "bg-red-500"}`}
               style={{ width: `${audit.score}%` }}
@@ -696,7 +696,7 @@ function StrategyPhase({
                   </span>
                   <button
                     onClick={() => handleCopy(hook.hook, i)}
-                    className="p-1.5 rounded-lg bg-white/5 border border-white/10 text-white/25 hover:text-white hover:bg-white/10 transition opacity-0 group-hover:opacity-100"
+                    className="p-1.5 rounded-lg bg-white/[0.03] border border-white/10 text-white/25 hover:text-white hover:bg-white/10 transition opacity-0 group-hover:opacity-100"
                   >
                     {copiedIdx === i ? (
                       <Check className="w-3.5 h-3.5 text-green-400" />
@@ -741,7 +741,7 @@ function StrategyPhase({
                         </span>
                       )}
                       {brief.platform && (
-                        <span className="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[9px] font-black text-white/30 uppercase tracking-widest">
+                        <span className="px-2 py-0.5 rounded bg-white/[0.03] border border-white/10 text-[9px] font-black text-white/30 uppercase tracking-widest">
                           {brief.platform}
                         </span>
                       )}
@@ -913,7 +913,7 @@ function ProducePhase({
                       <span className={`shrink-0 rounded-full px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.18em] ${
                         creative.state.executionTier === "elite"
                           ? "border border-cyan-400/30 bg-cyan-500/10 text-cyan-300"
-                          : "border border-white/10 bg-white/5 text-white/45"
+                          : "border border-white/10 bg-white/[0.03] text-white/45"
                       }`}>
                         {creative.state.executionTier}
                       </span>
@@ -1066,7 +1066,7 @@ function DeployPhase({
           <p className="text-xs text-white/30 mt-1">
             {allDone ? "Your campaign is ready to launch." : "Complete all items before launching."}
           </p>
-          <div className="w-48 bg-white/5 rounded-full h-1 mt-3">
+          <div className="w-48 bg-white/[0.03] rounded-full h-1 mt-3">
             <div
               className={`h-full rounded-full transition-all duration-700 ${allDone ? "bg-green-500" : "bg-cyan-500"}`}
               style={{ width: `${(completedCount / checklist.length) * 100}%` }}
@@ -1149,7 +1149,7 @@ function DeployPhase({
           </div>
           <Link
             href="/winners"
-            className="px-6 py-2.5 rounded-xl bg-white/5 border border-white/10 text-sm font-black uppercase tracking-widest text-white/50 hover:text-white hover:bg-white/10 transition"
+            className="px-6 py-2.5 rounded-xl bg-white/[0.03] border border-white/10 text-sm font-black uppercase tracking-widest text-white/50 hover:text-white hover:bg-white/10 transition"
           >
             Find More Winners
           </Link>

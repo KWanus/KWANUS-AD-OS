@@ -133,7 +133,7 @@ function TopFlowsTable({ flows }: { flows: EmailFlow[] }) {
                     <span className={`mt-1 inline-flex items-center rounded-full border px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.18em] ${
                       executionTier === "elite"
                         ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
-                        : "border-white/10 bg-white/5 text-white/45"
+                        : "border-white/10 bg-white/[0.03] text-white/45"
                     }`}>
                       {executionTier}
                     </span>
@@ -142,7 +142,7 @@ function TopFlowsTable({ flows }: { flows: EmailFlow[] }) {
                     <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold border ${
                       flow.status === "active"
                         ? "border-green-500/20 bg-green-500/10 text-green-400"
-                        : "border-white/10 bg-white/5 text-white/30"
+                        : "border-white/10 bg-white/[0.03] text-white/30"
                     }`}>
                       {flow.status}
                     </span>
@@ -202,7 +202,7 @@ function TopBroadcastsTable({ broadcasts }: { broadcasts: EmailBroadcast[] }) {
                     <span className={`mt-1 inline-flex items-center rounded-full border px-2 py-0.5 text-[9px] font-black uppercase tracking-[0.18em] ${
                       executionTier === "elite"
                         ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
-                        : "border-white/10 bg-white/5 text-white/45"
+                        : "border-white/10 bg-white/[0.03] text-white/45"
                     }`}>
                       {executionTier}
                     </span>

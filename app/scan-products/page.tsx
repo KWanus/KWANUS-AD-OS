@@ -124,7 +124,7 @@ export default function ScanProductsPage() {
       </header>
 
       <div className="flex-1 px-8 py-10 max-w-3xl mx-auto w-full">
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-6 mb-6">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 mb-6">
           <div className="mb-5">
             <label className="block mb-2 text-sm text-white/60">Execution Lane</label>
             <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
@@ -154,7 +154,7 @@ export default function ScanProductsPage() {
 
         {result && (
           <div className="space-y-4">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
               <p className="text-xs uppercase tracking-widest text-white/40 mb-1">Opportunity Score</p>
               <p className={`text-6xl font-bold ${scoreColor(result.score)}`}>
                 {result.score}
@@ -173,14 +173,14 @@ export default function ScanProductsPage() {
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
                 <p className="text-xs uppercase tracking-widest text-white/40 mb-1">Demand Score</p>
                 <p className={`text-4xl font-bold ${scoreColor(result.demandScore)}`}>
                   {result.demandScore}
                   <span className="text-lg text-white/30">/100</span>
                 </p>
               </div>
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-5">
                 <p className="text-xs uppercase tracking-widest text-white/40 mb-1">Competition</p>
                 <p className={`text-4xl font-bold ${result.competitionScore >= 70 ? "text-red-400" : result.competitionScore >= 40 ? "text-yellow-400" : "text-green-400"}`}>
                   {result.competitionScore}
@@ -190,7 +190,7 @@ export default function ScanProductsPage() {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
               <h3 className="text-sm font-semibold text-white/60 uppercase tracking-widest mb-3">Analysis</h3>
               <p className="text-sm text-white/70 leading-relaxed">{result.reasoning}</p>
             </div>

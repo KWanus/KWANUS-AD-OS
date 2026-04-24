@@ -57,7 +57,7 @@ interface EmailBroadcast {
 // ---------------------------------------------------------------------------
 
 const STATUS_CONFIG: Record<BroadcastStatus, { label: string; dot: string; text: string; bg: string; border: string }> = {
-  draft: { label: "Draft", dot: "bg-white/30", text: "text-white/40", bg: "bg-white/5", border: "border-white/10" },
+  draft: { label: "Draft", dot: "bg-white/30", text: "text-white/40", bg: "bg-white/[0.03]", border: "border-white/10" },
   scheduled: { label: "Scheduled", dot: "bg-blue-400", text: "text-blue-400", bg: "bg-blue-500/10", border: "border-blue-500/20" },
   sending: { label: "Sending", dot: "bg-yellow-400 animate-pulse", text: "text-yellow-400", bg: "bg-yellow-500/10", border: "border-yellow-500/20" },
   sent: { label: "Sent", dot: "bg-green-400", text: "text-green-400", bg: "bg-green-500/10", border: "border-green-500/20" },
@@ -140,7 +140,7 @@ function BroadcastCard({
             <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.2em] ${
               executionTier === "elite"
                 ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
-                : "border-white/10 bg-white/5 text-white/45"
+                : "border-white/10 bg-white/[0.03] text-white/45"
             }`}>
               {executionTier}
             </span>
@@ -380,9 +380,9 @@ function ComposeModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-[#0a1628] border border-white/[0.1] rounded-2xl shadow-2xl">
+      <div className="relative w-full max-w-2xl max-h-[90vh] overflow-y-auto bg-[#020509] border border-white/[0.1] rounded-2xl shadow-2xl">
         {/* Header */}
-        <div className="sticky top-0 bg-[#0a1628] border-b border-white/[0.06] px-6 py-4 flex items-center justify-between z-10">
+        <div className="sticky top-0 bg-[#020509] border-b border-white/[0.06] px-6 py-4 flex items-center justify-between z-10">
           <div>
             <h2 className="text-base font-black text-white">
               {editing ? "Edit Broadcast" : "New Broadcast"}
@@ -519,7 +519,7 @@ function ComposeModal({
         </div>
 
         {/* Footer */}
-        <div className="sticky bottom-0 bg-[#0a1628] border-t border-white/[0.06] px-6 py-4 flex gap-3">
+        <div className="sticky bottom-0 bg-[#020509] border-t border-white/[0.06] px-6 py-4 flex gap-3">
           <button onClick={onClose} className="flex-1 py-3 rounded-xl border border-white/[0.1] text-white/40 hover:text-white/60 text-sm font-semibold transition">
             Cancel
           </button>

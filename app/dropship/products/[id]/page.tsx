@@ -1181,7 +1181,7 @@ export default function DropshipProductPage() {
                         <button
                           key={s}
                           onClick={() => { void patchProduct({ status: s }); setShowStatusMenu(false); }}
-                          className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-bold hover:bg-white/5 transition ${STATUS_BADGE[s]}`}
+                          className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-bold hover:bg-white/[0.03] transition ${STATUS_BADGE[s]}`}
                         >
                           {product.status === s && <Check className="w-3 h-3" />}
                           {product.status !== s && <div className="w-3" />}

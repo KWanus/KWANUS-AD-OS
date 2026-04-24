@@ -40,7 +40,7 @@ export default function SignUpPage() {
             borderRadius: "12px",
           },
           elements: {
-            card: "shadow-2xl border border-white/[0.08] bg-[#07101f]",
+            card: "shadow-2xl border border-white/[0.08] bg-[#020509]",
             headerTitle: "text-white font-black",
             headerSubtitle: "text-white/40",
             socialButtonsBlockButton: "border border-white/[0.1] bg-white/[0.04] hover:bg-white/[0.07] text-white/70",

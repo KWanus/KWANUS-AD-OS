@@ -58,7 +58,7 @@ interface UserSettings {
 // ---------------------------------------------------------------------------
 
 const PLAN_CONFIG: Record<string, { label: string; color: string; bg: string; border: string; icon: React.ElementType }> = {
-  free:  { label: "Free",  color: "text-white/50",   bg: "bg-white/5",        border: "border-white/10",       icon: Zap },
+  free:  { label: "Free",  color: "text-white/50",   bg: "bg-white/[0.03]",        border: "border-white/10",       icon: Zap },
   pro:   { label: "Pro",   color: "text-cyan-400",   bg: "bg-cyan-500/10",    border: "border-cyan-500/20",    icon: Crown },
   elite: { label: "Elite", color: "text-purple-400", bg: "bg-purple-500/10",  border: "border-purple-500/20",  icon: Shield },
 };
@@ -611,7 +611,7 @@ export default function SettingsPage() {
                     ? "text-green-400 bg-green-500/10 border-green-500/20"
                     : status === "upgrade"
                     ? "text-purple-400 bg-purple-500/10 border-purple-500/20"
-                    : "text-white/20 bg-white/5 border-white/10"
+                    : "text-white/20 bg-white/[0.03] border-white/10"
                 }`}>
                   {status === "active" ? "Active" : status === "upgrade" ? "Elite" : "Soon"}
                 </span>
@@ -716,7 +716,7 @@ function OptInFormsManager() {
               {form.headline && <p className="text-[11px] text-white/35 mt-0.5">{form.headline}</p>}
             </div>
             <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border shrink-0 ${
-              form.active ? "text-green-400 bg-green-500/10 border-green-500/20" : "text-white/30 bg-white/5 border-white/10"
+              form.active ? "text-green-400 bg-green-500/10 border-green-500/20" : "text-white/30 bg-white/[0.03] border-white/10"
             }`}>
               {form.active ? "Active" : "Paused"}
             </span>
@@ -726,7 +726,7 @@ function OptInFormsManager() {
             <span className={`inline-flex items-center gap-1 rounded-full border px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.2em] ${
               (form.executionTier ?? "elite") === "elite"
                 ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
-                : "border-white/10 bg-white/5 text-white/45"
+                : "border-white/10 bg-white/[0.03] text-white/45"
             }`}>
               {(form.executionTier ?? "elite")}
             </span>

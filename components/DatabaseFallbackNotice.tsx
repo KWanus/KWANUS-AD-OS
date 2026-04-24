@@ -49,7 +49,7 @@ export default function DatabaseFallbackNotice({
             </Link>
             <Link
               href="/my-system"
-              className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/5 px-4 py-2.5 text-sm font-bold text-white/80 transition hover:bg-white/10"
+              className="inline-flex items-center gap-2 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-2.5 text-sm font-bold text-white/80 transition hover:bg-white/10"
             >
               <Sparkles className="h-4 w-4" />
               Check My System

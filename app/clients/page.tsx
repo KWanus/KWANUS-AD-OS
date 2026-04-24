@@ -72,7 +72,7 @@ interface Client {
 // ---------------------------------------------------------------------------
 
 const STAGES: Record<string, { label: string; color: string; bg: string; border: string }> = {
-  lead:      { label: "Lead",      color: "text-white/40",   bg: "bg-white/5",        border: "border-white/10" },
+  lead:      { label: "Lead",      color: "text-white/40",   bg: "bg-white/[0.03]",        border: "border-white/10" },
   qualified: { label: "Qualified", color: "text-cyan-400",   bg: "bg-cyan-500/10",    border: "border-cyan-500/20" },
   proposal:  { label: "Proposal",  color: "text-blue-400",   bg: "bg-blue-500/10",    border: "border-blue-500/20" },
   active:    { label: "Active",    color: "text-green-400",  bg: "bg-green-500/10",   border: "border-green-500/20" },

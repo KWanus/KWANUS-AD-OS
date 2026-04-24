@@ -540,7 +540,7 @@ export default function Dashboard() {
                     className="block rounded-2xl border border-white/[0.06] bg-black/20 p-4 transition hover:border-cyan-500/20 hover:bg-cyan-500/[0.04]"
                   >
                     <div className="flex items-center justify-between gap-3">
-                      <span className="rounded-full border border-white/10 bg-white/5 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-white/45">
+                      <span className="rounded-full border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.2em] text-white/45">
                         {index === 0 ? "Now" : `Next ${index}`}
                       </span>
                       {action.impact && <span className="text-[11px] font-bold text-cyan-300">{action.impact}</span>}
@@ -727,7 +727,7 @@ export default function Dashboard() {
               <Link
                 key={hub.label}
                 href={hub.href}
-                className={`rounded-3xl border bg-gradient-to-br p-5 transition hover:border-white/20 hover:bg-white/[0.05] ${ACCENTS[hub.accent]}`}
+                className={`rounded-3xl border bg-gradient-to-br p-5 transition hover:border-white/20 hover:bg-white/[0.05] hover:scale-[1.01] hover:shadow-[0_0_30px_rgba(6,182,212,0.04)] ${ACCENTS[hub.accent]}`}
               >
                 <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-black/20">
                   <hub.icon className="h-5 w-5" />
@@ -750,7 +750,7 @@ export default function Dashboard() {
               <Link
                 key={tool.label}
                 href={tool.href}
-                className="rounded-3xl border border-white/[0.07] bg-white/[0.03] p-5 transition hover:border-white/[0.15] hover:bg-white/[0.05]"
+                className="rounded-3xl border border-white/[0.07] bg-white/[0.03] backdrop-blur-sm p-5 transition hover:border-white/[0.15] hover:bg-white/[0.05] hover:shadow-[0_0_30px_rgba(6,182,212,0.04)]"
               >
                 <div className={`mb-4 flex h-11 w-11 items-center justify-center rounded-2xl border bg-gradient-to-br ${ACCENTS[tool.accent]}`}>
                   <tool.icon className="h-5 w-5" />

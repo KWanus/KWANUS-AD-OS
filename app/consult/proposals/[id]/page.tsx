@@ -780,7 +780,7 @@ export default function ProposalDetailPage() {
                 <ChevronDown className="w-3 h-3 opacity-50" />
               </button>
               {showStatusDrop && (
-                <div className="absolute right-0 top-full mt-1 z-30 bg-[#0b1120] border border-white/[0.1] rounded-xl overflow-hidden shadow-xl">
+                <div className="absolute right-0 top-full mt-1 z-30 bg-[#020509] border border-white/[0.1] rounded-xl overflow-hidden shadow-xl">
                   {STATUSES.map((s) => (
                     <button
                       key={s}

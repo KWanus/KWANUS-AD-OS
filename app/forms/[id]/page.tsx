@@ -104,7 +104,7 @@ export default function PublicFormPage({ params }: { params: Promise<{ id: strin
             <span className={`inline-flex items-center gap-1 rounded-full border px-3 py-1 text-[10px] font-black uppercase tracking-[0.24em] ${
               executionTier === "elite"
                 ? "border-cyan-500/30 bg-cyan-500/10 text-cyan-300"
-                : "border-white/10 bg-white/5 text-white/45"
+                : "border-white/10 bg-white/[0.03] text-white/45"
             }`}>
               {executionTier} opt-in
             </span>

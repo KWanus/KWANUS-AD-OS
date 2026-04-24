@@ -413,7 +413,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
   return (
     <div className="h-screen bg-[#020509] flex flex-col overflow-hidden">
       {/* Top bar */}
-      <header className="h-12 shrink-0 bg-[#07101f] border-b border-white/[0.07] flex items-center px-4 gap-3 z-10">
+      <header className="h-12 shrink-0 bg-[#020509]/80 backdrop-blur-2xl border-b border-white/[0.07] flex items-center px-4 gap-3 z-10">
         <button onClick={() => router.push(`/websites/${siteId}`)} className="flex items-center gap-1.5 text-white/30 hover:text-white/60 transition shrink-0">
           <ArrowLeft className="w-3.5 h-3.5" />
           <span className="text-xs font-medium hidden sm:block">{site.name}</span>
@@ -445,7 +445,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
           className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-black transition-all ${
             site.published
               ? "bg-green-500/15 text-green-300 border border-green-500/30 hover:bg-red-500/15 hover:text-red-300 hover:border-red-500/30"
-              : "bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:opacity-90"
+              : "bg-gradient-to-r from-cyan-500 to-blue-500 text-white hover:from-cyan-400 hover:to-blue-400 shadow-[0_0_15px_rgba(6,182,212,0.15)]"
           }`}
         >
           {publishing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Globe className="w-3.5 h-3.5" />}
@@ -461,7 +461,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
       </header>
 
       {!previewMode && (
-        <div className="shrink-0 border-b border-white/[0.07] bg-[#081120] px-4 py-3">
+        <div className="shrink-0 border-b border-white/[0.07] bg-[#020509]/60 backdrop-blur-xl px-4 py-3">
           <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
             <div>
               <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Publish Readiness</p>
@@ -520,7 +520,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
       {/* Main 3-panel layout */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {!previewMode && pageAudit && (
-          <div className="shrink-0 border-b border-white/[0.07] bg-[#060d19] px-4 py-3">
+          <div className="shrink-0 border-b border-white/[0.07] bg-[#020509]/60 backdrop-blur-xl px-4 py-3">
             <div className="flex flex-col gap-3 xl:flex-row xl:items-center xl:justify-between">
               <div className="flex flex-wrap items-center gap-3">
                 <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-3 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-cyan-200">
@@ -581,7 +581,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
             {pageAudit.issues.length > 0 && (
               <div className="mt-3 flex flex-wrap gap-2">
                 {pageAudit.issues.slice(0, 3).map((issue) => (
-                  <span key={issue} className="rounded-full border border-white/[0.08] bg-black/20 px-3 py-1 text-[11px] text-white/60">
+                  <span key={issue} className="rounded-full border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm px-3 py-1 text-[11px] text-white/50">
                     {issue}
                   </span>
                 ))}
@@ -594,7 +594,8 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
 
         {/* Left panel — block list + add */}
         {!previewMode && (
-          <aside className="w-56 shrink-0 border-r border-white/[0.07] flex flex-col bg-[#07101f]">
+          <aside className="w-56 shrink-0 border-r border-white/[0.07] flex flex-col bg-[#020509]/60 backdrop-blur-xl relative">
+            <div className="absolute top-0 right-0 w-[1px] h-full bg-gradient-to-b from-cyan-500/15 via-transparent to-transparent pointer-events-none" />
             {/* Tabs */}
             <div className="flex border-b border-white/[0.07] shrink-0">
               {([["blocks", Layers, "Layers"] as const, ["add", Plus, "Add"] as const, ["seo", Search, "SEO"] as const]).map(([key, Icon, label]) => (
@@ -654,7 +655,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                     <button
                       key={b.type}
                       onClick={() => addBlock(b.type)}
-                      className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-white/[0.05] border border-transparent hover:border-white/[0.08] text-left transition-all group"
+                      className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl hover:bg-white/[0.05] border border-transparent hover:border-cyan-500/15 hover:shadow-[inset_0_0_20px_rgba(6,182,212,0.03)] text-left transition-all group"
                     >
                       <span className="text-xl">{b.emoji}</span>
                       <div>
@@ -933,7 +934,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
                 </div>
 
                 {/* Google preview */}
-                <div className="border border-white/[0.06] rounded-xl p-3 space-y-1 bg-white/[0.01]">
+                <div className="border border-white/[0.06] rounded-xl p-3 space-y-1 bg-white/[0.02] backdrop-blur-sm">
                   <p className="text-[9px] font-bold text-white/25 uppercase tracking-widest mb-2">Google Preview</p>
                   <p className="text-[13px] font-semibold text-blue-400 truncate">{page.seoTitle || page.title}</p>
                   <p className="text-[10px] text-green-500/70 truncate">himalaya.app/s/{site.slug}</p>
@@ -945,10 +946,10 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
         )}
 
         {/* Center — canvas */}
-        <main className="flex-1 overflow-y-auto bg-[#040810]">
+        <main className="flex-1 overflow-y-auto bg-[#020509]">
           {page.blocks.length === 0 && !previewMode ? (
             <div className="flex flex-col items-center justify-center h-full text-center px-4">
-              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/15 to-purple-600/15 border border-white/10 flex items-center justify-center text-3xl mb-5">🏗️</div>
+              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/10 to-purple-600/10 border border-white/[0.08] backdrop-blur-sm flex items-center justify-center text-3xl mb-5 shadow-[0_0_40px_rgba(6,182,212,0.08)]">🏗️</div>
               <h2 className="text-xl font-black text-white mb-2">Start building</h2>
               <p className="text-sm text-white/35 max-w-xs mb-6">Add blocks from the left panel to start designing your page.</p>
               <button onClick={() => setTab("add")} className="flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition">
@@ -981,7 +982,8 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
 
         {/* Right panel — properties */}
         {!previewMode && (
-          <aside className="w-64 shrink-0 border-l border-white/[0.07] bg-[#07101f] overflow-hidden flex flex-col">
+          <aside className="w-64 shrink-0 border-l border-white/[0.07] bg-[#020509]/60 backdrop-blur-xl overflow-hidden flex flex-col relative">
+            <div className="absolute top-0 left-0 w-[1px] h-full bg-gradient-to-b from-purple-500/15 via-transparent to-transparent pointer-events-none" />
             <div className="flex border-b border-white/[0.07] shrink-0">
               {([
                 ["copilot", Search, "Copilot"] as const,
@@ -1023,8 +1025,11 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
               />
             ) : (
               <div className="flex flex-col items-center justify-center h-full text-center px-4">
-                <Settings2 className="w-8 h-8 text-white/15 mb-3" />
+                <div className="w-14 h-14 rounded-2xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center mb-4">
+                  <Settings2 className="w-6 h-6 text-white/10" />
+                </div>
                 <p className="text-xs text-white/25 font-semibold">Click a block to edit its properties</p>
+                <p className="text-[10px] text-white/15 mt-1">Or use the Copilot tab for AI assistance</p>
               </div>
             )}
           </aside>

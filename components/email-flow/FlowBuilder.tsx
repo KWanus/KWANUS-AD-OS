@@ -602,7 +602,7 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
                     <button
                       key={s}
                       onClick={() => handleStatusChange(s)}
-                      className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-bold hover:bg-white/5 transition ${c.text} ${flowMeta.status === s ? "bg-white/[0.04]" : ""}`}
+                      className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-bold hover:bg-white/[0.03] transition ${c.text} ${flowMeta.status === s ? "bg-white/[0.04]" : ""}`}
                     >
                       <div className={`w-1.5 h-1.5 rounded-full ${c.dot}`} />
                       {c.label}

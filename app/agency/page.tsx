@@ -217,7 +217,7 @@ function Modal({ children, onClose }: { children: React.ReactNode; onClose: () =
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-[#06090f] border border-white/[0.08] rounded-2xl p-6 space-y-6">
+      <div className="relative w-full max-w-3xl max-h-[90vh] overflow-y-auto bg-[#020509] border border-white/[0.08] rounded-2xl p-6 space-y-6">
         <button
           onClick={onClose}
           className="absolute top-4 right-4 p-1.5 rounded-lg hover:bg-white/[0.06] text-white/40 hover:text-white transition-all"

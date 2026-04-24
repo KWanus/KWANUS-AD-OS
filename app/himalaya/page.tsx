@@ -48,10 +48,10 @@ export default function HimalayaEntryPage() {
             <button
               key={p.key}
               onClick={() => router.push(p.href)}
-              className={`group relative w-full text-left rounded-2xl border bg-gradient-to-br ${p.gradient} ${p.border} p-6 md:p-8 transition-all duration-200 cursor-pointer`}
+              className={`group relative w-full text-left rounded-2xl border bg-gradient-to-br ${p.gradient} ${p.border} p-6 md:p-8 transition-all duration-200 cursor-pointer backdrop-blur-sm hover:scale-[1.01] hover:shadow-[0_0_30px_rgba(6,182,212,0.06)]`}
             >
               <div className="flex items-start gap-5">
-                <div className={`mt-1 p-3 rounded-xl bg-white/5 ${p.iconColor}`}>
+                <div className={`mt-1 p-3 rounded-xl bg-white/[0.03] backdrop-blur-sm border border-white/[0.06] ${p.iconColor}`}>
                   <p.icon className="w-7 h-7" />
                 </div>
                 <div className="flex-1 min-w-0">

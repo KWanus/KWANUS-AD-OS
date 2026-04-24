@@ -132,7 +132,7 @@ export default function ScanBusinessesPage() {
       </header>
 
       <div className="flex-1 px-8 py-10 max-w-3xl mx-auto w-full">
-        <div className="rounded-2xl border border-white/10 bg-white/5 p-6 mb-6">
+        <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6 mb-6">
           <div className="mb-5">
             <label className="block mb-2 text-sm text-white/60">Execution Lane</label>
             <ExecutionTierPicker value={executionTier} onChange={setExecutionTier} />
@@ -163,7 +163,7 @@ export default function ScanBusinessesPage() {
 
         {result && (
           <div className="space-y-4">
-            <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+            <div className="rounded-2xl border border-white/10 bg-white/[0.03] p-6">
               <p className="text-xs uppercase tracking-widest text-white/40 mb-1">Overall Score</p>
               <p className={`text-6xl font-bold ${scoreColor(result.overallScore)}`}>
                 {result.overallScore}

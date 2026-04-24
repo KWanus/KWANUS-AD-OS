@@ -551,7 +551,7 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
                         void patchClient("pipelineStage", s);
                         setShowStageMenu(false);
                       }}
-                      className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-bold hover:bg-white/5 transition ${STAGE_COLORS[s] ?? "text-white/40"} ${client.pipelineStage === s ? "bg-white/[0.04]" : ""}`}
+                      className={`w-full flex items-center gap-2 px-3 py-2 text-xs font-bold hover:bg-white/[0.03] transition ${STAGE_COLORS[s] ?? "text-white/40"} ${client.pipelineStage === s ? "bg-white/[0.04]" : ""}`}
                     >
                       {client.pipelineStage === s && <Check className="w-3 h-3" />}
                       {!client.pipelineStage.includes(s) && <div className="w-3" />}

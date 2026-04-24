@@ -141,7 +141,7 @@ function SkillRunner({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-      <div className="bg-[#07101f] border border-white/[0.1] rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+      <div className="bg-[#020509] border border-white/[0.1] rounded-3xl w-full max-w-2xl max-h-[90vh] flex flex-col">
         {/* Header */}
         <div className="flex items-center justify-between px-6 py-4 border-b border-white/[0.07] shrink-0">
           <div className="flex items-center gap-3">
@@ -205,9 +205,9 @@ function SkillRunner({
                       onChange={(e) => setInput((p) => ({ ...p, [field.key]: e.target.value }))}
                       className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500/50 transition appearance-none"
                     >
-                      <option value="" className="bg-[#07101f]">Select…</option>
+                      <option value="" className="bg-[#020509]">Select…</option>
                       {field.options?.map((o) => (
-                        <option key={o} value={o} className="bg-[#07101f]">{o}</option>
+                        <option key={o} value={o} className="bg-[#020509]">{o}</option>
                       ))}
                     </select>
                   ) : (

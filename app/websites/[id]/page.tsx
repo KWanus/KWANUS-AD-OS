@@ -519,7 +519,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
             <div>
               <h1 className="text-2xl font-black text-white">{site.name}</h1>
               <div className="flex items-center gap-2 mt-1 flex-wrap">
-                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold ${site.published ? "bg-green-500/15 text-green-400 border border-green-500/20" : "bg-white/5 text-white/30 border border-white/10"}`}>
+                <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-md text-[10px] font-bold ${site.published ? "bg-green-500/15 text-green-400 border border-green-500/20" : "bg-white/[0.03] text-white/30 border border-white/10"}`}>
                   <span className={`w-1.5 h-1.5 rounded-full ${site.published ? "bg-green-400 animate-pulse" : "bg-white/30"}`} />
                   {site.published ? "Live" : "Draft"}
                 </span>
@@ -1204,7 +1204,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                     <span className="px-1.5 py-0.5 rounded text-[9px] font-black text-cyan-400 bg-cyan-500/10 border border-cyan-500/20 uppercase">Home</span>
                   )}
                   {!page.published && (
-                    <span className="px-1.5 py-0.5 rounded text-[9px] font-black text-white/30 bg-white/5 border border-white/10 uppercase">Hidden</span>
+                    <span className="px-1.5 py-0.5 rounded text-[9px] font-black text-white/30 bg-white/[0.03] border border-white/10 uppercase">Hidden</span>
                   )}
                 </div>
                 <p className="text-xs text-white/30 mt-0.5">/s/{site.slug}/{page.slug === "home" ? "" : page.slug} · {page.views.toLocaleString()} views</p>
