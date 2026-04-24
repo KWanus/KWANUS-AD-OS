@@ -142,6 +142,34 @@ export default function CreativeStudioPage({ params }: { params: Promise<{ id: s
     link.click();
   }
 
+  async function downloadPng() {
+    if (!selectedTemplate) return;
+    let svgStr: string;
+    try {
+      svgStr = selectedTemplate.render(values);
+    } catch { return; }
+    const blob = new Blob([svgStr], { type: "image/svg+xml" });
+    const url = URL.createObjectURL(blob);
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.width || 1080;
+      canvas.height = img.height || 1080;
+      const ctx = canvas.getContext("2d");
+      if (!ctx) return;
+      ctx.drawImage(img, 0, 0);
+      canvas.toBlob(pngBlob => {
+        if (!pngBlob) return;
+        const a = document.createElement("a");
+        a.href = URL.createObjectURL(pngBlob);
+        a.download = `${selectedTemplate?.name ?? "ad"}-${Date.now()}.png`;
+        a.click();
+      }, "image/png");
+      URL.revokeObjectURL(url);
+    };
+    img.src = url;
+  }
+
   function copy(text: string, copyId: string) {
     navigator.clipboard.writeText(text);
     setCopiedId(copyId);
@@ -286,7 +314,11 @@ export default function CreativeStudioPage({ params }: { params: Promise<{ id: s
               <div className="flex gap-2 mt-3">
                 <button onClick={downloadImage}
                   className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-t-border text-xs font-bold text-t-text-muted hover:text-t-text transition">
-                  <Download className="w-3.5 h-3.5" /> Download
+                  <Download className="w-3.5 h-3.5" /> SVG
+                </button>
+                <button onClick={() => void downloadPng()}
+                  className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl border border-t-border text-xs font-bold text-t-text-muted hover:text-t-text transition">
+                  <ImageIcon className="w-3.5 h-3.5" /> PNG
                 </button>
                 <button onClick={() => void saveCreative()} disabled={saving}
                   className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-xs font-bold text-[#0c0a08] disabled:opacity-30 transition">

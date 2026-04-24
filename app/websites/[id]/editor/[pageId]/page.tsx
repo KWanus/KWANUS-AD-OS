@@ -32,6 +32,8 @@ import {
   ExternalLink,
   Search,
   Wand2,
+  Undo2,
+  Redo2,
 } from "lucide-react";
 import BlockRenderer, { Block, BlockType } from "@/components/site-builder/BlockRenderer";
 import BlockPropsEditor from "@/components/site-builder/BlockPropsEditor";
@@ -179,6 +181,8 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
     pricing?: string; guarantee?: string; location?: string;
   } | null>(null);
   const saveTimer = useRef<NodeJS.Timeout | null>(null);
+  const [history, setHistory] = useState<Block[][]>([]);
+  const [historyIndex, setHistoryIndex] = useState(-1);
 
   const sensors = useSensors(
     useSensor(PointerSensor),
@@ -259,10 +263,56 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
     [siteId, pageId]
   );
 
+  function pushHistory(newBlocks: Block[]) {
+    setHistory((prev) => {
+      const trimmed = prev.slice(0, historyIndex + 1);
+      return [...trimmed, newBlocks];
+    });
+    setHistoryIndex((prev) => prev + 1);
+  }
+
+  function undo() {
+    if (historyIndex <= 0) return;
+    const prevIndex = historyIndex - 1;
+    const prevBlocks = history[prevIndex];
+    if (!prevBlocks) return;
+    setHistoryIndex(prevIndex);
+    setPage((prev) => prev ? { ...prev, blocks: prevBlocks } : prev);
+    scheduleSave(prevBlocks);
+  }
+
+  function redo() {
+    if (historyIndex >= history.length - 1) return;
+    const nextIndex = historyIndex + 1;
+    const nextBlocks = history[nextIndex];
+    if (!nextBlocks) return;
+    setHistoryIndex(nextIndex);
+    setPage((prev) => prev ? { ...prev, blocks: nextBlocks } : prev);
+    scheduleSave(nextBlocks);
+  }
+
   function updateBlocks(blocks: Block[]) {
     setPage((prev) => prev ? { ...prev, blocks } : prev);
+    pushHistory(blocks);
     scheduleSave(blocks);
   }
+
+  // Keyboard shortcuts for undo/redo
+  useEffect(() => {
+    function handleKeyDown(e: KeyboardEvent) {
+      if ((e.metaKey || e.ctrlKey) && e.key === "z") {
+        e.preventDefault();
+        if (e.shiftKey) {
+          redo();
+        } else {
+          undo();
+        }
+      }
+    }
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [historyIndex, history]);
 
   function addBlock(type: BlockType) {
     const lib = BLOCK_LIBRARY.find((b) => b.type === type);
@@ -457,6 +507,26 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
         <span className="text-sm font-black text-white/70 truncate">{page.title}</span>
 
         <div className="flex-1" />
+
+        {/* Undo / Redo */}
+        <div className="flex items-center gap-1 shrink-0">
+          <button
+            onClick={undo}
+            disabled={historyIndex <= 0}
+            title="Undo (Cmd+Z)"
+            className="p-1.5 rounded-lg text-white/30 hover:text-white/60 disabled:opacity-20 disabled:cursor-not-allowed transition"
+          >
+            <Undo2 className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={redo}
+            disabled={historyIndex >= history.length - 1}
+            title="Redo (Cmd+Shift+Z)"
+            className="p-1.5 rounded-lg text-white/30 hover:text-white/60 disabled:opacity-20 disabled:cursor-not-allowed transition"
+          >
+            <Redo2 className="w-3.5 h-3.5" />
+          </button>
+        </div>
 
         {/* Save indicator */}
         <div className="flex items-center gap-1.5 shrink-0">

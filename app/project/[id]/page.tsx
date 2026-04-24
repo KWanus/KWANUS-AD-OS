@@ -32,7 +32,7 @@ type PackageData = {
   compliance?: string[];
 };
 
-type Tab = "overview" | "website" | "ads" | "scripts" | "emails" | "analytics" | "tools";
+type Tab = "overview" | "website" | "ads" | "scripts" | "emails" | "analytics" | "orders" | "tools";
 
 export default function ProjectHubPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -48,6 +48,8 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
   const [toolResult, setToolResult] = useState<{ name: string; data: unknown } | null>(null);
   const [toolLoading, setToolLoading] = useState<string | null>(null);
   const [previewMode, setPreviewMode] = useState<"desktop" | "mobile">("desktop");
+  const [orders, setOrders] = useState<{id: string; customerEmail: string; customerName?: string; amountCents: number; status: string; createdAt: string; productName?: string}[]>([]);
+  const [ordersLoading, setOrdersLoading] = useState(false);
 
   useEffect(() => { if (isLoaded && !isSignedIn) router.replace("/sign-in"); }, [isLoaded, isSignedIn, router]);
 
@@ -66,6 +68,16 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
       if (sRes.status === "fulfilled" && sRes.value.ok) setScripts(sRes.value.scripts ?? []);
     }).finally(() => setLoading(false));
   }, [isSignedIn, id]);
+
+  useEffect(() => {
+    if (tab !== "orders" || !isSignedIn) return;
+    setOrdersLoading(true);
+    fetch("/api/orders")
+      .then(r => r.json())
+      .then(data => { if (data.ok) setOrders(data.orders ?? []); })
+      .catch(() => {})
+      .finally(() => setOrdersLoading(false));
+  }, [tab, isSignedIn]);
 
   function copy(text: string, copyId: string) {
     navigator.clipboard.writeText(text);
@@ -120,6 +132,7 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
     { id: "scripts", label: "Scripts", icon: Play, count: scripts.length, done: hasScripts },
     { id: "emails", label: "Emails", icon: Mail, count: p?.emailFlow?.sent ?? 0, done: hasEmails },
     { id: "analytics", label: "Analytics", icon: BarChart2, count: p?.site?.views ?? 0 },
+    { id: "orders", label: "Orders", icon: DollarSign },
     { id: "tools", label: "Tools", icon: Wrench },
   ];
 
@@ -609,6 +622,66 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
               <Link href="/dashboard"
                 className="flex items-center justify-center gap-2 rounded-xl border border-t-border bg-t-bg-raised px-4 py-3.5 text-sm font-bold text-t-text-muted hover:text-t-text hover:border-[#f5a623]/15 transition">
                 <BarChart2 className="w-4 h-4" /> Full Dashboard
+              </Link>
+            </div>
+          )}
+
+          {/* ═══ ORDERS ═══ */}
+          {tab === "orders" && (
+            <div className="space-y-5">
+              <div>
+                <h2 className="text-lg font-black">Orders</h2>
+                <p className="text-xs text-t-text-faint">Track customer purchases and revenue.</p>
+              </div>
+
+              {/* Revenue stat card */}
+              <div className="rounded-xl border border-emerald-500/15 bg-emerald-500/[0.03] p-5 text-center">
+                <DollarSign className="w-5 h-5 text-emerald-400 mx-auto mb-2" />
+                <p className="text-3xl font-black text-emerald-400">
+                  ${(orders.reduce((sum, o) => sum + o.amountCents, 0) / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                </p>
+                <p className="text-xs text-emerald-400/60">Total Revenue</p>
+              </div>
+
+              {ordersLoading ? (
+                <div className="rounded-xl border border-t-border bg-t-bg-raised p-8 text-center">
+                  <Loader2 className="w-6 h-6 text-[#f5a623] animate-spin mx-auto mb-3" />
+                  <p className="text-sm font-bold text-t-text-muted">Loading orders...</p>
+                </div>
+              ) : orders.length === 0 ? (
+                <div className="rounded-xl border border-t-border bg-t-bg-raised p-8 text-center">
+                  <DollarSign className="w-6 h-6 text-t-text-faint mx-auto mb-3" />
+                  <p className="text-sm font-bold text-t-text-muted">No orders yet</p>
+                  <p className="text-[10px] text-t-text-faint mt-1">Orders will appear here once customers start purchasing.</p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  {orders.map(order => (
+                    <div key={order.id} className="rounded-xl border border-t-border bg-t-bg-raised px-5 py-3.5 flex items-center justify-between">
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-bold truncate">{order.customerName || order.customerEmail}</p>
+                        {order.customerName && <p className="text-[10px] text-t-text-faint truncate">{order.customerEmail}</p>}
+                        {order.productName && <p className="text-[10px] text-t-text-faint mt-0.5">{order.productName}</p>}
+                      </div>
+                      <div className="flex items-center gap-3 shrink-0 ml-4">
+                        <span className="text-sm font-black">${(order.amountCents / 100).toFixed(2)}</span>
+                        <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${
+                          order.status === "paid" || order.status === "completed"
+                            ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
+                            : order.status === "refunded"
+                            ? "bg-red-500/10 text-red-400 border border-red-500/20"
+                            : "bg-t-bg-card text-t-text-faint border border-t-border"
+                        }`}>{order.status}</span>
+                        <span className="text-[10px] text-t-text-faint">{new Date(order.createdAt).toLocaleDateString()}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+
+              <Link href="/orders"
+                className="flex items-center justify-center gap-2 rounded-xl border border-t-border bg-t-bg-raised px-4 py-3.5 text-sm font-bold text-t-text-muted hover:text-t-text hover:border-[#f5a623]/15 transition">
+                <DollarSign className="w-4 h-4" /> Full Order Management
               </Link>
             </div>
           )}
