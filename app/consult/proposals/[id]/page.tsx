@@ -281,7 +281,7 @@ function ProposalContentTab({ proposal }: { proposal: Proposal }) {
       {ai.cta && (
         <div className="bg-gradient-to-r from-cyan-500/10 to-purple-600/10 border border-cyan-500/20 rounded-2xl p-6 text-center">
           <p className="text-sm text-white/50 mb-3">Call to Action</p>
-          <div className="inline-block bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black text-sm px-8 py-3 rounded-xl opacity-70 cursor-default">
+          <div className="inline-block bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-black text-sm px-8 py-3 rounded-xl opacity-70 cursor-default">
             {ai.cta}
           </div>
         </div>
@@ -372,7 +372,7 @@ function EditDetailsTab({ proposal, onSaved }: { proposal: Proposal; onSaved: ()
       <button
         onClick={handleSave}
         disabled={saving}
-        className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black px-5 py-2.5 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
+        className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-black px-5 py-2.5 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
       >
         {saving && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
         Save Changes
@@ -487,7 +487,7 @@ function SendTrackTab({ proposal, onRefresh }: { proposal: Proposal; onRefresh: 
           <button
             onClick={handleSend}
             disabled={!email.trim() || sending}
-            className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black px-4 py-2 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
+            className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-black px-4 py-2 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
           >
             {sending ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Send className="w-3.5 h-3.5" />}
             Mark as Sent
@@ -589,7 +589,7 @@ function GenerateNewTab({ proposal, onRefresh }: { proposal: Proposal; onRefresh
         <button
           onClick={handleRegenerate}
           disabled={regenerating}
-          className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black px-5 py-2.5 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
+          className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-black px-5 py-2.5 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
         >
           {regenerating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
           Regenerate Proposal

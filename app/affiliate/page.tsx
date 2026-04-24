@@ -384,7 +384,7 @@ function MyOffersTab() {
         <p className="text-sm text-white/30">{offers.length} offer{offers.length !== 1 ? "s" : ""} tracked</p>
         <button
           onClick={() => setShowAdd((v) => !v)}
-          className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black px-4 py-2 rounded-xl hover:scale-[1.02] transition-all"
+          className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-black px-4 py-2 rounded-xl hover:scale-[1.02] transition-all"
         >
           <Plus className="w-4 h-4" /> Add Offer
         </button>
@@ -443,7 +443,7 @@ function MyOffersTab() {
               Cancel
             </button>
             <button type="submit" disabled={saving}
-              className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black px-4 py-2 rounded-xl disabled:opacity-50">
+              className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-black px-4 py-2 rounded-xl disabled:opacity-50">
               {saving ? <Spinner /> : null} Save Offer
             </button>
           </div>
@@ -596,7 +596,7 @@ function ResearchTab() {
         </div>
         <div className="col-span-3">
           <button type="submit" disabled={loading}
-            className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black px-6 py-2.5 rounded-xl disabled:opacity-50 hover:scale-[1.02] transition-all">
+            className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-black px-6 py-2.5 rounded-xl disabled:opacity-50 hover:scale-[1.02] transition-all">
             {loading ? <><Spinner /> Researching...</> : <><Target className="w-4 h-4" /> Run Research</>}
           </button>
         </div>

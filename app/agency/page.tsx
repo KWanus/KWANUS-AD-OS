@@ -411,7 +411,7 @@ function AuditsTab() {
           <button
             type="submit"
             disabled={submitting}
-            className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black px-4 py-2 rounded-xl disabled:opacity-50 flex items-center justify-center gap-2"
+            className="bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-black px-4 py-2 rounded-xl disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {submitting ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Auditing...</> : "Run Audit"}
           </button>
@@ -666,7 +666,7 @@ function StrategyTab() {
                 <button
                   onClick={() => generateStrategy(audit.id)}
                   disabled={generating === audit.id}
-                  className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-black px-3 py-1.5 rounded-xl disabled:opacity-50 flex items-center gap-1.5 shrink-0"
+                  className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-xs font-black px-3 py-1.5 rounded-xl disabled:opacity-50 flex items-center gap-1.5 shrink-0"
                 >
                   {generating === audit.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <ArrowRight className="w-3 h-3" />}
                   Generate
@@ -859,7 +859,7 @@ function ProposalsTab() {
                 <button
                   onClick={() => generateProposal(audit.id)}
                   disabled={generating === audit.id}
-                  className="bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-black px-3 py-1.5 rounded-xl disabled:opacity-50 flex items-center gap-1.5 shrink-0"
+                  className="bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-xs font-black px-3 py-1.5 rounded-xl disabled:opacity-50 flex items-center gap-1.5 shrink-0"
                 >
                   {generating === audit.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <ArrowRight className="w-3 h-3" />}
                   Generate
@@ -999,7 +999,7 @@ function PricingTab() {
           <button
             type="submit"
             disabled={loading}
-            className="sm:col-span-3 bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black px-4 py-2 rounded-xl disabled:opacity-50 flex items-center justify-center gap-2"
+            className="sm:col-span-3 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-black px-4 py-2 rounded-xl disabled:opacity-50 flex items-center justify-center gap-2"
           >
             {loading ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Generating...</> : "Generate Pricing"}
           </button>

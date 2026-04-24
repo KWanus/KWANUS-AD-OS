@@ -196,7 +196,7 @@ export default function StoreDashboard({ params }: { params: Promise<{ id: strin
                     </a>
                     <button
                         onClick={() => setShowAddModal(true)}
-                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:opacity-90 transition shadow-[0_0_20px_rgba(6,182,212,0.3)]"
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white transition shadow-[0_0_20px_rgba(6,182,212,0.3)]"
                     >
                         <Plus className="w-3.5 h-3.5" />
                         Add Product
@@ -401,7 +401,7 @@ export default function StoreDashboard({ params }: { params: Promise<{ id: strin
                                 <button
                                     onClick={() => void createProduct()}
                                     disabled={saving}
-                                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-sm font-black text-white disabled:opacity-50"
+                                    className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-sm font-black text-white disabled:opacity-50"
                                 >
                                     {saving ? "Adding..." : "Add Product"}
                                 </button>

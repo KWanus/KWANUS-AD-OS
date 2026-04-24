@@ -386,7 +386,7 @@ export default function AutomationsBuilder() {
                     </button>
                     <button
                         onClick={() => void handlePublish()}
-                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:opacity-90 transition"
+                        className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-black bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white transition"
                     >
                         <Play className="w-3.5 h-3.5" />
                         {automationStatus === "active" ? "Published" : "Save & Publish"}
@@ -531,7 +531,7 @@ export default function AutomationsBuilder() {
                             <button
                                 onClick={handleAutoGenerate}
                                 disabled={!selectedCampaignId || loading}
-                                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-purple-600 text-[#020509] text-xs font-black disabled:opacity-50 transition shadow-[0_0_15px_rgba(6,182,212,0.3)] hover:shadow-[0_0_20px_rgba(6,182,212,0.5)]"
+                                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 text-[#020509] text-xs font-black disabled:opacity-50 transition shadow-[0_0_15px_rgba(6,182,212,0.3)] hover:shadow-[0_0_20px_rgba(6,182,212,0.5)]"
                             >
                                 GENERATE FLOW
                             </button>

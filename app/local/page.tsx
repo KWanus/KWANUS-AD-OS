@@ -142,7 +142,7 @@ function PrimaryButton({ onClick, disabled, loading, children }: {
     <button
       onClick={onClick}
       disabled={disabled || loading}
-      className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black px-4 py-2 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
+      className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-black px-4 py-2 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
     >
       {loading && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
       {children}
@@ -1049,7 +1049,7 @@ export default function LocalPage() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-1">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center">
               <MapPin className="w-4 h-4 text-white" />
             </div>
             <h1 className="text-xl font-black text-white">Local OS</h1>

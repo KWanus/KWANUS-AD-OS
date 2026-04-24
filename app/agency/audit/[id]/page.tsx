@@ -190,7 +190,7 @@ function EmptyGenerate({ icon: Icon, title, subtitle, btnLabel, onGenerate, load
       <button
         onClick={onGenerate}
         disabled={loading}
-        className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black px-5 py-2.5 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
+        className="flex items-center gap-2 bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-black px-5 py-2.5 rounded-xl hover:opacity-90 disabled:opacity-30 transition"
       >
         {loading ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
         {btnLabel}

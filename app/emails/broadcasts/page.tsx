@@ -526,7 +526,7 @@ function ComposeModal({
           <button
             onClick={() => void handleSave()}
             disabled={saving || !name.trim() || !subject.trim()}
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition"
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-bold shadow-[0_0_15px_rgba(6,182,212,0.15)] disabled:opacity-40 disabled:cursor-not-allowed transition"
           >
             {saving ? (
               <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</>
@@ -558,7 +558,7 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
       </p>
       <button
         onClick={onCreateClick}
-        className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition-opacity"
+        className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-bold shadow-[0_0_15px_rgba(6,182,212,0.15)] transition-opacity"
       >
         <Plus className="w-4 h-4" />
         Create First Broadcast
@@ -650,7 +650,7 @@ export default function BroadcastsPage() {
           {broadcasts.length > 0 && (
             <button
               onClick={openCreate}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition-opacity"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-bold shadow-[0_0_15px_rgba(6,182,212,0.15)] transition-opacity"
             >
               <Plus className="w-4 h-4" />
               New Broadcast

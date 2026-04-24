@@ -512,7 +512,7 @@ export default function NewSitePage() {
                   {error && <p className="text-sm font-semibold text-red-400">{error}</p>}
 
                   <button type="button" onClick={generateFromResearch} disabled={!businessName.trim()}
-                    className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 py-4 font-black text-white shadow-[0_0_20px_rgba(6,182,212,0.3)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">
+                    className="flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 py-4 font-black text-white shadow-[0_0_20px_rgba(6,182,212,0.3)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50">
                     <Wand2 className="h-5 w-5" /> Generate Site That Beats Competitors
                   </button>
                 </div>
@@ -605,7 +605,7 @@ export default function NewSitePage() {
               <button
                 type="submit"
                 disabled={loading || !businessName.trim() || !niche.trim() || !location.trim()}
-                className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 py-4 font-black text-white shadow-[0_0_20px_rgba(6,182,212,0.3)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                className="mt-2 flex w-full items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 py-4 font-black text-white shadow-[0_0_20px_rgba(6,182,212,0.3)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : <Wand2 className="h-5 w-5" />}
                 Generate Site
@@ -701,7 +701,7 @@ export default function NewSitePage() {
               <button
                 type="submit"
                 disabled={loading || !name || !slug}
-                className="mt-4 flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 py-4 font-black text-white shadow-[0_0_20px_rgba(6,182,212,0.3)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
+                className="mt-4 flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 py-4 font-black text-white shadow-[0_0_20px_rgba(6,182,212,0.3)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-50"
               >
                 {loading ? <Loader2 className="h-5 w-5 animate-spin" /> : "Create Site"}
               </button>

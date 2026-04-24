@@ -471,7 +471,7 @@ export default function OnboardingPage() {
         {/* Logo */}
         <div className="text-center mb-10">
           <div className="inline-flex items-center gap-3 mb-4">
-            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shadow-[0_0_30px_rgba(6,182,212,0.4)]">
+            <div className="w-10 h-10 rounded-2xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center shadow-[0_0_30px_rgba(6,182,212,0.4)]">
               <Zap className="w-5 h-5 text-white" />
             </div>
             <div className="text-left">
@@ -517,7 +517,7 @@ export default function OnboardingPage() {
               <button
                 onClick={() => businessType && setStep(2)}
                 disabled={!businessType}
-                className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                className="flex items-center gap-2 px-8 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-black hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition"
               >
                 Continue <ArrowRight className="w-4 h-4" />
               </button>
@@ -1018,7 +1018,7 @@ export default function OnboardingPage() {
                   <button
                     onClick={() => void handleGenerate()}
                     disabled={generating || !canProceed}
-                    className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                    className="flex-1 flex items-center justify-center gap-2 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-black hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition"
                   >
                     {generating ? (
                       <><Loader2 className="w-4 h-4 animate-spin" />{progress || "Generating…"}</>
@@ -1095,7 +1095,7 @@ export default function OnboardingPage() {
                     router.push("/");
                   }
                 }}
-                className="flex items-center justify-center gap-2 px-8 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white font-black hover:opacity-90 transition"
+                className="flex items-center justify-center gap-2 px-8 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white font-black hover:opacity-90 transition"
               >
                 <Zap className="w-4 h-4" />
                 Go to My Dashboard

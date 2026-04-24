@@ -379,7 +379,7 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
         <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/10 to-purple-600/10 border border-white/[0.08] backdrop-blur-sm flex items-center justify-center shadow-[0_0_40px_rgba(6,182,212,0.08)]">
           <Mail className="w-9 h-9 text-cyan-400/70" />
         </div>
-        <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
+        <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center">
           <Plus className="w-3.5 h-3.5 text-white" />
         </div>
       </div>

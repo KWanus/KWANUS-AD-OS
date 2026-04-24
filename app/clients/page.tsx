@@ -177,7 +177,7 @@ function ClientRow({ client, onDelete, onUpdate, selected, onToggle }: { client:
   return (
     <Link
       href={`/clients/${client.id}`}
-      className="group flex items-center gap-4 px-5 py-4 hover:bg-white/[0.025] border-b border-white/[0.04] transition-colors"
+      className="group flex items-center gap-4 px-5 py-4 hover:bg-white/[0.025] hover:shadow-[inset_0_0_30px_rgba(6,182,212,0.02)] border-b border-white/[0.04] transition-all"
     >
       {/* Select checkbox */}
       <input
@@ -315,7 +315,7 @@ function SkeletonRow() {
 function EmptyState({ filtered }: { filtered: boolean }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center px-4">
-      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-purple-600/20 border border-white/10 flex items-center justify-center mb-5">
+      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-purple-600/10 border border-white/[0.08] backdrop-blur-sm flex items-center justify-center mb-5 shadow-[0_0_30px_rgba(6,182,212,0.06)]">
         <Users className="w-7 h-7 text-cyan-400/70" />
       </div>
       {filtered ? (
@@ -331,7 +331,7 @@ function EmptyState({ filtered }: { filtered: boolean }) {
           </p>
           <Link
             href="/clients/new"
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition-opacity"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-bold transition shadow-[0_0_15px_rgba(6,182,212,0.15)]"
           >
             Add Your First Client
           </Link>
@@ -606,7 +606,7 @@ export default function ClientsPage() {
         <div className="flex items-center gap-2 mb-4">
           <Link
             href="/clients/new"
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition"
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-xs font-bold hover:opacity-90 transition"
           >
             <Users className="w-3.5 h-3.5" /> Add Client
           </Link>

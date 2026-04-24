@@ -333,7 +333,7 @@ export default function ProductsPage() {
               </Link>
               <button
                 onClick={() => setTab("add")}
-                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition"
+                className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-bold shadow-[0_0_15px_rgba(6,182,212,0.15)] transition"
               >
                 <Plus className="w-4 h-4" /> Add Product
               </button>
@@ -412,7 +412,7 @@ export default function ProductsPage() {
               <div className="flex flex-wrap gap-3">
                 <button
                   onClick={() => setTab("add")}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)]"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)]"
                 >
                   <Plus className="w-4 h-4" />
                   Add Product
@@ -486,7 +486,7 @@ export default function ProductsPage() {
                 <button
                   onClick={() => void scanProduct()}
                   disabled={!url.trim() || scanning}
-                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 disabled:opacity-30 transition flex items-center gap-2"
+                  className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-bold shadow-[0_0_15px_rgba(6,182,212,0.15)] disabled:opacity-30 transition flex items-center gap-2"
                 >
                   {scanning ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
                   {scanning ? "Scanning…" : "Scan"}
@@ -564,7 +564,7 @@ export default function ProductsPage() {
                   <button
                     onClick={() => void saveProduct()}
                     disabled={saving || saved}
-                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 disabled:opacity-40 transition"
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-bold shadow-[0_0_15px_rgba(6,182,212,0.15)] disabled:opacity-40 transition"
                   >
                     {saving ? <Loader2 className="w-4 h-4 animate-spin" /> : saved ? <CheckCircle className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
                     {saved ? "Saved!" : "Save to Library"}

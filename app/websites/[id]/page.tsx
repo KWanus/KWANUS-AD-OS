@@ -549,7 +549,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
               className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-black transition-all ${
                 site.published
                   ? "bg-white/[0.06] border border-white/[0.1] text-white/50 hover:bg-red-500/10 hover:text-red-400 hover:border-red-500/20"
-                  : "bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:opacity-90 shadow-[0_0_20px_rgba(6,182,212,0.2)]"
+                  : "bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white shadow-[0_0_20px_rgba(6,182,212,0.2)]"
               }`}
             >
               {publishing ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Globe className="w-3.5 h-3.5" />}

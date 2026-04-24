@@ -183,7 +183,7 @@ export default function AutomationDetailPage({ params }: { params: Promise<{ id:
         </div>
         <div className="flex items-center gap-3">
           <button onClick={triggerManually} disabled={triggering}
-            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:opacity-90 transition disabled:opacity-40">
+            className="flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white transition disabled:opacity-40">
             {triggering ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Play className="w-3.5 h-3.5" />}
             Trigger Now
           </button>

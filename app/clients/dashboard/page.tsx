@@ -424,7 +424,7 @@ export default function ClientDashboardPage() {
               <p className="text-sm text-white/30 font-medium mb-4">Add your first client to see dashboard data.</p>
               <Link
                 href="/clients/new"
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 transition-opacity"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-bold shadow-[0_0_15px_rgba(6,182,212,0.15)] transition-opacity"
               >
                 Add First Client
               </Link>

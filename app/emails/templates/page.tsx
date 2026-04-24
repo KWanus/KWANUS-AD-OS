@@ -151,7 +151,7 @@ function PreviewModal({
           </div>
           <button
             onClick={() => { onUse(template); onClose(); }}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-sm font-black text-white hover:opacity-90 transition shadow-[0_0_20px_rgba(6,182,212,0.2)]"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-sm font-black text-white hover:opacity-90 transition shadow-[0_0_20px_rgba(6,182,212,0.2)]"
           >
             Use Template
             <ArrowRight className="w-3.5 h-3.5" />

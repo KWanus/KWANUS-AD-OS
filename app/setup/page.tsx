@@ -260,7 +260,7 @@ export default function SetupPage() {
         <div className="rounded-[32px] border border-white/[0.08] bg-[radial-gradient(circle_at_top,rgba(6,182,212,0.08),transparent_40%),linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.02))] p-6 sm:p-8">
           <div className="mb-8">
             <div className="mb-4 h-2 overflow-hidden rounded-full bg-white/[0.06]">
-              <div className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 transition-all duration-500" style={{ width: progress }} />
+              <div className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-500" style={{ width: progress }} />
             </div>
             <div className="flex items-center justify-between gap-3 text-[11px] font-black uppercase tracking-[0.24em] text-white/32">
               <span>Business OS Setup</span>
@@ -521,7 +521,7 @@ export default function SetupPage() {
                 {!completed && (
                   <div className="mt-8 h-2 w-full max-w-xl overflow-hidden rounded-full bg-white/[0.06]">
                     <div
-                      className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-purple-600 transition-all duration-700"
+                      className="h-full rounded-full bg-gradient-to-r from-cyan-500 to-blue-500 transition-all duration-700"
                       style={{ width: `${((statusIndex + 1) / STATUS_MESSAGES.length) * 100}%` }}
                     />
                   </div>

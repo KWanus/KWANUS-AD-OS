@@ -269,7 +269,7 @@ function BatchScanPanel({ mode }: { mode: string }) {
       <button
         onClick={() => void runBatch()}
         disabled={running || !urls.trim()}
-        className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 disabled:opacity-30 transition"
+        className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-xs font-bold hover:opacity-90 disabled:opacity-30 transition"
       >
         {running ? "Scanning..." : `Scan ${urls.split("\n").filter(u => u.trim()).length} URLs`}
       </button>
@@ -514,7 +514,7 @@ function ScanPageInner() {
                         ? "consultant"
                         : "operator"
                     )}
-                    className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)]"
+                    className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)]"
                   >
                     <Sparkles className="w-4 h-4" />
                     Set Recommended Mode
@@ -534,7 +534,7 @@ function ScanPageInner() {
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center gap-2 mb-2">
-            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center">
               <Search className="w-4 h-4 text-white" />
             </div>
             <h1 className="text-xl font-black text-white">Scan & Build</h1>
@@ -616,7 +616,7 @@ function ScanPageInner() {
           <button
             onClick={() => void runScan()}
             disabled={!url.trim() || loading}
-            className="px-5 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed transition flex items-center gap-2"
+            className="px-5 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-bold shadow-[0_0_15px_rgba(6,182,212,0.15)] disabled:opacity-30 disabled:cursor-not-allowed transition flex items-center gap-2"
           >
             {loading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Search className="w-4 h-4" />}
             {loading ? "Scanning…" : "Scan"}

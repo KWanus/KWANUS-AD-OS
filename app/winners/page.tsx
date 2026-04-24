@@ -229,7 +229,7 @@ export default function WinnerFinder() {
                             <button
                                 onClick={() => void runResearch()}
                                 disabled={!researchNiche.trim() || researching}
-                                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                                className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(6,182,212,0.22)] transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
                             >
                                 {researching ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
                                 {researching ? "Researching..." : `Run ${executionTier === "elite" ? "Elite" : "Core"} Research`}

@@ -252,7 +252,7 @@ function CreateFormModal({
             Cancel
           </button>
           <button onClick={() => void handleCreate()} disabled={creating || !name.trim()}
-            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-sm font-black text-white hover:opacity-90 transition disabled:opacity-40">
+            className="flex-1 flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-sm font-black text-white hover:opacity-90 transition disabled:opacity-40">
             {creating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Plus className="w-3.5 h-3.5" />}
             {creating ? "Creating..." : "Create Form"}
           </button>
@@ -349,7 +349,7 @@ export default function FormsManagerPage() {
                 placeholder="Search forms..." className="bg-transparent text-sm text-white placeholder-white/20 focus:outline-none w-full" />
             </div>
             <button onClick={() => setShowCreate(true)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-sm font-black text-white hover:opacity-90 transition shadow-[0_0_20px_rgba(6,182,212,0.2)]">
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-sm font-black text-white hover:opacity-90 transition shadow-[0_0_20px_rgba(6,182,212,0.2)]">
               <Plus className="w-4 h-4" /> New Form
             </button>
           </div>

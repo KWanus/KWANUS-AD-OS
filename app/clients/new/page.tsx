@@ -572,7 +572,7 @@ export default function NewClientPage() {
               <button
                 onClick={() => void handleCreate()}
                 disabled={creating || !form.name.trim()}
-                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition"
+                className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-bold shadow-[0_0_15px_rgba(6,182,212,0.15)] disabled:opacity-40 disabled:cursor-not-allowed transition"
               >
                 {creating ? (
                   <><Loader2 className="w-4 h-4 animate-spin" /> Creating...</>

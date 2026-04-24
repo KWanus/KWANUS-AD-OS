@@ -769,7 +769,7 @@ function AnalyzeContent() {
                 <button
                   onClick={handleAnalyze}
                   disabled={isLoading || !url.trim()}
-                  className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 hover:opacity-90 px-6 py-2.5 text-sm font-black text-white transition shadow-lg disabled:shadow-none"
+                  className="flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 disabled:from-white/5 disabled:to-white/5 disabled:text-white/20 hover:opacity-90 px-6 py-2.5 text-sm font-black text-white transition shadow-lg disabled:shadow-none"
                 >
                   {isLoading ? (
                     <>

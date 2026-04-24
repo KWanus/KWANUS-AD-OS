@@ -188,7 +188,7 @@ export default function StartPage() {
 
   return (
     <main className="min-h-screen bg-[#020509] text-white flex flex-col">
-      <header className="px-8 py-6 border-b border-white/10">
+      <header className="px-8 py-6 border-b border-white/[0.07] bg-[#020509]/80 backdrop-blur-2xl">
         <Link href="/" className="text-cyan-400 text-sm hover:underline">← Back to Dashboard</Link>
         <h1 className="text-2xl font-bold mt-2">Get Started</h1>
         <p className="text-sm text-white/40 mt-1">Answer 3 questions. Get your complete launch kit.</p>
@@ -235,7 +235,7 @@ export default function StartPage() {
 
             <button
               onClick={() => setStep("model")}
-              className="w-full rounded-xl bg-cyan-500 hover:bg-cyan-400 px-6 py-4 text-base font-bold text-[#0a0f1e] transition"
+              className="w-full rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 px-6 py-4 text-base font-bold text-[#020509] transition shadow-[0_0_20px_rgba(6,182,212,0.2)]"
             >
               Build My Kit →
             </button>
@@ -253,7 +253,7 @@ export default function StartPage() {
             <div className="space-y-3">
               <button
                 onClick={() => selectModel("affiliate")}
-                className="w-full rounded-2xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/50 hover:bg-cyan-500/5 p-6 text-left transition group"
+                className="w-full rounded-2xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/50 hover:bg-cyan-500/5 hover:shadow-[inset_0_0_30px_rgba(6,182,212,0.03)] p-6 text-left transition group"
               >
                 <div className="flex items-start gap-4">
                   <span className="text-3xl shrink-0">🔗</span>
@@ -272,7 +272,7 @@ export default function StartPage() {
               </button>
               <button
                 onClick={() => selectModel("dropship")}
-                className="w-full rounded-2xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/50 hover:bg-cyan-500/5 p-6 text-left transition group"
+                className="w-full rounded-2xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/50 hover:bg-cyan-500/5 hover:shadow-[inset_0_0_30px_rgba(6,182,212,0.03)] p-6 text-left transition group"
               >
                 <div className="flex items-start gap-4">
                   <span className="text-3xl shrink-0">📦</span>
@@ -321,7 +321,7 @@ export default function StartPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {NICHES.map((n) => (
                 <button key={n.id} onClick={() => handleAffNiche(n.id)}
-                  className="rounded-2xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/50 hover:bg-cyan-500/5 p-5 text-left transition group">
+                  className="rounded-2xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/50 hover:bg-cyan-500/5 hover:shadow-[inset_0_0_30px_rgba(6,182,212,0.03)] p-5 text-left transition group">
                   <span className="text-2xl mb-2 block">{n.icon}</span>
                   <p className="text-sm font-semibold text-white group-hover:text-cyan-300 transition">{n.label}</p>
                   <p className="text-xs text-white/40 mt-1">
@@ -348,7 +348,7 @@ export default function StartPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {DROP_NICHES.map((n) => (
                 <button key={n.id} onClick={() => handleDropNiche(n.id)}
-                  className="rounded-2xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/50 hover:bg-cyan-500/5 p-5 text-left transition group">
+                  className="rounded-2xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/50 hover:bg-cyan-500/5 hover:shadow-[inset_0_0_30px_rgba(6,182,212,0.03)] p-5 text-left transition group">
                   <span className="text-2xl mb-2 block">{n.icon}</span>
                   <p className="text-sm font-semibold text-white group-hover:text-cyan-300 transition">{n.label}</p>
                   <p className="text-xs text-white/40 mt-1">{n.sub}</p>
@@ -369,7 +369,7 @@ export default function StartPage() {
               {BUDGET_OPTIONS.map((b) => (
                 <button key={b.value}
                   onClick={() => model === "affiliate" ? handleAffBudget(b.value) : handleDropBudget(b.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/50 hover:bg-cyan-500/5 p-5 text-left flex items-center justify-between transition group">
+                  className="w-full rounded-2xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/50 hover:bg-cyan-500/5 hover:shadow-[inset_0_0_30px_rgba(6,182,212,0.03)] p-5 text-left flex items-center justify-between transition group">
                   <div>
                     <p className="text-base font-bold text-white group-hover:text-cyan-300 transition">{b.label}</p>
                     <p className="text-xs text-white/40 mt-0.5">{b.sub}</p>
@@ -394,7 +394,7 @@ export default function StartPage() {
                   onClick={() => model === "affiliate"
                     ? handleAffPlatform(p.id as AffPlatform)
                     : handleDropPlatform(p.id as DropPlatform)}
-                  className="w-full rounded-2xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/50 hover:bg-cyan-500/5 p-5 text-left flex items-center justify-between transition group">
+                  className="w-full rounded-2xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/50 hover:bg-cyan-500/5 hover:shadow-[inset_0_0_30px_rgba(6,182,212,0.03)] p-5 text-left flex items-center justify-between transition group">
                   <div>
                     <p className="text-base font-bold text-white group-hover:text-cyan-300 transition">{p.label}</p>
                     <p className="text-xs text-white/40 mt-0.5">{p.sub}</p>

@@ -130,7 +130,7 @@ function MessageBubble({ message }: { message: Message }) {
 
   return (
     <div className="flex gap-3 mb-5">
-      <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shrink-0 mt-0.5">
+      <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center shrink-0 mt-0.5">
         <Zap className="w-3.5 h-3.5 text-white" />
       </div>
       <div className="max-w-[85%] bg-white/[0.035] border border-white/[0.08] rounded-2xl rounded-tl-sm px-4 py-3">
@@ -310,7 +310,7 @@ function CopilotPageContent() {
         <div className="flex items-center justify-between mb-6">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center">
+              <div className="w-6 h-6 rounded-lg bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center">
                 <Zap className="w-3 h-3 text-white" />
               </div>
               <h1 className="text-lg font-black text-white">Himalaya Copilot</h1>
@@ -455,7 +455,7 @@ function CopilotPageContent() {
           ))}
           {streaming && messages[messages.length - 1]?.content === "" && (
             <div className="flex gap-3 mb-5">
-              <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shrink-0">
+              <div className="w-7 h-7 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center shrink-0">
                 <Zap className="w-3.5 h-3.5 text-white" />
               </div>
               <div className="bg-white/[0.035] border border-white/[0.08] rounded-2xl rounded-tl-sm px-4 py-3">
@@ -497,7 +497,7 @@ function CopilotPageContent() {
           <button
             onClick={() => void sendMessage()}
             disabled={!input.trim() || streaming}
-            className="p-2 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white hover:opacity-90 disabled:opacity-30 disabled:cursor-not-allowed transition shrink-0"
+            className="p-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white disabled:opacity-30 disabled:cursor-not-allowed transition shrink-0"
           >
             {streaming ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
           </button>

@@ -362,7 +362,7 @@ export default function WebsitesDashboard() {
                         <>
                             <button
                                 onClick={() => router.push("/websites/new")}
-                                className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black shadow-[0_0_30px_rgba(6,182,212,0.3)] hover:shadow-[0_0_50px_rgba(6,182,212,0.45)] hover:scale-[1.02] transition-all duration-200"
+                                className="flex items-center gap-2 px-6 py-3 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-sm font-black shadow-[0_0_30px_rgba(6,182,212,0.3)] hover:shadow-[0_0_50px_rgba(6,182,212,0.45)] hover:scale-[1.02] transition-all duration-200"
                             >
                                 <Plus className="w-4 h-4" />
                                 Create New Site
@@ -697,7 +697,7 @@ export default function WebsitesDashboard() {
                         <div className="flex flex-wrap gap-3 justify-center">
                             <button
                                 onClick={() => router.push("/websites/new")}
-                                className="flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black shadow-[0_0_30px_rgba(6,182,212,0.25)] hover:scale-[1.02] transition-all"
+                                className="flex items-center gap-2 px-8 py-3.5 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-sm font-black shadow-[0_0_30px_rgba(6,182,212,0.25)] hover:scale-[1.02] transition-all"
                             >
                                 <Sparkles className="w-4 h-4" />
                                 Build My First Funnel

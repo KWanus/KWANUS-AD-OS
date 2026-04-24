@@ -271,7 +271,7 @@ export default function CampaignsPage() {
         <div className="mb-6 flex items-center gap-3">
           <button
             onClick={() => setShowCreate(v => !v)}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition shrink-0"
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-xs font-bold hover:opacity-90 transition shrink-0"
           >
             <Plus className="w-3.5 h-3.5" /> New Campaign
           </button>
@@ -314,7 +314,7 @@ export default function CampaignsPage() {
               <button
                 onClick={() => void handleCreate()}
                 disabled={creating || !newName.trim()}
-                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-bold hover:opacity-90 disabled:opacity-40 transition"
+                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-bold shadow-[0_0_15px_rgba(6,182,212,0.15)] disabled:opacity-40 transition"
               >
                 {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : "Create"}
               </button>
@@ -432,7 +432,7 @@ export default function CampaignsPage() {
               Paste a product or competitor URL into the Copilot. In seconds, you&apos;ll get a full ad package — hooks, briefs, scripts, landing page copy, and email sequences.
             </p>
             <Link href="/analyze"
-              className="flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black shadow-[0_0_40px_rgba(6,182,212,0.3),0_8px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_0_60px_rgba(6,182,212,0.4)] hover:scale-[1.03] transition-all duration-300">
+              className="flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-sm font-black shadow-[0_0_40px_rgba(6,182,212,0.3),0_8px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_0_60px_rgba(6,182,212,0.4)] hover:scale-[1.03] transition-all duration-300">
               <Zap className="w-4 h-4" />
               Analyze Your First Market →
             </Link>

@@ -13,7 +13,7 @@ export default function SignUpPage() {
 
       {/* Logo */}
       <Link href="/" className="flex items-center gap-2.5 mb-4 group">
-        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.4)]">
+        <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center shadow-[0_0_20px_rgba(6,182,212,0.4)]">
           <Zap className="w-4.5 h-4.5 text-white" />
         </div>
         <div className="flex flex-col leading-none">
@@ -48,7 +48,7 @@ export default function SignUpPage() {
             dividerText: "text-white/30",
             formFieldLabel: "text-white/40 text-xs font-bold uppercase tracking-widest",
             formFieldInput: "bg-white/[0.04] border border-white/[0.08] text-white placeholder-white/20 focus:border-cyan-500/50",
-            formButtonPrimary: "bg-gradient-to-r from-cyan-500 to-purple-600 hover:opacity-90 font-black text-sm",
+            formButtonPrimary: "bg-gradient-to-r from-cyan-500 to-blue-500 hover:opacity-90 font-black text-sm",
             footerActionLink: "text-cyan-400 hover:text-cyan-300",
           },
         }}

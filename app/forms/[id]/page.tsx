@@ -148,7 +148,7 @@ export default function PublicFormPage({ params }: { params: Promise<{ id: strin
               disabled={submitting || !email}
               className={`w-full flex items-center justify-center gap-2 py-3.5 rounded-xl text-white font-bold text-sm hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition ${
                 executionTier === "elite"
-                  ? "bg-gradient-to-r from-cyan-500 to-purple-600 shadow-[0_0_30px_rgba(6,182,212,0.18)]"
+                  ? "bg-gradient-to-r from-cyan-500 to-blue-500 shadow-[0_0_30px_rgba(6,182,212,0.18)]"
                   : "bg-gradient-to-r from-cyan-500 to-blue-500"
               }`}
             >
