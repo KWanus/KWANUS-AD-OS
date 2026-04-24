@@ -25,6 +25,8 @@ import {
   Webhook,
   TrendingUp,
   MessageSquareText,
+  Download,
+  Trash2,
 } from "lucide-react";
 
 // ---------------------------------------------------------------------------
@@ -154,6 +156,9 @@ export default function SettingsPage() {
   const [oauthStatus, setOauthStatus] = useState<OAuthStatusResponse["platforms"] | null>(null);
   const [stripeStatus, setStripeStatus] = useState<{ connected: boolean; verified?: boolean; accountId?: string; businessName?: string; email?: string } | null>(null);
   const [stripeLoading, setStripeLoading] = useState(false);
+  const [deleteConfirmEmail, setDeleteConfirmEmail] = useState("");
+  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     fetch("/api/settings")
@@ -1005,6 +1010,94 @@ export default function SettingsPage() {
                 </span>
               </div>
             ))}
+          </div>
+        </Section>
+
+        {/* Danger Zone — GDPR data portability & right to erasure */}
+        <Section title="Danger Zone" sub="Export your data or permanently delete your account.">
+          <div className="p-5 space-y-4">
+            {/* Export Data */}
+            <div className="flex items-center justify-between p-4 rounded-xl border border-white/[0.08] bg-white/[0.02]">
+              <div>
+                <p className="text-xs font-bold text-white/70">Export My Data</p>
+                <p className="text-[10px] text-white/30 mt-0.5">Download a JSON file with all your account data.</p>
+              </div>
+              <a
+                href="/api/account/export"
+                download
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-white/[0.12] bg-white/[0.04] text-white/60 text-xs font-bold hover:bg-white/[0.08] hover:text-white transition"
+              >
+                <Download className="w-3 h-3" />
+                Export
+              </a>
+            </div>
+
+            {/* Delete Account */}
+            <div className="p-4 rounded-xl border border-red-500/20 bg-red-500/[0.04]">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-xs font-bold text-red-400">Delete My Account</p>
+                  <p className="text-[10px] text-white/30 mt-0.5">Permanently delete your account and all associated data. This cannot be undone.</p>
+                </div>
+                {!showDeleteConfirm && (
+                  <button
+                    onClick={() => setShowDeleteConfirm(true)}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-red-500/30 bg-red-500/10 text-red-400 text-xs font-bold hover:bg-red-500/20 transition"
+                  >
+                    <Trash2 className="w-3 h-3" />
+                    Delete
+                  </button>
+                )}
+              </div>
+              {showDeleteConfirm && (
+                <div className="mt-3 space-y-3 pt-3 border-t border-red-500/10">
+                  <p className="text-[11px] text-red-300/70">Type your email address to confirm deletion:</p>
+                  <input
+                    type="email"
+                    value={deleteConfirmEmail}
+                    onChange={(e) => setDeleteConfirmEmail(e.target.value)}
+                    placeholder={settings.email || "your@email.com"}
+                    className="w-full bg-white/[0.04] border border-red-500/20 rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none focus:border-red-500/40 transition"
+                  />
+                  <div className="flex gap-2">
+                    <button
+                      onClick={() => { setShowDeleteConfirm(false); setDeleteConfirmEmail(""); }}
+                      className="flex-1 py-2 rounded-lg border border-white/[0.08] text-white/30 text-xs font-bold hover:text-white/50 transition"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      disabled={deleting || deleteConfirmEmail !== settings.email}
+                      onClick={async () => {
+                        setDeleting(true);
+                        try {
+                          const res = await fetch("/api/account/delete", {
+                            method: "POST",
+                            headers: { "Content-Type": "application/json" },
+                            body: JSON.stringify({ confirmEmail: deleteConfirmEmail }),
+                          });
+                          const data = await res.json() as { ok: boolean; error?: string };
+                          if (data.ok) {
+                            toast.success("Account deleted. Redirecting...");
+                            window.location.href = "/";
+                          } else {
+                            toast.error(data.error || "Deletion failed");
+                          }
+                        } catch {
+                          toast.error("Deletion failed");
+                        } finally {
+                          setDeleting(false);
+                        }
+                      }}
+                      className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-lg bg-red-500/20 border border-red-500/30 text-red-400 text-xs font-bold hover:bg-red-500/30 transition disabled:opacity-40"
+                    >
+                      {deleting ? <Loader2 className="w-3 h-3 animate-spin" /> : <Trash2 className="w-3 h-3" />}
+                      Permanently Delete
+                    </button>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </Section>
       </main>
