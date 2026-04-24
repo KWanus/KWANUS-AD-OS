@@ -26,6 +26,10 @@ import {
   Send,
   AlertTriangle,
   Layers,
+  CheckSquare,
+  Square,
+  Receipt,
+  BarChart3,
 } from "lucide-react";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 
@@ -65,6 +69,38 @@ interface Client {
 }
 
 type ExecutionTier = "core" | "elite";
+
+interface ChecklistItem {
+  id: string;
+  task: string;
+  dueDay: number;
+  done: boolean;
+  completedAt?: string;
+}
+
+interface ClientInvoice {
+  id: string;
+  amount: number;
+  status: "pending" | "paid" | "overdue";
+  dueDate: string;
+  paidAt?: string;
+  lineItems: { description: string; amount: number }[];
+}
+
+interface ClientProjectData {
+  id: string;
+  clientId: string;
+  name: string;
+  deliverables: { name: string; completed: boolean }[];
+  completedCount: number;
+  totalCount: number;
+}
+
+interface WorkspaceData {
+  checklist: ChecklistItem[];
+  invoices: ClientInvoice[];
+  project: ClientProjectData | null;
+}
 
 // ---------------------------------------------------------------------------
 // Config
@@ -401,6 +437,8 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
   const [editingField, setEditingField] = useState<string | null>(null);
   const [editValue, setEditValue] = useState("");
   const [showStageMenu, setShowStageMenu] = useState(false);
+  const [workspace, setWorkspace] = useState<WorkspaceData | null>(null);
+  const [workspaceLoading, setWorkspaceLoading] = useState(false);
 
   useEffect(() => {
     fetch(`/api/clients/${id}`)
@@ -412,6 +450,51 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
       .catch(console.error)
       .finally(() => setLoading(false));
   }, [id]);
+
+  // Fetch workspace data (checklist, invoices, project)
+  useEffect(() => {
+    setWorkspaceLoading(true);
+    fetch(`/api/clients/${id}/workspace`)
+      .then((r) => r.json() as Promise<{ ok: boolean } & WorkspaceData>)
+      .then((data) => {
+        if (data.ok) {
+          setWorkspace({ checklist: data.checklist ?? [], invoices: data.invoices ?? [], project: data.project ?? null });
+        }
+      })
+      .catch(console.error)
+      .finally(() => setWorkspaceLoading(false));
+  }, [id]);
+
+  async function toggleChecklist(itemId: string, done: boolean) {
+    // Optimistic update
+    setWorkspace((prev) => {
+      if (!prev) return prev;
+      return {
+        ...prev,
+        checklist: prev.checklist.map((item) =>
+          item.id === itemId ? { ...item, done, completedAt: done ? new Date().toISOString() : undefined } : item
+        ),
+      };
+    });
+    try {
+      await fetch(`/api/clients/${id}/workspace`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ action: "toggle_checklist", itemId, done }),
+      });
+    } catch {
+      // Revert on failure
+      setWorkspace((prev) => {
+        if (!prev) return prev;
+        return {
+          ...prev,
+          checklist: prev.checklist.map((item) =>
+            item.id === itemId ? { ...item, done: !done } : item
+          ),
+        };
+      });
+    }
+  }
 
   async function patchClient(field: string, value: unknown) {
     try {
@@ -648,6 +731,151 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
               </div>
             )}
           </div>
+
+          {/* ── Workspace Sections ───────────────────────────────────── */}
+
+          {workspaceLoading && (
+            <div className="flex items-center justify-center py-8">
+              <Loader2 className="w-5 h-5 text-white/20 animate-spin" />
+            </div>
+          )}
+
+          {/* Delivery Checklist */}
+          {workspace && (
+            <div className="bg-white/[0.02] border border-white/[0.07] rounded-2xl p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <CheckSquare className="w-4 h-4 text-[#f5a623]" />
+                <h2 className="text-xs font-black uppercase tracking-widest text-white/30">Delivery Checklist</h2>
+                {workspace.checklist.length > 0 && (
+                  <span className="ml-auto text-[10px] font-bold text-white/25">
+                    {workspace.checklist.filter((i) => i.done).length}/{workspace.checklist.length} done
+                  </span>
+                )}
+              </div>
+              {workspace.checklist.length === 0 ? (
+                <p className="text-xs text-white/20 text-center py-4">No checklist items yet. They appear automatically when you onboard this client.</p>
+              ) : (
+                <div className="space-y-1.5">
+                  {workspace.checklist.map((item) => (
+                    <button
+                      key={item.id}
+                      onClick={() => void toggleChecklist(item.id, !item.done)}
+                      className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-white/[0.03] transition group text-left"
+                    >
+                      {item.done ? (
+                        <CheckSquare className="w-4 h-4 text-emerald-400 shrink-0" />
+                      ) : (
+                        <Square className="w-4 h-4 text-white/20 group-hover:text-white/40 shrink-0" />
+                      )}
+                      <span className={`text-xs flex-1 ${item.done ? "text-white/30 line-through" : "text-white/70"}`}>
+                        {item.task}
+                      </span>
+                      <span className="text-[10px] text-white/20 font-mono shrink-0">Day {item.dueDay}</span>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Invoices */}
+          {workspace && (
+            <div className="bg-white/[0.02] border border-white/[0.07] rounded-2xl p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <Receipt className="w-4 h-4 text-[#e07850]" />
+                <h2 className="text-xs font-black uppercase tracking-widest text-white/30">Invoices</h2>
+              </div>
+              {workspace.invoices.length === 0 ? (
+                <p className="text-xs text-white/20 text-center py-4">No invoices yet.</p>
+              ) : (
+                <div className="space-y-3">
+                  {workspace.invoices.map((inv) => {
+                    const statusColor =
+                      inv.status === "paid"
+                        ? "text-emerald-400 bg-emerald-400/10 border-emerald-400/20"
+                        : inv.status === "overdue"
+                        ? "text-red-400 bg-red-400/10 border-red-400/20"
+                        : "text-[#f5a623] bg-[#f5a623]/10 border-[#f5a623]/20";
+                    return (
+                      <div key={inv.id} className="bg-white/[0.02] border border-white/[0.06] rounded-xl p-3.5">
+                        <div className="flex items-center justify-between mb-2">
+                          <span className="text-sm font-black text-white">
+                            ${inv.amount.toLocaleString()}
+                          </span>
+                          <span className={`text-[10px] font-black uppercase tracking-widest px-2 py-0.5 rounded-md border ${statusColor}`}>
+                            {inv.status}
+                          </span>
+                        </div>
+                        <div className="flex items-center gap-3 text-[10px] text-white/30 mb-2">
+                          <span>Due: {new Date(inv.dueDate).toLocaleDateString()}</span>
+                          {inv.paidAt && <span>Paid: {new Date(inv.paidAt).toLocaleDateString()}</span>}
+                        </div>
+                        {inv.lineItems.length > 0 && (
+                          <div className="space-y-1 pt-2 border-t border-white/[0.05]">
+                            {inv.lineItems.map((li, idx) => (
+                              <div key={idx} className="flex items-center justify-between text-[11px]">
+                                <span className="text-white/40">{li.description}</span>
+                                <span className="text-white/50 font-semibold">${li.amount.toLocaleString()}</span>
+                              </div>
+                            ))}
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* Project Progress */}
+          {workspace && (
+            <div className="bg-white/[0.02] border border-white/[0.07] rounded-2xl p-5">
+              <div className="flex items-center gap-2 mb-4">
+                <BarChart3 className="w-4 h-4 text-blue-400" />
+                <h2 className="text-xs font-black uppercase tracking-widest text-white/30">Project Progress</h2>
+              </div>
+              {!workspace.project ? (
+                <p className="text-xs text-white/20 text-center py-4">No project linked to this client yet.</p>
+              ) : (
+                <div>
+                  <div className="flex items-center justify-between mb-2">
+                    <span className="text-sm font-bold text-white">{workspace.project.name}</span>
+                    <span className="text-xs font-bold text-white/40">
+                      {workspace.project.completedCount}/{workspace.project.totalCount}
+                    </span>
+                  </div>
+                  {/* Progress bar */}
+                  <div className="w-full h-2 rounded-full bg-white/[0.06] mb-4 overflow-hidden">
+                    <div
+                      className="h-full rounded-full bg-gradient-to-r from-blue-500 to-emerald-400 transition-all duration-500"
+                      style={{
+                        width: workspace.project.totalCount > 0
+                          ? `${Math.round((workspace.project.completedCount / workspace.project.totalCount) * 100)}%`
+                          : "0%",
+                      }}
+                    />
+                  </div>
+                  {workspace.project.deliverables.length > 0 && (
+                    <div className="space-y-1.5">
+                      {workspace.project.deliverables.map((d, idx) => (
+                        <div key={idx} className="flex items-center gap-2.5 text-xs">
+                          {d.completed ? (
+                            <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                          ) : (
+                            <div className="w-3.5 h-3.5 rounded-full border border-white/15 shrink-0" />
+                          )}
+                          <span className={d.completed ? "text-white/30 line-through" : "text-white/60"}>
+                            {d.name}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
         </div>
 
         {/* ── RIGHT: AI + Notes ────────────────────────────────────────── */}

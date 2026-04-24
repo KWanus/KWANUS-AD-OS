@@ -191,6 +191,34 @@ export async function generateDailyCommands(userId: string): Promise<CommandsRes
       });
     }
 
+    // ── Active clients need attention ──
+    if (hasAssets) {
+      const clients = await prisma.client.findMany({
+        where: { userId, pipelineStage: { in: ["active", "won"] } },
+        select: { id: true, name: true, lastContactAt: true, pipelineStage: true },
+        take: 5,
+      }).catch(() => []);
+
+      for (const client of clients) {
+        const daysSinceContact = client.lastContactAt
+          ? Math.floor((Date.now() - client.lastContactAt.getTime()) / 86400000)
+          : 999;
+
+        if (daysSinceContact >= 7) {
+          commands.push({
+            id: `cmd-${cmdId++}`,
+            priority: 1,
+            action: `Check in with ${client.name}`,
+            details: `It's been ${daysSinceContact} days since your last contact. Send a quick update or schedule a call.`,
+            estimatedTime: "5 min",
+            category: "outreach",
+            href: `/clients/${client.id}`,
+            completed: false,
+          });
+        }
+      }
+    }
+
     // ── Email flows not active ──
     if (emailFlows.length > 0 && emailFlows.every(f => f.status !== "active")) {
       commands.push({

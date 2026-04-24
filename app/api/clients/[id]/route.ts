@@ -129,16 +129,35 @@ export async function PATCH(
     });
 
     // Log stage change activity
-    if (body.pipelineStage && body.pipelineStage !== existing.pipelineStage) {
+    const previousStage = existing.pipelineStage;
+    if (body.pipelineStage && body.pipelineStage !== previousStage) {
       await prisma.clientActivity.create({
         data: {
           clientId: id,
           type: "stage_change",
-          content: `Moved from ${existing.pipelineStage} to ${body.pipelineStage}`,
-          metadata: { from: existing.pipelineStage, to: body.pipelineStage },
+          content: `Moved from ${previousStage} to ${body.pipelineStage}`,
+          metadata: { from: previousStage, to: body.pipelineStage },
           createdBy: user.id,
         },
       });
+
+      // Auto-onboard when client reaches "won" or "active"
+      if ((body.pipelineStage === "won" || body.pipelineStage === "active") && body.pipelineStage !== previousStage) {
+        import("@/lib/clients/autoOnboard").then(({ autoOnboardClient }) => {
+          autoOnboardClient(user.id, id).catch(() => {});
+        });
+      }
+
+      // Fire webhook for stage change
+      if (body.pipelineStage && body.pipelineStage !== previousStage) {
+        import("@/lib/automations/webhookFire").then(({ fireWebhook }) => {
+          fireWebhook({
+            userId: user.id,
+            event: body.pipelineStage === "won" ? "client.won" : "client.stage_change",
+            data: { clientId: id, clientName: client.name, fromStage: previousStage, toStage: body.pipelineStage },
+          }).catch(() => {});
+        });
+      }
     }
 
     return NextResponse.json({

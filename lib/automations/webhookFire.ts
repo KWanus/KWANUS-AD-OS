@@ -11,7 +11,9 @@ export type WebhookEvent =
   | "email.bounced"
   | "site.published"
   | "form.submitted"
-  | "contact.created";
+  | "contact.created"
+  | "client.won"
+  | "client.stage_change";
 
 export async function fireWebhook(input: {
   userId: string;
