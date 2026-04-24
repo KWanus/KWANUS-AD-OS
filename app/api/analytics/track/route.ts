@@ -2,9 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import { trackEvent } from "@/lib/analytics/eventTracker";
 import type { AnalyticsEvent } from "@/lib/analytics/eventTracker";
 import { processEventTrigger } from "@/lib/email/behaviorTriggers";
+import { rateLimit, getClientIp } from "@/lib/api/rateLimiter";
 
 export async function POST(req: NextRequest) {
   try {
+    // Rate limit: 60 events per IP per minute (generous for analytics)
+    const ip = getClientIp(req);
+    const rl = rateLimit(`analytics:${ip}`, 60, 60_000);
+    if (!rl.allowed) return NextResponse.json({ ok: true }); // Silent drop
+
     const body = await req.json() as {
       siteId: string;
       visitorId: string;

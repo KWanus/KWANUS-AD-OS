@@ -5,6 +5,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { getMCPManifest, getMCPTools } from "@/lib/agents/mcpServer";
+import { validateApiKey } from "@/lib/api/apiKeyManager";
 
 // Discovery endpoint — returns available tools
 export async function GET() {
@@ -14,6 +15,15 @@ export async function GET() {
 // Tool execution endpoint — external agents call tools here
 export async function POST(req: NextRequest) {
   try {
+    const apiKey = req.headers.get("x-api-key") ?? req.headers.get("authorization")?.replace("Bearer ", "");
+    if (!apiKey) {
+      return NextResponse.json({ error: "API key required. Get one at /developers" }, { status: 401 });
+    }
+    const keyValidation = await validateApiKey(apiKey);
+    if (!keyValidation.valid) {
+      return NextResponse.json({ error: keyValidation.error ?? "Invalid API key" }, { status: 401 });
+    }
+
     const body = await req.json() as { tool: string; arguments: Record<string, unknown> };
 
     if (!body.tool) {

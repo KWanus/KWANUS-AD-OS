@@ -5,6 +5,7 @@
 
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { rateLimit, getClientIp } from "@/lib/api/rateLimiter";
 import { enrollContact } from "@/lib/integrations/emailFlowEngine";
 import { scoreLeadFromSubmission } from "@/lib/leads/leadScoring";
 import { notifyNewLead } from "@/lib/notifications/notify";
@@ -16,6 +17,12 @@ import { recordWin } from "@/lib/intelligence/learningEngine";
 
 export async function POST(req: NextRequest) {
   try {
+    const ip = getClientIp(req);
+    const rl = rateLimit(`form:${ip}`, 5, 60_000); // 5 submissions per IP per minute
+    if (!rl.allowed) {
+      return NextResponse.json({ ok: false, error: "Too many submissions. Please wait." }, { status: 429 });
+    }
+
     const body = await req.json();
     const { siteId, email, name, phone, message, formType } = body as {
       siteId: string;
