@@ -132,7 +132,7 @@ export default function HimalayaRunPage() {
   // ── Loading state ──────────────────────────────────────────────────────
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex items-center justify-center">
+      <div className="min-h-screen bg-[#020509] flex items-center justify-center">
         <Loader2 className="w-8 h-8 text-cyan-400 animate-spin" />
       </div>
     );
@@ -141,7 +141,7 @@ export default function HimalayaRunPage() {
   // ── Error state ────────────────────────────────────────────────────────
   if (error || !data) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[#020509] flex items-center justify-center px-4">
         <div className="text-center space-y-4">
           <AlertCircle className="w-10 h-10 text-red-400 mx-auto" />
           <p className="text-white text-lg font-medium">{error || "Run not found"}</p>
@@ -185,7 +185,7 @@ export default function HimalayaRunPage() {
 
   // ── Render ─────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-[#050a14] px-4 py-8">
+    <div className="min-h-screen bg-[#020509] px-4 py-8">
       <div className="max-w-3xl mx-auto space-y-6">
 
         {/* ── A. Results Header ──────────────────────────────────────────── */}

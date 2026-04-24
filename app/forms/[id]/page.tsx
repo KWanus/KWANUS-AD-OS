@@ -60,7 +60,7 @@ export default function PublicFormPage({ params }: { params: Promise<{ id: strin
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex items-center justify-center">
+      <div className="min-h-screen bg-[#020509] flex items-center justify-center">
         <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
       </div>
     );
@@ -68,7 +68,7 @@ export default function PublicFormPage({ params }: { params: Promise<{ id: strin
 
   if (!form) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex flex-col items-center justify-center gap-3">
+      <div className="min-h-screen bg-[#020509] flex flex-col items-center justify-center gap-3">
         <AlertTriangle className="w-8 h-8 text-red-400/50" />
         <p className="text-white/30 text-sm">This form is no longer available.</p>
       </div>
@@ -77,7 +77,7 @@ export default function PublicFormPage({ params }: { params: Promise<{ id: strin
 
   if (done) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex flex-col items-center justify-center gap-5 px-4">
+      <div className="min-h-screen bg-[#020509] flex flex-col items-center justify-center gap-5 px-4">
         <div className="w-16 h-16 rounded-2xl bg-green-500/10 border border-green-500/20 flex items-center justify-center">
           <CheckCircle className="w-8 h-8 text-green-400" />
         </div>
@@ -92,7 +92,7 @@ export default function PublicFormPage({ params }: { params: Promise<{ id: strin
   const executionTier = form.executionTier === "core" ? "core" : "elite";
 
   return (
-    <div className="min-h-screen bg-[#050a14] flex flex-col items-center justify-center px-4">
+    <div className="min-h-screen bg-[#020509] flex flex-col items-center justify-center px-4">
       {/* Glow */}
       <div className="absolute inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] rounded-full bg-cyan-500/5 blur-[120px]" />

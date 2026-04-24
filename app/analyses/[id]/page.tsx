@@ -377,7 +377,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] text-white">
+      <div className="min-h-screen bg-[#020509] text-white">
         <AppNav />
         <ScanSubNav />
         <div className="flex items-center justify-center min-h-[50vh]">
@@ -389,7 +389,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
 
   if (!analysis) {
     return (
-      <div className="min-h-screen bg-[#050a14] text-white">
+      <div className="min-h-screen bg-[#020509] text-white">
         <AppNav />
         <ScanSubNav />
         <div className="mx-auto flex min-h-[50vh] max-w-3xl flex-col justify-center gap-4 px-4">
@@ -420,7 +420,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
   const adScripts = (assets?.adScripts ?? []) as { title: string; duration: string; sections: { timestamp: string; direction: string; copy: string }[] }[];
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-[#020509] text-white">
       <AppNav />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {/* Back */}
@@ -429,7 +429,8 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
         </Link>
 
         {/* Hero header */}
-        <div className="bg-white/[0.02] border border-white/[0.07] rounded-2xl p-6 mb-6">
+        <div className="bg-white/[0.02] border border-white/[0.07] rounded-2xl p-6 mb-6 backdrop-blur-sm relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/15 to-transparent" />
           <div className="flex flex-col lg:flex-row lg:items-start gap-6">
             {/* Score */}
             <div className="shrink-0">
@@ -624,7 +625,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
                       className="bg-white/[0.04] border border-white/[0.1] rounded-xl px-3 py-1.5 text-xs text-white/60 focus:outline-none focus:border-cyan-500/50 transition appearance-none cursor-pointer"
                     >
                       {profiles.map(p => (
-                        <option key={p.key} value={p.key} className="bg-[#0d1525]">{p.name}</option>
+                        <option key={p.key} value={p.key} className="bg-[#020509]">{p.name}</option>
                       ))}
                     </select>
                     {loadingTruth && <Loader2 className="w-3.5 h-3.5 text-cyan-400 animate-spin" />}

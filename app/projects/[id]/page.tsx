@@ -135,7 +135,7 @@ export default function ProjectWorkspace() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex flex-col items-center justify-center gap-4">
+      <div className="min-h-screen bg-[#020509] flex flex-col items-center justify-center gap-4">
         <div className="w-12 h-12 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
           <Loader2 className="w-6 h-6 text-cyan-500 animate-spin" />
         </div>
@@ -148,7 +148,7 @@ export default function ProjectWorkspace() {
 
   if (error || !project) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex flex-col items-center justify-center gap-6">
+      <div className="min-h-screen bg-[#020509] flex flex-col items-center justify-center gap-6">
         <div className="w-16 h-16 rounded-3xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">
           <AlertTriangle className="w-8 h-8 text-red-400" />
         </div>
@@ -182,7 +182,7 @@ export default function ProjectWorkspace() {
   const executionTier: ExecutionTier = project.workflowState?.executionTier === "core" ? "core" : "elite";
 
   return (
-    <main className="min-h-screen bg-[#050a14] text-white flex flex-col font-inter">
+    <main className="min-h-screen bg-[#020509] text-white flex flex-col font-inter">
       {/* Dot grid background */}
       <div
         className="fixed inset-0 opacity-[0.025] pointer-events-none"
@@ -373,7 +373,7 @@ function SourcePhase({
         <div className="w-24 h-24 rounded-3xl bg-cyan-500/10 border-2 border-cyan-500/20 flex items-center justify-center shadow-[0_0_60px_rgba(6,182,212,0.1)]">
           <Target className="w-12 h-12 text-cyan-400" />
         </div>
-        <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-xl bg-[#050a14] border border-cyan-500/40 flex items-center justify-center">
+        <div className="absolute -bottom-2 -right-2 w-8 h-8 rounded-xl bg-[#020509] border border-cyan-500/40 flex items-center justify-center">
           <span className="text-[9px] font-black text-cyan-400">01</span>
         </div>
       </div>

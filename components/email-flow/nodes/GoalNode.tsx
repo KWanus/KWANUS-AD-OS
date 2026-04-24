@@ -55,7 +55,7 @@ export default function GoalNode({ data, selected }: NodeProps) {
       <Handle
         type="target"
         position={Position.Top}
-        className="!w-3 !h-3 !border-2 !border-yellow-400 !bg-[#050a14] hover:!bg-yellow-400 transition-colors"
+        className="!w-3 !h-3 !border-2 !border-yellow-400 !bg-[#020509] hover:!bg-yellow-400 transition-colors"
         style={{ top: -6 }}
       />
     </div>

@@ -67,7 +67,7 @@ function PreviewModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <div className="w-full max-w-3xl max-h-[90vh] flex flex-col rounded-3xl border border-white/[0.08] bg-[#050a14] shadow-2xl">
+      <div className="w-full max-w-3xl max-h-[90vh] flex flex-col rounded-3xl border border-white/[0.08] bg-[#020509] shadow-2xl">
         {/* Header */}
         <div className="flex items-start justify-between px-6 py-5 border-b border-white/[0.06]">
           <div className="flex items-center gap-3">
@@ -283,7 +283,7 @@ export default function EmailTemplatesPage() {
   });
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white flex flex-col">
+    <div className="min-h-screen bg-[#020509] text-white flex flex-col">
       {/* Background glows */}
       <div className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-cyan-500/[0.05] blur-[120px] rounded-full pointer-events-none" />
       <div className="fixed bottom-0 right-1/4 w-[400px] h-[400px] bg-purple-500/[0.04] blur-[120px] rounded-full pointer-events-none" />

@@ -32,7 +32,7 @@ export default function HimalayaEntryPage() {
   const router = useRouter();
 
   return (
-    <div className="min-h-screen bg-[#050a14] flex items-center justify-center px-4">
+    <div className="min-h-screen bg-[#020509] flex items-center justify-center px-4">
       <div className="w-full max-w-2xl space-y-10">
         <div className="text-center space-y-3">
           <h1 className="text-3xl md:text-4xl font-bold text-white tracking-tight">

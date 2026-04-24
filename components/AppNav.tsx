@@ -147,7 +147,7 @@ export default function AppNav() {
             </button>
 
             {showBizDropdown && (
-              <div className="absolute top-full right-0 mt-2 w-64 rounded-2xl border border-white/[0.1] bg-[#0a1020] shadow-2xl overflow-hidden z-50">
+              <div className="absolute top-full right-0 mt-2 w-64 rounded-2xl border border-white/[0.1] bg-[#020509]/95 backdrop-blur-2xl shadow-2xl overflow-hidden z-50">
                 <div className="p-2">
                   {BUSINESS_NAV.map(({ href, label, icon: Icon, sub }) => {
                     const active = pathname.startsWith(href);

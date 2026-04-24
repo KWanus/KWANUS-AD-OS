@@ -123,7 +123,7 @@ export default function ScanBusinessesPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#0a0f1e] text-white flex flex-col">
+    <main className="min-h-screen bg-[#020509] text-white flex flex-col">
       <AppNav />
       <header className="px-8 py-6 border-b border-white/10">
         <Link href="/" className="text-cyan-400 text-sm hover:underline">← Back to Dashboard</Link>

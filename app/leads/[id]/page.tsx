@@ -822,14 +822,14 @@ export default function LeadDetailPage() {
   }
 
   if (loading) return (
-    <div className="min-h-screen bg-[#050a14] text-white flex flex-col">
+    <div className="min-h-screen bg-[#020509] text-white flex flex-col">
       <AppNav />
       <div className="flex-1 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-white/20" /></div>
     </div>
   );
 
   if (!lead) return (
-    <div className="min-h-screen bg-[#050a14] text-white flex flex-col">
+    <div className="min-h-screen bg-[#020509] text-white flex flex-col">
       <AppNav />
       <div className="flex-1 flex items-center justify-center px-4">
         <div className="w-full max-w-3xl space-y-4">
@@ -857,7 +857,7 @@ export default function LeadDetailPage() {
   const scoreColor = !lead.score ? "text-white/30" : lead.score >= 70 ? "text-emerald-400" : lead.score >= 45 ? "text-amber-400" : "text-red-400";
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-[#020509] text-white">
       <AppNav />
       <CRMSubNav />
       <div className="max-w-4xl mx-auto px-4 pt-8 pb-20">

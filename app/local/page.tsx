@@ -1042,7 +1042,7 @@ export default function LocalPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-[#020509] text-white">
       <AppNav />
       <div className="max-w-5xl mx-auto px-4 pt-10 pb-20">
 

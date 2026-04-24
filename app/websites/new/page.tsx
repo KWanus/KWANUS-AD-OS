@@ -270,7 +270,7 @@ export default function NewSitePage() {
           Back
         </button>
 
-        <div className="rounded-[32px] border border-white/[0.08] bg-[#050a14] p-8 shadow-2xl">
+        <div className="rounded-[32px] border border-white/[0.08] bg-[#020509] p-8 shadow-2xl">
           <div className="mb-8 flex items-start justify-between gap-4">
             <div>
               <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 text-cyan-300">

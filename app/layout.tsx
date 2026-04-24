@@ -25,7 +25,7 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en">
-        <body className={`${inter.variable} ${outfit.variable} antialiased bg-[#050a14] text-white`}>
+        <body className={`${inter.variable} ${outfit.variable} antialiased bg-[#020509] text-white`}>
           {children}
           <GlobalCopilotDock />
           <KeyboardShortcuts />

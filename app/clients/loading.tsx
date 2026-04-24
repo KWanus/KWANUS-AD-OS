@@ -1,7 +1,7 @@
 export default function ClientsLoading() {
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
-      <div className="h-14 bg-[#050a14] border-b border-white/[0.06]" />
+    <div className="min-h-screen bg-[#020509] text-white">
+      <div className="h-14 bg-[#020509] border-b border-white/[0.06]" />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         <div className="flex items-center justify-between mb-6">
           <div>

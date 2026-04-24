@@ -37,8 +37,8 @@ export default function PhaseStepper({ currentPhase, onPhaseClick }: PhaseSteppe
                                 className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-500 border-2 font-black text-xs ${isActive
                                         ? "bg-cyan-500 border-cyan-400 text-[#050a14] shadow-[0_0_20px_rgba(6,182,212,0.4)] scale-110"
                                         : isCompleted
-                                            ? "bg-[#050a14] border-cyan-500 text-cyan-500"
-                                            : "bg-[#050a14] border-white/10 text-white/20 group-hover:border-white/30"
+                                            ? "bg-[#020509] border-cyan-500 text-cyan-500"
+                                            : "bg-[#020509] border-white/10 text-white/20 group-hover:border-white/30"
                                     }`}
                             >
                                 {isCompleted ? <Check className="w-5 h-5" /> : <Icon className="w-4 h-4" />}

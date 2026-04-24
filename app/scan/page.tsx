@@ -438,7 +438,7 @@ function ScanPageInner() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-[#020509] text-white">
       <AppNav />
       <ScanSubNav />
 
@@ -898,7 +898,7 @@ export default function ScanPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen bg-[#050a14] text-white">
+        <div className="min-h-screen bg-[#020509] text-white">
           <AppNav />
           <div className="flex items-center justify-center py-24">
             <Loader2 className="w-6 h-6 animate-spin text-white/20" />

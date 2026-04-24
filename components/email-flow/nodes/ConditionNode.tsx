@@ -70,7 +70,7 @@ export default function ConditionNode({ data, selected }: NodeProps) {
       <Handle
         type="target"
         position={Position.Top}
-        className="!w-3 !h-3 !border-2 !border-orange-400 !bg-[#050a14] hover:!bg-orange-400 transition-colors"
+        className="!w-3 !h-3 !border-2 !border-orange-400 !bg-[#020509] hover:!bg-orange-400 transition-colors"
         style={{ top: -6 }}
       />
 
@@ -79,7 +79,7 @@ export default function ConditionNode({ data, selected }: NodeProps) {
         type="source"
         position={Position.Right}
         id="yes"
-        className="!w-3 !h-3 !border-2 !border-green-400 !bg-[#050a14] hover:!bg-green-400 transition-colors"
+        className="!w-3 !h-3 !border-2 !border-green-400 !bg-[#020509] hover:!bg-green-400 transition-colors"
         style={{ right: -6 }}
       />
 
@@ -88,7 +88,7 @@ export default function ConditionNode({ data, selected }: NodeProps) {
         type="source"
         position={Position.Left}
         id="no"
-        className="!w-3 !h-3 !border-2 !border-red-400 !bg-[#050a14] hover:!bg-red-400 transition-colors"
+        className="!w-3 !h-3 !border-2 !border-red-400 !bg-[#020509] hover:!bg-red-400 transition-colors"
         style={{ left: -6 }}
       />
     </div>

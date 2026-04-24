@@ -537,14 +537,14 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex items-center justify-center">
+      <div className="min-h-screen bg-[#020509] flex items-center justify-center">
         <Loader2 className="w-6 h-6 text-cyan-400 animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-[#050a14]">
+    <div className="flex h-screen w-screen overflow-hidden bg-[#020509]">
 
       {/* ------------------------------------------------------------------ */}
       {/* LEFT SIDEBAR                                                         */}
@@ -595,7 +595,7 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
             </button>
 
             {showStatusMenu && (
-              <div className="absolute top-full left-0 right-0 mt-1 rounded-xl border border-white/10 bg-[#0d1525] overflow-hidden z-50 shadow-2xl">
+              <div className="absolute top-full left-0 right-0 mt-1 rounded-xl border border-white/10 bg-[#020509] overflow-hidden z-50 shadow-2xl">
                 {(["draft", "active", "paused"] as FlowStatus[]).map((s) => {
                   const c = STATUS_CONFIG[s];
                   return (
@@ -783,7 +783,7 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
           minZoom={0.3}
           maxZoom={1.8}
           proOptions={{ hideAttribution: true }}
-          className="bg-[#050a14]"
+          className="bg-[#020509]"
         >
           {/* Dot-grid background */}
           <Background

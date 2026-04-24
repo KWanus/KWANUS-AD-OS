@@ -386,7 +386,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex items-center justify-center">
+      <div className="min-h-screen bg-[#020509] flex items-center justify-center">
         <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
       </div>
     );
@@ -394,7 +394,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
 
   if (!site || !page) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex items-center justify-center">
+      <div className="min-h-screen bg-[#020509] flex items-center justify-center">
         <p className="text-white/30">Page not found.</p>
       </div>
     );
@@ -411,7 +411,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
   });
 
   return (
-    <div className="h-screen bg-[#050a14] flex flex-col overflow-hidden">
+    <div className="h-screen bg-[#020509] flex flex-col overflow-hidden">
       {/* Top bar */}
       <header className="h-12 shrink-0 bg-[#07101f] border-b border-white/[0.07] flex items-center px-4 gap-3 z-10">
         <button onClick={() => router.push(`/websites/${siteId}`)} className="flex items-center gap-1.5 text-white/30 hover:text-white/60 transition shrink-0">

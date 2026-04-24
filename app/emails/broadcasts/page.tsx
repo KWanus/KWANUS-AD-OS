@@ -636,7 +636,7 @@ export default function BroadcastsPage() {
       : null;
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-[#020509] text-white">
       <AppNav />
       <CampaignSubNav />
 

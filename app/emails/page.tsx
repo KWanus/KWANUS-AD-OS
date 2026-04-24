@@ -846,7 +846,7 @@ function EmailsPage() {
   const totalRevenue = flows.reduce((s, f) => s + (f.revenue ?? 0), 0);
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-[#020509] text-white">
       <AppNav />
       <CampaignSubNav />
 

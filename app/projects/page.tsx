@@ -106,7 +106,7 @@ export default function ProjectsPage() {
   }, [projects]);
 
   return (
-    <main className="min-h-screen bg-[#050a14] text-white">
+    <main className="min-h-screen bg-[#020509] text-white">
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-0 left-1/4 h-[28rem] w-[28rem] rounded-full bg-cyan-500/10 blur-[140px]" />
         <div className="absolute bottom-0 right-1/4 h-[24rem] w-[24rem] rounded-full bg-fuchsia-500/10 blur-[140px]" />

@@ -187,7 +187,7 @@ export default function StartPage() {
   const selectedAffNiche = NICHES.find((n) => n.id === affNiche);
 
   return (
-    <main className="min-h-screen bg-[#0a0f1e] text-white flex flex-col">
+    <main className="min-h-screen bg-[#020509] text-white flex flex-col">
       <header className="px-8 py-6 border-b border-white/10">
         <Link href="/" className="text-cyan-400 text-sm hover:underline">← Back to Dashboard</Link>
         <h1 className="text-2xl font-bold mt-2">Get Started</h1>

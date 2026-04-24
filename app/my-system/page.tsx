@@ -608,7 +608,7 @@ export default function MySystemPage() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[#050a14] text-white">
+      <main className="min-h-screen bg-[#020509] text-white">
         <AppNav />
         <div className="flex min-h-[70vh] items-center justify-center">
           <Loader2 className="h-7 w-7 animate-spin text-cyan-300" />
@@ -619,7 +619,7 @@ export default function MySystemPage() {
 
   if (!profile) {
     return (
-      <main className="min-h-screen bg-[#050a14] text-white">
+      <main className="min-h-screen bg-[#020509] text-white">
         <AppNav />
         <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
           <div className="rounded-[32px] border border-white/[0.08] bg-white/[0.03] p-8">
@@ -705,7 +705,7 @@ export default function MySystemPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#050a14] text-white">
+    <main className="min-h-screen bg-[#020509] text-white">
       <AppNav />
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
         <div className="grid gap-8">

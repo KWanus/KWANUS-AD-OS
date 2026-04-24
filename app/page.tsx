@@ -401,7 +401,7 @@ export default function Dashboard() {
   ];
 
   return (
-    <main className="min-h-screen bg-[#050a14] text-white">
+    <main className="min-h-screen bg-[#020509] text-white">
       <AppNav />
       <WorkspaceShell>
         <WorkspaceHero

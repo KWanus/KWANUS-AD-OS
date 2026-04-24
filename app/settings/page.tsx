@@ -209,7 +209,7 @@ export default function SettingsPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] text-white">
+      <div className="min-h-screen bg-[#020509] text-white">
         <AppNav />
         <div className="flex items-center justify-center py-24">
           <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
@@ -219,7 +219,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-[#020509] text-white">
       <AppNav />
 
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-10 space-y-6">
@@ -500,12 +500,12 @@ export default function SettingsPage() {
                 onChange={(e) => setSettings((s) => ({ ...s, businessType: e.target.value }))}
                 className="w-full bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-cyan-500/50 transition appearance-none"
               >
-                <option value="" className="bg-[#050a14]">Select business type…</option>
-                <option value="consultant" className="bg-[#050a14]">Consultant / Freelancer</option>
-                <option value="ecommerce" className="bg-[#050a14]">E-commerce / Product Store</option>
-                <option value="service" className="bg-[#050a14]">Local Service Business</option>
-                <option value="affiliate" className="bg-[#050a14]">Affiliate / Dropshipping</option>
-                <option value="agency" className="bg-[#050a14]">Agency / SaaS</option>
+                <option value="" className="bg-[#020509]">Select business type…</option>
+                <option value="consultant" className="bg-[#020509]">Consultant / Freelancer</option>
+                <option value="ecommerce" className="bg-[#020509]">E-commerce / Product Store</option>
+                <option value="service" className="bg-[#020509]">Local Service Business</option>
+                <option value="affiliate" className="bg-[#020509]">Affiliate / Dropshipping</option>
+                <option value="agency" className="bg-[#020509]">Agency / SaaS</option>
               </select>
             </Field>
 

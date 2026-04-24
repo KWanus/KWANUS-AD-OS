@@ -863,7 +863,7 @@ export default function AgencyAuditDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex items-center justify-center">
+      <div className="min-h-screen bg-[#020509] flex items-center justify-center">
         <Loader2 className="w-6 h-6 animate-spin text-white/20" />
       </div>
     );
@@ -871,7 +871,7 @@ export default function AgencyAuditDetailPage() {
 
   if (!audit) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex flex-col items-center justify-center text-center px-4">
+      <div className="min-h-screen bg-[#020509] flex flex-col items-center justify-center text-center px-4">
         <p className="text-sm font-bold text-white/30 mb-4">Audit not found</p>
         <button onClick={() => router.push("/agency")} className="text-cyan-400 text-sm hover:underline">Back to Agency</button>
       </div>
@@ -885,7 +885,7 @@ export default function AgencyAuditDetailPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-[#020509] text-white">
       <AppNav />
       <div className="max-w-5xl mx-auto px-4 pt-8 pb-24">
 

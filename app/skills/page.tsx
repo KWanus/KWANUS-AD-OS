@@ -493,7 +493,7 @@ function SkillsPageInner() {
   const recommendedSkill = SKILLS.find((skill) => skill.slug === recommendedSkillSlug) ?? null;
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-[#020509] text-white">
       <AppNav />
       <AISubNav />
       <WorkspaceShell>

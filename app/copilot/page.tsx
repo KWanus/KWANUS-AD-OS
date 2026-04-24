@@ -301,7 +301,7 @@ function CopilotPageContent() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white flex flex-col">
+    <div className="min-h-screen bg-[#020509] text-white flex flex-col">
       <AppNav />
       <AISubNav />
 
@@ -513,7 +513,7 @@ function CopilotPageContent() {
 
 export default function CopilotPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-[#050a14] text-white"><AppNav /></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-[#020509] text-white"><AppNav /></div>}>
       <CopilotPageContent />
     </Suspense>
   );

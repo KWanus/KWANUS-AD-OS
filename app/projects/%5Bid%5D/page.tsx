@@ -26,7 +26,7 @@ export default function ProjectWorkspace() {
 
     if (loading) {
         return (
-            <div className="min-h-screen bg-[#050a14] flex flex-col items-center justify-center gap-4">
+            <div className="min-h-screen bg-[#020509] flex flex-col items-center justify-center gap-4">
                 <Loader2 className="w-8 h-8 text-cyan-500 animate-spin" />
                 <p className="text-[10px] font-black uppercase text-white/30 tracking-widest">Loading Master Workflow...</p>
             </div>
@@ -35,7 +35,7 @@ export default function ProjectWorkspace() {
 
     if (!project) {
         return (
-            <div className="min-h-screen bg-[#050a14] flex flex-col items-center justify-center gap-4">
+            <div className="min-h-screen bg-[#020509] flex flex-col items-center justify-center gap-4">
                 <p className="text-white/40">Project not found</p>
                 <Link href="/projects" className="text-cyan-400 text-sm hover:underline">Back to Projects</Link>
             </div>
@@ -54,7 +54,7 @@ export default function ProjectWorkspace() {
     };
 
     return (
-        <main className="min-h-screen bg-[#050a14] text-white flex flex-col font-inter">
+        <main className="min-h-screen bg-[#020509] text-white flex flex-col font-inter">
             {/* Background glow */}
             <div className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none" />
 

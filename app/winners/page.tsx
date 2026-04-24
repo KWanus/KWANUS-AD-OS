@@ -137,7 +137,7 @@ export default function WinnerFinder() {
     };
 
     return (
-        <main className="min-h-screen bg-[#050a14] text-white flex flex-col font-inter">
+        <main className="min-h-screen bg-[#020509] text-white flex flex-col font-inter">
             {/* Subtle background glow */}
             <div className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-cyan-500/10 blur-[120px] rounded-full pointer-events-none" />
             <div className="fixed bottom-0 right-1/4 w-[500px] h-[500px] bg-purple-500/10 blur-[120px] rounded-full pointer-events-none" />

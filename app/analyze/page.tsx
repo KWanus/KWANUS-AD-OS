@@ -728,7 +728,7 @@ function AnalyzeContent() {
               Drop a competitor's link, your current store, or a raw idea. The AI will scan the market, build your strategy, and **auto-generate your funnel and ads**.
             </p>
 
-          <div className="w-full bg-[#050a14] border border-white/[0.08] shadow-2xl rounded-3xl p-3 flex flex-col transition-all focus-within:border-cyan-500/40 focus-within:shadow-[0_0_40px_rgba(6,182,212,0.1)]">
+          <div className="w-full bg-[#020509] border border-white/[0.08] shadow-2xl rounded-3xl p-3 flex flex-col transition-all focus-within:border-cyan-500/40 focus-within:shadow-[0_0_40px_rgba(6,182,212,0.1)]">
               <textarea
                 value={url}
                 onChange={(e) => setUrl(e.target.value)}

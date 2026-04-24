@@ -281,7 +281,7 @@ function AIAssistPanel({ client }: { client: Client }) {
           className="flex-1 bg-white/[0.04] border border-white/[0.1] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-purple-500/50 transition appearance-none cursor-pointer"
         >
           {ACTIONS.map((a) => (
-            <option key={a.value} value={a.value} className="bg-[#0d1525]">{a.label}</option>
+            <option key={a.value} value={a.value} className="bg-[#020509]">{a.label}</option>
           ))}
         </select>
         <button
@@ -543,7 +543,7 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
                 </span>
               </div>
               {showStageMenu && (
-                <div className="absolute top-full left-0 mt-1 rounded-xl border border-white/10 bg-[#0d1525] overflow-hidden z-50 shadow-2xl min-w-[140px]">
+                <div className="absolute top-full left-0 mt-1 rounded-xl border border-white/10 bg-[#020509] overflow-hidden z-50 shadow-2xl min-w-[140px]">
                   {STAGES.map((s) => (
                     <button
                       key={s}

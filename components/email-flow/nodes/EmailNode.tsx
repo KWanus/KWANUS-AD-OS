@@ -92,13 +92,13 @@ export default function EmailNode({ id, data, selected }: NodeProps) {
       <Handle
         type="target"
         position={Position.Top}
-        className="!w-3 !h-3 !border-2 !border-purple-400 !bg-[#050a14] hover:!bg-purple-400 transition-colors"
+        className="!w-3 !h-3 !border-2 !border-purple-400 !bg-[#020509] hover:!bg-purple-400 transition-colors"
         style={{ top: -6 }}
       />
       <Handle
         type="source"
         position={Position.Bottom}
-        className="!w-3 !h-3 !border-2 !border-purple-400 !bg-[#050a14] hover:!bg-purple-400 transition-colors"
+        className="!w-3 !h-3 !border-2 !border-purple-400 !bg-[#020509] hover:!bg-purple-400 transition-colors"
         style={{ bottom: -6 }}
       />
     </div>

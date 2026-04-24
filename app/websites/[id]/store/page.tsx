@@ -180,7 +180,7 @@ export default function StoreDashboard({ params }: { params: Promise<{ id: strin
 
     return (
         <div className="min-h-screen bg-[#020509] flex flex-col font-sans">
-            <header className="h-16 border-b border-white/[0.08] flex items-center justify-between px-6 bg-[#050a14]">
+            <header className="h-16 border-b border-white/[0.08] flex items-center justify-between px-6 bg-[#020509]">
                 <div className="flex items-center gap-4">
                     <button onClick={() => router.push(`/websites/${siteId}`)} className="flex items-center gap-1.5 text-white/40 hover:text-white transition group">
                         <ArrowLeft className="w-4 h-4" />
@@ -226,10 +226,10 @@ export default function StoreDashboard({ params }: { params: Promise<{ id: strin
                             onChange={(event) => setStatusFilter(event.target.value as "all" | "active" | "draft" | "archived")}
                             className="bg-white/[0.03] border border-white/[0.08] rounded-xl px-3 py-2 text-sm text-white focus:outline-none"
                         >
-                            <option value="all" className="bg-[#050a14]">All statuses</option>
-                            <option value="active" className="bg-[#050a14]">Active</option>
-                            <option value="draft" className="bg-[#050a14]">Draft</option>
-                            <option value="archived" className="bg-[#050a14]">Archived</option>
+                            <option value="all" className="bg-[#020509]">All statuses</option>
+                            <option value="active" className="bg-[#020509]">Active</option>
+                            <option value="draft" className="bg-[#020509]">Draft</option>
+                            <option value="archived" className="bg-[#020509]">Archived</option>
                         </select>
                     </div>
                 </div>
@@ -250,7 +250,7 @@ export default function StoreDashboard({ params }: { params: Promise<{ id: strin
                         </button>
                     </div>
                 ) : (
-                    <div className="bg-[#050a14] border border-white/[0.08] rounded-2xl overflow-hidden shadow-2xl">
+                    <div className="bg-[#020509] border border-white/[0.08] rounded-2xl overflow-hidden shadow-2xl">
                         <table className="w-full text-left border-collapse">
                             <thead>
                                 <tr className="border-b border-white/[0.08] bg-white/[0.02]">
@@ -326,7 +326,7 @@ export default function StoreDashboard({ params }: { params: Promise<{ id: strin
 
             {showAddModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-                    <div className="w-full max-w-2xl rounded-3xl border border-white/[0.08] bg-[#050a14] shadow-2xl">
+                    <div className="w-full max-w-2xl rounded-3xl border border-white/[0.08] bg-[#020509] shadow-2xl">
                         <div className="flex items-center justify-between px-6 py-5 border-b border-white/[0.08]">
                             <div>
                                 <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-400/70">Store Catalog</p>
@@ -376,9 +376,9 @@ export default function StoreDashboard({ params }: { params: Promise<{ id: strin
                                 onChange={(event) => setProductForm((prev) => ({ ...prev, status: event.target.value }))}
                                 className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-3 text-sm text-white focus:outline-none"
                             >
-                                <option value="active" className="bg-[#050a14]">Active</option>
-                                <option value="draft" className="bg-[#050a14]">Draft</option>
-                                <option value="archived" className="bg-[#050a14]">Archived</option>
+                                <option value="active" className="bg-[#020509]">Active</option>
+                                <option value="draft" className="bg-[#020509]">Draft</option>
+                                <option value="archived" className="bg-[#020509]">Archived</option>
                             </select>
                             <textarea
                                 value={productForm.description}

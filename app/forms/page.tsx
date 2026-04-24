@@ -188,7 +188,7 @@ function CreateFormModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
-      <div className="w-full max-w-lg rounded-3xl border border-white/[0.08] bg-[#050a14] shadow-2xl">
+      <div className="w-full max-w-lg rounded-3xl border border-white/[0.08] bg-[#020509] shadow-2xl">
         <div className="flex items-center justify-between px-6 py-5 border-b border-white/[0.06]">
           <h3 className="text-base font-black text-white">Create Opt-In Form</h3>
           <button onClick={onClose} className="p-2 rounded-xl text-white/25 hover:text-white hover:bg-white/[0.05] transition">
@@ -323,7 +323,7 @@ export default function FormsManagerPage() {
   const totalSubs = forms.reduce((s, f) => s + f.submissions, 0);
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white flex flex-col">
+    <div className="min-h-screen bg-[#020509] text-white flex flex-col">
       <div className="fixed top-0 left-1/3 w-[500px] h-[400px] bg-cyan-500/[0.04] blur-[140px] rounded-full pointer-events-none" />
       <AppNav />
 

@@ -308,8 +308,8 @@ export default function CampaignsPage() {
                 onChange={e => setNewMode(e.target.value)}
                 className="bg-white/[0.04] border border-white/[0.1] rounded-xl px-3 py-2.5 text-sm text-white/60 outline-none"
               >
-                <option value="operator" className="bg-[#0d1525]">Operator</option>
-                <option value="consultant" className="bg-[#0d1525]">Consultant</option>
+                <option value="operator" className="bg-[#020509]">Operator</option>
+                <option value="consultant" className="bg-[#020509]">Consultant</option>
               </select>
               <button
                 onClick={() => void handleCreate()}

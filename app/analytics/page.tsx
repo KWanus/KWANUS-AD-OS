@@ -270,7 +270,7 @@ export default function AnalyticsPage() {
   const { stats, analyses, campaigns, clients, sites, emails, leads } = data;
 
   return (
-    <main className="min-h-screen bg-[#050a14] text-white">
+    <main className="min-h-screen bg-[#020509] text-white">
       {/* Glows */}
       <div className="fixed top-0 left-1/3 w-[600px] h-[400px] bg-cyan-500/[0.05] blur-[140px] rounded-full pointer-events-none" />
       <div className="fixed bottom-0 right-1/4 w-[400px] h-[400px] bg-purple-500/[0.05] blur-[120px] rounded-full pointer-events-none" />

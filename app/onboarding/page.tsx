@@ -460,7 +460,7 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white flex flex-col items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#020509] text-white flex flex-col items-center justify-center px-4 py-12">
       {/* Background glow */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] rounded-full bg-cyan-500/5 blur-[120px]" />

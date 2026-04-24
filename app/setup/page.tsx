@@ -254,7 +254,7 @@ export default function SetupPage() {
   }
 
   return (
-    <main className="min-h-screen bg-[#050a14] text-white">
+    <main className="min-h-screen bg-[#020509] text-white">
       <AppNav />
       <div className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <div className="rounded-[32px] border border-white/[0.08] bg-[radial-gradient(circle_at_top,rgba(6,182,212,0.08),transparent_40%),linear-gradient(180deg,rgba(255,255,255,0.03),rgba(255,255,255,0.02))] p-6 sm:p-8">

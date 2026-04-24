@@ -1176,7 +1176,7 @@ export default function DropshipProductPage() {
                     <ChevronDown className="w-2.5 h-2.5" />
                   </button>
                   {showStatusMenu && (
-                    <div className="absolute top-full left-0 mt-1 rounded-xl border border-white/10 bg-[#0d1525] overflow-hidden z-50 shadow-2xl min-w-[140px]">
+                    <div className="absolute top-full left-0 mt-1 rounded-xl border border-white/10 bg-[#020509] overflow-hidden z-50 shadow-2xl min-w-[140px]">
                       {STATUSES.map((s) => (
                         <button
                           key={s}

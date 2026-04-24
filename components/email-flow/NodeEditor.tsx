@@ -78,7 +78,7 @@ function SelectInput({
       onChange={(e) => onChange(e.target.value)}
     >
       {options.map((o) => (
-        <option key={o.value} value={o.value} className="bg-[#0d1525]">
+        <option key={o.value} value={o.value} className="bg-[#020509]">
           {o.label}
         </option>
       ))}

@@ -381,7 +381,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex items-center justify-center">
+      <div className="min-h-screen bg-[#020509] flex items-center justify-center">
         <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
       </div>
     );
@@ -389,7 +389,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
 
   if (!site) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[#020509] flex items-center justify-center px-4">
         <div className="w-full max-w-3xl space-y-4">
           <DatabaseFallbackNotice visible={databaseUnavailable} />
           <div className="rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8 text-center">
@@ -500,7 +500,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-[#020509] text-white">
       <AppNav />
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10">

@@ -225,7 +225,7 @@ function ClientRow({ client, onDelete, onUpdate, selected, onToggle }: { client:
         className={`hidden sm:inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-bold border shrink-0 cursor-pointer outline-none appearance-none bg-transparent ${stage.border} ${stage.bg} ${stage.color} ${changingStage ? "opacity-50" : ""}`}
       >
         {Object.entries(STAGES).map(([key, { label }]) => (
-          <option key={key} value={key} className="bg-[#0d1525] text-white">{label}</option>
+          <option key={key} value={key} className="bg-[#020509] text-white">{label}</option>
         ))}
       </select>
 
@@ -669,7 +669,7 @@ export default function ClientsPage() {
         >
           <option value="">All Stages</option>
           {Object.entries(STAGES).map(([key, { label }]) => (
-            <option key={key} value={key} className="bg-[#0d1525]">{label}</option>
+            <option key={key} value={key} className="bg-[#020509]">{label}</option>
           ))}
         </select>
 
@@ -679,9 +679,9 @@ export default function ClientsPage() {
           className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-cyan-500/50 transition appearance-none cursor-pointer"
         >
           <option value="">All Health</option>
-          <option value="green" className="bg-[#0d1525]">Healthy</option>
-          <option value="yellow" className="bg-[#0d1525]">At Risk</option>
-          <option value="red" className="bg-[#0d1525]">Critical</option>
+          <option value="green" className="bg-[#020509]">Healthy</option>
+          <option value="yellow" className="bg-[#020509]">At Risk</option>
+          <option value="red" className="bg-[#020509]">Critical</option>
         </select>
 
         <select
@@ -689,10 +689,10 @@ export default function ClientsPage() {
           onChange={(e) => setSortBy(e.target.value)}
           className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-cyan-500/50 transition appearance-none cursor-pointer"
         >
-          <option value="updatedAt" className="bg-[#0d1525]">Recently Updated</option>
-          <option value="healthScore" className="bg-[#0d1525]">Health Score (worst first)</option>
-          <option value="dealValue" className="bg-[#0d1525]">Deal Value (highest first)</option>
-          <option value="lastContact" className="bg-[#0d1525]">Last Contact</option>
+          <option value="updatedAt" className="bg-[#020509]">Recently Updated</option>
+          <option value="healthScore" className="bg-[#020509]">Health Score (worst first)</option>
+          <option value="dealValue" className="bg-[#020509]">Deal Value (highest first)</option>
+          <option value="lastContact" className="bg-[#020509]">Last Contact</option>
         </select>
       </div>
 

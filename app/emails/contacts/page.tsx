@@ -184,7 +184,7 @@ export default function ContactsPage() {
   const eliteContacts = contacts.filter(c => (c.executionTier ?? "elite") === "elite").length;
 
   return (
-    <main className="min-h-screen bg-[#050a14] text-white flex flex-col">
+    <main className="min-h-screen bg-[#020509] text-white flex flex-col">
       <div className="fixed inset-0 opacity-[0.02] pointer-events-none"
         style={{ backgroundImage: "radial-gradient(#fff 1px,transparent 1px)", backgroundSize: "28px 28px" }} />
 

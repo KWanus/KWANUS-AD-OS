@@ -711,7 +711,7 @@ export default function ProposalDetailPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex items-center justify-center">
+      <div className="min-h-screen bg-[#020509] flex items-center justify-center">
         <Loader2 className="w-6 h-6 animate-spin text-white/20" />
       </div>
     );
@@ -719,7 +719,7 @@ export default function ProposalDetailPage() {
 
   if (!proposal) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex items-center justify-center px-4">
+      <div className="min-h-screen bg-[#020509] flex items-center justify-center px-4">
         <div className="w-full max-w-3xl space-y-4">
           <DatabaseFallbackNotice visible={databaseUnavailable} />
           <div className="flex flex-col items-center justify-center text-center rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8">
@@ -734,7 +734,7 @@ export default function ProposalDetailPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-[#020509] text-white">
       <AppNav />
       <div className="max-w-5xl mx-auto px-4 pt-8 pb-24">
 

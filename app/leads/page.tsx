@@ -399,7 +399,7 @@ export default function LeadsPage() {
     : visibleByNiche;
 
   return (
-    <main className="min-h-screen bg-[#050a14] text-white">
+    <main className="min-h-screen bg-[#020509] text-white">
       <AppNav />
       <CRMSubNav />
 

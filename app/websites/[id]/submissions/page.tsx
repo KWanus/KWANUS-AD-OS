@@ -110,7 +110,7 @@ export default function SubmissionsPage({ params }: { params: Promise<{ id: stri
   }
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-[#020509] text-white">
       <AppNav />
 
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
