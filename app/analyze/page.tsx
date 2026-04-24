@@ -189,8 +189,8 @@ function DimensionRow({ label, value, isRisk }: { label: string; value: number; 
   return (
     <div className="flex items-center gap-3">
       <span className="text-xs text-white/50 w-36 shrink-0">{label}</span>
-      <div className="flex-1 h-1.5 bg-white/10 rounded-full overflow-hidden">
-        <div className={`h-full rounded-full ${color}`} style={{ width: `${value}%` }} />
+      <div className="flex-1 h-1.5 bg-white/[0.06] rounded-full overflow-hidden">
+        <div className={`h-full rounded-full ${color}`} style={{ width: `${value}%`, boxShadow: `0 0 8px ${color.includes("green") ? "rgba(34,197,94,0.3)" : color.includes("yellow") ? "rgba(234,179,8,0.3)" : "rgba(239,68,68,0.3)"}` }} />
       </div>
       <span className={`text-xs font-semibold w-7 text-right ${isRisk ? (value <= 30 ? "text-green-400" : value <= 60 ? "text-yellow-400" : "text-red-400") : scoreColor(value)}`}>
         {value}
@@ -210,7 +210,7 @@ function CopyButton({ text }: { text: string }) {
   return (
     <button
       onClick={handleCopy}
-      className="text-xs px-2.5 py-1 rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 text-white/50 hover:text-white/80 transition shrink-0"
+      className={`text-xs px-2.5 py-1 rounded-lg border border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.08] backdrop-blur-sm transition shrink-0 ${copied ? "text-cyan-400 border-cyan-500/20" : "text-white/50 hover:text-white/80"}`}
     >
       {copied ? "Copied!" : "Copy"}
     </button>
@@ -234,7 +234,7 @@ function AssetSection({ assets, onOpenStudio }: { assets: AssetPackage; onOpenSt
   return (
     <div className="flex flex-col h-full">
       {/* Tab bar — sticky at top of right panel */}
-      <div className="sticky top-0 z-10 bg-[#0a0f1e] border-b border-white/10 flex gap-0.5 px-4 pt-3 pb-0 overflow-x-auto shrink-0">
+      <div className="sticky top-0 z-10 bg-[#020509]/80 backdrop-blur-2xl border-b border-white/[0.08] flex gap-0.5 px-4 pt-3 pb-0 overflow-x-auto shrink-0">
         {tabs.map((t) => (
           <button
             key={t.id}
@@ -267,7 +267,7 @@ function AssetSection({ assets, onOpenStudio }: { assets: AssetPackage; onOpenSt
         {activeTab === "hooks" && (
           <div className="space-y-3">
             {assets.adHooks.map((hook, i) => (
-              <div key={i} className="rounded-xl border border-white/10 bg-black/20 p-4">
+              <div key={i} className="rounded-xl border border-white/[0.08] bg-black/20 backdrop-blur-sm p-4 hover:border-white/[0.12] transition">
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <span className="text-xs font-semibold text-cyan-400 uppercase tracking-wide">{hook.format}</span>
                   <CopyButton text={hook.hook} />
@@ -282,7 +282,7 @@ function AssetSection({ assets, onOpenStudio }: { assets: AssetPackage; onOpenSt
         {activeTab === "scripts" && (
           <div className="space-y-6">
             {assets.adScripts.map((script, i) => (
-              <div key={i} className="rounded-xl border border-white/10 bg-black/20 overflow-hidden">
+              <div key={i} className="rounded-xl border border-white/[0.08] bg-black/20 backdrop-blur-sm overflow-hidden hover:border-white/[0.12] transition">
                 <div className="flex items-center justify-between px-4 py-3 border-b border-white/10">
                   <span className="text-sm font-semibold text-white/80">{script.title}</span>
                   <CopyButton text={script.sections.map((s) => `[${s.timestamp}] ${s.copy}`).join("\n\n")} />
@@ -312,7 +312,7 @@ function AssetSection({ assets, onOpenStudio }: { assets: AssetPackage; onOpenSt
             <LandingPageRow label="Subheadline" value={assets.landingPage.subheadline} />
             <LandingPageRow label="CTA Copy" value={assets.landingPage.ctaCopy} />
             <LandingPageRow label="Urgency Line" value={assets.landingPage.urgencyLine} />
-            <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+            <div className="rounded-xl border border-white/[0.08] bg-black/20 backdrop-blur-sm p-4 hover:border-white/[0.12] transition">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs text-white/40 uppercase tracking-wide">Trust Bar</span>
                 <CopyButton text={assets.landingPage.trustBar.join(" • ")} />
@@ -323,7 +323,7 @@ function AssetSection({ assets, onOpenStudio }: { assets: AssetPackage; onOpenSt
                 ))}
               </div>
             </div>
-            <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+            <div className="rounded-xl border border-white/[0.08] bg-black/20 backdrop-blur-sm p-4 hover:border-white/[0.12] transition">
               <div className="flex items-center justify-between mb-2">
                 <span className="text-xs text-white/40 uppercase tracking-wide">Benefit Bullets</span>
                 <CopyButton text={assets.landingPage.benefitBullets.join("\n")} />
@@ -336,7 +336,7 @@ function AssetSection({ assets, onOpenStudio }: { assets: AssetPackage; onOpenSt
             </div>
             <LandingPageRow label="Social Proof Guidance" value={assets.landingPage.socialProofGuidance} />
             <LandingPageRow label="Guarantee" value={assets.landingPage.guaranteeText} />
-            <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+            <div className="rounded-xl border border-white/[0.08] bg-black/20 backdrop-blur-sm p-4 hover:border-white/[0.12] transition">
               <div className="flex items-center justify-between mb-3">
                 <span className="text-xs text-white/40 uppercase tracking-wide">FAQ Items</span>
               </div>
@@ -406,7 +406,7 @@ function AssetSection({ assets, onOpenStudio }: { assets: AssetPackage; onOpenSt
 
 function LandingPageRow({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+    <div className="rounded-xl border border-white/[0.08] bg-black/20 backdrop-blur-sm p-4 hover:border-white/[0.12] transition">
       <div className="flex items-start justify-between gap-3 mb-1">
         <span className="text-xs text-white/40 uppercase tracking-wide">{label}</span>
         <CopyButton text={value} />
@@ -420,7 +420,7 @@ function EmailList({ emails }: { emails: EmailItem[] }) {
   return (
     <div className="space-y-3">
       {emails.map((email, i) => (
-        <div key={i} className="rounded-xl border border-white/10 bg-black/20 overflow-hidden">
+        <div key={i} className="rounded-xl border border-white/[0.08] bg-black/20 backdrop-blur-sm overflow-hidden hover:border-white/[0.12] transition">
           <div className="flex items-start justify-between px-4 py-3 border-b border-white/5">
             <div>
               <span className="text-xs text-cyan-400 font-semibold">{email.timing}</span>
@@ -440,7 +440,7 @@ function EmailList({ emails }: { emails: EmailItem[] }) {
 
 function ChecklistDay({ label, items }: { label: string; items: string[] }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+    <div className="rounded-xl border border-white/[0.08] bg-black/20 backdrop-blur-sm p-4 hover:border-white/[0.12] transition">
       <div className="flex items-center justify-between mb-3">
         <span className="text-xs font-semibold text-white/60 uppercase tracking-wide">{label}</span>
         <CopyButton text={items.map((item, i) => `${i + 1}. ${item}`).join("\n")} />
@@ -459,13 +459,14 @@ function ChecklistDay({ label, items }: { label: string; items: string[] }) {
 
 function BriefCard({ brief, onOpenStudio }: { brief: AdBrief; onOpenStudio: () => void }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-white/5 overflow-hidden shadow-2xl">
+    <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm overflow-hidden shadow-2xl relative">
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
       {/* Brief Header */}
-      <div className="px-6 py-5 border-b border-white/10 bg-gradient-to-r from-cyan-500/10 to-transparent">
+      <div className="px-6 py-5 border-b border-white/[0.08] bg-gradient-to-r from-cyan-500/[0.08] to-transparent">
         <div className="flex items-start justify-between gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="px-2 py-0.5 rounded bg-cyan-500 text-[10px] font-bold text-[#0a0f1e] uppercase">{brief.platform}</span>
+              <span className="px-2 py-0.5 rounded bg-gradient-to-r from-cyan-500 to-blue-500 text-[10px] font-bold text-[#020509] uppercase">{brief.platform}</span>
               <span className="text-[10px] font-medium text-white/40 uppercase tracking-widest">{brief.format}</span>
             </div>
             <h3 className="text-xl font-bold text-white uppercase tracking-tight">{brief.title}</h3>
@@ -474,7 +475,7 @@ function BriefCard({ brief, onOpenStudio }: { brief: AdBrief; onOpenStudio: () =
           <div className="flex items-center gap-2">
             <button
               onClick={onOpenStudio}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-[#0a0f1e] text-[11px] font-bold uppercase transition"
+              className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-[#020509] text-[11px] font-bold uppercase transition shadow-[0_0_12px_rgba(6,182,212,0.15)]"
             >
               Open in Studio →
             </button>
@@ -821,10 +822,10 @@ function AnalyzeContent() {
 
   // ── WITH RESULT: two-panel layout ────────────────────────────────────────
   return (
-    <main className="h-screen overflow-hidden bg-[#0a0f1e] text-white flex flex-col">
+    <main className="h-screen overflow-hidden bg-[#020509] text-white flex flex-col">
       <AppNav />
       {/* Action bar */}
-      <header className="shrink-0 px-6 py-2 border-b border-white/[0.06] flex items-center gap-4">
+      <header className="shrink-0 px-6 py-2 border-b border-white/[0.06] flex items-center gap-4 backdrop-blur-xl">
         <div className="flex-1" />
 
         {/* Save / Saved state */}
@@ -864,10 +865,12 @@ function AnalyzeContent() {
       <div className="flex-1 grid grid-cols-1 lg:grid-cols-[340px_1fr] overflow-hidden">
 
         {/* LEFT PANEL: Analysis signals (scrollable) */}
-        <aside className="border-r border-white/10 overflow-y-auto p-5 space-y-4">
+        <aside className="border-r border-white/10 overflow-y-auto p-5 space-y-4 backdrop-blur-xl relative">
+          <div className="absolute top-0 right-0 w-[1px] h-full bg-gradient-to-b from-cyan-500/20 via-transparent to-transparent" />
 
           {/* Verdict card */}
-          <div className="rounded-xl border border-white/10 bg-white/5 p-4">
+          <div className="rounded-xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-4 relative overflow-hidden">
+            <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
             <p className="text-[10px] uppercase tracking-widest text-white/30 mb-1">Verdict</p>
             <p className={`text-3xl font-bold ${VERDICT_COLORS[result.verdict] ?? "text-white"}`}>
               {result.verdict}
@@ -916,11 +919,11 @@ function AnalyzeContent() {
           {/* Why win / fail mini grid */}
           {opportunity && (
             <div className="grid grid-cols-2 gap-2">
-              <div className="rounded-lg border border-white/10 bg-black/20 p-3">
+              <div className="rounded-lg border border-white/[0.08] bg-black/20 backdrop-blur-sm p-3">
                 <p className="text-[10px] text-white/30 mb-1">Why Could Win</p>
                 <p className="text-xs text-white/70 leading-relaxed">{opportunity.whyCouldWin}</p>
               </div>
-              <div className="rounded-lg border border-white/10 bg-black/20 p-3">
+              <div className="rounded-lg border border-white/[0.08] bg-black/20 backdrop-blur-sm p-3">
                 <p className="text-[10px] text-white/30 mb-1">Why Could Fail</p>
                 <p className="text-xs text-white/70 leading-relaxed">{opportunity.whyCouldFail}</p>
               </div>
@@ -928,26 +931,26 @@ function AnalyzeContent() {
           )}
 
           {/* Audience chip */}
-          <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+          <div className="rounded-lg border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm p-3">
             <p className="text-[10px] uppercase tracking-widest text-white/30 mb-1">Audience</p>
             <p className="text-xs text-white/80">{result.decisionPacket.audience}</p>
           </div>
 
           {/* Pain / Desire chip */}
-          <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+          <div className="rounded-lg border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm p-3">
             <p className="text-[10px] uppercase tracking-widest text-white/30 mb-1">Core Pain / Desire</p>
             <p className="text-xs text-white/80">{result.decisionPacket.painDesire}</p>
           </div>
 
           {/* Angle chip */}
-          <div className="rounded-lg border border-white/10 bg-white/5 p-3">
+          <div className="rounded-lg border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm p-3">
             <p className="text-[10px] uppercase tracking-widest text-white/30 mb-1">Selling Angle</p>
             <p className="text-xs text-white/80">{result.decisionPacket.angle}</p>
           </div>
 
           {/* Score bars */}
           {opportunity && (
-            <div className="rounded-lg border border-white/10 bg-white/5 p-3 space-y-2">
+            <div className="rounded-lg border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm p-3 space-y-2">
               <p className="text-[10px] uppercase tracking-widest text-white/30 mb-2">Score Breakdown</p>
               {(Object.keys(DIMENSION_LABELS) as Array<keyof DimensionScores>).map((key) => (
                 <DimensionRow
@@ -962,7 +965,7 @@ function AnalyzeContent() {
 
           {/* Strengths */}
           {result.decisionPacket.strengths.length > 0 && (
-            <div className="rounded-lg border border-green-500/20 bg-green-500/5 p-3">
+            <div className="rounded-lg border border-green-500/15 bg-green-500/[0.04] backdrop-blur-sm p-3">
               <p className="text-[10px] font-semibold text-green-400 uppercase tracking-widest mb-2">Strengths</p>
               <ul className="space-y-1.5">
                 {result.decisionPacket.strengths.map((s, i) => (
@@ -976,7 +979,7 @@ function AnalyzeContent() {
 
           {/* Weaknesses */}
           {result.decisionPacket.weaknesses.length > 0 && (
-            <div className="rounded-lg border border-red-500/20 bg-red-500/5 p-3">
+            <div className="rounded-lg border border-red-500/15 bg-red-500/[0.04] backdrop-blur-sm p-3">
               <p className="text-[10px] font-semibold text-red-400 uppercase tracking-widest mb-2">Weaknesses</p>
               <ul className="space-y-1.5">
                 {result.decisionPacket.weaknesses.map((w, i) => (
@@ -990,7 +993,7 @@ function AnalyzeContent() {
 
           {/* Next actions */}
           {result.decisionPacket.nextActions.length > 0 && (
-            <div className="rounded-lg border border-cyan-500/20 bg-cyan-500/5 p-3">
+            <div className="rounded-lg border border-cyan-500/15 bg-cyan-500/[0.04] backdrop-blur-sm p-3">
               <p className="text-[10px] font-semibold text-cyan-400 uppercase tracking-widest mb-2">Next Actions</p>
               <ol className="space-y-1.5">
                 {result.decisionPacket.nextActions.map((a, i) => (
@@ -1004,13 +1007,14 @@ function AnalyzeContent() {
 
           {/* Save to workspace — inside left panel */}
           {result.verdict !== "Reject" && assets && (
-            <div className="rounded-lg border border-white/10 bg-white/5 p-4">
+            <div className="rounded-lg border border-white/[0.08] bg-white/[0.03] backdrop-blur-sm p-4 relative overflow-hidden">
+              <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
               {savedCampaignId ? (
                 <div className="space-y-2">
                   <p className="text-xs font-semibold text-cyan-400">Saved to workspace</p>
                   <Link
                     href={`/campaigns/${savedCampaignId}`}
-                    className="block w-full rounded-lg bg-cyan-500 hover:bg-cyan-400 px-4 py-2 text-xs font-semibold text-[#0a0f1e] text-center transition"
+                    className="block w-full rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 px-4 py-2 text-xs font-semibold text-[#020509] text-center transition shadow-[0_0_15px_rgba(6,182,212,0.15)]"
                   >
                     Open Workspace →
                   </Link>
@@ -1031,7 +1035,7 @@ function AnalyzeContent() {
                     <button
                       onClick={() => void handleSave()}
                       disabled={saving}
-                      className="flex-1 rounded-lg bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 px-3 py-2 text-xs font-semibold text-[#0a0f1e] transition"
+                      className="flex-1 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 disabled:opacity-50 px-3 py-2 text-xs font-semibold text-[#020509] transition shadow-[0_0_12px_rgba(6,182,212,0.15)]"
                     >
                       {saving ? "Saving..." : "Save"}
                     </button>
@@ -1049,7 +1053,7 @@ function AnalyzeContent() {
                   <p className="text-[10px] text-white/30">Keep drafts, track what&apos;s live, and A/B test variations.</p>
                   <button
                     onClick={() => { setCampaignName(result.title || ""); setShowSaveForm(true); }}
-                    className="w-full rounded-lg bg-cyan-500 hover:bg-cyan-400 px-4 py-2 text-xs font-semibold text-[#0a0f1e] transition"
+                    className="w-full rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 px-4 py-2 text-xs font-semibold text-[#020509] transition shadow-[0_0_15px_rgba(6,182,212,0.15)]"
                   >
                     Save to Workspace →
                   </button>

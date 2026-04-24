@@ -108,7 +108,7 @@ function AnalysisRow({ analysis, onDelete }: { analysis: Analysis; onDelete: (id
   return (
     <Link
       href={`/analyses/${analysis.id}`}
-      className="group flex items-center gap-4 px-5 py-4 hover:bg-white/[0.025] border-b border-white/[0.04] transition-colors"
+      className="group flex items-center gap-4 px-5 py-4 hover:bg-white/[0.03] border-b border-white/[0.04] transition-all backdrop-blur-sm hover:shadow-[inset_0_0_30px_rgba(6,182,212,0.02)]"
     >
       {/* Score */}
       <div className="shrink-0">
@@ -315,7 +315,7 @@ export default function AnalysesPage() {
   const withAssets = analyses.filter(a => a._count.assetPackages > 0).length;
 
   return (
-    <div className="min-h-screen bg-[#050a14] text-white">
+    <div className="min-h-screen bg-[#020509] text-white">
       <AppNav />
       <ScanSubNav />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
@@ -338,7 +338,7 @@ export default function AnalysesPage() {
                 { label: "Pursue", value: pursued, color: "text-emerald-400" },
                 { label: "With Assets", value: withAssets, color: "text-purple-400" },
               ].map(({ label, value, color }) => (
-                <div key={label} className="bg-white/[0.03] border border-white/[0.06] rounded-xl px-4 py-2 text-center">
+                <div key={label} className="bg-white/[0.03] border border-white/[0.06] rounded-xl px-4 py-2 text-center backdrop-blur-sm hover:border-white/[0.1] transition">
                   <p className={`text-base font-black ${color}`}>{value}</p>
                   <p className="text-[10px] text-white/30 font-medium uppercase tracking-wider">{label}</p>
                 </div>
@@ -492,9 +492,9 @@ export default function AnalysesPage() {
             className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-cyan-500/50 transition appearance-none cursor-pointer"
           >
             <option value="">All Verdicts</option>
-            <option value="Pursue" className="bg-[#0d1525]">Pursue</option>
-            <option value="Consider" className="bg-[#0d1525]">Consider</option>
-            <option value="Reject" className="bg-[#0d1525]">Reject</option>
+            <option value="Pursue" className="bg-[#020509]">Pursue</option>
+            <option value="Consider" className="bg-[#020509]">Consider</option>
+            <option value="Reject" className="bg-[#020509]">Reject</option>
           </select>
 
           <select
@@ -503,8 +503,8 @@ export default function AnalysesPage() {
             className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-cyan-500/50 transition appearance-none cursor-pointer"
           >
             <option value="">All Modes</option>
-            <option value="operator" className="bg-[#0d1525]">Operator</option>
-            <option value="consultant" className="bg-[#0d1525]">Consultant</option>
+            <option value="operator" className="bg-[#020509]">Operator</option>
+            <option value="consultant" className="bg-[#020509]">Consultant</option>
           </select>
 
           <select
@@ -512,15 +512,16 @@ export default function AnalysesPage() {
             onChange={(e) => setSortBy(e.target.value)}
             className="bg-white/[0.04] border border-white/[0.08] rounded-xl px-3 py-2.5 text-sm text-white/60 focus:outline-none focus:border-cyan-500/50 transition appearance-none cursor-pointer"
           >
-            <option value="createdAt" className="bg-[#0d1525]">Most Recent</option>
-            <option value="score" className="bg-[#0d1525]">Highest Score</option>
+            <option value="createdAt" className="bg-[#020509]">Most Recent</option>
+            <option value="score" className="bg-[#020509]">Highest Score</option>
           </select>
         </div>
 
         {/* Table */}
-        <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl overflow-hidden">
+        <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl overflow-hidden backdrop-blur-sm relative">
+          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/15 to-transparent" />
           {/* Header row */}
-          <div className="flex items-center gap-4 px-5 py-3 border-b border-white/[0.06] bg-white/[0.015]">
+          <div className="flex items-center gap-4 px-5 py-3 border-b border-white/[0.06] bg-white/[0.02]">
             <div className="w-10 shrink-0 text-[10px] font-black uppercase tracking-widest text-white/25">Score</div>
             <div className="flex-1 text-[10px] font-black uppercase tracking-widest text-white/25">Analysis</div>
             <div className="hidden md:block w-16 text-right text-[10px] font-black uppercase tracking-widest text-white/25">Status</div>
