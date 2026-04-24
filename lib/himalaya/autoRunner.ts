@@ -28,6 +28,9 @@ export async function runDailyAutomations(): Promise<{
   emailsCleaned: number;
   reengaged: number;
   abandonedCartsProcessed: number;
+  opportunitiesFound: number;
+  ltvStrategiesGenerated: number;
+  optimizationSuggestions: number;
   errors: string[];
 }> {
   const errors: string[] = [];
@@ -131,6 +134,77 @@ export async function runDailyAutomations(): Promise<{
     errors.push(`Email flows: ${err instanceof Error ? err.message : "failed"}`);
   }
 
+  // 8. Run opportunity scanner — find new revenue streams for each user
+  let opportunitiesFound = 0;
+  for (const user of users.slice(0, 10)) {
+    try {
+      const profile = await prisma.businessProfile.findUnique({ where: { userId: user.id } }).catch(() => null);
+      if (profile) {
+        const { scanOpportunities } = await import("@/lib/wealth/opportunityScanner");
+        const opps = scanOpportunities({
+          niche: profile.niche ?? "business",
+          audience: profile.targetAudience ?? "general",
+          monthlyRevenue: (profile as Record<string, unknown>).monthlyRevenue as number ?? 0,
+          topProducts: [],
+          currentChannels: ["website", "email"],
+        });
+        opportunitiesFound += opps.opportunities?.length ?? 0;
+
+        if (opps.opportunities && opps.opportunities.length > 0) {
+          const { createNotification } = await import("@/lib/notifications/notify");
+          createNotification({
+            userId: user.id,
+            type: "new_lead",
+            title: `${opps.opportunities.length} new revenue opportunities found`,
+            body: opps.opportunities[0]?.title ?? "Check your dashboard",
+            href: "/dashboard",
+          }).catch(() => {});
+        }
+      }
+    } catch { /* non-blocking */ }
+  }
+
+  // 9. Run LTV maximizer — generate upsell/cross-sell strategies
+  let ltvStrategiesGenerated = 0;
+  for (const user of users.slice(0, 10)) {
+    try {
+      const sites = await prisma.site.findMany({ where: { userId: user.id }, select: { id: true } }).catch(() => []);
+      const siteIds = sites.map(s => s.id);
+      if (siteIds.length === 0) continue;
+      const orderCount = await prisma.siteOrder.count({ where: { siteId: { in: siteIds }, status: { in: ["paid", "fulfilled"] } } }).catch(() => 0);
+      const orderSum = await prisma.siteOrder.aggregate({ where: { siteId: { in: siteIds }, status: { in: ["paid", "fulfilled"] } }, _avg: { amountCents: true } }).catch(() => null);
+      if (orderCount > 0) {
+        const { generateLTVStrategies } = await import("@/lib/wealth/ltvMaximizer");
+        const strategies = generateLTVStrategies({
+          avgOrderValue: (orderSum?._avg?.amountCents ?? 0) / 100,
+          repeatPurchaseRate: 20,
+          avgPurchaseFrequency: 2,
+          customerCount: orderCount,
+          churnRate: 30,
+        });
+        ltvStrategiesGenerated += strategies.strategies?.length ?? 0;
+      }
+    } catch { /* non-blocking */ }
+  }
+
+  // 10. Run autonomous optimizer — detect problems and suggest fixes
+  let optimizationSuggestions = 0;
+  for (const user of users.slice(0, 10)) {
+    try {
+      const { runAutonomousOptimization } = await import("@/lib/intelligence/autonomousOptimizer");
+      const result = await runAutonomousOptimization(user.id);
+      optimizationSuggestions += result.actionsProposed?.length ?? 0;
+    } catch { /* non-blocking */ }
+  }
+
+  // 11. Run predictive analytics on email contacts
+  for (const user of users.slice(0, 5)) {
+    try {
+      const { analyzeAllContacts } = await import("@/lib/email/predictiveAnalytics");
+      await analyzeAllContacts(user.id);
+    } catch { /* non-blocking */ }
+  }
+
   return {
     usersProcessed: users.length,
     milestonesAwarded,
@@ -138,6 +212,9 @@ export async function runDailyAutomations(): Promise<{
     emailsCleaned,
     reengaged,
     abandonedCartsProcessed,
+    opportunitiesFound,
+    ltvStrategiesGenerated,
+    optimizationSuggestions,
     errors,
   };
 }

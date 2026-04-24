@@ -694,6 +694,35 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
                 <p className="text-xs text-t-text-faint">AI-powered tools to grow faster. Click any tool to generate content instantly.</p>
               </div>
 
+              {/* Power features */}
+              <div>
+                <p className="text-[10px] font-black text-[#f5a623] tracking-widest mb-3">POWER FEATURES</p>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {[
+                    { id: "digital_twin", label: "Digital Twin", desc: "Simulate how your target customer reacts to headlines, offers, and prices before you spend money", icon: "🧬", action: "Test my funnel" },
+                    { id: "business_cloner", label: "Clone Competitor", desc: "Paste a competitor URL — we analyze what works, find their weaknesses, and build you something better", icon: "🔬", action: "Clone a business" },
+                    { id: "voice_agent", label: "Voice Agent", desc: "AI calls your leads automatically. 5x cheaper than Retell. Follows up, books appointments, closes", icon: "📱", action: "Set up voice" },
+                    { id: "auto_optimizer", label: "Auto-Optimizer", desc: "Kills losing ads, doubles winners, generates new angles from winning DNA. Runs while you sleep", icon: "🤖", action: "Run optimization" },
+                    { id: "revenue_leaks", label: "Revenue Leak Detector", desc: "Finds exactly where money is leaking in your funnel and calculates the dollar value of each leak", icon: "🔍", action: "Find leaks" },
+                    { id: "social_poster", label: "Auto-Post Content", desc: "Generates and actually POSTS to Instagram, TikTok, Twitter, LinkedIn. Scheduling included", icon: "📲", action: "Set up posting" },
+                  ].map(feat => (
+                    <button key={feat.id} onClick={() => void runTool(feat.id, feat.label)}
+                      disabled={toolLoading === feat.id}
+                      className="flex items-start gap-3 rounded-xl border border-[#f5a623]/15 bg-[#f5a623]/[0.03] p-4 hover:border-[#f5a623]/25 hover:bg-[#f5a623]/[0.06] transition text-left disabled:opacity-50">
+                      <span className="text-2xl mt-0.5">{feat.icon}</span>
+                      <div className="flex-1">
+                        <p className="text-sm font-black">{feat.label}</p>
+                        <p className="text-[10px] text-t-text-faint mt-0.5 leading-relaxed">{feat.desc}</p>
+                        <p className="text-[10px] font-bold text-[#f5a623] mt-2">{feat.action} →</p>
+                      </div>
+                      {toolLoading === feat.id && <Loader2 className="w-4 h-4 text-[#f5a623] animate-spin shrink-0 mt-1" />}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Regular tools */}
+              <p className="text-[10px] font-black text-t-text-faint tracking-widest">CONTENT TOOLS</p>
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
                 {[
                   { id: "webinar", label: "Webinar", desc: "Evergreen funnel", icon: "🎥" },
