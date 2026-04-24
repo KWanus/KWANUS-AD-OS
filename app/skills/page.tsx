@@ -82,7 +82,7 @@ function SkillCard({ skill, onRun }: { skill: SkillMeta; onRun: (skill: SkillMet
 
       <button
         onClick={() => onRun(skill)}
-        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500/15 to-purple-600/15 hover:from-cyan-500/25 hover:to-purple-600/25 border border-white/[0.08] hover:border-cyan-500/30 text-white/70 hover:text-white text-xs font-bold transition-all"
+        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500/15 to-blue-500/15 hover:from-cyan-500/25 hover:to-purple-600/25 border border-white/[0.08] hover:border-cyan-500/30 text-white/70 hover:text-white text-xs font-bold transition-all"
       >
         Run Skill
         <ChevronRight className="w-3.5 h-3.5" />
@@ -557,7 +557,7 @@ function SkillsPageInner() {
         <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="mb-6" />
 
         {businessProfile && recommendedSkill && (
-          <div className="mb-6 rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] to-purple-600/[0.03] p-6">
+          <div className="mb-6 rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] to-blue-600/[0.03] p-6">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-3xl">
                 <p className="text-[10px] font-black uppercase tracking-[0.26em] text-cyan-200/70">Recommended Operator Skill</p>

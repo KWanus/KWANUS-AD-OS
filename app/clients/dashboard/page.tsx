@@ -187,7 +187,7 @@ function RecentlyAdded({ clients }: { clients: Client[] }) {
               href={`/clients/${client.id}`}
               className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/[0.03] transition group"
             >
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-500/20 to-purple-600/20 flex items-center justify-center text-xs font-black text-white/60 shrink-0">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center text-xs font-black text-white/60 shrink-0">
                 {client.name.charAt(0).toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">

@@ -550,7 +550,7 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
       {/* LEFT SIDEBAR                                                         */}
       {/* ------------------------------------------------------------------ */}
       <aside
-        className="flex flex-col h-full border-r border-white/[0.07] bg-[#06091a] shrink-0 overflow-y-auto"
+        className="flex flex-col h-full border-r border-white/[0.07] bg-[#020509]/80 backdrop-blur-xl shrink-0 overflow-y-auto"
         style={{ width: 260 }}
       >
         {/* Back + branding */}
@@ -795,7 +795,7 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
 
           {/* Controls */}
           <Controls
-            className="!border-white/10 !bg-[#0a1020] !shadow-2xl"
+            className="!border-white/10 !bg-[#020509]/95 backdrop-blur-2xl !shadow-2xl"
             showInteractive={false}
           />
 
@@ -811,7 +811,7 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
               return "#334155";
             }}
             maskColor="rgba(5,10,20,0.7)"
-            className="!border-white/10 !bg-[#06091a] !rounded-2xl !overflow-hidden"
+            className="!border-white/10 !bg-[#020509]/80 backdrop-blur-xl !rounded-2xl !overflow-hidden"
             style={{ bottom: 16, right: 16 }}
           />
 

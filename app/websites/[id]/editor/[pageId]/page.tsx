@@ -949,7 +949,7 @@ export default function PageEditorPage({ params }: { params: Promise<{ id: strin
         <main className="flex-1 overflow-y-auto bg-[#020509]">
           {page.blocks.length === 0 && !previewMode ? (
             <div className="flex flex-col items-center justify-center h-full text-center px-4">
-              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/10 to-purple-600/10 border border-white/[0.08] backdrop-blur-sm flex items-center justify-center text-3xl mb-5 shadow-[0_0_40px_rgba(6,182,212,0.08)]">🏗️</div>
+              <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-white/[0.08] backdrop-blur-sm flex items-center justify-center text-3xl mb-5 shadow-[0_0_40px_rgba(6,182,212,0.08)]">🏗️</div>
               <h2 className="text-xl font-black text-white mb-2">Start building</h2>
               <p className="text-sm text-white/35 max-w-xs mb-6">Add blocks from the left panel to start designing your page.</p>
               <button onClick={() => setTab("add")} className="flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-white text-sm font-bold shadow-[0_0_15px_rgba(6,182,212,0.15)] transition">

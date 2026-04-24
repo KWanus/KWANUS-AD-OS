@@ -513,7 +513,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
         {/* Site header */}
         <div className="flex items-start justify-between gap-4 mb-8 flex-wrap">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-purple-600/20 border border-white/[0.08] flex items-center justify-center text-2xl">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-blue-500/20 border border-white/[0.08] flex items-center justify-center text-2xl">
               {site.faviconEmoji ?? "🚀"}
             </div>
             <div>

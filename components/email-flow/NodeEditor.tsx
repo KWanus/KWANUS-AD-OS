@@ -443,7 +443,7 @@ export default function NodeEditor({ node, flowContext, onClose, onUpdate }: Nod
 
   return (
     <div
-      className="h-full flex flex-col bg-[#080f1e] border-l border-white/[0.07]"
+      className="h-full flex flex-col bg-[#020509]/80 backdrop-blur-xl border-l border-white/[0.07]"
       style={{ width: 320 }}
     >
       {/* Panel header */}

@@ -118,7 +118,7 @@ function MessageBubble({ message }: { message: Message }) {
   if (isUser) {
     return (
       <div className="flex justify-end mb-4">
-        <div className="max-w-[75%] bg-gradient-to-r from-cyan-500/20 to-purple-600/20 border border-cyan-500/25 rounded-2xl rounded-tr-sm px-4 py-3">
+        <div className="max-w-[75%] bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-500/25 rounded-2xl rounded-tr-sm px-4 py-3">
           <p className="text-sm text-white leading-relaxed">{message.content}</p>
         </div>
         <div className="w-7 h-7 rounded-full bg-white/10 border border-white/15 flex items-center justify-center ml-2 shrink-0 mt-auto">

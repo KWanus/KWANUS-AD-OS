@@ -315,7 +315,7 @@ function SkeletonRow() {
 function EmptyState({ filtered }: { filtered: boolean }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center px-4">
-      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-purple-600/10 border border-white/[0.08] backdrop-blur-sm flex items-center justify-center mb-5 shadow-[0_0_30px_rgba(6,182,212,0.06)]">
+      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-white/[0.08] backdrop-blur-sm flex items-center justify-center mb-5 shadow-[0_0_30px_rgba(6,182,212,0.06)]">
         <Users className="w-7 h-7 text-cyan-400/70" />
       </div>
       {filtered ? (

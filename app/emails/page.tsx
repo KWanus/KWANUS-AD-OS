@@ -376,7 +376,7 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center">
       <div className="relative mb-6">
-        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/10 to-purple-600/10 border border-white/[0.08] backdrop-blur-sm flex items-center justify-center shadow-[0_0_40px_rgba(6,182,212,0.08)]">
+        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-white/[0.08] backdrop-blur-sm flex items-center justify-center shadow-[0_0_40px_rgba(6,182,212,0.08)]">
           <Mail className="w-9 h-9 text-cyan-400/70" />
         </div>
         <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center">
@@ -900,7 +900,7 @@ function EmailsPage() {
         <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="mb-6" />
 
         {businessProfile && (
-          <div className="mb-6 rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] to-purple-600/[0.03] p-6">
+          <div className="mb-6 rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] to-blue-600/[0.03] p-6">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-3xl">
                 <p className="text-[10px] font-black uppercase tracking-[0.26em] text-cyan-200/70">Recommended Email System</p>

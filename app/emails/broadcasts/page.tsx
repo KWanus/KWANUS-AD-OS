@@ -238,7 +238,7 @@ function BroadcastCard({
           <button
             onClick={(e) => void handleSend(e)}
             disabled={sending}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-gradient-to-r from-cyan-500/20 to-purple-600/20 hover:from-cyan-500/30 hover:to-purple-600/30 border border-cyan-500/30 hover:border-cyan-400/50 text-cyan-300 hover:text-white text-[11px] font-bold transition-all disabled:opacity-40"
+            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-gradient-to-r from-cyan-500/20 to-blue-500/20 hover:from-cyan-500/30 hover:to-purple-600/30 border border-cyan-500/30 hover:border-cyan-400/50 text-cyan-300 hover:text-white text-[11px] font-bold transition-all disabled:opacity-40"
           >
             {sending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />}
             {sending ? "Sending..." : "Send Now"}

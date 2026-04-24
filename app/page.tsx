@@ -559,7 +559,7 @@ export default function Dashboard() {
         {!loading && totalCampaigns + totalSites + totalClients + totalEmailFlows === 0 && (
           <section className="mb-8">
             <SectionLabel>Getting Started</SectionLabel>
-            <div className="rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.06] to-purple-600/[0.03] p-5">
+            <div className="rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.06] to-blue-600/[0.03] p-5">
               <p className="text-sm text-white/50 mb-4">Complete these steps to set up your marketing OS:</p>
               <div className="space-y-2">
                 {[
@@ -702,7 +702,7 @@ export default function Dashboard() {
                           href={`/clients/${c.id}`}
                           className="flex items-center gap-3 p-2.5 rounded-xl bg-black/20 border border-white/[0.05] hover:border-white/[0.12] transition group"
                         >
-                          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-500/20 to-purple-600/20 flex items-center justify-center text-xs font-black text-white/60 shrink-0">
+                          <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-500/20 to-blue-500/20 flex items-center justify-center text-xs font-black text-white/60 shrink-0">
                             {c.name.charAt(0).toUpperCase()}
                           </div>
                           <div className="flex-1 min-w-0">

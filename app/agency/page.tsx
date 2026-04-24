@@ -537,7 +537,7 @@ function AuditsTab() {
                   key={type}
                   onClick={() => generateFromAudit(selectedAudit.id, type)}
                   disabled={isGenerating || alreadyDone}
-                  className="bg-gradient-to-r from-cyan-500/10 to-purple-600/10 hover:from-cyan-500/20 hover:to-purple-600/20 border border-white/[0.08] hover:border-white/[0.15] text-white text-xs font-black px-3 py-2.5 rounded-xl transition-all disabled:opacity-40 flex items-center justify-center gap-1.5"
+                  className="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 hover:from-cyan-500/20 hover:to-blue-500/20 border border-white/[0.08] hover:border-white/[0.15] text-white text-xs font-black px-3 py-2.5 rounded-xl transition-all disabled:opacity-40 flex items-center justify-center gap-1.5"
                 >
                   {isGenerating ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
                   {alreadyDone ? "Done" : `Gen ${type.charAt(0).toUpperCase() + type.slice(1)}`}
@@ -727,7 +727,7 @@ function StrategyTab() {
             </div>
           ))}
 
-          <div className="bg-gradient-to-r from-cyan-500/10 to-purple-600/10 border border-cyan-500/20 rounded-2xl p-4 text-center">
+          <div className="bg-gradient-to-r from-cyan-500/10 to-blue-500/10 border border-cyan-500/20 rounded-2xl p-4 text-center">
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Total Projected Revenue Lift</p>
             <p className="text-2xl font-black text-cyan-400">{selectedAudit.strategyJson.totalProjectedRevenueLift}</p>
           </div>
@@ -1133,7 +1133,7 @@ export default function AgencyPage() {
               onClick={() => setActiveTab(tab)}
               className={`px-4 py-2 rounded-xl text-sm font-black transition-all ${
                 activeTab === tab
-                  ? "bg-gradient-to-r from-cyan-500/20 to-purple-600/20 border border-white/[0.1] text-white"
+                  ? "bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-white/[0.1] text-white"
                   : "text-white/30 hover:text-white/60"
               }`}
             >

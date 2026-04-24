@@ -395,7 +395,7 @@ export default function ProductsPage() {
         <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="mb-6" />
 
         {businessProfile && (
-          <div className="mb-6 rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] to-purple-600/[0.03] p-6">
+          <div className="mb-6 rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] to-blue-600/[0.03] p-6">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-3xl">
                 <p className="text-[10px] font-black uppercase tracking-[0.26em] text-cyan-200/70">Recommended Product Move</p>
