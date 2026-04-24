@@ -1,9 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { Mountain, Check, ArrowRight, Zap, Star } from "lucide-react";
 
-const PLANS = [
+type BillingCycle = "monthly" | "annual";
+
+function getPlans(billing: BillingCycle) {
+  return [
   {
     name: "Free",
     price: "$0",
@@ -23,8 +27,9 @@ const PLANS = [
   },
   {
     name: "Pro",
-    price: "$29",
-    period: "/month",
+    price: billing === "annual" ? "$24" : "$29",
+    period: billing === "annual" ? "/mo (billed annually)" : "/month",
+    annualSavings: billing === "annual" ? "Save $60/year" : undefined,
     description: "Unlimited builds. Full automation. Scale to $10K+/month.",
     features: [
       "Unlimited business builds",
@@ -43,8 +48,9 @@ const PLANS = [
   },
   {
     name: "Business",
-    price: "$79",
-    period: "/month",
+    price: billing === "annual" ? "$66" : "$79",
+    period: billing === "annual" ? "/mo (billed annually)" : "/month",
+    annualSavings: billing === "annual" ? "Save $156/year" : undefined,
     description: "For agencies and power users running multiple businesses.",
     features: [
       "Everything in Pro",
@@ -61,8 +67,11 @@ const PLANS = [
     highlighted: false,
   },
 ];
+}
 
 export default function PricingPage() {
+  const [billing, setBilling] = useState<BillingCycle>("monthly");
+  const PLANS = getPlans(billing);
   return (
     <div className="min-h-screen bg-[#0c0a08] text-[#f5f0e8]">
       {/* Nav */}
@@ -89,8 +98,20 @@ export default function PricingPage() {
           Simple pricing. <span className="text-[#f5a623]">Start free.</span>
         </h1>
         <p className="mt-3 text-base text-[#f5f0e8]/35 max-w-lg mx-auto">
-          Build your first business for free. Upgrade when you're ready to scale.
+          Build your first business for free. Upgrade when you&apos;re ready to scale.
         </p>
+
+        {/* Billing toggle */}
+        <div className="mt-6 inline-flex items-center rounded-xl border border-[#f5f0e8]/[0.08] bg-[#f5f0e8]/[0.03] p-1">
+          <button onClick={() => setBilling("monthly")}
+            className={`px-4 py-2 rounded-lg text-xs font-bold transition ${billing === "monthly" ? "bg-[#f5a623]/10 text-[#f5a623]" : "text-[#f5f0e8]/40 hover:text-[#f5f0e8]/60"}`}>
+            Monthly
+          </button>
+          <button onClick={() => setBilling("annual")}
+            className={`px-4 py-2 rounded-lg text-xs font-bold transition ${billing === "annual" ? "bg-[#f5a623]/10 text-[#f5a623]" : "text-[#f5f0e8]/40 hover:text-[#f5f0e8]/60"}`}>
+            Annual <span className="text-emerald-400 ml-1">Save 17%</span>
+          </button>
+        </div>
       </section>
 
       {/* Plans */}
@@ -114,6 +135,11 @@ export default function PricingPage() {
                   <span className="text-3xl font-black">{plan.price}</span>
                   <span className="text-sm text-[#f5f0e8]/30">{plan.period}</span>
                 </div>
+                {"annualSavings" in plan && plan.annualSavings && (
+                  <span className="inline-block mt-1 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-400">
+                    {plan.annualSavings}
+                  </span>
+                )}
                 <p className="text-sm text-[#f5f0e8]/35 mt-2">{plan.description}</p>
               </div>
 
