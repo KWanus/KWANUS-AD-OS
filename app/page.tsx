@@ -84,7 +84,9 @@ export default function Home() {
     // Check if new user needs onboarding
     fetch("/api/settings").then(r => r.json()).then(data => {
       if (data.ok && !data.settings?.onboardingCompleted) {
-        router.replace("/setup");
+        // Preserve ?plan param from pricing page through signup flow
+        const params = typeof window !== "undefined" ? window.location.search : "";
+        router.replace(`/setup${params}`);
       } else {
         setCheckedOnboarding(true);
       }
