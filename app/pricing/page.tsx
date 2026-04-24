@@ -42,7 +42,7 @@ function getPlans(billing: BillingCycle) {
       "Priority support",
     ],
     cta: "Go Pro",
-    href: "/sign-up",
+    href: "/sign-up?plan=pro",
     highlighted: true,
     badge: "Most Popular",
   },
@@ -63,7 +63,7 @@ function getPlans(billing: BillingCycle) {
       "Early access to new features",
     ],
     cta: "Go Business",
-    href: "/sign-up",
+    href: "/sign-up?plan=business",
     highlighted: false,
   },
 ];

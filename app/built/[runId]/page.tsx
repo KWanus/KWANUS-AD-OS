@@ -1,13 +1,13 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
 import AppNav from "@/components/AppNav";
 import {
   Check, Globe, Zap, Mail, Play, Copy, ExternalLink,
-  ArrowRight, Mountain, Loader2, ChevronDown,
+  ArrowRight, Mountain, Loader2, ChevronDown, Crown,
 } from "lucide-react";
 
 type BuiltData = {
@@ -187,6 +187,28 @@ export default function BuiltPage({ params }: { params: Promise<{ runId: string 
             <p className="text-[11px] text-[#f5a623]/70">You don&apos;t need to create anything. We did it for you. Just review, approve, and share your link.</p>
           </div>
         </div>
+
+        {/* Upgrade banner — if user came from pricing with a plan */}
+        {(() => {
+          const sp = new URLSearchParams(typeof window !== "undefined" ? window.location.search : "");
+          const plan = sp.get("plan");
+          if (!plan || plan === "free") return null;
+          return (
+            <div className="rounded-xl border border-[#f5a623]/20 bg-gradient-to-r from-[#f5a623]/[0.06] to-[#e07850]/[0.04] p-5 mb-4">
+              <div className="flex items-center gap-3 mb-2">
+                <Crown className="w-5 h-5 text-[#f5a623]" />
+                <p className="text-sm font-black">Upgrade to {plan === "pro" ? "Pro" : "Business"} to unlock everything</p>
+              </div>
+              <p className="text-xs text-t-text-faint mb-3">
+                Your business is built! Upgrade now to get unlimited builds, auto-optimizer, and all growth tools.
+              </p>
+              <Link href={`/himalaya/upgrade`}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-sm font-bold text-[#0c0a08] hover:opacity-90 transition">
+                <Crown className="w-4 h-4" /> Upgrade to {plan === "pro" ? "Pro — $29/mo" : "Business — $79/mo"}
+              </Link>
+            </div>
+          );
+        })()}
 
         {/* Go to your business */}
         <div className="space-y-3">

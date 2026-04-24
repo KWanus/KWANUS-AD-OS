@@ -129,6 +129,16 @@ export default async function PublicSitePage({
       {/* ── Global styles ── */}
       <style>{`body{margin:0;padding:0;font-family:${fontFamily};background-color:${bodyBg};color:${bodyColor}}`}</style>
 
+      {/* ── Cookie consent banner (GDPR/CCPA) ── */}
+      <Script id="cookie-consent-banner" strategy="lazyOnload">{`
+        if(!localStorage.getItem('cookie_consent_${site.id}')){
+          var d=document.createElement('div');d.id='cookie-consent';
+          d.style.cssText='position:fixed;bottom:0;left:0;right:0;background:#0c0a08;border-top:1px solid rgba(245,166,35,0.15);color:#f5f0e8;padding:12px 20px;font-size:12px;z-index:9998;display:flex;align-items:center;justify-content:space-between;gap:12px';
+          d.innerHTML='<p style="margin:0;flex:1;opacity:0.6">We use cookies for analytics and to improve your experience.</p><div style="display:flex;gap:6px"><button onclick="this.parentElement.parentElement.remove();localStorage.setItem(\\'cookie_consent_${site.id}\\',\\'accepted\\')" style="background:#f5a623;color:#0c0a08;border:none;padding:6px 16px;border-radius:8px;font-size:11px;font-weight:bold;cursor:pointer">Accept</button><button onclick="this.parentElement.parentElement.remove();localStorage.setItem(\\'cookie_consent_${site.id}\\',\\'declined\\')" style="background:transparent;color:#999;border:1px solid #333;padding:6px 16px;border-radius:8px;font-size:11px;cursor:pointer">Decline</button></div>';
+          document.body.appendChild(d);
+        }
+      `}</Script>
+
       {/* ── Meta (Facebook/Instagram) Pixel ── */}
       {pixels?.metaPixelId && (
         <>

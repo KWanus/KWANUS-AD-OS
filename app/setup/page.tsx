@@ -1,12 +1,14 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Mountain, Loader2, ChevronRight } from "lucide-react";
 import { useAppMode } from "@/lib/theme/ModeProvider";
 
 export default function SetupPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const pendingPlan = searchParams.get("plan"); // from /sign-up?plan=pro
   const { setMode } = useAppMode();
   const [phase, setPhase] = useState<"pick" | "tell" | "building">("pick");
   const [entry, setEntry] = useState<"fresh" | "have" | "scale" | null>(null);
@@ -80,10 +82,12 @@ export default function SetupPage() {
 
       if (data.ok && data.runId) {
         setStage("Your business is ready!");
-        setTimeout(() => router.push(`/built/${data.runId}`), 800);
+        // If user selected a paid plan from pricing, redirect to upgrade after seeing built page
+        const dest = pendingPlan ? `/built/${data.runId}?plan=${pendingPlan}` : `/built/${data.runId}`;
+        setTimeout(() => router.push(dest), 800);
       } else {
         setStage("Done!");
-        setTimeout(() => router.push("/"), 800);
+        setTimeout(() => router.push(pendingPlan ? `/himalaya/upgrade` : "/"), 800);
       }
     } catch {
       clearInterval(iv);

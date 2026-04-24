@@ -147,7 +147,7 @@ export function generateCookieConsentScript(siteId: string): string {
 <div id="cookie-consent" style="display:none;position:fixed;bottom:0;left:0;right:0;background:#1a1a2e;color:#fff;padding:16px 24px;font-size:13px;z-index:9998;display:flex;align-items:center;justify-content:space-between;gap:16px;">
   <p style="margin:0;flex:1;">We use cookies to improve your experience and track site analytics. By continuing, you consent to our use of cookies.</p>
   <div style="display:flex;gap:8px;">
-    <button onclick="document.getElementById('cookie-consent').style.display='none';localStorage.setItem('cookie_consent_${siteId}','accepted')" style="background:#06b6d4;color:#fff;border:none;padding:8px 20px;border-radius:8px;font-size:12px;font-weight:bold;cursor:pointer;">Accept</button>
+    <button onclick="document.getElementById('cookie-consent').style.display='none';localStorage.setItem('cookie_consent_${siteId}','accepted')" style="background:#f5a623;color:#0c0a08;border:none;padding:8px 20px;border-radius:8px;font-size:12px;font-weight:bold;cursor:pointer;">Accept</button>
     <button onclick="document.getElementById('cookie-consent').style.display='none';localStorage.setItem('cookie_consent_${siteId}','declined')" style="background:transparent;color:#999;border:1px solid #333;padding:8px 20px;border-radius:8px;font-size:12px;cursor:pointer;">Decline</button>
   </div>
 </div>
