@@ -42,8 +42,20 @@ export async function POST(req: NextRequest) {
     const stripe = new Stripe(stripeKey);
     const origin = req.headers.get("origin") ?? "http://localhost:3005";
 
-    // Check for existing Stripe customer
+    // Check for existing subscription — prevent duplicate purchases
     const sub = await prisma.himalayaSubscription.findUnique({ where: { userId: user.id } });
+
+    if (sub?.stripeSubId && sub.tier === planKey) {
+      return NextResponse.json({
+        ok: false,
+        error: "active_subscription",
+        currentTier: sub.tier,
+        message: `You already have an active ${planKey} subscription.`,
+      }, { status: 409 });
+    }
+
+    // If user has a different active subscription, they're changing plans
+    // Let Stripe handle the proration
     let customerId = sub?.stripeCustomerId;
 
     if (!customerId) {

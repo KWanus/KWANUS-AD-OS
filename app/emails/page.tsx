@@ -27,6 +27,8 @@ import {
   Activity,
   Copy,
 } from "lucide-react";
+import Link from "next/link";
+import { Shield } from "lucide-react";
 import { EMAIL_FLOW_TEMPLATES, type EmailFlowTemplate } from "@/src/data/emailFlowTemplates";
 
 // ---------------------------------------------------------------------------
@@ -1106,6 +1108,17 @@ function EmailsPage() {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Warmup banner — show when fewer than 100 total enrolled */}
+        {totalEnrolled < 100 && (
+          <Link href="/emails/warmup" className="flex items-center gap-3 rounded-xl border border-[#f5a623]/15 bg-[#f5a623]/[0.03] px-4 py-3 mb-4 hover:border-[#f5a623]/25 transition">
+            <Shield className="w-5 h-5 text-[#f5a623] shrink-0" />
+            <div className="flex-1">
+              <p className="text-xs font-bold">Warm up your email domain first</p>
+              <p className="text-[10px] text-white/35">New sending domains need 7 days of warmup for best deliverability. Follow the guide &rarr;</p>
+            </div>
+          </Link>
         )}
 
         {/* Page header */}
