@@ -14,10 +14,11 @@ export type AdTemplate = {
   platform: "instagram" | "facebook" | "tiktok" | "story" | "universal";
   fields: {
     name: string;
-    type: "text" | "color" | "number";
+    type: "text" | "color" | "number" | "image" | "select";
     default: string;
     placeholder: string;
     maxLength?: number;
+    options?: string[];
   }[];
   render: (values: Record<string, string>) => string; // Returns SVG string
 };
@@ -347,6 +348,369 @@ export const AD_TEMPLATES: AdTemplate[] = [
         <rect x="80" y="390" width="80" height="4" rx="2" fill="${v.brandColor}"/>
         ${wrapText(v.body, w/2, 520, 30, w-160, "rgba(255,255,255,0.7)", "400")}
         <text x="${w-80}" y="${h-80}" text-anchor="end" font-family="Arial,sans-serif" font-size="18" fill="rgba(255,255,255,0.2)">Swipe →</text>
+      </svg>`;
+    },
+  },
+
+  // ── STORY GRADIENT (9:16) ──
+  {
+    id: "story-gradient",
+    name: "Story Gradient",
+    category: "hook",
+    aspectRatio: "9:16",
+    platform: "story",
+    fields: [
+      { name: "headline", type: "text", default: "Your Brand Deserves Better", placeholder: "Main headline", maxLength: 40 },
+      { name: "brandColor", type: "color", default: "#f5a623", placeholder: "Gradient top color" },
+      { name: "bgColor", type: "color", default: "#0c0a08", placeholder: "Gradient bottom color" },
+      { name: "cta", type: "text", default: "Swipe Up →", placeholder: "CTA button text", maxLength: 20 },
+    ],
+    render: (v) => {
+      const w = 1080, h = 1920;
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+        <defs>
+          <linearGradient id="sg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="${v.brandColor}"/>
+            <stop offset="100%" stop-color="${v.bgColor}"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#sg)"/>
+        ${wrapText(v.headline, w / 2, h * 0.42, 72, w - 140, "#ffffff")}
+        <rect x="${w / 2 - 180}" y="${h * 0.78}" width="360" height="70" rx="16" fill="rgba(255,255,255,0.15)"/>
+        <text x="${w / 2}" y="${h * 0.78 + 48}" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" font-weight="800" fill="#ffffff">${esc(v.cta)}</text>
+      </svg>`;
+    },
+  },
+
+  // ── COMPARISON (1:1) ──
+  {
+    id: "comparison",
+    name: "With vs Without",
+    category: "before_after",
+    aspectRatio: "1:1",
+    platform: "universal",
+    fields: [
+      { name: "withoutText", type: "text", default: "Guessing. Wasting budget. No leads.", placeholder: "Without us", maxLength: 60 },
+      { name: "withText", type: "text", default: "Data-driven. Profitable. Predictable.", placeholder: "With us", maxLength: 60 },
+      { name: "headline", type: "text", default: "See the Difference", placeholder: "Headline", maxLength: 30 },
+      { name: "brandColor", type: "color", default: "#f5a623", placeholder: "Brand color" },
+    ],
+    render: (v) => {
+      const w = 1080, h = 1080;
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+        <rect width="${w}" height="${h}" fill="#0c0a08"/>
+        <rect x="0" y="0" width="${w / 2}" height="${h}" fill="#1c1c1c" opacity="0.6"/>
+        <rect x="${w / 2}" y="0" width="${w / 2}" height="${h}" fill="${v.brandColor}" opacity="0.08"/>
+        <text x="${w * 0.25}" y="100" text-anchor="middle" font-family="Arial,sans-serif" font-size="30" font-weight="900" fill="#888888">WITHOUT US</text>
+        <text x="${w * 0.75}" y="100" text-anchor="middle" font-family="Arial,sans-serif" font-size="30" font-weight="900" fill="${v.brandColor}">WITH US</text>
+        <line x1="${w / 2}" y1="40" x2="${w / 2}" y2="${h - 160}" stroke="rgba(255,255,255,0.1)" stroke-width="2"/>
+        ${wrapText(v.withoutText, w * 0.25, h * 0.4, 28, w / 2 - 80, "rgba(255,255,255,0.45)", "500")}
+        ${wrapText(v.withText, w * 0.75, h * 0.4, 28, w / 2 - 80, "#ffffff", "700")}
+        <text x="${w / 2}" y="${h - 80}" text-anchor="middle" font-family="Arial,sans-serif" font-size="32" font-weight="900" fill="${v.brandColor}">${esc(v.headline)}</text>
+      </svg>`;
+    },
+  },
+
+  // ── COUNTDOWN SALE (1:1) ──
+  {
+    id: "countdown-sale",
+    name: "Countdown Sale",
+    category: "urgency",
+    aspectRatio: "1:1",
+    platform: "universal",
+    fields: [
+      { name: "hours", type: "text", default: "24", placeholder: "Hours left", maxLength: 5 },
+      { name: "headline", type: "text", default: "FLASH SALE", placeholder: "Sale headline", maxLength: 20 },
+      { name: "offerText", type: "text", default: "60% off all plans — today only", placeholder: "Offer details", maxLength: 50 },
+      { name: "brandColor", type: "color", default: "#f5a623", placeholder: "Accent color" },
+    ],
+    render: (v) => {
+      const w = 1080, h = 1080;
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+        <rect width="${w}" height="${h}" fill="#0c0a08"/>
+        <text x="${w / 2}" y="${h * 0.22}" text-anchor="middle" font-family="Arial,sans-serif" font-size="40" font-weight="900" fill="${v.brandColor}">${esc(v.headline)}</text>
+        <text x="${w / 2}" y="${h * 0.52}" text-anchor="middle" font-family="Arial,sans-serif" font-size="200" font-weight="900" fill="#ffffff">${esc(v.hours)}</text>
+        <text x="${w / 2}" y="${h * 0.65}" text-anchor="middle" font-family="Arial,sans-serif" font-size="36" font-weight="700" fill="${v.brandColor}">HOURS LEFT</text>
+        ${wrapText(v.offerText, w / 2, h * 0.78, 30, w - 160, "rgba(255,255,255,0.6)", "500")}
+        <rect x="${w / 2 - 140}" y="${h * 0.88}" width="280" height="56" rx="14" fill="${v.brandColor}"/>
+        <text x="${w / 2}" y="${h * 0.88 + 38}" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-weight="800" fill="#0c0a08">Shop Now →</text>
+      </svg>`;
+    },
+  },
+
+  // ── TRIPLE PROOF (4:5) ──
+  {
+    id: "triple-proof",
+    name: "Triple Proof Stats",
+    category: "stat",
+    aspectRatio: "4:5",
+    platform: "universal",
+    fields: [
+      { name: "stat1", type: "text", default: "500+", placeholder: "Stat 1 number", maxLength: 10 },
+      { name: "label1", type: "text", default: "Clients Served", placeholder: "Stat 1 label", maxLength: 25 },
+      { name: "stat2", type: "text", default: "98%", placeholder: "Stat 2 number", maxLength: 10 },
+      { name: "label2", type: "text", default: "Success Rate", placeholder: "Stat 2 label", maxLength: 25 },
+      { name: "stat3", type: "text", default: "$2M+", placeholder: "Stat 3 number", maxLength: 10 },
+      { name: "label3", type: "text", default: "Revenue Generated", placeholder: "Stat 3 label", maxLength: 25 },
+      { name: "brandColor", type: "color", default: "#f5a623", placeholder: "Accent color" },
+    ],
+    render: (v) => {
+      const w = 1080, h = 1350;
+      const stats = [
+        { num: v.stat1, lbl: v.label1 },
+        { num: v.stat2, lbl: v.label2 },
+        { num: v.stat3, lbl: v.label3 },
+      ];
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+        <rect width="${w}" height="${h}" fill="#0c0a08"/>
+        <text x="${w / 2}" y="140" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" font-weight="700" fill="${v.brandColor}">THE NUMBERS SPEAK</text>
+        ${stats.map((s, i) => {
+          const yCenter = 340 + i * 320;
+          return `
+            <rect x="120" y="${yCenter - 80}" width="${w - 240}" height="240" rx="20" fill="rgba(255,255,255,0.03)"/>
+            <text x="${w / 2}" y="${yCenter + 20}" text-anchor="middle" font-family="Arial,sans-serif" font-size="100" font-weight="900" fill="${v.brandColor}">${esc(s.num)}</text>
+            <text x="${w / 2}" y="${yCenter + 80}" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" font-weight="500" fill="rgba(255,255,255,0.6)">${esc(s.lbl)}</text>`;
+        }).join("\n")}
+      </svg>`;
+    },
+  },
+
+  // ── PAIN AGITATE (1:1) ──
+  {
+    id: "pain-agitate",
+    name: "Pain → Agitate",
+    category: "hook",
+    aspectRatio: "1:1",
+    platform: "universal",
+    fields: [
+      { name: "painPoint", type: "text", default: "wasting money on ads that don't convert", placeholder: "The pain point", maxLength: 50 },
+      { name: "solution", type: "text", default: "We fix that in 7 days or you don't pay.", placeholder: "Your solution", maxLength: 50 },
+      { name: "cta", type: "text", default: "Fix It Now →", placeholder: "CTA text", maxLength: 20 },
+      { name: "brandColor", type: "color", default: "#f5a623", placeholder: "Accent color" },
+    ],
+    render: (v) => {
+      const w = 1080, h = 1080;
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+        <rect width="${w}" height="${h}" fill="#0c0a08"/>
+        <rect width="${w}" height="${h * 0.55}" fill="#1a0505" opacity="0.5"/>
+        <text x="${w / 2}" y="${h * 0.18}" text-anchor="middle" font-family="Arial,sans-serif" font-size="32" font-weight="700" fill="#ef4444">Tired of...</text>
+        ${wrapText(v.painPoint, w / 2, h * 0.32, 48, w - 120, "rgba(255,255,255,0.7)")}
+        <line x1="${w * 0.2}" y1="${h * 0.55}" x2="${w * 0.8}" y2="${h * 0.55}" stroke="${v.brandColor}" stroke-width="3"/>
+        ${wrapText(v.solution, w / 2, h * 0.68, 40, w - 120, "#ffffff", "700")}
+        <rect x="${w / 2 - 140}" y="${h * 0.84}" width="280" height="56" rx="14" fill="${v.brandColor}"/>
+        <text x="${w / 2}" y="${h * 0.84 + 38}" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-weight="800" fill="#0c0a08">${esc(v.cta)}</text>
+      </svg>`;
+    },
+  },
+
+  // ── MINIMAL QUOTE (1:1) ──
+  {
+    id: "minimal-quote",
+    name: "Minimal Quote",
+    category: "testimonial",
+    aspectRatio: "1:1",
+    platform: "universal",
+    fields: [
+      { name: "quote", type: "text", default: "This completely transformed the way I run my business.", placeholder: "The quote", maxLength: 100 },
+      { name: "author", type: "text", default: "— James R., CEO", placeholder: "Author name", maxLength: 30 },
+      { name: "brandColor", type: "color", default: "#f5a623", placeholder: "Accent color" },
+    ],
+    render: (v) => {
+      const w = 1080, h = 1080;
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+        <rect width="${w}" height="${h}" fill="#ffffff"/>
+        <text x="100" y="280" font-family="Georgia,serif" font-size="200" fill="${v.brandColor}" opacity="0.15">\u201C</text>
+        ${wrapText(v.quote, w / 2, h * 0.4, 38, w - 200, "#1a1a1a", "400")}
+        <rect x="${w / 2 - 40}" y="${h * 0.7}" width="80" height="4" rx="2" fill="${v.brandColor}"/>
+        <text x="${w / 2}" y="${h * 0.78}" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" font-weight="600" fill="#666666">${esc(v.author)}</text>
+      </svg>`;
+    },
+  },
+
+  // ── FEATURE GRID (1:1) ──
+  {
+    id: "feature-grid",
+    name: "Feature Grid",
+    category: "product",
+    aspectRatio: "1:1",
+    platform: "universal",
+    fields: [
+      { name: "headline", type: "text", default: "Everything You Get", placeholder: "Grid headline", maxLength: 30 },
+      { name: "feature1", type: "text", default: "Automated Funnels", placeholder: "Feature 1", maxLength: 25 },
+      { name: "feature2", type: "text", default: "AI Ad Creative", placeholder: "Feature 2", maxLength: 25 },
+      { name: "feature3", type: "text", default: "Lead Tracking", placeholder: "Feature 3", maxLength: 25 },
+      { name: "feature4", type: "text", default: "24/7 Support", placeholder: "Feature 4", maxLength: 25 },
+      { name: "brandColor", type: "color", default: "#f5a623", placeholder: "Accent color" },
+    ],
+    render: (v) => {
+      const w = 1080, h = 1080;
+      const features = [v.feature1, v.feature2, v.feature3, v.feature4];
+      const positions = [
+        { x: w * 0.25, y: h * 0.38 },
+        { x: w * 0.75, y: h * 0.38 },
+        { x: w * 0.25, y: h * 0.68 },
+        { x: w * 0.75, y: h * 0.68 },
+      ];
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+        <rect width="${w}" height="${h}" fill="#0c0a08"/>
+        <text x="${w / 2}" y="140" text-anchor="middle" font-family="Arial,sans-serif" font-size="48" font-weight="900" fill="#ffffff">${esc(v.headline)}</text>
+        <rect x="${w / 2 - 40}" y="165" width="80" height="4" rx="2" fill="${v.brandColor}"/>
+        ${features.map((f, i) => {
+          const p = positions[i];
+          return `
+            <rect x="${p.x - 200}" y="${p.y - 80}" width="400" height="200" rx="16" fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.06)" stroke-width="1"/>
+            <text x="${p.x}" y="${p.y}" text-anchor="middle" font-family="Arial,sans-serif" font-size="40" fill="${v.brandColor}">✓</text>
+            <text x="${p.x}" y="${p.y + 50}" text-anchor="middle" font-family="Arial,sans-serif" font-size="26" font-weight="700" fill="#ffffff">${esc(f)}</text>`;
+        }).join("\n")}
+      </svg>`;
+    },
+  },
+
+  // ── VIDEO THUMBNAIL (16:9) ──
+  {
+    id: "video-thumbnail",
+    name: "Video Thumbnail",
+    category: "hook",
+    aspectRatio: "16:9",
+    platform: "facebook",
+    fields: [
+      { name: "headline", type: "text", default: "Watch This Before You Spend Another Dollar on Ads", placeholder: "Thumbnail headline", maxLength: 50 },
+      { name: "subtext", type: "text", default: "3 min watch", placeholder: "Subtext", maxLength: 20 },
+      { name: "brandColor", type: "color", default: "#f5a623", placeholder: "Accent color" },
+    ],
+    render: (v) => {
+      const w = 1920, h = 1080;
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+        <defs>
+          <linearGradient id="vtg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="transparent"/>
+            <stop offset="100%" stop-color="#0c0a08"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="#1a1a1a"/>
+        <rect width="${w}" height="${h}" fill="url(#vtg)"/>
+        <circle cx="${w / 2}" cy="${h * 0.38}" r="60" fill="${v.brandColor}" opacity="0.9"/>
+        <polygon points="${w / 2 - 18},${h * 0.38 - 25} ${w / 2 - 18},${h * 0.38 + 25} ${w / 2 + 28},${h * 0.38}" fill="#0c0a08"/>
+        ${wrapText(v.headline, w / 2, h * 0.72, 52, w - 300, "#ffffff")}
+        <text x="${w / 2}" y="${h * 0.9}" text-anchor="middle" font-family="Arial,sans-serif" font-size="24" fill="rgba(255,255,255,0.4)">${esc(v.subtext)}</text>
+      </svg>`;
+    },
+  },
+
+  // ── RESULT SHOWCASE (4:5) ──
+  {
+    id: "result-showcase",
+    name: "Result Showcase",
+    category: "stat",
+    aspectRatio: "4:5",
+    platform: "universal",
+    fields: [
+      { name: "result", type: "text", default: "$147K", placeholder: "Big result number", maxLength: 15 },
+      { name: "context", type: "text", default: "Generated in 90 days with our system", placeholder: "Context for the result", maxLength: 50 },
+      { name: "proofLine", type: "text", default: "Verified by Stripe dashboard", placeholder: "Proof badge text", maxLength: 30 },
+      { name: "brandColor", type: "color", default: "#f5a623", placeholder: "Accent color" },
+    ],
+    render: (v) => {
+      const w = 1080, h = 1350;
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+        <rect width="${w}" height="${h}" fill="#0c0a08"/>
+        <rect x="0" y="0" width="${w}" height="6" fill="${v.brandColor}"/>
+        <text x="${w / 2}" y="${h * 0.32}" text-anchor="middle" font-family="Arial,sans-serif" font-size="160" font-weight="900" fill="${v.brandColor}">${esc(v.result)}</text>
+        ${wrapText(v.context, w / 2, h * 0.48, 36, w - 160, "#ffffff", "600")}
+        <rect x="${w / 2 - 180}" y="${h * 0.68}" width="360" height="50" rx="25" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.1)" stroke-width="1"/>
+        <text x="${w / 2}" y="${h * 0.68 + 34}" text-anchor="middle" font-family="Arial,sans-serif" font-size="18" font-weight="600" fill="rgba(255,255,255,0.5)">✓ ${esc(v.proofLine)}</text>
+      </svg>`;
+    },
+  },
+
+  // ── FOMO STRIP (1:1) ──
+  {
+    id: "fomo-strip",
+    name: "FOMO Strip",
+    category: "urgency",
+    aspectRatio: "1:1",
+    platform: "universal",
+    fields: [
+      { name: "quantity", type: "text", default: "7", placeholder: "Quantity left", maxLength: 5 },
+      { name: "productName", type: "text", default: "Founding Member Spots", placeholder: "Product name", maxLength: 30 },
+      { name: "originalPrice", type: "text", default: "$297", placeholder: "Original price", maxLength: 10 },
+      { name: "salePrice", type: "text", default: "$97", placeholder: "Sale price", maxLength: 10 },
+      { name: "brandColor", type: "color", default: "#f5a623", placeholder: "Accent color" },
+    ],
+    render: (v) => {
+      const w = 1080, h = 1080;
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+        <rect width="${w}" height="${h}" fill="#0c0a08"/>
+        <rect x="0" y="0" width="${w}" height="60" fill="#ef4444"/>
+        <text x="${w / 2}" y="42" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-weight="800" fill="#ffffff">⚡ LIMITED AVAILABILITY ⚡</text>
+        <rect x="0" y="${h - 60}" width="${w}" height="60" fill="#ef4444"/>
+        <text x="${w / 2}" y="${h - 20}" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-weight="800" fill="#ffffff">DON'T MISS OUT</text>
+        <text x="${w / 2}" y="${h * 0.28}" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" font-weight="600" fill="rgba(255,255,255,0.5)">ONLY</text>
+        <text x="${w / 2}" y="${h * 0.45}" text-anchor="middle" font-family="Arial,sans-serif" font-size="180" font-weight="900" fill="#ffffff">${esc(v.quantity)}</text>
+        <text x="${w / 2}" y="${h * 0.56}" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" font-weight="600" fill="rgba(255,255,255,0.5)">LEFT</text>
+        ${wrapText(v.productName, w / 2, h * 0.66, 36, w - 160, "${v.brandColor}", "700")}
+        <text x="${w / 2 - 60}" y="${h * 0.78}" text-anchor="middle" font-family="Arial,sans-serif" font-size="28" fill="rgba(255,255,255,0.4)" text-decoration="line-through">${esc(v.originalPrice)}</text>
+        <text x="${w / 2 + 60}" y="${h * 0.78}" text-anchor="middle" font-family="Arial,sans-serif" font-size="40" font-weight="900" fill="${v.brandColor}">${esc(v.salePrice)}</text>
+      </svg>`;
+    },
+  },
+
+  // ── AUTHORITY BADGE (1:1) ──
+  {
+    id: "authority-badge",
+    name: "Authority Badge",
+    category: "product",
+    aspectRatio: "1:1",
+    platform: "universal",
+    fields: [
+      { name: "badgeText", type: "text", default: "CERTIFIED", placeholder: "Badge label", maxLength: 20 },
+      { name: "subtext", type: "text", default: "Trusted by 500+ businesses worldwide", placeholder: "Supporting text", maxLength: 40 },
+      { name: "number", type: "text", default: "500+", placeholder: "Key number", maxLength: 10 },
+      { name: "brandColor", type: "color", default: "#f5a623", placeholder: "Badge color" },
+    ],
+    render: (v) => {
+      const w = 1080, h = 1080;
+      const cx = w / 2, cy = h * 0.4;
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+        <rect width="${w}" height="${h}" fill="#0c0a08"/>
+        <circle cx="${cx}" cy="${cy}" r="180" fill="none" stroke="${v.brandColor}" stroke-width="4"/>
+        <circle cx="${cx}" cy="${cy}" r="160" fill="none" stroke="${v.brandColor}" stroke-width="1" opacity="0.3"/>
+        <text x="${cx}" y="${cy - 20}" text-anchor="middle" font-family="Arial,sans-serif" font-size="60" font-weight="900" fill="${v.brandColor}">${esc(v.number)}</text>
+        <text x="${cx}" y="${cy + 30}" text-anchor="middle" font-family="Arial,sans-serif" font-size="22" font-weight="800" fill="#ffffff" letter-spacing="6">${esc(v.badgeText)}</text>
+        ${wrapText(v.subtext, w / 2, h * 0.72, 28, w - 200, "rgba(255,255,255,0.5)", "500")}
+      </svg>`;
+    },
+  },
+
+  // ── STORY CTA (9:16) ──
+  {
+    id: "story-cta",
+    name: "Story CTA",
+    category: "hook",
+    aspectRatio: "9:16",
+    platform: "tiktok",
+    fields: [
+      { name: "headline", type: "text", default: "Ready to Scale?", placeholder: "Headline", maxLength: 30 },
+      { name: "body", type: "text", default: "Join thousands who already automated their growth with our proven system.", placeholder: "Body text", maxLength: 100 },
+      { name: "cta", type: "text", default: "Get Started Free →", placeholder: "CTA text", maxLength: 25 },
+      { name: "brandColor", type: "color", default: "#f5a623", placeholder: "Accent color" },
+    ],
+    render: (v) => {
+      const w = 1080, h = 1920;
+      return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${h}" viewBox="0 0 ${w} ${h}">
+        <defs>
+          <linearGradient id="scg" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stop-color="#0c0a08"/>
+            <stop offset="70%" stop-color="#0c0a08"/>
+            <stop offset="100%" stop-color="${v.brandColor}" stop-opacity="0.3"/>
+          </linearGradient>
+        </defs>
+        <rect width="${w}" height="${h}" fill="url(#scg)"/>
+        ${wrapText(v.headline, w / 2, h * 0.35, 72, w - 140, "#ffffff")}
+        ${wrapText(v.body, w / 2, h * 0.52, 32, w - 160, "rgba(255,255,255,0.6)", "400")}
+        <rect x="${w / 2 - 200}" y="${h * 0.78}" width="400" height="70" rx="16" fill="${v.brandColor}"/>
+        <text x="${w / 2}" y="${h * 0.78 + 48}" text-anchor="middle" font-family="Arial,sans-serif" font-size="26" font-weight="800" fill="#0c0a08">${esc(v.cta)}</text>
+        <text x="${w / 2}" y="${h * 0.88}" text-anchor="middle" font-family="Arial,sans-serif" font-size="20" fill="rgba(255,255,255,0.3)">↑ Tap to get started</text>
       </svg>`;
     },
   },

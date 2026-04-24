@@ -27,6 +27,7 @@ export async function runDailyAutomations(): Promise<{
   adsOptimized: number;
   emailsCleaned: number;
   reengaged: number;
+  abandonedCartsProcessed: number;
   errors: string[];
 }> {
   const errors: string[] = [];
@@ -113,12 +114,30 @@ export async function runDailyAutomations(): Promise<{
     errors.push(`Scheduled emails: ${err instanceof Error ? err.message : "failed"}`);
   }
 
+  // 6. Process abandoned checkouts → fire cart abandonment emails
+  let abandonedCartsProcessed = 0;
+  try {
+    const { processAbandonedCheckouts } = await import("@/lib/email/behaviorTriggers");
+    abandonedCartsProcessed = await processAbandonedCheckouts();
+  } catch (err) {
+    errors.push(`Abandoned checkouts: ${err instanceof Error ? err.message : "failed"}`);
+  }
+
+  // 7. Process pending email flow enrollments
+  try {
+    const { processAllPendingEnrollments } = await import("@/lib/integrations/emailFlowEngine");
+    await processAllPendingEnrollments();
+  } catch (err) {
+    errors.push(`Email flows: ${err instanceof Error ? err.message : "failed"}`);
+  }
+
   return {
     usersProcessed: users.length,
     milestonesAwarded,
     adsOptimized,
     emailsCleaned,
     reengaged,
+    abandonedCartsProcessed,
     errors,
   };
 }
