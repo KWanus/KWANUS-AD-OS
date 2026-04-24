@@ -41,6 +41,7 @@ export default function Home() {
   const [goal, setGoal] = useState("");
   const [running, setRunning] = useState(false);
   const [stage, setStage] = useState("");
+  const [insights, setInsights] = useState<{ notifications: number; advisor?: string; opportunities: number }| null>(null);
 
   // Don't redirect logged-out users — show landing page
   // But redirect NEW signed-in users to onboarding if they have no projects
@@ -65,6 +66,21 @@ export default function Home() {
   useEffect(() => {
     if (!isSignedIn) return;
     void load();
+    // Fetch insights from autonomous systems (non-blocking)
+    Promise.allSettled([
+      fetch("/api/notifications").then(r => r.json()),
+      fetch("/api/himalaya/advisor").then(r => r.json()),
+    ]).then(([notifRes, advisorRes]) => {
+      const notifs = notifRes.status === "fulfilled" ? notifRes.value : {};
+      const advisor = advisorRes.status === "fulfilled" ? advisorRes.value : {};
+      const unread = (notifs.notifications ?? []).filter((n: { read: boolean }) => !n.read).length;
+      setInsights({
+        notifications: unread,
+        advisor: advisor.advice ?? advisor.recommendation ?? undefined,
+        opportunities: (notifs.notifications ?? []).filter((n: { type: string }) => n.type === "new_lead" || n.type === "insight").length,
+      });
+    }).catch(() => {});
+
     // Check if new user needs onboarding
     fetch("/api/settings").then(r => r.json()).then(data => {
       if (data.ok && !data.settings?.onboardingCompleted) {
@@ -316,6 +332,40 @@ export default function Home() {
             </button>
           </div>
         </div>
+
+        {/* ── Insights — what happened while you were away ── */}
+        {insights && (insights.notifications > 0 || insights.advisor || insights.opportunities > 0) && (
+          <div className="mb-6 rounded-2xl border border-[#f5a623]/15 bg-gradient-to-br from-[#f5a623]/[0.04] to-transparent p-5">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-[10px] font-black text-[#f5a623] tracking-widest">WHILE YOU WERE AWAY</p>
+              <Link href="/notifications" className="text-[10px] font-bold text-t-text-faint hover:text-[#f5a623] transition">
+                View all →
+              </Link>
+            </div>
+            <div className="space-y-2">
+              {insights.notifications > 0 && (
+                <Link href="/notifications" className="flex items-center gap-3 rounded-xl bg-t-bg-card border border-t-border px-4 py-3 hover:border-[#f5a623]/20 transition">
+                  <div className="w-8 h-8 rounded-full bg-[#f5a623]/10 flex items-center justify-center shrink-0">
+                    <span className="text-sm font-black text-[#f5a623]">{insights.notifications}</span>
+                  </div>
+                  <div>
+                    <p className="text-xs font-bold">New notifications</p>
+                    <p className="text-[10px] text-t-text-faint">Opportunities, leads, and system updates</p>
+                  </div>
+                </Link>
+              )}
+              {insights.advisor && (
+                <div className="rounded-xl bg-t-bg-card border border-t-border px-4 py-3">
+                  <div className="flex items-center gap-2 mb-1">
+                    <Sparkles className="w-3 h-3 text-[#f5a623]" />
+                    <p className="text-[10px] font-black text-[#f5a623]">AI ADVISOR</p>
+                  </div>
+                  <p className="text-xs text-t-text-muted leading-relaxed">{insights.advisor}</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
 
         {/* ── Your Projects ── */}
         {!loading && projects.length > 0 && (
