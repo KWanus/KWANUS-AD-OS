@@ -771,6 +771,16 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
                   </pre>
                 </div>
               )}
+
+              {/* Sell on marketplace */}
+              <Link href="/marketplace/sell"
+                className="flex items-center justify-between rounded-xl border border-emerald-500/15 bg-emerald-500/[0.03] p-4 hover:border-emerald-500/25 transition group">
+                <div>
+                  <p className="text-sm font-black text-emerald-400">Sell on Marketplace</p>
+                  <p className="text-[10px] text-t-text-faint mt-0.5">List your campaigns, emails, and funnels. Earn 80% of every sale.</p>
+                </div>
+                <ChevronRight className="w-4 h-4 text-emerald-400/40 group-hover:text-emerald-400 transition" />
+              </Link>
             </div>
           )}
         </div>

@@ -10,7 +10,7 @@ import {
   Home, Mountain, FolderKanban, Globe, Mail, Users, Settings,
   Search, ChevronDown, LayoutGrid, Sun, Moon, Sparkles,
   MessageSquareText, TrendingUp, BarChart3, Briefcase, FileText,
-  MapPin, ShoppingCart, Building2, Package, Wrench,
+  MapPin, ShoppingCart, Building2, Package, Wrench, Share2, Code2, Store,
 } from "lucide-react";
 import { useTheme, type ThemeMode } from "@/lib/theme/ThemeProvider";
 
@@ -36,15 +36,21 @@ const MORE = [
   { href: "/revenue",    label: "Revenue",    icon: TrendingUp },
   { href: "/orders",     label: "Orders",     icon: ShoppingCart },
   { href: "/websites/submissions", label: "Submissions", icon: FileText },
+  { href: "/affiliate",  label: "Referrals",  icon: Share2 },
+  { href: "/marketplace",label: "Marketplace", icon: Store },
   { href: "/tools",      label: "Tools",      icon: Wrench },
   { href: "/leads",      label: "Leads",      icon: TrendingUp },
   { href: "/guide",      label: "Guide",      icon: Briefcase },
   { href: "/my-system",  label: "My System",  icon: Settings },
+  { href: "/developers", label: "Developers", icon: Code2 },
+  // Admin-only (the admin page itself does the auth check)
+  { href: "/admin",      label: "Admin",      icon: Settings },
 ];
 
 export default function AppNav() {
   const pathname = usePathname();
-  const { isSignedIn } = useUser();
+  const { isSignedIn, user } = useUser();
+  const isAdmin = user?.primaryEmailAddress?.emailAddress === "kwanus@gmail.com";
   const [showMore, setShowMore] = useState(false);
   const moreRef = useRef<HTMLDivElement>(null);
 
@@ -97,7 +103,7 @@ export default function AppNav() {
 
             {showMore && (
               <div className="absolute top-full right-0 mt-1.5 w-48 rounded-xl border border-t-border bg-t-bg-card/95 backdrop-blur-xl shadow-2xl overflow-hidden z-50 py-1">
-                {MORE.map(({ href, label, icon: Icon }) => (
+                {MORE.filter(item => item.href !== "/admin" || isAdmin).map(({ href, label, icon: Icon }) => (
                   <Link key={href} href={href}
                     className={`flex items-center gap-2.5 px-3 py-2 text-[11px] font-semibold transition
                       ${pathname.startsWith(href) ? "bg-[#f5a623]/10 text-t-text" : "text-t-text/45 hover:bg-t-bg-card hover:text-t-text/80"}`}
