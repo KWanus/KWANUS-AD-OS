@@ -565,14 +565,15 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
             { label: "Pages", value: site.pages.length, color: "text-purple-400" },
             { label: "Status", value: site.published ? "Live" : "Draft", color: site.published ? "text-green-400" : "text-white/40" },
           ].map(({ label, value, color }) => (
-            <div key={label} className="bg-white/[0.03] border border-white/[0.06] rounded-2xl px-5 py-4">
+            <div key={label} className="bg-white/[0.03] border border-white/[0.06] rounded-2xl px-5 py-4 backdrop-blur-sm hover:border-white/[0.1] transition">
               <p className="text-[10px] text-white/30 font-bold uppercase tracking-widest mb-1">{label}</p>
-              <p className={`text-2xl font-black ${color}`}>{value}</p>
+              <p className={`text-2xl font-black bg-gradient-to-r ${color === "text-cyan-400" ? "from-cyan-400 to-blue-300" : color === "text-purple-400" ? "from-purple-400 to-fuchsia-300" : color === "text-green-400" ? "from-green-400 to-emerald-300" : "from-white/40 to-white/40"} bg-clip-text text-transparent`}>{value}</p>
             </div>
           ))}
         </div>
 
-        <div className="mb-8 rounded-[28px] border border-white/[0.07] bg-white/[0.03] p-5">
+        <div className="mb-8 rounded-[28px] border border-white/[0.07] bg-white/[0.03] backdrop-blur-sm p-5 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/15 to-transparent" />
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-2xl">
               <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Branding & Share Settings</p>
@@ -606,7 +607,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
           </div>
 
           <div className="mt-5 grid gap-4 md:grid-cols-2">
-            <div className="space-y-4 rounded-2xl border border-white/[0.06] bg-black/20 p-4">
+            <div className="space-y-4 rounded-2xl border border-white/[0.06] bg-black/20 backdrop-blur-sm p-4 hover:border-white/[0.1] transition">
               <div className="space-y-1.5">
                 <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-white/25">Site Name</label>
                 <input
@@ -641,7 +642,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
               </div>
             </div>
 
-            <div className="space-y-4 rounded-2xl border border-white/[0.06] bg-black/20 p-4">
+            <div className="space-y-4 rounded-2xl border border-white/[0.06] bg-black/20 backdrop-blur-sm p-4 hover:border-white/[0.1] transition">
               <div className="space-y-1.5">
                 <label className="block text-[10px] font-black uppercase tracking-[0.2em] text-white/25">Custom Domain</label>
                 <input
@@ -707,7 +708,8 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
           </div>
         )}
 
-        <div className="mb-8 rounded-[28px] border border-white/[0.07] bg-white/[0.03] p-5">
+        <div className="mb-8 rounded-[28px] border border-white/[0.07] bg-white/[0.03] backdrop-blur-sm p-5 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-purple-500/15 to-transparent" />
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-2xl">
               <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Launch Path</p>
@@ -740,7 +742,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
           </div>
 
           <div className="mt-5 grid gap-4 md:grid-cols-3">
-            <div className="rounded-2xl border border-white/[0.06] bg-black/20 p-4">
+            <div className="rounded-2xl border border-white/[0.06] bg-black/20 backdrop-blur-sm p-4 hover:border-white/[0.1] transition">
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/25">Launch Stage</p>
               <p className="mt-2 text-sm font-black text-white">
                 {site.published ? (site.customDomain?.trim() ? "Live on custom domain" : "Live on built-in public URL") : "Internal draft / preflight"}
@@ -752,7 +754,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
               </p>
             </div>
 
-            <div className="rounded-2xl border border-white/[0.06] bg-black/20 p-4">
+            <div className="rounded-2xl border border-white/[0.06] bg-black/20 backdrop-blur-sm p-4 hover:border-white/[0.1] transition">
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/25">Readiness Progress</p>
               <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/[0.06]">
                 <div
@@ -766,7 +768,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
               </p>
             </div>
 
-            <div className="rounded-2xl border border-white/[0.06] bg-black/20 p-4">
+            <div className="rounded-2xl border border-white/[0.06] bg-black/20 backdrop-blur-sm p-4 hover:border-white/[0.1] transition">
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/25">Domain Guidance</p>
               <p className="mt-2 text-sm font-black text-white">
                 {site.customDomain?.trim() ? "Custom domain is set" : "Built-in route only"}
@@ -780,7 +782,8 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
           </div>
         </div>
 
-        <div className="mb-8 rounded-[28px] border border-white/[0.07] bg-white/[0.03] p-5">
+        <div className="mb-8 rounded-[28px] border border-white/[0.07] bg-white/[0.03] backdrop-blur-sm p-5 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-emerald-500/15 to-transparent" />
           <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
             <div className="max-w-2xl">
               <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Launch Actions</p>
@@ -907,7 +910,8 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
           </div>
         )}
 
-        <div className="mb-8 rounded-[28px] border border-white/[0.07] bg-white/[0.03] p-5">
+        <div className="mb-8 rounded-[28px] border border-white/[0.07] bg-white/[0.03] backdrop-blur-sm p-5 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/15 to-transparent" />
           <div className="flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
             <div>
               <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Site Health</p>
@@ -1029,7 +1033,8 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
           </div>
         </div>
 
-        <div className="mb-8 rounded-[28px] border border-white/[0.07] bg-white/[0.03] p-5">
+        <div className="mb-8 rounded-[28px] border border-white/[0.07] bg-white/[0.03] backdrop-blur-sm p-5 relative overflow-hidden">
+          <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/[0.06] to-transparent" />
           <div className="flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
             <div>
               <p className="text-[10px] font-black uppercase tracking-[0.24em] text-cyan-300/80">Launch Checklist</p>

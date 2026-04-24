@@ -715,7 +715,7 @@ export default function WebsitesDashboard() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pb-16">
                         {sites.map(site => (
                             <div key={site.id}
-                                className="group relative border border-white/[0.07] bg-[#020509] hover:border-purple-500/30 transition-all duration-300 rounded-3xl flex flex-col overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.4)] hover:shadow-[0_0_40px_rgba(139,92,246,0.08)]">
+                                className="group relative border border-white/[0.07] bg-white/[0.02] backdrop-blur-sm hover:border-purple-500/30 transition-all duration-300 rounded-3xl flex flex-col overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.4)] hover:shadow-[0_0_40px_rgba(139,92,246,0.08)] hover:scale-[1.01]">
                                 {(() => {
                                     const siteAudit = auditPublishedSite({
                                         published: site.published,
