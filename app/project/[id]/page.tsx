@@ -9,6 +9,7 @@ import {
   Play, DollarSign, Shield, Mountain, Loader2, ChevronDown,
   BarChart2, Settings, ChevronRight, Wrench,
   Image as ImageIcon, Monitor, Smartphone, Eye, FileText,
+  Send, CalendarDays,
 } from "lucide-react";
 
 type Project = {
@@ -50,6 +51,7 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
   const [previewMode, setPreviewMode] = useState<"desktop" | "mobile">("desktop");
   const [orders, setOrders] = useState<{id: string; customerEmail: string; customerName?: string; amountCents: number; status: string; createdAt: string; productName?: string}[]>([]);
   const [ordersLoading, setOrdersLoading] = useState(false);
+  const [bizType, setBizType] = useState<string>("");
 
   useEffect(() => { if (isLoaded && !isSignedIn) router.replace("/sign-in"); }, [isLoaded, isSignedIn, router]);
 
@@ -67,6 +69,10 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
       if (pkgRes.status === "fulfilled" && pkgRes.value.ok && pkgRes.value.package) setPkg(pkgRes.value.package as PackageData);
       if (sRes.status === "fulfilled" && sRes.value.ok) setScripts(sRes.value.scripts ?? []);
     }).finally(() => setLoading(false));
+
+    fetch("/api/business-profile").then(r => r.json()).then(data => {
+      if (data.ok) setBizType(data.profile?.businessType ?? "");
+    }).catch(() => {});
   }, [isSignedIn, id]);
 
   useEffect(() => {
@@ -125,7 +131,7 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
   const hasScripts = scripts.length > 0;
 
   // Sidebar nav items
-  const NAV: { id: Tab; label: string; icon: React.ElementType; count?: string | number; done?: boolean }[] = [
+  const NAV: { id: string; label: string; icon: React.ElementType; count?: string | number; done?: boolean; href?: string }[] = [
     { id: "overview", label: "Overview", icon: Mountain },
     { id: "website", label: "Website", icon: Globe, done: sitePublished, count: sitePublished ? "Live" : "Draft" },
     { id: "ads", label: "Ads & Creatives", icon: Zap, count: p?.campaign?.variationCount ?? 0, done: hasAds },
@@ -135,6 +141,19 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
     { id: "orders", label: "Orders", icon: DollarSign },
     { id: "tools", label: "Tools", icon: Wrench },
   ];
+
+  // Add business-type-specific nav items
+  if (bizType === "agency") {
+    NAV.splice(1, 0,
+      { id: "outreach_link", label: "Outreach", icon: Send, href: "/outreach" },
+      { id: "clients_link", label: "Clients", icon: Users, href: "/clients" },
+    );
+  }
+  if (bizType === "consultant_coach") {
+    NAV.splice(1, 0,
+      { id: "bookings_link", label: "Bookings", icon: CalendarDays, href: "/bookings" },
+    );
+  }
 
   return (
     <main className="min-h-screen bg-t-bg text-t-text flex">
@@ -171,8 +190,17 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto p-2 space-y-0.5">
-          {NAV.map(item => (
-            <button key={item.id} onClick={() => setTab(item.id)}
+          {NAV.map(item => item.href ? (
+            <Link key={item.id} href={item.href}
+              className="w-full flex items-center justify-between px-3 py-2 rounded-lg text-left transition text-t-text-faint hover:text-t-text-muted hover:bg-white/[0.03]">
+              <div className="flex items-center gap-2.5">
+                <item.icon className="w-4 h-4" />
+                <span className="text-xs font-medium">{item.label}</span>
+              </div>
+              <ChevronRight className="w-3 h-3" />
+            </Link>
+          ) : (
+            <button key={item.id} onClick={() => setTab(item.id as Tab)}
               className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-left transition ${
                 tab === item.id
                   ? "bg-[#f5a623]/10 text-[#f5a623]"

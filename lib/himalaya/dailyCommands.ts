@@ -252,15 +252,86 @@ export async function generateDailyCommands(userId: string): Promise<CommandsRes
       });
     }
 
-    // ── Niche-specific commands from playbook ──
+    // ── Business-type-specific commands ──
     const profile = await prisma.businessProfile.findUnique({
       where: { userId },
       select: { businessType: true },
     }).catch(() => null);
 
-    const playbook = getPlaybook(profile?.businessType ?? "");
-    if (playbook && commands.length < 4) {
-      // Add a niche-specific tip from the playbook's mistakes list
+    const bizType = profile?.businessType ?? "";
+
+    if (bizType === "agency" && commands.length < 5) {
+      // Check how many leads are in outreach
+      const outreachLeads = await prisma.lead.count({
+        where: { userId, status: { in: ["new", "analyzed", "ready"] } },
+      }).catch(() => 0);
+
+      if (outreachLeads < 50) {
+        commands.push({
+          id: `cmd-${cmdId++}`,
+          priority: 2,
+          action: "Find 20 more businesses to email",
+          details: `You have ${outreachLeads} leads in your pipeline. Go to Outreach → search your niche → scrape 20 more. The math: 500 emails = 5-10 conversations = 1-3 clients.`,
+          estimatedTime: "10 min",
+          category: "outreach",
+          href: "/outreach",
+          completed: false,
+        });
+      }
+
+      commands.push({
+        id: `cmd-${cmdId++}`,
+        priority: 2,
+        action: "Follow up with warm leads",
+        details: "Check your leads page for anyone who opened your email or visited your site. They're warm — reach out directly.",
+        estimatedTime: "10 min",
+        category: "outreach",
+        href: "/leads",
+        completed: false,
+      });
+    }
+
+    if (bizType === "consultant_coach" && commands.length < 5) {
+      commands.push({
+        id: `cmd-${cmdId++}`,
+        priority: 2,
+        action: "Share your booking link in 3 places",
+        details: "Post your booking URL on LinkedIn, in your email signature, and DM it to 5 people in your network. One booking = one potential client.",
+        estimatedTime: "5 min",
+        category: "outreach",
+        href: "/bookings",
+        completed: false,
+      });
+    }
+
+    if (bizType === "dropship" && commands.length < 5) {
+      commands.push({
+        id: `cmd-${cmdId++}`,
+        priority: 2,
+        action: "Check your store analytics",
+        details: "Are visitors adding to cart but not buying? That's a checkout problem. Are they bouncing? That's a product page problem. The data tells you what to fix.",
+        estimatedTime: "3 min",
+        category: "review",
+        href: "/dashboard",
+        completed: false,
+      });
+    }
+
+    if (bizType === "local_service" && commands.length < 5) {
+      commands.push({
+        id: `cmd-${cmdId++}`,
+        priority: 2,
+        action: "Ask 3 customers for a Google review",
+        details: "Text or email your 3 happiest customers: 'Hey, would you mind leaving us a quick Google review? It really helps.' Include the direct review link.",
+        estimatedTime: "5 min",
+        category: "outreach",
+        completed: false,
+      });
+    }
+
+    // Keep the playbook tip as a bonus
+    const playbook = getPlaybook(bizType);
+    if (playbook && commands.length < 6) {
       const tip = playbook.mistakes[Math.floor(Math.random() * playbook.mistakes.length)];
       commands.push({
         id: `cmd-${cmdId++}`,

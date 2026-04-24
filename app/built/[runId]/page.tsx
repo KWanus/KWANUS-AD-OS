@@ -34,6 +34,7 @@ export default function BuiltPage({ params }: { params: Promise<{ runId: string 
   const [loading, setLoading] = useState(true);
   const [copiedUrl, setCopiedUrl] = useState(false);
   const [step, setStep] = useState(0);
+  const [bizType, setBizType] = useState<string>("");
 
   useEffect(() => {
     if (isLoaded && !isSignedIn) router.replace("/sign-in");
@@ -69,6 +70,10 @@ export default function BuiltPage({ params }: { params: Promise<{ runId: string 
         emailCount: ((project as Record<string, unknown>)?.emailCount as number) ?? 5,
       });
     }).finally(() => setLoading(false));
+
+    fetch("/api/business-profile").then(r => r.json()).then(data => {
+      if (data.ok) setBizType(data.profile?.businessType ?? "");
+    }).catch(() => {});
 
     // Timeout: if data doesn't load in 15s, stop loading and show what we have
     const timeout = setTimeout(() => setLoading(false), 15000);
@@ -175,18 +180,58 @@ export default function BuiltPage({ params }: { params: Promise<{ runId: string 
         )}
 
         {/* Your ONE next step */}
-        <div className="rounded-xl border border-[#f5a623]/20 bg-[#f5a623]/[0.04] p-5 mb-6">
-          <p className="text-[10px] font-black text-[#f5a623] mb-2">YOUR NEXT STEP</p>
-          <h3 className="text-base font-black mb-1">Review and approve everything</h3>
-          <p className="text-xs text-t-text-muted mb-3">
-            We already created your ads, scripts, emails, and website. Open your project,
-            review what we built, and approve it. Edit anything you want to change — or just hit approve.
-          </p>
-          <div className="flex items-start gap-2 rounded-lg bg-[#f5a623]/[0.06] border border-[#f5a623]/10 px-3 py-2 mb-3">
-            <span className="text-[10px]">💡</span>
-            <p className="text-[11px] text-[#f5a623]/70">You don&apos;t need to create anything. We did it for you. Just review, approve, and share your link.</p>
-          </div>
-        </div>
+        {(() => {
+          const NEXT_STEPS: Record<string, { title: string; desc: string; cta: string; href: string }> = {
+            agency: {
+              title: "Set up your outreach pipeline",
+              desc: "Find 50 businesses in your niche, generate personalized cold emails, and start sending. Your first client is 500 emails away.",
+              cta: "Open Outreach Pipeline",
+              href: "/outreach",
+            },
+            affiliate: {
+              title: "Share your site link with 5 people",
+              desc: "Your site is live with your affiliate links. Text or DM this link to 5 people you know. Post it on social media with your scripts.",
+              cta: "Copy Site Link",
+              href: "#",
+            },
+            consultant_coach: {
+              title: "Book your first discovery call",
+              desc: "Your booking page is live. Share it in your network — DMs, LinkedIn, email signature. One call = one client.",
+              cta: "Share Booking Link",
+              href: "/bookings",
+            },
+            dropship: {
+              title: "Launch your first ad",
+              desc: "Your store and products are ready. Launch a $20/day ad using the creatives we generated. Test 3 audiences.",
+              cta: "Review Ad Creatives",
+              href: d?.projectId ? `/project/${d.projectId}` : "/",
+            },
+            local_service: {
+              title: "Get listed and start collecting reviews",
+              desc: "Share your site with existing customers. Ask 5 happy clients for Google reviews. Reviews = free traffic.",
+              cta: "Open Your Site",
+              href: d?.siteUrl ?? "/",
+            },
+            content_creator: {
+              title: "Record and post your first 3 videos",
+              desc: "Your scripts are ready — just read them off your phone. 15 seconds each. Post to TikTok + Instagram Reels.",
+              cta: "View Scripts",
+              href: d?.projectId ? `/project/${d.projectId}` : "/",
+            },
+          };
+          const nextStep = NEXT_STEPS[bizType] ?? NEXT_STEPS.affiliate;
+          return (
+            <div className="rounded-xl border border-[#f5a623]/20 bg-[#f5a623]/[0.04] p-5 mb-6">
+              <p className="text-[10px] font-black text-[#f5a623] mb-2">YOUR NEXT STEP</p>
+              <h3 className="text-base font-black mb-1">{nextStep.title}</h3>
+              <p className="text-xs text-t-text-muted mb-3">{nextStep.desc}</p>
+              <Link href={nextStep.href}
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-[#f5a623] text-sm font-bold text-[#0c0a08] hover:opacity-90 transition">
+                {nextStep.cta} <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          );
+        })()}
 
         {/* Upgrade banner — if user came from pricing with a plan */}
         {(() => {
