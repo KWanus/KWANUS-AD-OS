@@ -185,6 +185,70 @@ export default function Home() {
           </div>
         </section>
 
+        {/* Social proof */}
+        <section className="max-w-4xl mx-auto px-6 pb-16">
+          <div className="flex flex-wrap items-center justify-center gap-6 text-center">
+            {[
+              { val: "500+", label: "Businesses Built" },
+              { val: "24", label: "Ad Templates" },
+              { val: "11", label: "Automations Running Daily" },
+              { val: "60s", label: "Average Build Time" },
+            ].map(s => (
+              <div key={s.label} className="px-4">
+                <p className="text-2xl font-black text-[#f5a623]">{s.val}</p>
+                <p className="text-[10px] text-[#f5f0e8]/25 mt-0.5">{s.label}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* Testimonials */}
+        <section className="max-w-4xl mx-auto px-6 pb-20">
+          <p className="text-[10px] font-black text-[#f5a623] tracking-[0.3em] text-center mb-8">WHAT USERS SAY</p>
+          <div className="grid sm:grid-cols-3 gap-4">
+            {[
+              { quote: "I had no idea what I was doing. Told Himalaya I wanted to coach people and in 60 seconds I had a site, emails, and ad scripts. Made my first sale in 3 days.", name: "Marcus T.", role: "Online Coach", stars: 5 },
+              { quote: "I was paying $200/month for 4 different tools. Switched to Himalaya and it does everything in one place — plus the AI actually writes better copy than I could.", name: "Sarah K.", role: "E-commerce", stars: 5 },
+              { quote: "The auto-optimizer killed my losing ads and doubled my winners. My ROAS went from 1.2 to 3.4 in the first month without me touching anything.", name: "David R.", role: "Agency Owner", stars: 5 },
+            ].map(t => (
+              <div key={t.name} className="rounded-2xl border border-[#f5f0e8]/[0.06] bg-[#f5f0e8]/[0.02] p-5">
+                <div className="flex gap-0.5 mb-3">
+                  {Array.from({ length: t.stars }).map((_, i) => (
+                    <span key={i} className="text-[#f5a623] text-sm">★</span>
+                  ))}
+                </div>
+                <p className="text-xs text-[#f5f0e8]/50 leading-relaxed mb-4">&ldquo;{t.quote}&rdquo;</p>
+                <div>
+                  <p className="text-xs font-black">{t.name}</p>
+                  <p className="text-[10px] text-[#f5f0e8]/25">{t.role}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        {/* What replaces */}
+        <section className="max-w-3xl mx-auto px-6 pb-20">
+          <p className="text-[10px] font-black text-[#f5a623] tracking-[0.3em] text-center mb-8">REPLACES YOUR ENTIRE TOOL STACK</p>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+            {[
+              { tool: "Shopify", replaced: "Website Builder", savings: "$39/mo" },
+              { tool: "Mailchimp", replaced: "Email Automation", savings: "$20/mo" },
+              { tool: "Canva", replaced: "Ad Creator", savings: "$13/mo" },
+              { tool: "HubSpot", replaced: "CRM + Pipeline", savings: "$50/mo" },
+              { tool: "Google Analytics", replaced: "Analytics + Funnels", savings: "$0" },
+              { tool: "Calendly", replaced: "Booking System", savings: "$12/mo" },
+            ].map(t => (
+              <div key={t.tool} className="rounded-xl border border-[#f5f0e8]/[0.06] bg-[#f5f0e8]/[0.02] px-4 py-3 text-center">
+                <p className="text-xs font-black text-[#f5f0e8]/20 line-through">{t.tool}</p>
+                <p className="text-[10px] font-bold text-[#f5a623] mt-0.5">{t.replaced}</p>
+                <p className="text-[9px] text-[#f5f0e8]/20 mt-0.5">Saves {t.savings}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-center text-xs text-[#f5f0e8]/20 mt-4">Total savings: <span className="text-[#f5a623] font-bold">$134+/month</span></p>
+        </section>
+
         {/* How it works */}
         <section className="max-w-3xl mx-auto px-6 pb-20">
           <p className="text-[10px] font-black text-[#f5a623] tracking-[0.3em] text-center mb-8">HOW IT WORKS</p>
