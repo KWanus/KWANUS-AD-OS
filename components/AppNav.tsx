@@ -104,7 +104,7 @@ export default function AppNav() {
       <div className="bg-[#020509]/80 backdrop-blur-2xl border-b border-white/[0.05] px-6 py-3 flex items-center justify-between gap-4">
         {/* Logo */}
         <Link href="/" className="flex items-center gap-2.5 shrink-0 group">
-          <div className="relative w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-500 to-purple-600 flex items-center justify-center shadow-[0_0_16px_rgba(6,182,212,0.4)] group-hover:shadow-[0_0_24px_rgba(6,182,212,0.6)] transition-all duration-300">
+          <div className="relative w-8 h-8 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-[0_0_16px_rgba(6,182,212,0.4)] group-hover:shadow-[0_0_24px_rgba(6,182,212,0.6)] transition-all duration-300">
             <Zap className="w-4 h-4 text-white" />
           </div>
           <div className="hidden sm:flex flex-col leading-none">

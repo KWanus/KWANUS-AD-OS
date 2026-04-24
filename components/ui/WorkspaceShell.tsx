@@ -42,7 +42,8 @@ export function WorkspaceHero({
 }) {
   return (
     <section className="pt-10 pb-8">
-      <div className="rounded-[32px] border border-white/[0.08] bg-[linear-gradient(135deg,rgba(255,255,255,0.05),rgba(255,255,255,0.015))] px-6 py-7 shadow-[0_24px_80px_rgba(0,0,0,0.3)] sm:px-8">
+      <div className="rounded-[32px] border border-white/[0.08] bg-[linear-gradient(135deg,rgba(255,255,255,0.05),rgba(255,255,255,0.015))] backdrop-blur-xl px-6 py-7 shadow-[0_24px_80px_rgba(0,0,0,0.3)] sm:px-8 relative overflow-hidden">
+        <div className="absolute top-0 inset-x-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
           <div className="max-w-3xl">
             <div className="mb-3 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-3 py-1">
@@ -63,7 +64,7 @@ export function WorkspaceHero({
         {stats && stats.length > 0 && (
           <div className="mt-6 grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             {stats.map((stat) => (
-              <div key={stat.label} className="rounded-2xl border border-white/[0.07] bg-white/[0.03] px-4 py-4">
+              <div key={stat.label} className="rounded-2xl border border-white/[0.07] bg-white/[0.03] backdrop-blur-sm px-4 py-4 hover:border-white/[0.12] transition-all">
                 <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/28">{stat.label}</p>
                 <p className={`mt-2 text-2xl font-black tracking-tight ${stat.tone ?? "text-white"}`}>{stat.value}</p>
               </div>

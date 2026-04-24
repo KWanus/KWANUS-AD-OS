@@ -40,7 +40,7 @@ export default function CRMSubNav({ showAddButton = false }: { showAddButton?: b
         {showAddButton && (
           <Link
             href="/clients/new"
-            className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-xs font-bold hover:opacity-90 transition-opacity my-2"
+            className="flex items-center gap-1.5 px-4 py-1.5 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 text-white text-xs font-bold hover:opacity-90 transition-opacity my-2"
           >
             <Plus className="w-3.5 h-3.5" />
             Add Client
