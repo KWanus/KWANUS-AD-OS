@@ -273,7 +273,7 @@ export default function AnalyticsPage() {
     <main className="min-h-screen bg-t-bg text-white">
       {/* Glows */}
       <div className="fixed top-0 left-1/3 w-[600px] h-[400px] bg-[#f5a623]/[0.05] blur-[140px] rounded-full pointer-events-none" />
-      <div className="fixed bottom-0 right-1/4 w-[400px] h-[400px] bg-purple-500/[0.05] blur-[120px] rounded-full pointer-events-none" />
+      <div className="fixed bottom-0 right-1/4 w-[400px] h-[400px] bg-[#e07850]/[0.05] blur-[120px] rounded-full pointer-events-none" />
 
       <AppNav />
 
@@ -355,7 +355,7 @@ export default function AnalyticsPage() {
                 />
                 <MetricCard
                   label="Campaigns" value={campaigns.total}
-                  icon={Sparkles} color="text-[#e07850]" accent="bg-purple-500/10"
+                  icon={Sparkles} color="text-[#e07850]" accent="bg-[#e07850]/10"
                   href="/campaigns"
                   sub={campaigns.active > 0 ? `${campaigns.active} active` : undefined}
                 />

@@ -306,7 +306,7 @@ export default function ContactsPage() {
                     onChange={() => toggleSelect(contact.id)} className="rounded" />
                 </div>
                 <div className="flex items-center gap-2 min-w-0">
-                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-cyan-500/30 to-purple-500/30 border border-white/10 flex items-center justify-center text-xs font-black text-white/60 shrink-0">
+                  <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#f5a623]/30 to-[#e07850]/30 border border-white/10 flex items-center justify-center text-xs font-black text-white/60 shrink-0">
                     {(contact.firstName?.[0] ?? contact.email[0]).toUpperCase()}
                   </div>
                   <span className="text-sm text-white/80 truncate">{contact.email}</span>
@@ -364,24 +364,24 @@ export default function ContactsPage() {
               <div>
                 <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">Email *</label>
                 <input value={newEmail} onChange={e => setNewEmail(e.target.value)} placeholder="email@example.com"
-                  className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-cyan-400/50 transition" />
+                  className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-[#f5a623]/50 transition" />
               </div>
               <div className="grid grid-cols-2 gap-3">
                 <div>
                   <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">First Name</label>
                   <input value={newFirst} onChange={e => setNewFirst(e.target.value)} placeholder="John"
-                    className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-cyan-400/50 transition" />
+                    className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-[#f5a623]/50 transition" />
                 </div>
                 <div>
                   <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">Last Name</label>
                   <input value={newLast} onChange={e => setNewLast(e.target.value)} placeholder="Doe"
-                    className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-cyan-400/50 transition" />
+                    className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-[#f5a623]/50 transition" />
                 </div>
               </div>
               <div>
                 <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-1">Tags (comma-separated)</label>
                 <input value={newTags} onChange={e => setNewTags(e.target.value)} placeholder="customer, vip, welcome"
-                  className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-cyan-400/50 transition" />
+                  className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-[#f5a623]/50 transition" />
               </div>
               <div>
                 <label className="block text-[10px] font-bold text-white/40 uppercase tracking-widest mb-2">Execution Lane</label>
@@ -454,7 +454,7 @@ export default function ContactsPage() {
             <textarea value={importText} onChange={e => setImportText(e.target.value)}
               placeholder={"john@example.com, John, Doe, customer|vip\njane@example.com, Jane, Smith"}
               rows={8}
-              className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white placeholder-white/20 outline-none focus:border-cyan-400/50 transition font-mono resize-none" />
+              className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white placeholder-white/20 outline-none focus:border-[#f5a623]/50 transition font-mono resize-none" />
             {importResult && (
               <div className="mt-3 p-3 rounded-xl border border-green-500/20 bg-green-500/5 text-green-400 text-sm">
                 ✅ Imported {importResult.imported} contacts · {importResult.skipped} skipped

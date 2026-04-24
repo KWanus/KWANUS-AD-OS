@@ -66,7 +66,7 @@ export default function CtaGeneratorPage() {
         {/* Generated CTAs */}
         <div className="space-y-2">
           {ctas.map((cta, i) => (
-            <div key={i} className="flex items-center gap-3 p-3 rounded-xl border border-white/[0.07] bg-white/[0.02] hover:border-cyan-400/20 transition group">
+            <div key={i} className="flex items-center gap-3 p-3 rounded-xl border border-white/[0.07] bg-white/[0.02] hover:border-[#f5a623]/20 transition group">
               <span className="text-[10px] text-white/20 font-mono w-20 shrink-0">{cta.name}</span>
               <div className="flex-1 flex items-center gap-3">
                 <button

@@ -163,7 +163,7 @@ function ImageProps({ block, onChange }: { block: Block; onChange: (b: Block) =>
           <button
             onClick={handleAiGenerate}
             disabled={aiLoading}
-            className="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-gradient-to-r from-[#f5a623]/20 to-purple-500/20 border border-[#f5a623]/30 hover:border-[#f5a623]/60 text-[#f5a623] text-xs font-bold transition disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full flex items-center justify-center gap-2 py-2 rounded-xl bg-gradient-to-r from-[#f5a623]/20 to-[#e07850]/20 border border-[#f5a623]/30 hover:border-[#f5a623]/60 text-[#f5a623] text-xs font-bold transition disabled:opacity-50 disabled:cursor-not-allowed"
           >
             <Sparkles className="w-3.5 h-3.5" />
             {aiLoading ? "Generating..." : "AI Generate"}

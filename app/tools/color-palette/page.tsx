@@ -61,7 +61,7 @@ export default function ColorPalettePage() {
       <AppNav />
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-[#e07850]/10 border border-[#e07850]/20 flex items-center justify-center">
             <Palette className="w-5 h-5 text-[#e07850]" />
           </div>
           <div>

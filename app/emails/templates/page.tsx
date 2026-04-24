@@ -35,7 +35,7 @@ const CATEGORY_META: Record<string, { label: string; color: string; bg: string; 
   nurture:       { label: "Nurture",       color: "text-blue-400",   bg: "bg-blue-500/10",   border: "border-blue-500/20" },
   sales:         { label: "Sales",         color: "text-emerald-400",bg: "bg-emerald-500/10",border: "border-emerald-500/20" },
   cart:          { label: "Cart Recovery", color: "text-amber-400",  bg: "bg-amber-500/10",  border: "border-amber-500/20" },
-  onboarding:    { label: "Onboarding",    color: "text-[#e07850]", bg: "bg-purple-500/10", border: "border-purple-500/20" },
+  onboarding:    { label: "Onboarding",    color: "text-[#e07850]", bg: "bg-[#e07850]/10", border: "border-[#e07850]/20" },
   reengagement:  { label: "Re-engagement", color: "text-red-400",    bg: "bg-red-500/10",    border: "border-red-500/20" },
 };
 
@@ -302,7 +302,7 @@ export default function EmailTemplatesPage() {
     <div className="min-h-screen bg-t-bg text-white flex flex-col">
       {/* Background glows */}
       <div className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-[#f5a623]/[0.05] blur-[120px] rounded-full pointer-events-none" />
-      <div className="fixed bottom-0 right-1/4 w-[400px] h-[400px] bg-purple-500/[0.04] blur-[120px] rounded-full pointer-events-none" />
+      <div className="fixed bottom-0 right-1/4 w-[400px] h-[400px] bg-[#e07850]/[0.04] blur-[120px] rounded-full pointer-events-none" />
 
       <AppNav />
       <CampaignSubNav />
@@ -312,7 +312,7 @@ export default function EmailTemplatesPage() {
         <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-5 mb-8">
           <div>
             <div className="flex items-center gap-2 mb-2">
-              <div className="w-7 h-7 rounded-lg bg-purple-500/15 border border-purple-500/20 flex items-center justify-center">
+              <div className="w-7 h-7 rounded-lg bg-[#e07850]/15 border border-[#e07850]/20 flex items-center justify-center">
                 <LayoutTemplate className="w-3.5 h-3.5 text-[#e07850]" />
               </div>
               <p className="text-[10px] font-black uppercase tracking-[0.26em] text-[#e07850]/70">Email Templates</p>
@@ -402,16 +402,16 @@ export default function EmailTemplatesPage() {
 
         {/* Callout */}
         {!loading && filtered.length > 0 && (
-          <div className="mt-10 rounded-2xl border border-purple-500/15 bg-purple-500/[0.04] p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div className="mt-10 rounded-2xl border border-[#e07850]/15 bg-[#e07850]/[0.04] p-5 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
             <div>
               <p className="text-xs font-black uppercase tracking-[0.22em] text-[#e07850]/70 mb-1">How it works</p>
               <p className="text-sm text-white/55 leading-relaxed max-w-lg">
-                Clicking <strong className="text-white/70">Use Template</strong> creates a new flow pre-loaded with this sequence. You can edit any step before activating. Variables like <code className="text-purple-300/70 text-[11px]">{"{{firstName}}"}</code> are auto-filled from your contact list.
+                Clicking <strong className="text-white/70">Use Template</strong> creates a new flow pre-loaded with this sequence. You can edit any step before activating. Variables like <code className="text-[#f5a623]/70 text-[11px]">{"{{firstName}}"}</code> are auto-filled from your contact list.
               </p>
             </div>
             <a
               href="/emails"
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-purple-500/25 bg-purple-500/10 text-sm font-black text-[#e07850] hover:bg-purple-500/15 transition shrink-0"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-[#e07850]/25 bg-[#e07850]/10 text-sm font-black text-[#e07850] hover:bg-[#e07850]/15 transition shrink-0"
             >
               Go to Flows <ArrowRight className="w-3.5 h-3.5" />
             </a>

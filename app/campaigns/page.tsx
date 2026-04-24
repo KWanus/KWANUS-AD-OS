@@ -49,7 +49,7 @@ type StatsSummary = {
 
 const STATUS_STYLES: Record<string, { border: string; text: string; bg: string; dot: string; glow: string }> = {
   draft: { border: "border-white/10", text: "text-white/40", bg: "bg-white/5", dot: "bg-white/30", glow: "" },
-  active: { border: "border-[#f5a623]/40", text: "text-[#f5a623]", bg: "bg-[#f5a623]/10", dot: "bg-cyan-400", glow: "shadow-[0_0_6px_rgba(245,166,35,0.4)]" },
+  active: { border: "border-[#f5a623]/40", text: "text-[#f5a623]", bg: "bg-[#f5a623]/10", dot: "bg-[#f5a623]", glow: "shadow-[0_0_6px_rgba(245,166,35,0.4)]" },
   testing: { border: "border-yellow-500/40", text: "text-yellow-400", bg: "bg-yellow-500/10", dot: "bg-yellow-400", glow: "shadow-[0_0_6px_rgba(234,179,8,0.4)]" },
   scaling: { border: "border-green-500/40", text: "text-green-400", bg: "bg-green-500/10", dot: "bg-green-400", glow: "shadow-[0_0_6px_rgba(34,197,94,0.4)]" },
   dead: { border: "border-red-500/30", text: "text-red-400/60", bg: "bg-red-500/5", dot: "bg-red-500/60", glow: "" },
@@ -365,7 +365,7 @@ export default function CampaignsPage() {
         <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="mb-6" />
 
         {businessProfile && (
-          <div className="mb-6 rounded-[28px] border border-[#f5a623]/20 bg-gradient-to-br from-cyan-500/[0.08] to-blue-500/[0.03] p-6">
+          <div className="mb-6 rounded-[28px] border border-[#f5a623]/20 bg-gradient-to-br from-[#f5a623]/[0.08] to-blue-500/[0.03] p-6">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-3xl">
                 <p className="text-[10px] font-black uppercase tracking-[0.26em] text-[#f5a623]/70">Recommended Next Campaign</p>
@@ -402,17 +402,17 @@ export default function CampaignsPage() {
         {/* Loading */}
         {loading && (
           <div className="flex flex-col items-center justify-center py-32 gap-4">
-            <div className="w-8 h-8 border-2 border-white/10 border-t-cyan-500 rounded-full animate-spin" />
+            <div className="w-8 h-8 border-2 border-white/10 border-t-[#f5a623] rounded-full animate-spin" />
             <span className="text-sm text-white/25 font-semibold">Loading campaigns...</span>
           </div>
         )}
 
         {/* Empty state */}
         {!loading && campaigns.length === 0 && (
-          <div className="mt-8 relative rounded-3xl border border-white/[0.06] bg-gradient-to-br from-cyan-500/[0.04] to-purple-500/[0.02] p-20 flex flex-col items-center text-center overflow-hidden">
+          <div className="mt-8 relative rounded-3xl border border-white/[0.06] bg-gradient-to-br from-[#f5a623]/[0.04] to-[#e07850]/[0.02] p-20 flex flex-col items-center text-center overflow-hidden">
             <div className="absolute inset-0 opacity-[0.013]"
               style={{ backgroundImage: "radial-gradient(circle, #f5a623 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
-            <div className="relative w-24 h-24 rounded-3xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border border-white/[0.07] flex items-center justify-center mb-6 shadow-[0_0_50px_rgba(245,166,35,0.15)]">
+            <div className="relative w-24 h-24 rounded-3xl bg-gradient-to-br from-[#f5a623]/20 to-[#e07850]/20 border border-white/[0.07] flex items-center justify-center mb-6 shadow-[0_0_50px_rgba(245,166,35,0.15)]">
               <BarChart2 className="w-10 h-10 text-[#f5a623]/50" />
             </div>
             <h2 className="text-2xl font-black text-white mb-2">No campaigns yet</h2>

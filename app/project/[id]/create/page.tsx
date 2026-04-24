@@ -321,7 +321,7 @@ export default function CreativeStudioPage({ params }: { params: Promise<{ id: s
                 <div className="max-w-xs mx-auto rounded-2xl border-2 border-neutral-700 bg-black overflow-hidden">
                   {/* IG header */}
                   <div className="flex items-center gap-2.5 px-3 py-2.5">
-                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-purple-500 via-pink-500 to-yellow-500 p-[2px]">
+                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#e07850] via-pink-500 to-yellow-500 p-[2px]">
                       <div className="w-full h-full rounded-full bg-black flex items-center justify-center">
                         <span className="text-[8px] text-white font-bold">AD</span>
                       </div>

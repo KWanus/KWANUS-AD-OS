@@ -46,8 +46,8 @@ function verdictTone(status?: string) {
 function SkillCard({ skill, onRun }: { skill: SkillMeta; onRun: (skill: SkillMeta) => void }) {
   const cat = SKILL_CATEGORIES[skill.category];
   const colors: Record<string, string> = {
-    cyan:   "from-cyan-500/10 border-[#f5a623]/20 text-[#f5a623]",
-    purple: "from-purple-500/10 border-purple-500/20 text-[#e07850]",
+    cyan:   "from-[#f5a623]/10 border-[#f5a623]/20 text-[#f5a623]",
+    purple: "from-[#e07850]/10 border-[#e07850]/20 text-[#e07850]",
     blue:   "from-blue-500/10 border-blue-500/20 text-blue-400",
     green:  "from-green-500/10 border-green-500/20 text-green-400",
   };
@@ -82,7 +82,7 @@ function SkillCard({ skill, onRun }: { skill: SkillMeta; onRun: (skill: SkillMet
 
       <button
         onClick={() => onRun(skill)}
-        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500/15 to-[#e07850]/15 hover:from-cyan-500/25 hover:to-[#e07850]/25 border border-white/[0.08] hover:border-[#f5a623]/30 text-white/70 hover:text-white text-xs font-bold transition-all"
+        className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[#f5a623]/15 to-[#e07850]/15 hover:from-[#f5a623]/25 hover:to-[#e07850]/25 border border-white/[0.08] hover:border-[#f5a623]/30 text-white/70 hover:text-white text-xs font-bold transition-all"
       >
         Run Skill
         <ChevronRight className="w-3.5 h-3.5" />
@@ -292,7 +292,7 @@ function SkillRunner({
               {result.created.broadcastId && (
                 <Link
                   href="/emails/broadcasts"
-                  className="flex items-center gap-2 p-3 rounded-xl bg-purple-500/10 border border-purple-500/20 text-[#e07850] text-xs font-bold hover:bg-purple-500/15 transition"
+                  className="flex items-center gap-2 p-3 rounded-xl bg-[#e07850]/10 border border-[#e07850]/20 text-[#e07850] text-xs font-bold hover:bg-[#e07850]/15 transition"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
                   Open broadcast drafts →
@@ -557,7 +557,7 @@ function SkillsPageInner() {
         <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="mb-6" />
 
         {businessProfile && recommendedSkill && (
-          <div className="mb-6 rounded-[28px] border border-[#f5a623]/20 bg-gradient-to-br from-cyan-500/[0.08] to-[#e07850]/[0.03] p-6">
+          <div className="mb-6 rounded-[28px] border border-[#f5a623]/20 bg-gradient-to-br from-[#f5a623]/[0.08] to-[#e07850]/[0.03] p-6">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-3xl">
                 <p className="text-[10px] font-black uppercase tracking-[0.26em] text-[#f5a623]/70">Recommended Operator Skill</p>

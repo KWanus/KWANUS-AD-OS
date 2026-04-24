@@ -123,7 +123,7 @@ const TABS = ["Audits", "Strategy", "Proposals", "Pricing"] as const;
 type Tab = (typeof TABS)[number];
 
 const BUSINESS_TYPE_COLORS: Record<BusinessType, string> = {
-  consultant: "text-[#e07850] bg-purple-500/10 border-purple-500/20",
+  consultant: "text-[#e07850] bg-[#e07850]/10 border-[#e07850]/20",
   local:      "text-green-400 bg-green-500/10 border-green-500/20",
   ecommerce:  "text-orange-400 bg-orange-500/10 border-orange-500/20",
   saas:       "text-[#f5a623] bg-[#f5a623]/10 border-[#f5a623]/20",
@@ -537,7 +537,7 @@ function AuditsTab() {
                   key={type}
                   onClick={() => generateFromAudit(selectedAudit.id, type)}
                   disabled={isGenerating || alreadyDone}
-                  className="bg-gradient-to-r from-cyan-500/10 to-[#e07850]/10 hover:from-cyan-500/20 hover:to-[#e07850]/20 border border-white/[0.08] hover:border-white/[0.15] text-white text-xs font-black px-3 py-2.5 rounded-xl transition-all disabled:opacity-40 flex items-center justify-center gap-1.5"
+                  className="bg-gradient-to-r from-[#f5a623]/10 to-[#e07850]/10 hover:from-[#f5a623]/20 hover:to-[#e07850]/20 border border-white/[0.08] hover:border-white/[0.15] text-white text-xs font-black px-3 py-2.5 rounded-xl transition-all disabled:opacity-40 flex items-center justify-center gap-1.5"
                 >
                   {isGenerating ? <Loader2 className="w-3 h-3 animate-spin" /> : null}
                   {alreadyDone ? "Done" : `Gen ${type.charAt(0).toUpperCase() + type.slice(1)}`}
@@ -727,7 +727,7 @@ function StrategyTab() {
             </div>
           ))}
 
-          <div className="bg-gradient-to-r from-cyan-500/10 to-[#e07850]/10 border border-[#f5a623]/20 rounded-2xl p-4 text-center">
+          <div className="bg-gradient-to-r from-[#f5a623]/10 to-[#e07850]/10 border border-[#f5a623]/20 rounded-2xl p-4 text-center">
             <p className="text-[10px] font-black uppercase tracking-widest text-white/30 mb-1">Total Projected Revenue Lift</p>
             <p className="text-2xl font-black text-[#f5a623]">{selectedAudit.strategyJson.totalProjectedRevenueLift}</p>
           </div>
@@ -900,7 +900,7 @@ function ProposalsTab() {
                   <ul className="space-y-1">
                     {tier.deliverables.map((d, j) => (
                       <li key={j} className="text-xs text-white/50 flex gap-1.5">
-                        <span className="text-cyan-500 shrink-0">—</span>{d}
+                        <span className="text-[#f5a623] shrink-0">—</span>{d}
                       </li>
                     ))}
                   </ul>
@@ -1049,7 +1049,7 @@ function PricingTab() {
                   <ul className="space-y-1">
                     {pkg.deliverables.map((d, j) => (
                       <li key={j} className="text-xs text-white/50 flex gap-1.5">
-                        <span className="text-cyan-500 shrink-0">—</span>{d}
+                        <span className="text-[#f5a623] shrink-0">—</span>{d}
                       </li>
                     ))}
                   </ul>
@@ -1096,7 +1096,7 @@ function PricingTab() {
               <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Upsell Opportunities</p>
               <div className="flex flex-wrap gap-2">
                 {result.upsellOpportunities.map((u, i) => (
-                  <span key={i} className="text-xs font-black px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/20 text-[#e07850]">{u}</span>
+                  <span key={i} className="text-xs font-black px-3 py-1 rounded-full bg-[#e07850]/10 border border-[#e07850]/20 text-[#e07850]">{u}</span>
                 ))}
               </div>
             </div>
@@ -1133,7 +1133,7 @@ export default function AgencyPage() {
               onClick={() => setActiveTab(tab)}
               className={`px-4 py-2 rounded-xl text-sm font-black transition-all ${
                 activeTab === tab
-                  ? "bg-gradient-to-r from-cyan-500/20 to-[#e07850]/20 border border-white/[0.1] text-white"
+                  ? "bg-gradient-to-r from-[#f5a623]/20 to-[#e07850]/20 border border-white/[0.1] text-white"
                   : "text-white/30 hover:text-white/60"
               }`}
             >

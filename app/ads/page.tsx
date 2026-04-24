@@ -182,7 +182,7 @@ export default function AdsPage() {
       <AppNav />
 
       <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
-        <div className="mb-6 rounded-3xl border border-white/[0.06] bg-gradient-to-br from-cyan-500/[0.07] via-white/[0.02] to-purple-500/[0.04] p-5 sm:p-6">
+        <div className="mb-6 rounded-3xl border border-white/[0.06] bg-gradient-to-br from-[#f5a623]/[0.07] via-white/[0.02] to-[#e07850]/[0.04] p-5 sm:p-6">
           <div className="flex flex-col gap-5 xl:flex-row xl:items-end xl:justify-between">
             <WorkflowHeader
               title="Ad Manager"
@@ -364,7 +364,7 @@ export default function AdsPage() {
                   eyebrow="Budget Plan"
                   title="AI allocation guidance"
                   description="Budget suggestions stay visible even when your live spend is still thin, so the operator can decide where to push next."
-                  className="rounded-3xl border-[#f5a623]/15 bg-gradient-to-br from-cyan-500/[0.08] via-transparent to-purple-500/[0.05]"
+                  className="rounded-3xl border-[#f5a623]/15 bg-gradient-to-br from-[#f5a623]/[0.08] via-transparent to-[#e07850]/[0.05]"
                 >
                   <div className="mb-3 flex items-center gap-2">
                     <DollarSign className="h-4 w-4 text-[#f5a623]" />

@@ -76,7 +76,7 @@ const PLATFORM_CONFIG: Record<string, { emoji: string; label: string; color: str
   amazon:      { emoji: "📦", label: "Amazon",       color: "text-orange-400 bg-orange-500/10 border-orange-500/20" },
   aliexpress:  { emoji: "🏪", label: "AliExpress",   color: "text-red-400 bg-red-500/10 border-red-500/20" },
   jvzoo:       { emoji: "🎯", label: "JVZoo",        color: "text-blue-400 bg-blue-500/10 border-blue-500/20" },
-  warriorplus: { emoji: "⚔️", label: "WarriorPlus",  color: "text-[#e07850] bg-purple-500/10 border-purple-500/20" },
+  warriorplus: { emoji: "⚔️", label: "WarriorPlus",  color: "text-[#e07850] bg-[#e07850]/10 border-[#e07850]/20" },
   cj:          { emoji: "🔗", label: "CJ/ShareASale", color: "text-indigo-400 bg-indigo-500/10 border-indigo-500/20" },
   dropship:    { emoji: "🚢", label: "Dropship",     color: "text-[#f5a623] bg-[#f5a623]/10 border-[#f5a623]/20" },
   custom:      { emoji: "🔗", label: "Custom",       color: "text-white/40 bg-white/[0.05] border-white/[0.08]" },
@@ -177,7 +177,7 @@ function ProductCard({ product, onDelete }: { product: Product; onDelete: (id: s
         </Link>
         <Link
           href={launchUrl("landing-page")}
-          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-purple-500/10 border border-purple-500/20 text-[#e07850] text-[11px] font-bold hover:bg-purple-500/15 transition"
+          className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-[#e07850]/10 border border-[#e07850]/20 text-[#e07850] text-[11px] font-bold hover:bg-[#e07850]/15 transition"
         >
           <Globe className="w-3 h-3" /> Build Site
         </Link>
@@ -395,7 +395,7 @@ export default function ProductsPage() {
         <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="mb-6" />
 
         {businessProfile && (
-          <div className="mb-6 rounded-[28px] border border-[#f5a623]/20 bg-gradient-to-br from-cyan-500/[0.08] to-[#e07850]/[0.03] p-6">
+          <div className="mb-6 rounded-[28px] border border-[#f5a623]/20 bg-gradient-to-br from-[#f5a623]/[0.08] to-[#e07850]/[0.03] p-6">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-3xl">
                 <p className="text-[10px] font-black uppercase tracking-[0.26em] text-[#f5a623]/70">Recommended Product Move</p>

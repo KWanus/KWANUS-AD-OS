@@ -27,13 +27,13 @@ export default function TriggerNode({ data, selected }: NodeProps) {
     <div
       className={`relative min-w-[200px] rounded-2xl border transition-all duration-200 ${
         selected
-          ? "border-cyan-400/80 shadow-[0_0_32px_rgba(245,166,35,0.4)]"
+          ? "border-[#f5a623]/80 shadow-[0_0_32px_rgba(245,166,35,0.4)]"
           : "border-[#f5a623]/30 shadow-[0_0_16px_rgba(245,166,35,0.15)]"
       }`}
       style={{ background: "linear-gradient(135deg, rgba(245,166,35,0.12) 0%, rgba(8,145,178,0.08) 100%)" }}
     >
       {/* Top glow bar */}
-      <div className="absolute inset-x-0 top-0 h-0.5 rounded-t-2xl bg-gradient-to-r from-transparent via-cyan-400 to-transparent" />
+      <div className="absolute inset-x-0 top-0 h-0.5 rounded-t-2xl bg-gradient-to-r from-transparent via-[#f5a623] to-transparent" />
 
       <div className="px-4 py-3">
         {/* Entry label */}
@@ -58,7 +58,7 @@ export default function TriggerNode({ data, selected }: NodeProps) {
       <Handle
         type="source"
         position={Position.Bottom}
-        className="!w-3 !h-3 !border-2 !border-cyan-400 !bg-[#050a14] hover:!bg-cyan-400 transition-colors"
+        className="!w-3 !h-3 !border-2 !border-[#f5a623] !bg-[#050a14] hover:!bg-[#f5a623] transition-colors"
         style={{ bottom: -6 }}
       />
     </div>

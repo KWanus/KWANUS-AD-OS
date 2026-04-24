@@ -386,7 +386,7 @@ export default function FormsManagerPage() {
             </p>
             {!search && (
               <button onClick={() => setShowCreate(true)}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-[#f5a623]/25 text-sm font-bold text-[#f5a623] hover:bg-[#f5a623]/[0.15] transition">
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#f5a623]/20 to-[#e07850]/20 border border-[#f5a623]/25 text-sm font-bold text-[#f5a623] hover:bg-[#f5a623]/[0.15] transition">
                 <Plus className="w-4 h-4" /> Create First Form
               </button>
             )}

@@ -529,7 +529,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
         {/* Site header */}
         <div className="flex items-start justify-between gap-4 mb-8 flex-wrap">
           <div className="flex items-center gap-4">
-            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-[#e07850]/20 border border-white/[0.08] flex items-center justify-center text-2xl">
+            <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-[#f5a623]/20 to-[#e07850]/20 border border-white/[0.08] flex items-center justify-center text-2xl">
               {site.faviconEmoji ?? "🚀"}
             </div>
             <div>
@@ -600,7 +600,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
             <button
               onClick={() => void saveBrandingSettings()}
               disabled={savingBranding}
-              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-black text-cyan-900 disabled:opacity-50"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-black text-[#0c0a08] disabled:opacity-50"
             >
               {savingBranding ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4" />}
               Save Settings
@@ -672,11 +672,11 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
 
               <div className="rounded-2xl border border-[#f5a623]/15 bg-[#f5a623]/10 p-4">
                 <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f5a623]/80">Share URL</p>
-                <p className="mt-2 break-all text-sm font-bold text-cyan-50">{getPublicUrl(site)}</p>
+                <p className="mt-2 break-all text-sm font-bold text-[#f5f0e8]">{getPublicUrl(site)}</p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   <button
                     onClick={copyLink}
-                    className="rounded-xl border border-[#f5a623]/20 bg-white px-3 py-2 text-xs font-black text-cyan-900"
+                    className="rounded-xl border border-[#f5a623]/20 bg-white px-3 py-2 text-xs font-black text-[#0c0a08]"
                   >
                     Copy Link
                   </button>
@@ -718,10 +718,10 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
               <div className="max-w-2xl">
                 <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#f5a623]/80">Template Guidance</p>
                 <p className="mt-2 text-lg font-black text-white">{starterGuidance.headline}</p>
-                <p className="mt-2 text-sm leading-6 text-cyan-50/80">
+                <p className="mt-2 text-sm leading-6 text-[#f5f0e8]/80">
                   {starterGuidance.summary}
                 </p>
-                <p className="mt-3 text-xs leading-5 text-cyan-50/55">
+                <p className="mt-3 text-xs leading-5 text-[#f5f0e8]/55">
                   Template: {generation.templateId} · Tier: {generation.executionTier ?? "core"} · Source: {generation.sourceMode?.replaceAll("_", " ") ?? "manual"}
                 </p>
               </div>
@@ -731,7 +731,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
                   <button
                     key={action.label}
                     onClick={() => runStarterAction(action.type)}
-                    className="rounded-2xl border border-[#f5a623]/20 bg-white px-4 py-3 text-sm font-black text-cyan-900"
+                    className="rounded-2xl border border-[#f5a623]/20 bg-white px-4 py-3 text-sm font-black text-[#0c0a08]"
                   >
                     {action.label}
                   </button>
@@ -790,7 +790,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/25">Readiness Progress</p>
               <div className="mt-3 h-2 overflow-hidden rounded-full bg-white/[0.06]">
                 <div
-                  className="h-full rounded-full bg-gradient-to-r from-cyan-500 via-blue-500 to-emerald-400 transition-all"
+                  className="h-full rounded-full bg-gradient-to-r from-[#f5a623] via-blue-500 to-emerald-400 transition-all"
                   style={{ width: `${checklistPercent}%` }}
                 />
               </div>
@@ -924,14 +924,14 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
               <div>
                 <p className="text-[10px] font-black uppercase tracking-[0.24em] text-[#f5a623]/80">Upgrade Site Structure</p>
                 <p className="mt-2 text-lg font-black text-white">This site is still missing some core pages.</p>
-                <p className="mt-2 text-sm leading-6 text-cyan-50/75">
+                <p className="mt-2 text-sm leading-6 text-[#f5f0e8]/75">
                   Generate the missing structure automatically so the public site feels more complete and easier to navigate.
                 </p>
                 <div className="mt-3 flex flex-wrap gap-2">
                   {missingStructurePages.map((template) => (
                     <span
                       key={template}
-                      className="rounded-full border border-cyan-400/20 bg-cyan-400/10 px-3 py-1 text-[11px] font-bold text-[#f5f0e8]"
+                      className="rounded-full border border-[#f5a623]/20 bg-[#f5a623]/10 px-3 py-1 text-[11px] font-bold text-[#f5f0e8]"
                     >
                       {getAiPageTemplateLabel(template)}
                     </span>
@@ -941,7 +941,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
               <button
                 onClick={() => void upgradeSiteStructure()}
                 disabled={upgradingStructure}
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-black text-cyan-900 disabled:opacity-50"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-white px-4 py-3 text-sm font-black text-[#0c0a08] disabled:opacity-50"
               >
                 {upgradingStructure ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
                 Upgrade Site Structure
@@ -966,7 +966,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
               {!site.published && (
                 <button
                   onClick={() => void togglePublish()}
-                  className="rounded-2xl bg-white px-4 py-3 text-sm font-black text-cyan-900"
+                  className="rounded-2xl bg-white px-4 py-3 text-sm font-black text-[#0c0a08]"
                 >
                   Publish Site
                 </button>
@@ -1036,9 +1036,9 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
               <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f5a623]/80">Next Best Fixes</p>
               <div className="mt-3 space-y-2">
                 {siteAudit.recommendations.length ? siteAudit.recommendations.map((item) => (
-                  <p key={item} className="text-sm leading-6 text-cyan-50/90">{item}</p>
+                  <p key={item} className="text-sm leading-6 text-[#f5f0e8]/90">{item}</p>
                 )) : (
-                  <p className="text-sm leading-6 text-cyan-50/90">No urgent fixes detected. This site is in a strong publish-ready state.</p>
+                  <p className="text-sm leading-6 text-[#f5f0e8]/90">No urgent fixes detected. This site is in a strong publish-ready state.</p>
                 )}
               </div>
             </div>

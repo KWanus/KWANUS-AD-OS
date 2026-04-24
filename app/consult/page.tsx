@@ -47,7 +47,7 @@ type ExecutionTier = "core" | "elite";
 
 const TYPE_COLORS: Record<string, string> = {
   hourly:       "text-[#f5a623] bg-[#f5a623]/10 border-[#f5a623]/20",
-  retainer:     "text-[#e07850] bg-purple-500/10 border-purple-500/20",
+  retainer:     "text-[#e07850] bg-[#e07850]/10 border-[#e07850]/20",
   project:      "text-green-400 bg-green-500/10 border-green-500/20",
   productized:  "text-blue-400 bg-blue-500/10 border-blue-500/20",
   vip_day:      "text-yellow-400 bg-yellow-500/10 border-yellow-500/20",
@@ -768,7 +768,7 @@ function GenerateTab({ setActiveTab }: { setActiveTab: (t: string) => void }) {
       title: "Generate Service Packages",
       desc: "AI-crafted pricing tiers tailored to your niche",
       icon: Package,
-      color: "from-cyan-500/20 to-cyan-500/5 border-[#f5a623]/20",
+      color: "from-[#f5a623]/20 to-[#f5a623]/5 border-[#f5a623]/20",
       iconColor: "text-[#f5a623]",
       action: () => setActiveTab("packages"),
     },
@@ -776,7 +776,7 @@ function GenerateTab({ setActiveTab }: { setActiveTab: (t: string) => void }) {
       title: "Write a Proposal",
       desc: "Full client proposal with problem, solution & pricing",
       icon: FileText,
-      color: "from-purple-500/20 to-purple-500/5 border-purple-500/20",
+      color: "from-[#e07850]/20 to-[#e07850]/5 border-[#e07850]/20",
       iconColor: "text-[#e07850]",
       action: () => setActiveTab("proposals"),
     },

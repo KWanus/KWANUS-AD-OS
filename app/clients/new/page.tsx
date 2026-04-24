@@ -212,7 +212,7 @@ function StepPipeline({ form, setForm }: { form: FormData; setForm: (f: FormData
                   : "border-white/[0.07] bg-white/[0.02] hover:bg-white/[0.04]"
               }`}
             >
-              <div className={`w-2 h-2 rounded-full shrink-0 ${form.pipelineStage === s.value ? "bg-cyan-400" : "bg-white/20"}`} />
+              <div className={`w-2 h-2 rounded-full shrink-0 ${form.pipelineStage === s.value ? "bg-[#f5a623]" : "bg-white/20"}`} />
               <div>
                 <p className={`text-sm font-bold ${form.pipelineStage === s.value ? "text-[#f5a623]" : "text-white/60"}`}>{s.label}</p>
                 <p className="text-[11px] text-white/25">{s.desc}</p>

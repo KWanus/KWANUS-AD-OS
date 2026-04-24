@@ -48,7 +48,7 @@ type DetailRow = {
 
 const TYPE_CONFIG: Record<InboxItem["type"], { label: string; icon: ElementType; tone: string }> = {
   form: { label: "Form", icon: Mail, tone: "border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5a623]" },
-  chat: { label: "Chat", icon: MessageCircle, tone: "border-purple-500/20 bg-purple-500/10 text-purple-300" },
+  chat: { label: "Chat", icon: MessageCircle, tone: "border-[#e07850]/20 bg-[#e07850]/10 text-[#f5a623]" },
   email: { label: "Email", icon: Mail, tone: "border-emerald-500/20 bg-emerald-500/10 text-emerald-300" },
   booking: { label: "Booking", icon: CalendarDays, tone: "border-amber-500/20 bg-amber-500/10 text-amber-300" },
   testimonial: { label: "Testimonial", icon: Star, tone: "border-pink-500/20 bg-pink-500/10 text-pink-300" },
@@ -258,7 +258,7 @@ export default function InboxPage() {
       <AppNav />
 
       <main className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
-        <div className="mb-6 rounded-3xl border border-white/[0.06] bg-gradient-to-br from-cyan-500/[0.07] via-white/[0.02] to-purple-500/[0.04] p-5 sm:p-6">
+        <div className="mb-6 rounded-3xl border border-white/[0.06] bg-gradient-to-br from-[#f5a623]/[0.07] via-white/[0.02] to-[#e07850]/[0.04] p-5 sm:p-6">
           <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
             <WorkflowHeader
               title="Unified Inbox"
@@ -364,10 +364,10 @@ export default function InboxPage() {
                       onClick={() => setSelectedId(item.id)}
                       className={`w-full rounded-2xl border p-4 text-left transition ${
                         active
-                          ? "border-cyan-400/30 bg-[#f5a623]/[0.08] shadow-[0_0_0_1px_rgba(34,211,238,0.08)]"
+                          ? "border-[#f5a623]/30 bg-[#f5a623]/[0.08] shadow-[0_0_0_1px_rgba(34,211,238,0.08)]"
                           : item.read
                             ? "border-white/[0.07] bg-black/20 hover:border-white/[0.12]"
-                            : "border-[#f5a623]/20 bg-gradient-to-br from-cyan-500/[0.08] via-white/[0.02] to-transparent hover:border-cyan-400/30"
+                            : "border-[#f5a623]/20 bg-gradient-to-br from-[#f5a623]/[0.08] via-white/[0.02] to-transparent hover:border-[#f5a623]/30"
                       }`}
                     >
                       <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">

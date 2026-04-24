@@ -126,7 +126,7 @@ const SEV_COLORS: Record<string, string> = {
 const GMB_TYPE_COLORS: Record<string, string> = {
   offer:   "text-[#f5a623] bg-[#f5a623]/10 border-[#f5a623]/20",
   update:  "text-blue-400 bg-blue-500/10 border-blue-500/20",
-  event:   "text-[#e07850] bg-purple-500/10 border-purple-500/20",
+  event:   "text-[#e07850] bg-[#e07850]/10 border-[#e07850]/20",
   product: "text-green-400 bg-green-500/10 border-green-500/20",
 };
 
@@ -189,7 +189,7 @@ function ScoreRing({ score }: { score: number }) {
 
 // Score bar
 function ScoreBar({ label, value }: { label: string; value: number }) {
-  const color = value >= 70 ? "bg-cyan-400" : value >= 50 ? "bg-yellow-400" : "bg-red-400";
+  const color = value >= 70 ? "bg-[#f5a623]" : value >= 50 ? "bg-yellow-400" : "bg-red-400";
   return (
     <div className="flex items-center gap-3">
       <span className="text-xs text-white/50 w-24 shrink-0">{label}</span>
@@ -373,7 +373,7 @@ function PackagesTab({ audit, onRefresh }: { audit: LocalAudit; onRefresh: () =>
   const TIER_COLORS: Record<string, string> = {
     basic: "border-white/[0.06] bg-white/[0.02]",
     pro:   "border-[#f5a623]/40 bg-[#f5a623]/[0.04]",
-    elite: "border-purple-500/30 bg-purple-500/[0.03]",
+    elite: "border-[#e07850]/30 bg-[#e07850]/[0.03]",
   };
 
   return (
@@ -599,7 +599,7 @@ function ReviewSystemTab({ audit, onRefresh }: { audit: LocalAudit; onRefresh: (
             {templates.email.map((t, i) => (
               <div key={i} className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-4">
                 <div className="flex items-center gap-2 mb-2">
-                  <span className="text-[10px] font-bold bg-purple-500/10 text-[#e07850] border border-purple-500/20 rounded-lg px-2 py-0.5">
+                  <span className="text-[10px] font-bold bg-[#e07850]/10 text-[#e07850] border border-[#e07850]/20 rounded-lg px-2 py-0.5">
                     {t.timing}
                   </span>
                 </div>

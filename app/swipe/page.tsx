@@ -103,7 +103,7 @@ export default function SwipeFilePage() {
         ) : (
           <div className="space-y-3">
             {filtered.map((item) => (
-              <div key={item.id} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 hover:border-cyan-400/15 transition">
+              <div key={item.id} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 hover:border-[#f5a623]/15 transition">
                 <div className="flex items-start justify-between gap-3 mb-2">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="text-[10px] font-black uppercase px-2 py-0.5 rounded bg-[#f5a623]/15 text-[#f5a623] border border-[#f5a623]/20">

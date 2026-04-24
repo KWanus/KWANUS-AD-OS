@@ -23,8 +23,8 @@ export default function ExecutionDecisionBlock({ runId, mode }: { runId: string;
   if (!tier || tier !== "free") return null;
 
   return (
-    <div className="rounded-3xl border border-[#f5a623]/20 bg-gradient-to-br from-cyan-500/[0.08] via-transparent to-purple-500/[0.06] p-6 print:hidden">
-      <p className="mb-2 text-[10px] font-black uppercase tracking-[0.22em] text-cyan-200/70">Unlock Execution</p>
+    <div className="rounded-3xl border border-[#f5a623]/20 bg-gradient-to-br from-[#f5a623]/[0.08] via-transparent to-[#e07850]/[0.06] p-6 print:hidden">
+      <p className="mb-2 text-[10px] font-black uppercase tracking-[0.22em] text-[#f5a623]/70">Unlock Execution</p>
       {/* Main message */}
       <h3 className="mb-1 text-base font-black text-white">
         {mode === "consultant"

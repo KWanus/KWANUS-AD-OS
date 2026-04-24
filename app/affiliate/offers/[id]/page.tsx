@@ -145,7 +145,7 @@ interface AffiliateOffer {
 const PLATFORM_BADGE: Record<Platform, string> = {
   clickbank:   "bg-green-500/15 text-green-400 border-green-500/30",
   jvzoo:       "bg-blue-500/15 text-blue-400 border-blue-500/30",
-  warriorplus: "bg-purple-500/15 text-[#e07850] border-purple-500/30",
+  warriorplus: "bg-[#e07850]/15 text-[#e07850] border-[#e07850]/30",
   cj:          "bg-indigo-500/15 text-indigo-400 border-indigo-500/30",
   amazon:      "bg-orange-500/15 text-orange-400 border-orange-500/30",
   digistore24: "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
@@ -291,7 +291,7 @@ function TabOverview({ offer, onNotesBlur }: {
             return (
               <div key={stage} className="flex items-center flex-1 min-w-0">
                 <div className={`flex flex-col items-center gap-1 flex-1 min-w-0 ${active ? "opacity-100" : past ? "opacity-50" : "opacity-25"}`}>
-                  <div className={`w-2.5 h-2.5 rounded-full border-2 ${active ? "bg-cyan-400 border-cyan-400" : past ? "bg-white/40 border-white/40" : "bg-transparent border-white/30"}`} />
+                  <div className={`w-2.5 h-2.5 rounded-full border-2 ${active ? "bg-[#f5a623] border-[#f5a623]" : past ? "bg-white/40 border-white/40" : "bg-transparent border-white/30"}`} />
                   <span className={`text-[9px] font-black uppercase tracking-wide text-center leading-tight ${active ? "text-[#f5a623]" : "text-white/40"}`}>
                     {stage}
                   </span>
@@ -325,7 +325,7 @@ function TabAnalysis({ offer, onRunAnalysis, running }: {
         <button
           onClick={onRunAnalysis}
           disabled={running}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600/30 to-blue-600/30 border border-[#f5a623]/30 hover:border-cyan-400/50 text-sm font-bold text-white transition disabled:opacity-40"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#e07850]/30 to-blue-600/30 border border-[#f5a623]/30 hover:border-[#f5a623]/50 text-sm font-bold text-white transition disabled:opacity-40"
         >
           {running ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
           Run Analysis
@@ -506,7 +506,7 @@ function TabFunnel({ offer, onGenerate, running }: {
         <button
           onClick={onGenerate}
           disabled={running}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#e07850]/30 to-pink-600/30 border border-purple-500/30 hover:border-purple-400/50 text-sm font-bold text-white transition disabled:opacity-40"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#e07850]/30 to-pink-600/30 border border-[#e07850]/30 hover:border-[#e07850]/50 text-sm font-bold text-white transition disabled:opacity-40"
         >
           {running ? <Loader2 className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
           Generate Funnel
@@ -515,7 +515,7 @@ function TabFunnel({ offer, onGenerate, running }: {
     );
   }
 
-  const STEP_COLORS = ["text-blue-400 border-blue-500/30 bg-blue-500/10", "text-[#e07850] border-purple-500/30 bg-purple-500/10", "text-[#f5a623] border-[#f5a623]/30 bg-[#f5a623]/10", "text-green-400 border-green-500/30 bg-green-500/10"];
+  const STEP_COLORS = ["text-blue-400 border-blue-500/30 bg-blue-500/10", "text-[#e07850] border-[#e07850]/30 bg-[#e07850]/10", "text-[#f5a623] border-[#f5a623]/30 bg-[#f5a623]/10", "text-green-400 border-green-500/30 bg-green-500/10"];
 
   return (
     <div className="space-y-5">
@@ -609,7 +609,7 @@ function TabSwipe({ offer, onGenerate, running }: {
         <button
           onClick={onGenerate}
           disabled={running}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600/30 to-cyan-600/30 border border-blue-500/30 hover:border-blue-400/50 text-sm font-bold text-white transition disabled:opacity-40"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600/30 to-[#e07850]/30 border border-blue-500/30 hover:border-blue-400/50 text-sm font-bold text-white transition disabled:opacity-40"
         >
           {running ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
           Generate Swipe Copy
@@ -890,7 +890,7 @@ function TabBridgePage({ offer, onGenerate, running }: {
         <button
           onClick={onGenerate}
           disabled={running}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-green-600/30 to-cyan-600/30 border border-green-500/30 hover:border-green-400/50 text-sm font-bold text-white transition disabled:opacity-40"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-green-600/30 to-[#e07850]/30 border border-green-500/30 hover:border-green-400/50 text-sm font-bold text-white transition disabled:opacity-40"
         >
           {running ? <Loader2 className="w-4 h-4 animate-spin" /> : <LayoutTemplate className="w-4 h-4" />}
           Build Bridge Page

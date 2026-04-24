@@ -112,7 +112,7 @@ export default function RunComparePicker({ onSelect }: Props) {
                 disabled={run.id === selectedA}
                 className={`w-full rounded-xl border p-3 text-left text-xs transition ${
                   selectedB === run.id
-                    ? "border-purple-500/20 bg-purple-500/10"
+                    ? "border-[#e07850]/20 bg-[#e07850]/10"
                     : run.id === selectedA
                       ? "border-white/[0.03] bg-white/[0.01] opacity-30"
                       : "border-white/[0.06] bg-white/[0.02] hover:border-white/[0.12]"

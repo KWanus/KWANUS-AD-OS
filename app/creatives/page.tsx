@@ -83,7 +83,7 @@ export default function CreativeLibraryPage() {
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
             {filtered.map((creative) => (
-              <div key={creative.id} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] overflow-hidden group hover:border-cyan-400/20 transition">
+              <div key={creative.id} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] overflow-hidden group hover:border-[#f5a623]/20 transition">
                 {/* Preview */}
                 <div className="aspect-square bg-black/30 relative">
                   {creative.type === "image" && creative.imageBase64 ? (
@@ -113,7 +113,7 @@ export default function CreativeLibraryPage() {
 
                   {/* Type badge */}
                   <span className={`absolute top-2 left-2 text-[9px] font-bold px-1.5 py-0.5 rounded ${
-                    creative.type === "video" ? "bg-purple-500/80 text-white" : "bg-[#f5a623]/80 text-white"
+                    creative.type === "video" ? "bg-[#e07850]/80 text-white" : "bg-[#f5a623]/80 text-white"
                   }`}>
                     {creative.type === "video" ? "VIDEO" : "IMAGE"}
                   </span>

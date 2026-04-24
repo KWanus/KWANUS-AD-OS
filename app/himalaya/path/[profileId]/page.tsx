@@ -61,7 +61,7 @@ function PathCard({
   return (
     <div className={`rounded-3xl border p-5 sm:p-6 ${
       isPrimary
-        ? "bg-gradient-to-br from-cyan-500/[0.06] to-purple-500/[0.06] border-[#f5a623]/20"
+        ? "bg-gradient-to-br from-[#f5a623]/[0.06] to-[#e07850]/[0.06] border-[#f5a623]/20"
         : "bg-gradient-to-br from-white/[0.03] via-white/[0.02] to-transparent border-white/[0.07]"
     }`}>
       {isPrimary && (
@@ -246,7 +246,7 @@ export default function HimalayaPathPage({ params }: { params: Promise<{ profile
       <HimalayaNav />
       <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
         {/* Header */}
-        <div className="mb-8 rounded-3xl border border-[#f5a623]/12 bg-gradient-to-br from-cyan-500/[0.06] via-transparent to-purple-500/[0.05] px-5 py-8 text-center sm:px-8">
+        <div className="mb-8 rounded-3xl border border-[#f5a623]/12 bg-gradient-to-br from-[#f5a623]/[0.06] via-transparent to-[#e07850]/[0.05] px-5 py-8 text-center sm:px-8">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-gradient-to-br from-[#f5a623] to-[#e07850]">
             <Mountain className="w-6 h-6 text-white" />
           </div>

@@ -51,7 +51,7 @@ Create 6 modules with 3-5 lessons each. Make it transformation-focused (before â
       <AppNav />
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-[#e07850]/10 border border-[#e07850]/20 flex items-center justify-center">
             <BookOpen className="w-5 h-5 text-[#e07850]" />
           </div>
           <div>
@@ -64,36 +64,36 @@ Create 6 modules with 3-5 lessons each. Make it transformation-focused (before â
           <div className="space-y-4 max-w-md mx-auto">
             <input type="text" value={topic} onChange={(e) => setTopic(e.target.value)}
               placeholder="Course topic (e.g. Facebook Ads for local businesses)"
-              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-purple-500/50 transition" />
+              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#e07850]/50 transition" />
             <input type="text" value={audience} onChange={(e) => setAudience(e.target.value)}
               placeholder="Target student (optional â€” e.g. beginners, agency owners)"
               className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none transition" />
             <button onClick={generate} disabled={generating || !topic.trim()}
-              className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40">
+              className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-[#e07850] to-pink-500 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40">
               {generating ? <><Loader2 className="w-4 h-4 animate-spin" /> Building curriculum...</> : <><BookOpen className="w-4 h-4" /> Generate Course Outline</>}
             </button>
           </div>
         ) : (
           <div className="space-y-4">
             <div className="flex gap-2">
-              <button onClick={copyAll} className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-purple-500 text-white text-xs font-bold hover:bg-purple-400 transition">
+              <button onClick={copyAll} className="flex items-center gap-1.5 px-4 py-2 rounded-xl bg-[#e07850] text-white text-xs font-bold hover:bg-[#e07850] transition">
                 {copied ? <><Check className="w-3.5 h-3.5" /> Copied!</> : <><Copy className="w-3.5 h-3.5" /> Copy Outline</>}
               </button>
               <button onClick={() => setCourse(null)} className="px-4 py-2 rounded-xl border border-white/10 bg-white/[0.03] text-xs font-bold text-white/40 transition">New Course</button>
             </div>
 
             {/* Header */}
-            <div className="rounded-2xl border border-purple-500/20 bg-purple-500/5 p-6 text-center">
+            <div className="rounded-2xl border border-[#e07850]/20 bg-[#e07850]/5 p-6 text-center">
               <h2 className="text-xl font-black text-white">{course.title}</h2>
               <p className="text-sm text-white/50 mt-1">{course.subtitle}</p>
-              <p className="text-xs text-purple-300 mt-3 font-bold">{course.pricing}</p>
+              <p className="text-xs text-[#f5a623] mt-3 font-bold">{course.pricing}</p>
             </div>
 
             {/* Modules */}
             {course.modules.map((mod, i) => (
               <div key={i} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5">
                 <div className="flex items-center gap-3 mb-3">
-                  <div className="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center text-xs font-black text-purple-300">{i + 1}</div>
+                  <div className="w-8 h-8 rounded-lg bg-[#e07850]/20 flex items-center justify-center text-xs font-black text-[#f5a623]">{i + 1}</div>
                   <div>
                     <h3 className="text-sm font-bold text-white">{mod.title}</h3>
                     <p className="text-[10px] text-emerald-400/60">{mod.outcome}</p>

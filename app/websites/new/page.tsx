@@ -221,7 +221,7 @@ export default function NewSitePage() {
         <div className="rounded-[32px] border border-white/[0.08] bg-t-bg p-8 shadow-2xl">
           <div className="mb-8 flex items-start justify-between gap-4">
             <div>
-              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 text-[#f5a623]">
+              <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-[#f5a623]/20 to-[#e07850]/20 text-[#f5a623]">
                 {mode === "generate" ? <Wand2 className="h-6 w-6" /> : mode === "research" ? <Target className="h-6 w-6" /> : <Rocket className="h-6 w-6" />}
               </div>
               <h1 className="text-3xl font-black tracking-tight">
@@ -297,8 +297,8 @@ export default function NewSitePage() {
               <div className="flex items-start gap-3">
                 <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-[#f5a623]" />
                 <div>
-                  <p className="text-sm font-black text-cyan-50">Business OS data detected</p>
-                  <p className="mt-1 text-sm leading-6 text-cyan-50/85">
+                  <p className="text-sm font-black text-[#f5f0e8]">Business OS data detected</p>
+                  <p className="mt-1 text-sm leading-6 text-[#f5f0e8]/85">
                     I prefilled this form from your saved business profile so new sites start closer to your niche, location, and goal.
                   </p>
                 </div>
@@ -365,16 +365,16 @@ export default function NewSitePage() {
               <div className="rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-4 py-4">
                 <div className="flex items-start gap-3">
                   <Target className="mt-0.5 h-4 w-4 shrink-0 text-[#f5a623]" />
-                  <p className="text-sm leading-6 text-cyan-50/90">
+                  <p className="text-sm leading-6 text-[#f5f0e8]/90">
                     We scan the competitor, extract what converts, identify gaps, and build you a site that beats them on every conversion metric.
                   </p>
                 </div>
               </div>
 
               {researchStage && loading && (
-                <div className="flex items-center gap-3 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 px-4 py-3">
-                  <Loader2 className="h-4 w-4 animate-spin text-cyan-400" />
-                  <p className="text-sm font-bold text-cyan-200">{researchStage}</p>
+                <div className="flex items-center gap-3 rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-4 py-3">
+                  <Loader2 className="h-4 w-4 animate-spin text-[#f5a623]" />
+                  <p className="text-sm font-bold text-[#f5a623]">{researchStage}</p>
                 </div>
               )}
 
@@ -457,7 +457,7 @@ export default function NewSitePage() {
               <div className="rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-4 py-4">
                 <div className="flex items-start gap-3">
                   <Sparkles className="mt-0.5 h-4 w-4 shrink-0 text-[#f5a623]" />
-                  <p className="text-sm leading-6 text-cyan-50/90">
+                  <p className="text-sm leading-6 text-[#f5f0e8]/90">
                     This route uses the new conversion engine: input normalization, conversion analysis, business profile, template selection, section-by-section copy, scoring, and deterministic rendering. Elite mode pushes a heavier trust, objection-handling, and conversion stack.
                   </p>
                 </div>
@@ -544,7 +544,7 @@ export default function NewSitePage() {
                   <select
                     value={campaignId}
                     onChange={(event) => setCampaignId(event.target.value)}
-                    className="w-full rounded-2xl border border-[#f5a623]/30 bg-[#f5a623]/10 px-4 py-3 text-[#f5f0e8] outline-none transition focus:border-cyan-400"
+                    className="w-full rounded-2xl border border-[#f5a623]/30 bg-[#f5a623]/10 px-4 py-3 text-[#f5f0e8] outline-none transition focus:border-[#f5a623]"
                   >
                     <option value="">Start with blank template</option>
                     {campaigns.map((campaign) => (

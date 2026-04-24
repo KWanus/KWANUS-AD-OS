@@ -187,7 +187,7 @@ function RecentlyAdded({ clients }: { clients: Client[] }) {
               href={`/clients/${client.id}`}
               className="flex items-center gap-3 p-2.5 rounded-xl hover:bg-white/[0.03] transition group"
             >
-              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-500/20 to-[#e07850]/20 flex items-center justify-center text-xs font-black text-white/60 shrink-0">
+              <div className="w-7 h-7 rounded-lg bg-gradient-to-br from-[#f5a623]/20 to-[#e07850]/20 flex items-center justify-center text-xs font-black text-white/60 shrink-0">
                 {client.name.charAt(0).toUpperCase()}
               </div>
               <div className="flex-1 min-w-0">
@@ -372,7 +372,7 @@ export default function ClientDashboardPage() {
 
           {/* Quick actions */}
           {quickActions.length > 0 && (
-            <div className="bg-gradient-to-r from-amber-900/15 to-cyan-900/15 border border-amber-500/20 rounded-2xl p-5">
+            <div className="bg-gradient-to-r from-amber-900/15 to-[#0c0a08]/15 border border-amber-500/20 rounded-2xl p-5">
               <h3 className="text-xs font-black uppercase tracking-widest text-white/30 mb-3">Priority Actions</h3>
               <div className="space-y-2">
                 {quickActions.map(a => (

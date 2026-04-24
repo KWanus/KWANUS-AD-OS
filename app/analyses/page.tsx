@@ -222,7 +222,7 @@ function SkeletonRow() {
 function EmptyState({ filtered }: { filtered: boolean }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center px-4">
-      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-[#e07850]/20 border border-white/10 flex items-center justify-center mb-5">
+      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#f5a623]/20 to-[#e07850]/20 border border-white/10 flex items-center justify-center mb-5">
         <ScanSearch className="w-7 h-7 text-[#f5a623]/70" />
       </div>
       {filtered ? (
@@ -432,7 +432,7 @@ export default function AnalysesPage() {
                   <span className={`w-10 text-right font-bold ${c.winner === "a" ? "text-[#f5a623]" : "text-white/30"}`}>{c.a}</span>
                   <div className="flex-1 h-1.5 bg-white/[0.04] rounded-full overflow-hidden relative">
                     <div className="absolute inset-y-0 left-0 bg-[#f5a623]/50 rounded-full" style={{ width: `${c.a}%` }} />
-                    <div className="absolute inset-y-0 right-0 bg-purple-500/50 rounded-full" style={{ width: `${c.b}%` }} />
+                    <div className="absolute inset-y-0 right-0 bg-[#e07850]/50 rounded-full" style={{ width: `${c.b}%` }} />
                   </div>
                   <span className={`w-10 font-bold ${c.winner === "b" ? "text-[#e07850]" : "text-white/30"}`}>{c.b}</span>
                   <span className={`w-12 text-right text-[10px] font-bold ${c.diff > 0 ? "text-[#e07850]" : c.diff < 0 ? "text-[#f5a623]" : "text-white/20"}`}>

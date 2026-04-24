@@ -115,7 +115,7 @@ Each under 45 characters. No emojis. No quotes. Just the text, one per line.`,
       <AppNav />
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-[#e07850]/10 border border-[#e07850]/20 flex items-center justify-center">
             <Mail className="w-5 h-5 text-[#e07850]" />
           </div>
           <div>
@@ -134,7 +134,7 @@ Each under 45 characters. No emojis. No quotes. Just the text, one per line.`,
                 value={subj}
                 onChange={(e) => updateSubject(i, e.target.value)}
                 placeholder={`Subject line ${String.fromCharCode(65 + i)}...`}
-                className="flex-1 bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-purple-500/50 transition"
+                className="flex-1 bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#e07850]/50 transition"
               />
               <span className="text-[10px] text-white/15 w-8 text-right shrink-0">{subj.length}</span>
               {subjects.length > 2 && (
@@ -151,7 +151,7 @@ Each under 45 characters. No emojis. No quotes. Just the text, one per line.`,
           <button
             onClick={testAll}
             disabled={subjects.filter((s) => s.trim()).length < 2}
-            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-500 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40"
+            className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#e07850] to-[#f5a623] text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40"
           >
             <Trophy className="w-4 h-4" /> Test & Rank
           </button>
@@ -163,7 +163,7 @@ Each under 45 characters. No emojis. No quotes. Just the text, one per line.`,
           <button
             onClick={aiGenerate}
             disabled={aiGenerating}
-            className="flex items-center gap-1.5 px-4 py-3 rounded-xl border border-purple-500/30 bg-purple-500/5 text-purple-300 text-xs font-bold hover:bg-purple-500/10 transition disabled:opacity-40"
+            className="flex items-center gap-1.5 px-4 py-3 rounded-xl border border-[#e07850]/30 bg-[#e07850]/5 text-[#f5a623] text-xs font-bold hover:bg-[#e07850]/10 transition disabled:opacity-40"
           >
             {aiGenerating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Sparkles className="w-3.5 h-3.5" />}
             AI Generate

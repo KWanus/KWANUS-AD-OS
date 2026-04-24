@@ -28,10 +28,10 @@ export default function ExecutionBanner({ runId }: Props) {
   // No execution started yet → show "Start Execution" CTA
   if (!state || !state.startedAt) {
     return (
-      <div className="rounded-2xl border border-[#f5a623]/15 bg-gradient-to-br from-cyan-500/[0.08] via-transparent to-purple-500/[0.06] p-5">
+      <div className="rounded-2xl border border-[#f5a623]/15 bg-gradient-to-br from-[#f5a623]/[0.08] via-transparent to-[#e07850]/[0.06] p-5">
         <div className="flex items-center justify-between gap-4">
           <div>
-            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-cyan-200/70">Execution</p>
+            <p className="text-[10px] font-black uppercase tracking-[0.22em] text-[#f5a623]/70">Execution</p>
             <h3 className="mt-2 text-sm font-black text-white">Ready to execute?</h3>
             <p className="mt-1 text-xs text-white/40">Turn your results into a step-by-step action plan</p>
           </div>

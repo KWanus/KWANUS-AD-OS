@@ -65,7 +65,7 @@ Make it specific to "${productName}". No placeholders.`,
               placeholder="Product or service name (e.g. Growth Accelerator Package)"
               className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-emerald-500/50 transition" />
             <button onClick={generate} disabled={generating || !productName.trim()}
-              className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-cyan-500 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40">
+              className="w-full flex items-center justify-center gap-2 px-6 py-4 rounded-xl bg-gradient-to-r from-emerald-500 to-[#f5a623] text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40">
               {generating ? <><Loader2 className="w-4 h-4 animate-spin" /> Building...</> : <><Gift className="w-4 h-4" /> Generate Thank-You Page</>}
             </button>
           </div>

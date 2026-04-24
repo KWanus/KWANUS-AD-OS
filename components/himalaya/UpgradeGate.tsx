@@ -63,7 +63,7 @@ export default function UpgradeGate({ feature, children }: Props) {
 
   // Show upgrade gate
   return (
-    <div className="rounded-2xl border border-purple-500/15 bg-gradient-to-br from-purple-500/[0.06] to-cyan-500/[0.06] p-5 sm:p-6">
+    <div className="rounded-2xl border border-[#e07850]/15 bg-gradient-to-br from-[#e07850]/[0.06] to-[#f5a623]/[0.06] p-5 sm:p-6">
       <div className="mb-3 flex items-center gap-2">
         <Lock className="w-4 h-4 text-[#e07850]/60" />
         <h3 className="text-sm font-bold text-white/60">Unlock Full Access</h3>

@@ -114,7 +114,7 @@ function Slider({ label, value, onChange, min, max, step, prefix, suffix }: {
         <span className="text-xs font-bold text-white">{prefix}{value.toLocaleString()}{suffix}</span>
       </div>
       <input type="range" min={min} max={max} step={step} value={value} onChange={(e) => onChange(parseFloat(e.target.value))}
-        className="w-full h-1.5 rounded-full bg-white/10 appearance-none cursor-pointer accent-cyan-500" />
+        className="w-full h-1.5 rounded-full bg-white/10 appearance-none cursor-pointer accent-[#f5a623]" />
     </div>
   );
 }

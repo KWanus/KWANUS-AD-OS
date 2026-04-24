@@ -59,7 +59,7 @@ export default function MemoryHints({ onApplyUrl, onApplyMode }: Props) {
         {memory.lastInputUrl && (
           <button
             onClick={() => onApplyUrl?.(memory.lastInputUrl!)}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-purple-500/10 bg-purple-500/5 px-2.5 py-1.5 text-[10px] text-white/40 transition hover:text-white/60"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-[#e07850]/10 bg-[#e07850]/5 px-2.5 py-1.5 text-[10px] text-white/40 transition hover:text-white/60"
           >
             <ExternalLink className="w-2.5 h-2.5" />
             Last URL: {memory.lastInputUrl.replace(/^https?:\/\//, "").slice(0, 30)}
@@ -69,7 +69,7 @@ export default function MemoryHints({ onApplyUrl, onApplyMode }: Props) {
         {memory.lastMode && (
           <button
             onClick={() => onApplyMode?.(memory.lastMode!)}
-            className="inline-flex items-center gap-1 rounded-lg border border-purple-500/10 bg-purple-500/5 px-2.5 py-1.5 text-[10px] text-white/40 transition hover:text-white/60"
+            className="inline-flex items-center gap-1 rounded-lg border border-[#e07850]/10 bg-[#e07850]/5 px-2.5 py-1.5 text-[10px] text-white/40 transition hover:text-white/60"
           >
             Last mode: {memory.lastMode === "consultant" ? "Improve" : "Scratch"}
           </button>

@@ -236,7 +236,7 @@ export default function HimalayaScratchPage() {
       <main className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
         {running ? (
           <>
-            <div className="mb-4 rounded-3xl border border-[#f5a623]/12 bg-gradient-to-br from-cyan-500/[0.06] via-transparent to-purple-500/[0.05] px-5 py-8 text-center">
+            <div className="mb-4 rounded-3xl border border-[#f5a623]/12 bg-gradient-to-br from-[#f5a623]/[0.06] via-transparent to-[#e07850]/[0.05] px-5 py-8 text-center">
               <Mountain className="mx-auto mb-3 h-8 w-8 text-[#f5a623]" />
               <h1 className="text-xl font-black text-white">Building Your Foundation</h1>
               <p className="text-sm text-white/30 mt-1">Himalaya is creating your business assets</p>
@@ -257,9 +257,9 @@ export default function HimalayaScratchPage() {
               </p>
             </div>
             {loadedFromRun && (
-              <div className="mb-4 flex items-center gap-2 rounded-lg border border-purple-500/10 bg-purple-500/5 px-3 py-2">
+              <div className="mb-4 flex items-center gap-2 rounded-lg border border-[#e07850]/10 bg-[#e07850]/5 px-3 py-2">
                 <RotateCcw className="w-3 h-3 text-[#e07850]/50" />
-                <p className="text-[10px] text-purple-300/60">Loaded from a previous run. Edit anything before rebuilding.</p>
+                <p className="text-[10px] text-[#f5a623]/60">Loaded from a previous run. Edit anything before rebuilding.</p>
               </div>
             )}
 

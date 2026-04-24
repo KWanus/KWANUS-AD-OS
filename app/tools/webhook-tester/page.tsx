@@ -56,7 +56,7 @@ export default function WebhookTesterPage() {
       <AppNav />
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
-          <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
+          <div className="w-10 h-10 rounded-xl bg-[#e07850]/10 border border-[#e07850]/20 flex items-center justify-center">
             <Webhook className="w-5 h-5 text-[#e07850]" />
           </div>
           <div>
@@ -74,7 +74,7 @@ export default function WebhookTesterPage() {
               value={url}
               onChange={(e) => setUrl(e.target.value)}
               placeholder="https://hooks.zapier.com/... or https://n8n.yourdomain.com/webhook/..."
-              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-purple-500/50 transition font-mono"
+              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#e07850]/50 transition font-mono"
             />
           </div>
 
@@ -85,7 +85,7 @@ export default function WebhookTesterPage() {
               value={payload}
               onChange={(e) => setPayload(e.target.value)}
               rows={10}
-              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-purple-500/50 transition font-mono resize-none"
+              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#e07850]/50 transition font-mono resize-none"
             />
           </div>
 
@@ -110,7 +110,7 @@ export default function WebhookTesterPage() {
           <button
             onClick={sendTest}
             disabled={sending || !url.trim()}
-            className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-purple-500 to-cyan-500 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40"
+            className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#e07850] to-[#f5a623] text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40"
           >
             {sending ? <><Loader2 className="w-4 h-4 animate-spin" /> Sending...</> : <><Send className="w-4 h-4" /> Send Test Webhook</>}
           </button>

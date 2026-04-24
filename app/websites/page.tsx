@@ -357,7 +357,7 @@ export default function WebsitesDashboard() {
                     eyebrow="Sites"
                     title="Funnels, Stores, and Published Pages"
                     description="Build, publish, and manage the web layer of your marketing system. Sites here connect directly to your products, forms, and campaign assets."
-                    accent="from-violet-300 via-cyan-300 to-emerald-300"
+                    accent="from-violet-300 via-[#f5a623] to-emerald-300"
                     actions={(
                         <>
                             <button
@@ -434,7 +434,7 @@ export default function WebsitesDashboard() {
 
                         <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="mb-6" />
 
-                        <section className="mb-6 rounded-[30px] border border-[#f5a623]/20 bg-gradient-to-br from-cyan-500/[0.08] to-violet-500/[0.03] p-6">
+                        <section className="mb-6 rounded-[30px] border border-[#f5a623]/20 bg-gradient-to-br from-[#f5a623]/[0.08] to-violet-500/[0.03] p-6">
                             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                                 <div className="max-w-3xl">
                                     <p className="text-[10px] font-black uppercase tracking-[0.28em] text-[#f5a623]/70">Recommended Next Site Move</p>
@@ -505,28 +505,28 @@ export default function WebsitesDashboard() {
                                 value={scanUrl}
                                 onChange={(e) => setScanUrl(e.target.value)}
                                 placeholder="Reference URL: https://competitor.com"
-                                className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-cyan-400/40 focus:outline-none md:col-span-2"
+                                className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-[#f5a623]/40 focus:outline-none md:col-span-2"
                             />
                             <input
                                 type="text"
                                 value={scanSiteName}
                                 onChange={(e) => setScanSiteName(e.target.value)}
                                 placeholder="Draft site name (optional)"
-                                className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-cyan-400/40 focus:outline-none"
+                                className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-[#f5a623]/40 focus:outline-none"
                             />
                             <input
                                 type="text"
                                 value={scanNiche}
                                 onChange={(e) => setScanNiche(e.target.value)}
                                 placeholder="Niche: med spa, roofer, law firm"
-                                className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-cyan-400/40 focus:outline-none"
+                                className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-[#f5a623]/40 focus:outline-none"
                             />
                             <textarea
                                 value={scanNotes}
                                 onChange={(e) => setScanNotes(e.target.value)}
                                 placeholder="Optional notes: keep the offer, improve the hero, add stronger proof, tailor to local SEO..."
                                 rows={4}
-                                className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-cyan-400/40 focus:outline-none md:col-span-2"
+                                className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-[#f5a623]/40 focus:outline-none md:col-span-2"
                             />
                         </div>
 
@@ -586,7 +586,7 @@ export default function WebsitesDashboard() {
                             <button
                                 onClick={() => void runScanMode()}
                                 disabled={!scanUrl.trim() || scanLoading}
-                                className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-5 py-3 text-sm font-black text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                                className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-[#f5a623] px-5 py-3 text-sm font-black text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
                             >
                                 {scanLoading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Wand2 className="h-4 w-4" />}
                                 {scanLoading ? "Scanning and Building..." : "Scan and Generate Site"}
@@ -668,18 +668,18 @@ export default function WebsitesDashboard() {
                 {/* Loading */}
                 {loading && (
                     <div className="py-32 flex flex-col items-center gap-4 text-white/20">
-                        <Loader2 className="w-8 h-8 animate-spin text-cyan-500" />
+                        <Loader2 className="w-8 h-8 animate-spin text-[#f5a623]" />
                         <span className="text-sm font-semibold">Loading your sites...</span>
                     </div>
                 )}
 
                 {/* Empty state */}
                 {!loading && sites.length === 0 && (
-                    <div className="mt-8 relative overflow-hidden rounded-3xl border border-white/[0.06] bg-gradient-to-br from-purple-500/[0.05] to-transparent p-16 flex flex-col items-center text-center">
+                    <div className="mt-8 relative overflow-hidden rounded-3xl border border-white/[0.06] bg-gradient-to-br from-[#e07850]/[0.05] to-transparent p-16 flex flex-col items-center text-center">
                         <div className="absolute inset-0 opacity-[0.015]"
                             style={{ backgroundImage: "radial-gradient(circle, #e07850 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
 
-                        <div className="relative w-24 h-24 rounded-3xl bg-gradient-to-br from-purple-500/20 to-cyan-500/20 border border-white/[0.07] flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(139,92,246,0.15)]">
+                        <div className="relative w-24 h-24 rounded-3xl bg-gradient-to-br from-[#e07850]/20 to-[#f5a623]/20 border border-white/[0.07] flex items-center justify-center mb-6 shadow-[0_0_40px_rgba(139,92,246,0.15)]">
                             <Globe className="w-10 h-10 text-[#e07850]/60" />
                             <div className="absolute -top-1 -right-1 w-5 h-5 rounded-full bg-gradient-to-r from-[#f5a623] to-[#e07850] flex items-center justify-center">
                                 <Sparkles className="w-3 h-3 text-white" />
@@ -718,7 +718,7 @@ export default function WebsitesDashboard() {
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 pb-16">
                         {sites.map(site => (
                             <div key={site.id}
-                                className="group relative border border-white/[0.07] bg-t-bg hover:border-purple-500/30 transition-all duration-300 rounded-3xl flex flex-col overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.4)] hover:shadow-[0_0_40px_rgba(139,92,246,0.08)]">
+                                className="group relative border border-white/[0.07] bg-t-bg hover:border-[#e07850]/30 transition-all duration-300 rounded-3xl flex flex-col overflow-hidden shadow-[0_4px_24px_rgba(0,0,0,0.4)] hover:shadow-[0_0_40px_rgba(139,92,246,0.08)]">
                                 {(() => {
                                     const siteAudit = auditPublishedSite({
                                         published: site.published,
@@ -774,10 +774,10 @@ export default function WebsitesDashboard() {
                                 <div className="relative h-36 bg-gradient-to-br from-white/[0.025] to-transparent border-b border-white/[0.05] flex items-center justify-center overflow-hidden">
                                     <div className="absolute inset-0 opacity-[0.02]"
                                         style={{ backgroundImage: "radial-gradient(circle, #fff 1px, transparent 1px)", backgroundSize: "20px 20px" }} />
-                                    <Globe className="w-14 h-14 text-white/[0.04] group-hover:text-purple-500/20 transition duration-500 group-hover:scale-110" />
+                                    <Globe className="w-14 h-14 text-white/[0.04] group-hover:text-[#e07850]/20 transition duration-500 group-hover:scale-110" />
 
                                     {/* Glow on hover */}
-                                    <div className="absolute inset-0 bg-gradient-to-t from-purple-500/[0.0] to-transparent group-hover:from-purple-500/[0.04] transition-all duration-500" />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-[#e07850]/[0.0] to-transparent group-hover:from-[#e07850]/[0.04] transition-all duration-500" />
 
                                     {/* Status badge */}
                                     <div className={`absolute top-4 right-4 flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-widest
@@ -791,7 +791,7 @@ export default function WebsitesDashboard() {
 
                                 {/* Content */}
                                 <div className="p-6 flex-1 flex flex-col">
-                                    <h3 className="text-base font-black text-white tracking-tight truncate mb-1 group-hover:text-purple-300 transition">{site.name}</h3>
+                                    <h3 className="text-base font-black text-white tracking-tight truncate mb-1 group-hover:text-[#f5a623] transition">{site.name}</h3>
                                     <div className="mb-3 flex items-center gap-2">
                                         <span className="rounded-full border border-[#f5a623]/20 bg-[#f5a623]/10 px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.18em] text-[#f5a623]">
                                             {siteAudit.score}/100
@@ -852,7 +852,7 @@ export default function WebsitesDashboard() {
                                         <div className="mt-3 rounded-2xl border border-[#f5a623]/15 bg-[#f5a623]/[0.07] px-3 py-3">
                                             <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f5a623]/75">Template Next Move</p>
                                             <p className="mt-2 text-xs font-black text-white">{starterGuidance.headline}</p>
-                                            <p className="mt-1 text-[11px] leading-5 text-cyan-50/70">{starterGuidance.summary}</p>
+                                            <p className="mt-1 text-[11px] leading-5 text-[#f5f0e8]/70">{starterGuidance.summary}</p>
                                         </div>
                                     )}
                                     {!site.customDomain?.trim() && site.published && (
@@ -956,7 +956,7 @@ export default function WebsitesDashboard() {
                                                 <Settings className="w-4 h-4" />
                                             </Link>
                                             <Link href={firstPageId ? `/websites/${site.id}/editor/${firstPageId}` : `/websites/${site.id}`}
-                                                className="px-4 py-2 rounded-xl bg-gradient-to-r from-purple-500/20 to-cyan-500/10 border border-purple-500/20 hover:border-purple-500/40 text-purple-300 text-xs font-black transition">
+                                                className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#e07850]/20 to-[#f5a623]/10 border border-[#e07850]/20 hover:border-[#e07850]/40 text-[#f5a623] text-xs font-black transition">
                                                 Edit Site
                                             </Link>
                                         </div>
@@ -970,8 +970,8 @@ export default function WebsitesDashboard() {
 
                         {/* Add new site card */}
                         <button onClick={() => router.push("/websites/new")}
-                            className="group border-2 border-dashed border-white/[0.07] hover:border-purple-500/30 rounded-3xl flex flex-col items-center justify-center gap-3 py-12 text-center transition-all duration-300 hover:bg-purple-500/[0.03]">
-                            <div className="w-12 h-12 rounded-2xl bg-white/[0.04] border border-white/[0.07] group-hover:bg-purple-500/10 group-hover:border-purple-500/20 flex items-center justify-center transition-all duration-300">
+                            className="group border-2 border-dashed border-white/[0.07] hover:border-[#e07850]/30 rounded-3xl flex flex-col items-center justify-center gap-3 py-12 text-center transition-all duration-300 hover:bg-[#e07850]/[0.03]">
+                            <div className="w-12 h-12 rounded-2xl bg-white/[0.04] border border-white/[0.07] group-hover:bg-[#e07850]/10 group-hover:border-[#e07850]/20 flex items-center justify-center transition-all duration-300">
                                 <Plus className="w-5 h-5 text-white/30 group-hover:text-[#e07850] transition" />
                             </div>
                             <p className="text-sm font-bold text-white/25 group-hover:text-white/50 transition">New Site</p>

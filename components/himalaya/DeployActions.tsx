@@ -137,7 +137,7 @@ export default function DeployActions({ vm, autoDeploy = false, autoPublish = fa
 
   return (
     <div className="space-y-4">
-      <div className="rounded-2xl border border-[#f5a623]/15 bg-gradient-to-br from-cyan-500/[0.05] to-purple-500/[0.05] p-4 sm:p-5">
+      <div className="rounded-2xl border border-[#f5a623]/15 bg-gradient-to-br from-[#f5a623]/[0.05] to-[#e07850]/[0.05] p-4 sm:p-5">
         <div className="flex items-center gap-2 mb-3">
           <Rocket className="w-4 h-4 text-[#f5a623]/60" />
           <h2 className="text-[10px] font-black uppercase tracking-widest text-white/30">Deploy</h2>

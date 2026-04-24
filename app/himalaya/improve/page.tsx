@@ -189,9 +189,9 @@ export default function HimalayaImprovePage() {
               </p>
             </div>
             {loadedFromRun && (
-              <div className="mb-4 flex items-center gap-2 rounded-lg border border-purple-500/10 bg-purple-500/5 px-3 py-2">
+              <div className="mb-4 flex items-center gap-2 rounded-lg border border-[#e07850]/10 bg-[#e07850]/5 px-3 py-2">
                 <RotateCcw className="w-3 h-3 text-[#e07850]/50" />
-                <p className="text-[10px] text-purple-300/60">Loaded from a previous run. Edit anything before re-analyzing.</p>
+                <p className="text-[10px] text-[#f5a623]/60">Loaded from a previous run. Edit anything before re-analyzing.</p>
               </div>
             )}
 

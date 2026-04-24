@@ -122,14 +122,14 @@ export default function ProjectsPage() {
         <header className="flex flex-wrap items-end justify-between gap-6 border-b border-white/[0.06] py-12">
           <div>
             <div className="mb-3 flex items-center gap-2">
-              <div className="h-1.5 w-1.5 rounded-full bg-cyan-400 animate-pulse" />
+              <div className="h-1.5 w-1.5 rounded-full bg-[#f5a623] animate-pulse" />
               <span className="text-[11px] font-black uppercase tracking-[0.25em] text-[#f5a623]/70">
                 Projects
               </span>
             </div>
             <h1 className="text-4xl font-black tracking-tight">
               Saved{" "}
-              <span className="bg-gradient-to-r from-cyan-300 via-white to-fuchsia-300 bg-clip-text text-transparent">
+              <span className="bg-gradient-to-r from-[#f5a623] via-white to-fuchsia-300 bg-clip-text text-transparent">
                 Build Missions
               </span>
             </h1>
@@ -147,7 +147,7 @@ export default function ProjectsPage() {
             </Link>
             <Link
               href="/analyze"
-              className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-fuchsia-600 px-6 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(245,166,35,0.25)] transition hover:scale-[1.02]"
+              className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#f5a623] to-fuchsia-600 px-6 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(245,166,35,0.25)] transition hover:scale-[1.02]"
             >
               Start New Analysis
               <ArrowRight className="h-4 w-4" />
@@ -193,7 +193,7 @@ export default function ProjectsPage() {
         )}
 
         {!loading && projects.length === 0 && (
-          <div className="mt-8 overflow-hidden rounded-3xl border border-white/[0.06] bg-gradient-to-br from-cyan-500/[0.05] to-fuchsia-500/[0.04] p-14 text-center">
+          <div className="mt-8 overflow-hidden rounded-3xl border border-white/[0.06] bg-gradient-to-br from-[#f5a623]/[0.05] to-fuchsia-500/[0.04] p-14 text-center">
             <div className="mx-auto mb-6 flex h-24 w-24 items-center justify-center rounded-3xl border border-white/[0.08] bg-white/[0.04] shadow-[0_0_40px_rgba(245,166,35,0.16)]">
               <Sparkles className="h-10 w-10 text-[#f5a623]" />
             </div>
@@ -210,7 +210,7 @@ export default function ProjectsPage() {
               </Link>
               <Link
                 href="/analyze"
-                className="rounded-2xl border border-cyan-400/30 bg-[#f5a623]/10 px-6 py-3 text-sm font-black text-[#f5a623] transition hover:bg-[#f5a623]/15"
+                className="rounded-2xl border border-[#f5a623]/30 bg-[#f5a623]/10 px-6 py-3 text-sm font-black text-[#f5a623] transition hover:bg-[#f5a623]/15"
               >
                 Analyze a URL
               </Link>

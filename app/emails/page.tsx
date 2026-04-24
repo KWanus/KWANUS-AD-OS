@@ -143,8 +143,8 @@ const TRIGGER_CONFIG: Record<
     label: "Win-Back",
     description: "Inactive 30+ days",
     icon: RotateCcw,
-    border: "border-purple-500/40",
-    bg: "bg-purple-500/10",
+    border: "border-[#e07850]/40",
+    bg: "bg-[#e07850]/10",
     text: "text-[#e07850]",
     emoji: "🔁",
   },
@@ -382,7 +382,7 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center">
       <div className="relative mb-6">
-        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/20 to-[#e07850]/20 border border-white/10 flex items-center justify-center">
+        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#f5a623]/20 to-[#e07850]/20 border border-white/10 flex items-center justify-center">
           <Mail className="w-9 h-9 text-[#f5a623]/70" />
         </div>
         <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-gradient-to-br from-[#f5a623] to-[#e07850] flex items-center justify-center">
@@ -488,9 +488,9 @@ const QUICK_TEMPLATES = [
     emailCount: 3,
     description: "3-email win-back series",
     trigger: "win_back" as TriggerType,
-    border: "border-purple-500/30",
-    bg: "bg-purple-500/8",
-    text: "text-purple-400",
+    border: "border-[#e07850]/30",
+    bg: "bg-[#e07850]/8",
+    text: "text-[#e07850]",
   },
 ];
 
@@ -1070,7 +1070,7 @@ function EmailsPage() {
         )}
 
         {businessProfile && (
-          <div className="mb-6 rounded-[28px] border border-[#f5a623]/20 bg-gradient-to-br from-cyan-500/[0.08] to-[#e07850]/[0.03] p-6">
+          <div className="mb-6 rounded-[28px] border border-[#f5a623]/20 bg-gradient-to-br from-[#f5a623]/[0.08] to-[#e07850]/[0.03] p-6">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-3xl">
                 <p className="text-[10px] font-black uppercase tracking-[0.26em] text-[#f5a623]/70">Recommended Email System</p>

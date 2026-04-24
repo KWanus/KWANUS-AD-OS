@@ -112,7 +112,7 @@ export default function HimalayaBuildingPage({ params }: { params: Promise<{ pro
       <HimalayaNav />
       <main className="mx-auto max-w-lg px-4 py-16 sm:px-6">
         {/* Header */}
-        <div className="mb-10 rounded-3xl border border-[#f5a623]/12 bg-gradient-to-br from-cyan-500/[0.06] via-transparent to-purple-500/[0.05] px-5 py-8 text-center">
+        <div className="mb-10 rounded-3xl border border-[#f5a623]/12 bg-gradient-to-br from-[#f5a623]/[0.06] via-transparent to-[#e07850]/[0.05] px-5 py-8 text-center">
           <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-gradient-to-br from-[#f5a623] to-[#e07850]">
             <Mountain className="w-7 h-7 text-white" />
           </div>

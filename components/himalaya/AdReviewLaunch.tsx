@@ -45,7 +45,7 @@ const ANGLE_COLORS: Record<string, string> = {
   desire: "bg-emerald-500/10 text-emerald-400 border-emerald-500/20",
   proof: "bg-blue-500/10 text-blue-400 border-blue-500/20",
   urgency: "bg-amber-500/10 text-amber-400 border-amber-500/20",
-  story: "bg-purple-500/10 text-[#e07850] border-purple-500/20",
+  story: "bg-[#e07850]/10 text-[#e07850] border-[#e07850]/20",
   search: "bg-[#f5a623]/10 text-[#f5a623] border-[#f5a623]/20",
 };
 

@@ -192,7 +192,7 @@ export default function HimalayaRunPage({ params }: { params: Promise<{ runId: s
             </div>
 
             <div className="space-y-4 print:hidden">
-              <div className="rounded-3xl border border-[#f5a623]/15 bg-gradient-to-br from-cyan-500/[0.05] via-transparent to-purple-500/[0.05] p-3 sm:p-4">
+              <div className="rounded-3xl border border-[#f5a623]/15 bg-gradient-to-br from-[#f5a623]/[0.05] via-transparent to-[#e07850]/[0.05] p-3 sm:p-4">
                 <p className="mb-3 text-[10px] font-black uppercase tracking-[0.22em] text-[#f5a623]/70">Launch Surface</p>
                 <DeployActions vm={vm} autoDeploy />
               </div>

@@ -151,7 +151,7 @@ Include 6 pain points (2 critical, 2 high, 2 medium) and 4 desires. Be extremely
             <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5">
               <p className="text-[10px] font-black uppercase tracking-widest text-[#e07850]/60 mb-3">Ad Hook Angles</p>
               {result.hookAngles.map((h, i) => (
-                <p key={i} className="text-xs text-white/60 mb-2 p-2 rounded-lg bg-purple-500/5 border border-purple-500/10">
+                <p key={i} className="text-xs text-white/60 mb-2 p-2 rounded-lg bg-[#e07850]/5 border border-[#e07850]/10">
                   &ldquo;{h}&rdquo;
                 </p>
               ))}

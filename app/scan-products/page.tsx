@@ -135,7 +135,7 @@ export default function ScanProductsPage() {
             onChange={(e) => setProductInput(e.target.value)}
             placeholder="Describe your product — what it does, who it's for, what problem it solves..."
             rows={5}
-            className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white placeholder-white/20 outline-none focus:border-cyan-400/60 transition resize-none"
+            className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-3 text-sm text-white placeholder-white/20 outline-none focus:border-[#f5a623]/60 transition resize-none"
           />
           <button
             onClick={handleScan}
@@ -198,13 +198,13 @@ export default function ScanProductsPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               <Link
                 href={`/analyze?prefill=${encodeURIComponent(result.name)}&mode=operator&execution_tier=${executionTier}`}
-                className="block w-full rounded-xl border border-cyan-400/30 bg-[#f5a623]/10 hover:bg-[#f5a623]/20 px-6 py-4 text-center text-sm font-semibold text-[#f5a623] transition"
+                className="block w-full rounded-xl border border-[#f5a623]/30 bg-[#f5a623]/10 hover:bg-[#f5a623]/20 px-6 py-4 text-center text-sm font-semibold text-[#f5a623] transition"
               >
                 ⚡ Run Full AI Campaign Analysis →
               </Link>
               <Link
                 href={`/skills?skill=ad-campaign&execution_tier=${executionTier}`}
-                className="block w-full rounded-xl border border-purple-400/30 bg-purple-500/10 hover:bg-purple-500/20 px-6 py-4 text-center text-sm font-semibold text-[#e07850] transition"
+                className="block w-full rounded-xl border border-[#e07850]/30 bg-[#e07850]/10 hover:bg-[#e07850]/20 px-6 py-4 text-center text-sm font-semibold text-[#e07850] transition"
               >
                 🎯 Build an Ad Campaign →
               </Link>

@@ -28,7 +28,7 @@ type FunnelSummary = {
 const STAGE_COLORS: Record<string, { bar: string; text: string; bg: string }> = {
   cyan: { bar: "bg-[#f5a623]", text: "text-[#f5a623]", bg: "bg-[#f5a623]/10" },
   blue: { bar: "bg-blue-500", text: "text-blue-400", bg: "bg-blue-500/10" },
-  purple: { bar: "bg-purple-500", text: "text-[#e07850]", bg: "bg-purple-500/10" },
+  purple: { bar: "bg-[#e07850]", text: "text-[#e07850]", bg: "bg-[#e07850]/10" },
   amber: { bar: "bg-amber-500", text: "text-amber-400", bg: "bg-amber-500/10" },
   emerald: { bar: "bg-emerald-500", text: "text-emerald-400", bg: "bg-emerald-500/10" },
 };

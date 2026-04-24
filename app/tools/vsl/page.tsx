@@ -47,7 +47,7 @@ export default function VSLPage() {
     Solution: "border-blue-500/20 bg-blue-500/[0.04]",
     Proof: "border-emerald-500/20 bg-emerald-500/[0.04]",
     Offer: "border-[#f5a623]/20 bg-[#f5a623]/[0.04]",
-    Close: "border-purple-500/20 bg-purple-500/[0.04]",
+    Close: "border-[#e07850]/20 bg-[#e07850]/[0.04]",
   };
 
   return (

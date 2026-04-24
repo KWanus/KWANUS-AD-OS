@@ -611,7 +611,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
 
             {/* Truth Engine — Rescore Panel */}
             {opp && profiles.length > 0 && (
-              <div className="bg-gradient-to-br from-cyan-900/15 to-purple-900/15 border border-[#f5a623]/20 rounded-2xl p-5">
+              <div className="bg-gradient-to-br from-[#0c0a08]/15 to-[#0c0a08]/15 border border-[#f5a623]/20 rounded-2xl p-5">
                 <div className="flex items-center justify-between mb-4">
                   <div className="flex items-center gap-2">
                     <BarChart2 className="w-4 h-4 text-[#f5a623]" />
@@ -749,7 +749,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
                       key={i}
                       className="flex items-start gap-3 p-3 rounded-xl bg-white/[0.02] border border-white/[0.05] group hover:border-white/[0.1] transition"
                     >
-                      <span className="text-[10px] font-black text-[#e07850]/60 bg-purple-500/10 border border-purple-500/20 px-1.5 py-0.5 rounded shrink-0 mt-0.5">
+                      <span className="text-[10px] font-black text-[#e07850]/60 bg-[#e07850]/10 border border-[#e07850]/20 px-1.5 py-0.5 rounded shrink-0 mt-0.5">
                         {hook.format}
                       </span>
                       <p className="text-xs text-white/60 flex-1 leading-relaxed">{hook.hook}</p>
@@ -799,7 +799,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
           {/* ── RIGHT COLUMN ──────────────────────────────────────────── */}
           <div className="space-y-5">
             {/* AI Insights */}
-            <div className="bg-gradient-to-br from-purple-900/20 to-cyan-900/20 border border-purple-500/20 rounded-2xl p-5">
+            <div className="bg-gradient-to-br from-[#0c0a08]/20 to-[#0c0a08]/20 border border-[#e07850]/20 rounded-2xl p-5">
               <div className="flex items-center justify-between mb-4">
                 <div className="flex items-center gap-2">
                   <Sparkles className="w-4 h-4 text-[#e07850]" />
@@ -809,7 +809,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
                   <button
                     onClick={() => void generateInsights()}
                     disabled={loadingInsights}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#e07850]/40 to-cyan-600/40 border border-purple-500/30 hover:border-purple-400/50 text-[11px] font-bold text-white transition disabled:opacity-40"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-[#e07850]/40 to-[#e07850]/40 border border-[#e07850]/30 hover:border-[#e07850]/50 text-[11px] font-bold text-white transition disabled:opacity-40"
                   >
                     {loadingInsights ? <Loader2 className="w-3 h-3 animate-spin" /> : <Sparkles className="w-3 h-3" />}
                     Generate

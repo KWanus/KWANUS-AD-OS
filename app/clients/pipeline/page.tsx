@@ -55,7 +55,7 @@ interface Client {
 
 const STAGES = [
   { key: "lead",      label: "Lead",      color: "text-white/50",    border: "border-white/10",       header: "border-t-white/20",   count_bg: "bg-white/10" },
-  { key: "qualified", label: "Qualified", color: "text-[#f5a623]",    border: "border-[#f5a623]/20",    header: "border-t-cyan-500",   count_bg: "bg-[#f5a623]/20" },
+  { key: "qualified", label: "Qualified", color: "text-[#f5a623]",    border: "border-[#f5a623]/20",    header: "border-t-[#f5a623]",   count_bg: "bg-[#f5a623]/20" },
   { key: "proposal",  label: "Proposal",  color: "text-blue-400",    border: "border-blue-500/20",    header: "border-t-blue-500",   count_bg: "bg-blue-500/20" },
   { key: "active",    label: "Active",    color: "text-green-400",   border: "border-green-500/20",   header: "border-t-green-500",  count_bg: "bg-green-500/20" },
   { key: "won",       label: "Won",       color: "text-emerald-400", border: "border-emerald-500/20", header: "border-t-emerald-500", count_bg: "bg-emerald-500/20" },

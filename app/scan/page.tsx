@@ -109,14 +109,14 @@ function getActions(mode: ScanMode, _result: ScanResult): BuildAction[] {
         label: "Build New Landing Page",
         sublabel: "AI rebuilds their site, better",
         skillSlug: "landing-page",
-        gradient: "from-purple-500/20 to-blue-500/20 border-purple-500/25",
+        gradient: "from-[#e07850]/20 to-blue-500/20 border-[#e07850]/25",
       },
       {
         icon: <Megaphone className="w-4 h-4" />,
         label: "Generate Ad Campaign",
         sublabel: "Hooks + scripts for their product",
         skillSlug: "ad-campaign",
-        gradient: "from-cyan-500/20 to-teal-500/20 border-[#f5a623]/25",
+        gradient: "from-[#f5a623]/20 to-teal-500/20 border-[#f5a623]/25",
       },
       {
         icon: <Sparkles className="w-4 h-4" />,
@@ -142,14 +142,14 @@ function getActions(mode: ScanMode, _result: ScanResult): BuildAction[] {
       label: "Launch Ad Campaign",
       sublabel: "7 hooks + scripts for this product",
       skillSlug: "ad-campaign",
-      gradient: "from-cyan-500/20 to-purple-500/20 border-[#f5a623]/25",
+      gradient: "from-[#f5a623]/20 to-[#e07850]/20 border-[#f5a623]/25",
     },
     {
       icon: <Globe className="w-4 h-4" />,
       label: "Build Better Landing Page",
       sublabel: "Beat their funnel with yours",
       skillSlug: "landing-page",
-      gradient: "from-purple-500/20 to-blue-500/20 border-purple-500/25",
+      gradient: "from-[#e07850]/20 to-blue-500/20 border-[#e07850]/25",
     },
     {
       icon: <Mail className="w-4 h-4" />,
@@ -524,7 +524,7 @@ function ScanPageInner() {
 
       <div className="max-w-3xl mx-auto px-4 pt-10 pb-20">
         {/* Himalaya redirect banner */}
-        <div className="mb-6 rounded-2xl border border-[#f5a623]/15 bg-gradient-to-r from-cyan-500/[0.06] to-purple-500/[0.04] p-4 flex items-center justify-between gap-4">
+        <div className="mb-6 rounded-2xl border border-[#f5a623]/15 bg-gradient-to-r from-[#f5a623]/[0.06] to-[#e07850]/[0.04] p-4 flex items-center justify-between gap-4">
           <div>
             <p className="text-xs font-bold text-white/50">Want the full experience?</p>
             <p className="text-[10px] text-white/30">Himalaya scans competitors, builds your assets, deploys everything, and tracks results.</p>
@@ -583,7 +583,7 @@ function ScanPageInner() {
 
             <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="mb-6" />
 
-            <div className="mb-6 rounded-[28px] border border-[#f5a623]/20 bg-gradient-to-br from-cyan-500/[0.08] to-[#e07850]/[0.03] p-6">
+            <div className="mb-6 rounded-[28px] border border-[#f5a623]/20 bg-gradient-to-br from-[#f5a623]/[0.08] to-[#e07850]/[0.03] p-6">
               <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                 <div className="max-w-3xl">
                   <p className="text-[10px] font-black uppercase tracking-[0.26em] text-[#f5a623]/70">Recommended Scan Move</p>
@@ -674,7 +674,7 @@ function ScanPageInner() {
               onClick={() => { setMode("operator"); setResult(null); }}
               className={`flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-bold transition-all ${
                 mode === "operator"
-                  ? "bg-purple-500/10 border-purple-500/30 text-purple-300"
+                  ? "bg-[#e07850]/10 border-[#e07850]/30 text-[#f5a623]"
                   : "border-white/[0.08] text-white/35 hover:text-white/60 hover:border-white/15"
               }`}
             >

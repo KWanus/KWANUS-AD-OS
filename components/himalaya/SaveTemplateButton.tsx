@@ -72,7 +72,7 @@ export default function SaveTemplateButton({ group, analysisId, mode }: Props) {
         value={name}
         onChange={(e) => setName(e.target.value)}
         placeholder="Template name..."
-        className="w-32 rounded-lg border border-white/[0.1] bg-white/[0.04] px-2 py-1.5 text-[10px] text-white/60 focus:border-cyan-500/30 focus:outline-none"
+        className="w-32 rounded-lg border border-white/[0.1] bg-white/[0.04] px-2 py-1.5 text-[10px] text-white/60 focus:border-[#f5a623]/30 focus:outline-none"
         autoFocus
         onKeyDown={(e) => { if (e.key === "Enter") void handleSave(); if (e.key === "Escape") setOpen(false); }}
       />

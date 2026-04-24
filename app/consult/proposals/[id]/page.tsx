@@ -279,7 +279,7 @@ function ProposalContentTab({ proposal }: { proposal: Proposal }) {
 
       {/* CTA */}
       {ai.cta && (
-        <div className="bg-gradient-to-r from-cyan-500/10 to-[#e07850]/10 border border-[#f5a623]/20 rounded-2xl p-6 text-center">
+        <div className="bg-gradient-to-r from-[#f5a623]/10 to-[#e07850]/10 border border-[#f5a623]/20 rounded-2xl p-6 text-center">
           <p className="text-sm text-white/50 mb-3">Call to Action</p>
           <div className="inline-block bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white font-black text-sm px-8 py-3 rounded-xl opacity-70 cursor-default">
             {ai.cta}
@@ -579,7 +579,7 @@ function GenerateNewTab({ proposal, onRefresh }: { proposal: Proposal; onRefresh
   return (
     <div className="max-w-lg">
       <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-6">
-        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/20 to-[#e07850]/20 border border-white/[0.08] flex items-center justify-center mb-4">
+        <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#f5a623]/20 to-[#e07850]/20 border border-white/[0.08] flex items-center justify-center mb-4">
           <RotateCcw className="w-5 h-5 text-[#f5a623]" />
         </div>
         <p className="text-sm font-black text-white mb-1">Regenerate Proposal</p>

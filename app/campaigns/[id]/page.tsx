@@ -817,7 +817,7 @@ export default function CampaignWorkspace() {
                     </div>
                     <Link
                       href="/my-system"
-                      className="inline-flex items-center gap-2 rounded-xl border border-cyan-400/20 bg-black/20 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-[#f5a623] transition hover:bg-black/30"
+                      className="inline-flex items-center gap-2 rounded-xl border border-[#f5a623]/20 bg-black/20 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-[#f5a623] transition hover:bg-black/30"
                     >
                       Open My System →
                     </Link>
@@ -973,7 +973,7 @@ export default function CampaignWorkspace() {
                     const c = v.content;
                     const scenes = (c.scenes as unknown[]) ?? [];
                     return (
-                      <div key={v.id} className="rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden hover:border-cyan-400/20 transition">
+                      <div key={v.id} className="rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden hover:border-[#f5a623]/20 transition">
                         <div className="p-5">
                           <div className="flex items-start justify-between gap-4 mb-3">
                             <div className="flex items-center gap-2 flex-wrap">
@@ -1031,7 +1031,7 @@ export default function CampaignWorkspace() {
                     <button
                       onClick={() => void regenerateAssets("scripts")}
                       disabled={regenerating !== null}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-purple-500/30 bg-purple-500/5 hover:bg-purple-500/10 text-[#e07850] text-xs font-bold transition disabled:opacity-40"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#e07850]/30 bg-[#e07850]/5 hover:bg-[#e07850]/10 text-[#e07850] text-xs font-bold transition disabled:opacity-40"
                     >
                       {regenerating === "scripts" ? "⟳ Regenerating..." : "⟳ Scripts"}
                     </button>
@@ -1130,12 +1130,12 @@ export default function CampaignWorkspace() {
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-5 space-y-3">
                   <p className="text-xs font-semibold text-white/60 uppercase tracking-widest">Write Your Own</p>
                   <div className="flex gap-2">
-                    <button onClick={() => setAddType("hook")} className={`flex-1 rounded-xl border px-3 py-2 text-xs font-semibold transition ${addType === "hook" ? "border-cyan-400/50 bg-[#f5a623]/10 text-[#f5a623]" : "border-white/10 text-white/40"}`}>Hook</button>
-                    <button onClick={() => setAddType("script")} className={`flex-1 rounded-xl border px-3 py-2 text-xs font-semibold transition ${addType === "script" ? "border-cyan-400/50 bg-[#f5a623]/10 text-[#f5a623]" : "border-white/10 text-white/40"}`}>Script</button>
+                    <button onClick={() => setAddType("hook")} className={`flex-1 rounded-xl border px-3 py-2 text-xs font-semibold transition ${addType === "hook" ? "border-[#f5a623]/50 bg-[#f5a623]/10 text-[#f5a623]" : "border-white/10 text-white/40"}`}>Hook</button>
+                    <button onClick={() => setAddType("script")} className={`flex-1 rounded-xl border px-3 py-2 text-xs font-semibold transition ${addType === "script" ? "border-[#f5a623]/50 bg-[#f5a623]/10 text-[#f5a623]" : "border-white/10 text-white/40"}`}>Script</button>
                   </div>
-                  <input value={addName} onChange={(e) => setAddName(e.target.value)} placeholder="Label (e.g. Pain Hook v2)" className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-cyan-400/40 transition" />
-                  <textarea value={addContent} onChange={(e) => setAddContent(e.target.value)} placeholder={addType === "hook" ? "Write your hook copy here..." : "Write your script here..."} rows={3} className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-cyan-400/40 resize-none transition" />
-                  <input value={addPlatform} onChange={(e) => setAddPlatform(e.target.value)} placeholder="Platform (optional — TikTok, Facebook...)" className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-cyan-400/40 transition" />
+                  <input value={addName} onChange={(e) => setAddName(e.target.value)} placeholder="Label (e.g. Pain Hook v2)" className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-[#f5a623]/40 transition" />
+                  <textarea value={addContent} onChange={(e) => setAddContent(e.target.value)} placeholder={addType === "hook" ? "Write your hook copy here..." : "Write your script here..."} rows={3} className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-[#f5a623]/40 resize-none transition" />
+                  <input value={addPlatform} onChange={(e) => setAddPlatform(e.target.value)} placeholder="Platform (optional — TikTok, Facebook...)" className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-[#f5a623]/40 transition" />
                   <div className="flex gap-2">
                     <button onClick={() => void addVariation()} disabled={adding || !addContent.trim()} className="flex-1 rounded-xl bg-[#f5a623] hover:bg-[#e07850] disabled:opacity-50 px-4 py-2.5 text-sm font-semibold text-[#0a0f1e] transition">{adding ? "Adding..." : "Add Variation"}</button>
                     <button onClick={() => { setShowAddForm(false); setAddName(""); setAddContent(""); setAddPlatform(""); }} className="rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-4 py-2.5 text-sm text-white/50 transition">Cancel</button>
@@ -1416,7 +1416,7 @@ export default function CampaignWorkspace() {
                   <button
                     onClick={() => void regenerateAssets("emails")}
                     disabled={regenerating !== null}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-purple-500/30 bg-purple-500/5 hover:bg-purple-500/10 text-[#e07850] text-xs font-bold transition disabled:opacity-40"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#e07850]/30 bg-[#e07850]/5 hover:bg-[#e07850]/10 text-[#e07850] text-xs font-bold transition disabled:opacity-40"
                   >
                     {regenerating === "emails" ? "⟳ Regenerating..." : "⟳ Regenerate All"}
                   </button>
@@ -1443,13 +1443,13 @@ export default function CampaignWorkspace() {
                             <div key={seq}>
                               {/* Sequence header — flow arrow style */}
                               <div className="flex items-center gap-2 mb-4">
-                                <div className="h-px flex-1 bg-gradient-to-r from-transparent to-cyan-500/30" />
+                                <div className="h-px flex-1 bg-gradient-to-r from-transparent to-[#f5a623]/30" />
                                 <div className="flex items-center gap-2 px-4 py-1.5 rounded-full border border-[#f5a623]/20 bg-[#f5a623]/5">
-                                  <span className="w-1.5 h-1.5 rounded-full bg-cyan-400 shrink-0" />
+                                  <span className="w-1.5 h-1.5 rounded-full bg-[#f5a623] shrink-0" />
                                   <span className="text-xs font-semibold text-[#f5a623]">{EMAIL_SEQ_LABELS[seq]}</span>
                                   <span className="text-xs text-white/30">· {emails.length} email{emails.length !== 1 ? "s" : ""}</span>
                                 </div>
-                                <div className="h-px flex-1 bg-gradient-to-l from-transparent to-cyan-500/30" />
+                                <div className="h-px flex-1 bg-gradient-to-l from-transparent to-[#f5a623]/30" />
                               </div>
 
                               <div className="space-y-3">
@@ -1547,7 +1547,7 @@ export default function CampaignWorkspace() {
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-sm text-white/50">{doneCount} of {totalCount} done</p>
                     <div className="flex-1 mx-4 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                      <div className="h-full bg-cyan-400 rounded-full transition-all" style={{ width: `${totalCount > 0 ? (doneCount / totalCount) * 100 : 0}%` }} />
+                      <div className="h-full bg-[#f5a623] rounded-full transition-all" style={{ width: `${totalCount > 0 ? (doneCount / totalCount) * 100 : 0}%` }} />
                     </div>
                     <p className="text-sm font-semibold text-white">{totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0}%</p>
                   </div>
@@ -1573,14 +1573,14 @@ export default function CampaignWorkspace() {
                                   ? "border-red-500/20 bg-red-500/5 hover:border-red-500/30"
                                   : isScaling
                                   ? "border-green-500/20 bg-green-500/5 hover:border-green-500/30"
-                                  : "border-white/10 bg-white/5 hover:border-cyan-400/20 hover:bg-[#f5a623]/5"
+                                  : "border-white/10 bg-white/5 hover:border-[#f5a623]/20 hover:bg-[#f5a623]/5"
                               }`}
                             >
                               <input
                                 type="checkbox"
                                 checked={item.done}
                                 onChange={(e) => void toggleChecklist(item.id, e.target.checked)}
-                                className="mt-0.5 accent-cyan-400 shrink-0"
+                                className="mt-0.5 accent-[#f5a623] shrink-0"
                               />
                               <span className={`text-sm ${item.done ? "line-through text-white/30" : "text-white/70"}`}>
                                 {item.text}
@@ -1624,7 +1624,7 @@ function ContextChip({ label, value }: { label: string; value: string }) {
 
 function AssetStatusCard({ label, count, live, onNav }: { label: string; count: number; live: number; onNav: () => void }) {
   return (
-    <button onClick={onNav} className="rounded-xl border border-white/10 bg-white/5 hover:border-cyan-400/20 hover:bg-[#f5a623]/5 p-4 text-left transition">
+    <button onClick={onNav} className="rounded-xl border border-white/10 bg-white/5 hover:border-[#f5a623]/20 hover:bg-[#f5a623]/5 p-4 text-left transition">
       <p className="text-xs text-white/30 mb-1">{label}</p>
       <p className="text-xl font-bold text-white">{count}</p>
       {live > 0 && <p className="text-xs text-[#f5a623] mt-0.5">{live} active</p>}
@@ -1797,7 +1797,7 @@ function VariationCard({
           <div className="flex items-center gap-2 flex-wrap">
             <span className={`font-semibold text-white/60 ${isBrief ? "text-sm" : "text-xs"}`}>{variation.name}</span>
             {isBrief && !!content.platform && (
-              <span className="text-xs text-[#f5a623]/60 border border-cyan-400/20 px-1.5 py-0.5 rounded">{String(content.platform)}</span>
+              <span className="text-xs text-[#f5a623]/60 border border-[#f5a623]/20 px-1.5 py-0.5 rounded">{String(content.platform)}</span>
             )}
             {isBrief && !!content.duration && (
               <span className="text-xs text-white/30 border border-white/10 px-1.5 py-0.5 rounded">{String(content.duration)}</span>
@@ -1953,7 +1953,7 @@ function VariationCard({
                       <p className="text-sm font-bold text-white">{briefImageAd.headline}</p>
                       <p className="text-xs text-white/50 leading-relaxed">{briefImageAd.bodyCopy}</p>
                       <p className="text-xs text-white/30 italic">{briefImageAd.visualDirection}</p>
-                      <span className="inline-block rounded-lg border border-cyan-400/30 bg-[#f5a623]/10 text-[#f5a623] text-xs px-3 py-1 font-semibold">{briefImageAd.cta}</span>
+                      <span className="inline-block rounded-lg border border-[#f5a623]/30 bg-[#f5a623]/10 text-[#f5a623] text-xs px-3 py-1 font-semibold">{briefImageAd.cta}</span>
                     </div>
                   </div>
                 )}
@@ -2080,7 +2080,7 @@ function EmailEditorCard({
               value={edits.subject ?? ""}
               onChange={(e) => onEditChange({ subject: e.target.value })}
               placeholder="Email subject..."
-              className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder-white/20 outline-none focus:border-cyan-400/50 transition"
+              className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder-white/20 outline-none focus:border-[#f5a623]/50 transition"
             />
           </div>
 
@@ -2091,7 +2091,7 @@ function EmailEditorCard({
               value={edits.preview ?? ""}
               onChange={(e) => onEditChange({ preview: e.target.value })}
               placeholder="Preview text shown in inbox..."
-              className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder-white/20 outline-none focus:border-cyan-400/50 transition"
+              className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder-white/20 outline-none focus:border-[#f5a623]/50 transition"
             />
           </div>
 
@@ -2102,7 +2102,7 @@ function EmailEditorCard({
               value={edits.timing ?? ""}
               onChange={(e) => onEditChange({ timing: e.target.value })}
               placeholder="e.g. Send immediately, Day 3 after signup..."
-              className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder-white/20 outline-none focus:border-cyan-400/50 transition"
+              className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white placeholder-white/20 outline-none focus:border-[#f5a623]/50 transition"
             />
           </div>
 
@@ -2114,7 +2114,7 @@ function EmailEditorCard({
               onChange={(e) => onEditChange({ body: e.target.value })}
               placeholder="Write your email body here..."
               rows={10}
-              className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white/80 placeholder-white/20 outline-none focus:border-cyan-400/50 transition resize-y font-mono leading-relaxed"
+              className="w-full rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white/80 placeholder-white/20 outline-none focus:border-[#f5a623]/50 transition resize-y font-mono leading-relaxed"
             />
           </div>
 
@@ -2124,7 +2124,7 @@ function EmailEditorCard({
             <select
               value={edits.status ?? email.status}
               onChange={(e) => onEditChange({ status: e.target.value })}
-              className="rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none focus:border-cyan-400/50 transition cursor-pointer"
+              className="rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none focus:border-[#f5a623]/50 transition cursor-pointer"
             >
               {["draft", "ready", "live"].map((s) => (
                 <option key={s} value={s} className="bg-t-bg-card">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
@@ -2223,16 +2223,16 @@ function EmailFlowDiagram({ emails }: { emails: EmailDraft[] }) {
             ? "border-[#f5a623]/30 bg-[#f5a623]/10 text-[#f5a623]"
             : email.sequence === "cart"
             ? "border-yellow-500/30 bg-yellow-500/10 text-yellow-300"
-            : "border-purple-500/30 bg-purple-500/10 text-purple-300";
+            : "border-[#e07850]/30 bg-[#e07850]/10 text-[#f5a623]";
           const dotColor = email.sequence === "welcome"
-            ? "bg-cyan-400"
+            ? "bg-[#f5a623]"
             : email.sequence === "cart"
             ? "bg-yellow-400"
-            : "bg-purple-400";
+            : "bg-[#e07850]";
           const statusDot = email.status === "live"
             ? "bg-green-400"
             : email.status === "ready"
-            ? "bg-cyan-400"
+            ? "bg-[#f5a623]"
             : "bg-white/20";
 
           return (
@@ -2256,7 +2256,7 @@ function EmailFlowDiagram({ emails }: { emails: EmailDraft[] }) {
       </div>
       <div className="flex items-center gap-4 mt-4">
         <div className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-cyan-400" />
+          <span className="w-2 h-2 rounded-full bg-[#f5a623]" />
           <span className="text-[10px] text-white/25">Welcome</span>
         </div>
         <div className="flex items-center gap-1.5">
@@ -2264,7 +2264,7 @@ function EmailFlowDiagram({ emails }: { emails: EmailDraft[] }) {
           <span className="text-[10px] text-white/25">Abandoned Cart</span>
         </div>
         <div className="flex items-center gap-1.5">
-          <span className="w-2 h-2 rounded-full bg-purple-400" />
+          <span className="w-2 h-2 rounded-full bg-[#e07850]" />
           <span className="text-[10px] text-white/25">Post-Purchase</span>
         </div>
         <div className="flex items-center gap-1.5 ml-4">
@@ -2308,7 +2308,7 @@ function LandingEditField({
     ? "border-yellow-500/30 focus-within:border-yellow-400/50"
     : saved
     ? "border-green-500/30 focus-within:border-green-400/50"
-    : "border-white/10 focus-within:border-cyan-400/40";
+    : "border-white/10 focus-within:border-[#f5a623]/40";
 
   const dotClass = unsaved
     ? "bg-yellow-400"
@@ -2374,7 +2374,7 @@ function LandingListEditField({
     ? "border-yellow-500/30 focus-within:border-yellow-400/50"
     : saved
     ? "border-green-500/30 focus-within:border-green-400/50"
-    : "border-white/10 focus-within:border-cyan-400/40";
+    : "border-white/10 focus-within:border-[#f5a623]/40";
 
   const dotClass = unsaved
     ? "bg-yellow-400"

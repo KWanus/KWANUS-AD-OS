@@ -137,7 +137,7 @@ export default function ProjectWorkspace() {
     return (
       <div className="min-h-screen bg-t-bg flex flex-col items-center justify-center gap-4">
         <div className="w-12 h-12 rounded-2xl bg-[#f5a623]/10 border border-[#f5a623]/20 flex items-center justify-center">
-          <Loader2 className="w-6 h-6 text-cyan-500 animate-spin" />
+          <Loader2 className="w-6 h-6 text-[#f5a623] animate-spin" />
         </div>
         <p className="text-[10px] font-black uppercase text-white/30 tracking-[0.3em]">
           Loading Mission Control...
@@ -190,7 +190,7 @@ export default function ProjectWorkspace() {
       />
       {/* Ambient glows */}
       <div className="fixed top-0 left-1/4 w-[600px] h-[600px] bg-[#f5a623]/[0.04] blur-[140px] rounded-full pointer-events-none" />
-      <div className="fixed bottom-0 right-1/4 w-[600px] h-[600px] bg-purple-500/[0.04] blur-[140px] rounded-full pointer-events-none" />
+      <div className="fixed bottom-0 right-1/4 w-[600px] h-[600px] bg-[#e07850]/[0.04] blur-[140px] rounded-full pointer-events-none" />
 
       {/* Header */}
       <header className="relative z-10 px-8 py-4 border-b border-white/[0.06] bg-black/30 backdrop-blur-xl flex items-center justify-between">
@@ -299,7 +299,7 @@ function SourcePhase({
   const sourceTypeColors: Record<string, string> = {
     winner: "bg-orange-500/20 border-orange-500/40 text-orange-400",
     url: "bg-[#f5a623]/20 border-[#f5a623]/40 text-[#f5a623]",
-    niche: "bg-purple-500/20 border-purple-500/40 text-[#e07850]",
+    niche: "bg-[#e07850]/20 border-[#e07850]/40 text-[#e07850]",
   };
   const sourceType = project.sourceType ?? "url";
   const badgeClass = sourceTypeColors[sourceType] ?? sourceTypeColors.url;
@@ -431,7 +431,7 @@ function SourcePhase({
           { icon: Layers, label: "Full Strategy Pack", desc: "Briefs, scripts, angles" },
         ].map(({ icon: Icon, label, desc }) => (
           <div key={label} className="rounded-xl bg-white/[0.02] border border-white/[0.05] p-4 flex flex-col gap-2">
-            <Icon className="w-5 h-5 text-cyan-500/60" />
+            <Icon className="w-5 h-5 text-[#f5a623]/60" />
             <p className="text-xs font-black text-white/60 uppercase tracking-wide">{label}</p>
             <p className="text-[10px] text-white/25 leading-relaxed">{desc}</p>
           </div>
@@ -450,7 +450,7 @@ function SourcePhase({
       {analyzing ? (
         <div className="flex flex-col items-center gap-4">
           <div className="w-16 h-16 rounded-2xl bg-[#f5a623]/10 border border-[#f5a623]/20 flex items-center justify-center">
-            <Loader2 className="w-8 h-8 text-cyan-500 animate-spin" />
+            <Loader2 className="w-8 h-8 text-[#f5a623] animate-spin" />
           </div>
           <div className="text-center">
             <p className="text-xs font-black text-[#f5a623] uppercase tracking-widest">
@@ -566,7 +566,7 @@ function AuditPhase({
         {/* Summary */}
         <div className="md:col-span-2 rounded-2xl bg-white/[0.025] border border-white/[0.07] p-6 flex flex-col gap-3">
           <div className="flex items-center gap-2">
-            <BookOpen className="w-4 h-4 text-cyan-500/60" />
+            <BookOpen className="w-4 h-4 text-[#f5a623]/60" />
             <span className="text-[9px] font-black uppercase tracking-[0.2em] text-white/30">AI Summary</span>
           </div>
           <p className="text-sm text-white/60 leading-relaxed flex-1">{audit.summary}</p>
@@ -679,7 +679,7 @@ function StrategyPhase({
       {hooks.length > 0 ? (
         <section className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
-            <Zap className="w-4 h-4 text-cyan-500/60" />
+            <Zap className="w-4 h-4 text-[#f5a623]/60" />
             <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Ad Hooks</h3>
             <div className="flex-1 h-[1px] bg-white/[0.05]" />
             <span className="text-[9px] font-bold text-white/20">{hooks.length} total</span>
@@ -720,7 +720,7 @@ function StrategyPhase({
       {briefs.length > 0 && (
         <section className="flex flex-col gap-4">
           <div className="flex items-center gap-2">
-            <Layers className="w-4 h-4 text-purple-500/60" />
+            <Layers className="w-4 h-4 text-[#e07850]/60" />
             <h3 className="text-[10px] font-black uppercase tracking-[0.2em] text-white/40">Ad Briefs</h3>
             <div className="flex-1 h-[1px] bg-white/[0.05]" />
             <span className="text-[9px] font-bold text-white/20">{briefs.length} briefs</span>
@@ -729,14 +729,14 @@ function StrategyPhase({
             {briefs.map((brief: StudioBrief, i) => (
               <div
                 key={i}
-                className="rounded-xl bg-white/[0.025] border border-white/[0.07] hover:border-purple-500/20 transition-all duration-300 p-6 flex flex-col gap-4"
+                className="rounded-xl bg-white/[0.025] border border-white/[0.07] hover:border-[#e07850]/20 transition-all duration-300 p-6 flex flex-col gap-4"
               >
                 <div className="flex items-start justify-between gap-4">
                   <div>
                     <p className="text-sm font-black text-white/80 uppercase tracking-tight">{brief.title}</p>
                     <div className="flex items-center gap-2 mt-1.5">
                       {brief.format && (
-                        <span className="px-2 py-0.5 rounded bg-purple-500/15 border border-purple-500/20 text-[9px] font-black text-[#e07850] uppercase tracking-widest">
+                        <span className="px-2 py-0.5 rounded bg-[#e07850]/15 border border-[#e07850]/20 text-[9px] font-black text-[#e07850] uppercase tracking-widest">
                           {brief.format}
                         </span>
                       )}
@@ -762,7 +762,7 @@ function StrategyPhase({
         <button
           onClick={handleAdvance}
           disabled={advancing}
-          className="px-10 py-4 rounded-2xl bg-gradient-to-r from-[#e07850] to-cyan-500 hover:from-purple-500 hover:to-cyan-400 disabled:opacity-50 text-white font-black uppercase tracking-[0.2em] transition-all duration-200 flex items-center gap-3 shadow-[0_0_40px_rgba(139,92,246,0.2)] hover:shadow-[0_0_60px_rgba(139,92,246,0.35)] group"
+          className="px-10 py-4 rounded-2xl bg-gradient-to-r from-[#e07850] to-[#f5a623] hover:from-[#e07850] hover:to-[#f5a623] disabled:opacity-50 text-white font-black uppercase tracking-[0.2em] transition-all duration-200 flex items-center gap-3 shadow-[0_0_40px_rgba(139,92,246,0.2)] hover:shadow-[0_0_60px_rgba(139,92,246,0.35)] group"
         >
           {advancing ? (
             <Loader2 className="w-5 h-5 animate-spin" />
@@ -845,10 +845,10 @@ function ProducePhase({
       {/* Open Studio CTA */}
       <button
         onClick={() => setStudioOpen(true)}
-        className="w-full rounded-2xl border border-purple-500/30 bg-purple-500/[0.04] hover:bg-purple-500/[0.08] hover:border-purple-500/50 p-8 transition-all duration-300 flex items-center justify-between group"
+        className="w-full rounded-2xl border border-[#e07850]/30 bg-[#e07850]/[0.04] hover:bg-[#e07850]/[0.08] hover:border-[#e07850]/50 p-8 transition-all duration-300 flex items-center justify-between group"
       >
         <div className="flex items-center gap-5">
-          <div className="w-16 h-16 rounded-2xl bg-purple-500/15 border border-purple-500/20 flex items-center justify-center group-hover:border-purple-500/40 transition">
+          <div className="w-16 h-16 rounded-2xl bg-[#e07850]/15 border border-[#e07850]/20 flex items-center justify-center group-hover:border-[#e07850]/40 transition">
             <ImageIcon className="w-8 h-8 text-[#e07850]" />
           </div>
           <div className="text-left">
@@ -856,7 +856,7 @@ function ProducePhase({
             <p className="text-sm text-white/35 mt-1">Canvas editor · AI image generation · Video storyboards</p>
           </div>
         </div>
-        <div className="flex items-center gap-2 px-6 py-3 rounded-xl bg-purple-500 group-hover:bg-purple-400 text-white font-black text-sm uppercase tracking-widest transition shadow-[0_0_30px_rgba(139,92,246,0.3)]">
+        <div className="flex items-center gap-2 px-6 py-3 rounded-xl bg-[#e07850] group-hover:bg-[#e07850] text-white font-black text-sm uppercase tracking-widest transition shadow-[0_0_30px_rgba(139,92,246,0.3)]">
           Launch <ArrowRight className="w-4 h-4 ml-1 group-hover:translate-x-1 transition-transform" />
         </div>
       </button>
@@ -912,7 +912,7 @@ function ProducePhase({
                     {creative.state?.executionTier && (
                       <span className={`shrink-0 rounded-full px-2 py-0.5 text-[8px] font-black uppercase tracking-[0.18em] ${
                         creative.state.executionTier === "elite"
-                          ? "border border-cyan-400/30 bg-[#f5a623]/10 text-[#f5a623]"
+                          ? "border border-[#f5a623]/30 bg-[#f5a623]/10 text-[#f5a623]"
                           : "border border-white/10 bg-white/5 text-white/45"
                       }`}>
                         {creative.state.executionTier}

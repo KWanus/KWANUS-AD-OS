@@ -39,9 +39,9 @@ function TriggerNode({ data, selected }: { data: any; selected: boolean }) {
 
 function EmailNode({ data, selected }: { data: any; selected: boolean }) {
     return (
-        <div className={`px-4 py-3 rounded-xl border-2 ${selected ? "border-purple-500" : "border-white/10"} bg-t-bg shadow-xl min-w-[200px]`}>
-            <Handle type="target" position={Position.Top} className="w-3 h-3 bg-purple-500 border-2 border-[#0c0a08]" />
-            <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-purple-500 border-2 border-[#0c0a08]" />
+        <div className={`px-4 py-3 rounded-xl border-2 ${selected ? "border-[#e07850]" : "border-white/10"} bg-t-bg shadow-xl min-w-[200px]`}>
+            <Handle type="target" position={Position.Top} className="w-3 h-3 bg-[#e07850] border-2 border-[#0c0a08]" />
+            <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-[#e07850] border-2 border-[#0c0a08]" />
             <div className="flex items-center gap-2 mb-2 text-[#e07850]">
                 <Mail className="w-4 h-4" />
                 <span className="text-[10px] font-black uppercase tracking-widest text-[#e07850]/80">Send Email</span>
@@ -475,9 +475,9 @@ export default function AutomationsBuilder() {
 
                         <button
                             onClick={() => addNode("email")}
-                            className="w-full flex items-center gap-3 px-3 py-3 rounded-xl bg-white/[0.03] border border-white/[0.05] hover:border-purple-500/50 hover:bg-purple-500/5 transition group text-left"
+                            className="w-full flex items-center gap-3 px-3 py-3 rounded-xl bg-white/[0.03] border border-white/[0.05] hover:border-[#e07850]/50 hover:bg-[#e07850]/5 transition group text-left"
                         >
-                            <div className="w-8 h-8 rounded-lg bg-purple-500/10 flex items-center justify-center text-[#e07850] group-hover:bg-purple-500 group-hover:text-white transition">
+                            <div className="w-8 h-8 rounded-lg bg-[#e07850]/10 flex items-center justify-center text-[#e07850] group-hover:bg-[#e07850] group-hover:text-white transition">
                                 <Mail className="w-4 h-4" />
                             </div>
                             <div>
@@ -522,7 +522,7 @@ export default function AutomationsBuilder() {
                             <select
                                 value={selectedCampaignId}
                                 onChange={(e) => setSelectedCampaignId(e.target.value)}
-                                className="w-full mb-3 bg-[#f5a623]/10 border border-[#f5a623]/30 rounded-lg px-3 py-2 text-xs font-semibold text-[#f5f0e8] outline-none focus:border-cyan-400 transition"
+                                className="w-full mb-3 bg-[#f5a623]/10 border border-[#f5a623]/30 rounded-lg px-3 py-2 text-xs font-semibold text-[#f5f0e8] outline-none focus:border-[#f5a623] transition"
                             >
                                 <option value="">Select AI Campaign</option>
                                 {campaigns.map(c => (

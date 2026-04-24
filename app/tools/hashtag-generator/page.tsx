@@ -99,7 +99,7 @@ No explanations. Just hashtags.`,
             ))}
           </div>
           <button onClick={generate} disabled={generating || !niche.trim()}
-            className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-purple-500 text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40">
+            className="w-full flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-pink-500 to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition disabled:opacity-40">
             {generating ? <><Loader2 className="w-4 h-4 animate-spin" /> Generating...</> : <><Hash className="w-4 h-4" /> Generate Hashtags</>}
           </button>
         </div>

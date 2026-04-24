@@ -291,7 +291,7 @@ export default function StartPage() {
             <div className="space-y-3">
               <button
                 onClick={() => selectModel("affiliate")}
-                className="w-full rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-[#f5a623]/5 p-6 text-left transition group"
+                className="w-full rounded-2xl border border-white/10 bg-white/5 hover:border-[#f5a623]/50 hover:bg-[#f5a623]/5 p-6 text-left transition group"
               >
                 <div className="flex items-start gap-4">
                   <span className="text-3xl shrink-0">🔗</span>
@@ -310,7 +310,7 @@ export default function StartPage() {
               </button>
               <button
                 onClick={() => selectModel("dropship")}
-                className="w-full rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-[#f5a623]/5 p-6 text-left transition group"
+                className="w-full rounded-2xl border border-white/10 bg-white/5 hover:border-[#f5a623]/50 hover:bg-[#f5a623]/5 p-6 text-left transition group"
               >
                 <div className="flex items-start gap-4">
                   <span className="text-3xl shrink-0">📦</span>
@@ -339,7 +339,7 @@ export default function StartPage() {
           <div className="mb-8">
             <div className="flex items-center gap-2 mb-3">
               {Array.from({ length: 4 }).map((_, i) => (
-                <div key={i} className={`h-1 flex-1 rounded-full transition-all ${i < stepNum ? "bg-cyan-400" : "bg-white/10"}`} />
+                <div key={i} className={`h-1 flex-1 rounded-full transition-all ${i < stepNum ? "bg-[#f5a623]" : "bg-white/10"}`} />
               ))}
             </div>
             <p className="text-xs text-white/30">
@@ -359,7 +359,7 @@ export default function StartPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {NICHES.map((n) => (
                 <button key={n.id} onClick={() => handleAffNiche(n.id)}
-                  className="rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-[#f5a623]/5 p-5 text-left transition group">
+                  className="rounded-2xl border border-white/10 bg-white/5 hover:border-[#f5a623]/50 hover:bg-[#f5a623]/5 p-5 text-left transition group">
                   <span className="text-2xl mb-2 block">{n.icon}</span>
                   <p className="text-sm font-semibold text-white group-hover:text-[#f5a623] transition">{n.label}</p>
                   <p className="text-xs text-white/40 mt-1">
@@ -386,7 +386,7 @@ export default function StartPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
               {DROP_NICHES.map((n) => (
                 <button key={n.id} onClick={() => handleDropNiche(n.id)}
-                  className="rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-[#f5a623]/5 p-5 text-left transition group">
+                  className="rounded-2xl border border-white/10 bg-white/5 hover:border-[#f5a623]/50 hover:bg-[#f5a623]/5 p-5 text-left transition group">
                   <span className="text-2xl mb-2 block">{n.icon}</span>
                   <p className="text-sm font-semibold text-white group-hover:text-[#f5a623] transition">{n.label}</p>
                   <p className="text-xs text-white/40 mt-1">{n.sub}</p>
@@ -407,7 +407,7 @@ export default function StartPage() {
               {BUDGET_OPTIONS.map((b) => (
                 <button key={b.value}
                   onClick={() => model === "affiliate" ? handleAffBudget(b.value) : handleDropBudget(b.value)}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-[#f5a623]/5 p-5 text-left flex items-center justify-between transition group">
+                  className="w-full rounded-2xl border border-white/10 bg-white/5 hover:border-[#f5a623]/50 hover:bg-[#f5a623]/5 p-5 text-left flex items-center justify-between transition group">
                   <div>
                     <p className="text-base font-bold text-white group-hover:text-[#f5a623] transition">{b.label}</p>
                     <p className="text-xs text-white/40 mt-0.5">{b.sub}</p>
@@ -432,7 +432,7 @@ export default function StartPage() {
                   onClick={() => model === "affiliate"
                     ? handleAffPlatform(p.id as AffPlatform)
                     : handleDropPlatform(p.id as DropPlatform)}
-                  className="w-full rounded-2xl border border-white/10 bg-white/5 hover:border-cyan-400/50 hover:bg-[#f5a623]/5 p-5 text-left flex items-center justify-between transition group">
+                  className="w-full rounded-2xl border border-white/10 bg-white/5 hover:border-[#f5a623]/50 hover:bg-[#f5a623]/5 p-5 text-left flex items-center justify-between transition group">
                   <div>
                     <p className="text-base font-bold text-white group-hover:text-[#f5a623] transition">{p.label}</p>
                     <p className="text-xs text-white/40 mt-0.5">{p.sub}</p>

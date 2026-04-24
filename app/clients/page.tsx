@@ -189,11 +189,11 @@ function ClientRow({ client, onDelete, onUpdate, selected, onToggle }: { client:
         checked={selected ?? false}
         onChange={(e) => { e.preventDefault(); e.stopPropagation(); onToggle?.(); }}
         onClick={(e) => e.stopPropagation()}
-        className="w-3.5 h-3.5 rounded accent-cyan-500 shrink-0"
+        className="w-3.5 h-3.5 rounded accent-[#f5a623] shrink-0"
       />
 
       {/* Avatar */}
-      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500/20 to-[#e07850]/20 border border-white/10 flex items-center justify-center text-sm font-black text-white/70 shrink-0">
+      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-[#f5a623]/20 to-[#e07850]/20 border border-white/10 flex items-center justify-center text-sm font-black text-white/70 shrink-0">
         {client.name.charAt(0).toUpperCase()}
       </div>
 
@@ -319,7 +319,7 @@ function SkeletonRow() {
 function EmptyState({ filtered }: { filtered: boolean }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center px-4">
-      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-[#e07850]/20 border border-white/10 flex items-center justify-center mb-5">
+      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#f5a623]/20 to-[#e07850]/20 border border-white/10 flex items-center justify-center mb-5">
         <Users className="w-7 h-7 text-[#f5a623]/70" />
       </div>
       {filtered ? (
@@ -550,7 +550,7 @@ export default function ClientsPage() {
 
           <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="mb-6" />
 
-          <div className="mb-6 rounded-[28px] border border-[#f5a623]/20 bg-gradient-to-br from-cyan-500/[0.08] to-emerald-500/[0.03] p-6">
+          <div className="mb-6 rounded-[28px] border border-[#f5a623]/20 bg-gradient-to-br from-[#f5a623]/[0.08] to-emerald-500/[0.03] p-6">
             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-3xl">
                 <p className="text-[10px] font-black uppercase tracking-[0.26em] text-[#f5a623]/70">Recommended CRM Move</p>
@@ -567,7 +567,7 @@ export default function ClientsPage() {
               <div className="flex flex-wrap gap-3">
                 <Link
                   href="/clients/new"
-                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-cyan-500 to-emerald-500 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(245,166,35,0.22)]"
+                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#f5a623] to-emerald-500 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(245,166,35,0.22)]"
                 >
                   Add Client
                 </Link>
@@ -872,7 +872,7 @@ export default function ClientsPage() {
               type="checkbox"
               checked={clients.length > 0 && selectedIds.size === clients.length}
               onChange={toggleSelectAll}
-              className="w-3.5 h-3.5 rounded accent-cyan-500 shrink-0"
+              className="w-3.5 h-3.5 rounded accent-[#f5a623] shrink-0"
             />
             <div className="w-9 shrink-0" />
             <div className="flex-1 text-[10px] font-black uppercase tracking-widest text-white/25">Client</div>

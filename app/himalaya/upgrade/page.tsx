@@ -142,7 +142,7 @@ export default function HimalayaUpgradePage() {
         </Link>
 
         {/* Hero */}
-        <div className="mb-10 rounded-3xl border border-[#f5a623]/12 bg-gradient-to-br from-cyan-500/[0.06] via-transparent to-purple-500/[0.05] px-5 py-8 text-center sm:px-8 sm:py-10">
+        <div className="mb-10 rounded-3xl border border-[#f5a623]/12 bg-gradient-to-br from-[#f5a623]/[0.06] via-transparent to-[#e07850]/[0.05] px-5 py-8 text-center sm:px-8 sm:py-10">
           <Mountain className="mx-auto mb-4 h-12 w-12 text-[#f5a623]" />
           <h1 className="text-2xl sm:text-3xl font-black text-white mb-3">
             Don't stop at ideas.<br className="hidden sm:block" />
@@ -207,7 +207,7 @@ export default function HimalayaUpgradePage() {
                 key={plan.id}
                 className={`relative rounded-2xl border p-6 ${
                   plan.popular
-                    ? "bg-gradient-to-br from-cyan-500/[0.08] to-purple-500/[0.06] border-[#f5a623]/25"
+                    ? "bg-gradient-to-br from-[#f5a623]/[0.08] to-[#e07850]/[0.06] border-[#f5a623]/25"
                     : "bg-gradient-to-br from-white/[0.03] via-white/[0.02] to-transparent border-white/[0.07]"
                 }`}
               >

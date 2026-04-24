@@ -24,7 +24,7 @@ export default function WorkflowGuide({
           : "rounded-2xl border border-white/[0.06] bg-black/20 p-4 transition hover:border-white/[0.12] hover:bg-white/[0.04]";
         const content = (
           <>
-            <p className={`text-xs font-black ${item.active ? "text-cyan-200" : "text-white"}`}>{item.title}</p>
+            <p className={`text-xs font-black ${item.active ? "text-[#f5a623]" : "text-white"}`}>{item.title}</p>
             <p className={`mt-1 text-[11px] leading-5 ${item.active ? "text-white/55" : "text-white/45"}`}>{item.description}</p>
           </>
         );

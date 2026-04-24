@@ -620,7 +620,7 @@ function ImageStudio({ brief, theme, executionTier }: { brief: StudioBrief; them
               {showPromptEdit ? "Hide prompt" : "Edit prompt"}
             </button>
             <div className={`px-3 py-1.5 rounded-lg border text-[10px] font-black uppercase tracking-[0.18em] ${executionTier === "elite"
-              ? "border-cyan-400/30 bg-[#f5a623]/10 text-[#f5a623]"
+              ? "border-[#f5a623]/30 bg-[#f5a623]/10 text-[#f5a623]"
               : "border-white/[0.07] bg-white/[0.04] text-white/45"
               }`}>
               {executionTier}
@@ -740,7 +740,7 @@ function ImageStudio({ brief, theme, executionTier }: { brief: StudioBrief; them
                     {FONT_PRESETS.map(f => <option key={f} value={f}>{f}</option>)}
                   </select>
                   <div className="flex items-center gap-2">
-                    <input type="range" min={10} max={200} value={selectedLayer.fontSize ?? 48} onChange={e => updateSelected({ fontSize: +e.target.value })} className="flex-1 accent-cyan-400" />
+                    <input type="range" min={10} max={200} value={selectedLayer.fontSize ?? 48} onChange={e => updateSelected({ fontSize: +e.target.value })} className="flex-1 accent-[#f5a623]" />
                     <span className="text-[10px] text-white/25 w-8">{selectedLayer.fontSize ?? 48}</span>
                   </div>
                 </div>
@@ -796,7 +796,7 @@ function ImageStudio({ brief, theme, executionTier }: { brief: StudioBrief; them
                 </div>
                 <div>
                   <p className="text-[9px] text-white/20 uppercase font-bold mb-1.5">Corner Radius</p>
-                  <input type="range" min={0} max={100} value={selectedLayer.cornerRadius ?? 12} onChange={e => updateSelected({ cornerRadius: +e.target.value })} className="w-full accent-cyan-400" />
+                  <input type="range" min={0} max={100} value={selectedLayer.cornerRadius ?? 12} onChange={e => updateSelected({ cornerRadius: +e.target.value })} className="w-full accent-[#f5a623]" />
                 </div>
               </>
             )}
@@ -804,7 +804,7 @@ function ImageStudio({ brief, theme, executionTier }: { brief: StudioBrief; them
             <div>
               <p className="text-[9px] text-white/20 uppercase font-bold mb-1.5">Opacity</p>
               <div className="flex items-center gap-2">
-                <input type="range" min={0} max={1} step={0.05} value={selectedLayer.opacity ?? 1} onChange={e => updateSelected({ opacity: +e.target.value })} className="flex-1 accent-cyan-400" />
+                <input type="range" min={0} max={1} step={0.05} value={selectedLayer.opacity ?? 1} onChange={e => updateSelected({ opacity: +e.target.value })} className="flex-1 accent-[#f5a623]" />
                 <span className="text-[10px] text-white/25 w-8">{Math.round((selectedLayer.opacity ?? 1) * 100)}%</span>
               </div>
             </div>
@@ -904,7 +904,7 @@ function VideoLab({ brief, theme, executionTier }: { brief: StudioBrief; theme: 
             </div>
             <div className="flex gap-2">
               <button className="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase bg-[#f5a623]/10 text-[#f5a623] border border-[#f5a623]/20 flex items-center gap-1.5">
-                <div className="w-1 h-1 rounded-full bg-cyan-400" /> Auto-Captions
+                <div className="w-1 h-1 rounded-full bg-[#f5a623]" /> Auto-Captions
               </button>
               <button className="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase bg-white/5 text-white/40 border border-white/[0.07]">
                 {executionTier === "elite" ? "Elite Framing" : "Hook First"}
@@ -949,7 +949,7 @@ function VideoLab({ brief, theme, executionTier }: { brief: StudioBrief; theme: 
                         <div className="flex-1">
                           <p className="text-xs text-white/50">{job.status === "pending" ? "Starting generation..." : "Generating video..."}</p>
                           <div className="mt-2 h-1 bg-white/10 rounded-full overflow-hidden">
-                            <div className="h-full bg-cyan-400 rounded-full transition-all" style={{ width: `${job.progress}%` }} />
+                            <div className="h-full bg-[#f5a623] rounded-full transition-all" style={{ width: `${job.progress}%` }} />
                           </div>
                         </div>
                       </div>

@@ -863,7 +863,7 @@ export default function MySystemPage() {
                 <p className="text-[10px] font-black uppercase tracking-[0.24em] text-white/28">Execution Readiness</p>
                 <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/[0.08]">
                   <div
-                    className="h-full rounded-full bg-gradient-to-r from-cyan-400 via-blue-400 to-emerald-400"
+                    className="h-full rounded-full bg-gradient-to-r from-[#f5a623] via-blue-400 to-emerald-400"
                     style={{ width: `${Math.min(Math.max(liveSystemScore, 4), 100)}%` }}
                   />
                 </div>
@@ -1091,7 +1091,7 @@ export default function MySystemPage() {
                       </span>
                     </div>
                     <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/[0.07]">
-                      <div className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 transition-all duration-700" style={{ width }} />
+                      <div className="h-full rounded-full bg-gradient-to-r from-[#f5a623] to-blue-500 transition-all duration-700" style={{ width }} />
                     </div>
                   </div>
                 );
@@ -1175,7 +1175,7 @@ export default function MySystemPage() {
             </div>
             <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-4">
               {[
-                { title: "Find Leads Now", href: "/leads", icon: Zap, tone: "from-cyan-500/20 to-cyan-500/5 border-[#f5a623]/20" },
+                { title: "Find Leads Now", href: "/leads", icon: Zap, tone: "from-[#f5a623]/20 to-[#f5a623]/5 border-[#f5a623]/20" },
                 { title: "Build Your Website", href: "/websites/new", icon: Globe, tone: "from-blue-500/20 to-blue-500/5 border-blue-500/20" },
                 { title: "Create Your First Campaign", href: "/campaigns/new", icon: CheckCircle2, tone: "from-emerald-500/20 to-emerald-500/5 border-emerald-500/20" },
                 {
@@ -1190,7 +1190,7 @@ export default function MySystemPage() {
                   <Link
                     key={action.title}
                     href={action.href}
-                    className={`rounded-[28px] border bg-gradient-to-br ${action.tone} p-5 transition hover:border-cyan-400/30 hover:shadow-[0_0_28px_rgba(245,166,35,0.08)]`}
+                    className={`rounded-[28px] border bg-gradient-to-br ${action.tone} p-5 transition hover:border-[#f5a623]/30 hover:shadow-[0_0_28px_rgba(245,166,35,0.08)]`}
                   >
                     <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-white/[0.08] bg-black/20 text-white">
                       <Icon className="h-5 w-5" />

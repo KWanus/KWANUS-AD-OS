@@ -88,13 +88,13 @@ const SEVERITY_COLORS: Record<string, string> = {
 const TIER_COLORS: Record<string, string> = {
   basic: "text-white/50 bg-white/5 border-white/10",
   pro:   "text-[#f5a623] bg-[#f5a623]/10 border-[#f5a623]/20",
-  elite: "text-[#e07850] bg-purple-500/10 border-purple-500/20",
+  elite: "text-[#e07850] bg-[#e07850]/10 border-[#e07850]/20",
 };
 
 const INTENT_COLORS: Record<string, string> = {
   commercial:    "text-green-400 bg-green-500/10",
   informational: "text-blue-400 bg-blue-500/10",
-  navigational:  "text-[#e07850] bg-purple-500/10",
+  navigational:  "text-[#e07850] bg-[#e07850]/10",
   transactional: "text-[#f5a623] bg-[#f5a623]/10",
 };
 
@@ -298,7 +298,7 @@ function AuditModal({
           </button>
           <button
             onClick={() => onAction("gmb", audit.id)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-purple-500/10 border border-purple-500/20 text-[#e07850] text-xs font-bold hover:bg-purple-500/20 transition"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-[#e07850]/10 border border-[#e07850]/20 text-[#e07850] text-xs font-bold hover:bg-[#e07850]/20 transition"
           >
             <MapPin className="w-3 h-3" /> GMB Posts
           </button>
@@ -721,7 +721,7 @@ function GmbTab({ audits }: { audits: LocalAudit[] }) {
     offer:       "text-[#f5a623] bg-[#f5a623]/10",
     educational: "text-blue-400 bg-blue-500/10",
     testimonial: "text-green-400 bg-green-500/10",
-    event:       "text-[#e07850] bg-purple-500/10",
+    event:       "text-[#e07850] bg-[#e07850]/10",
     update:      "text-white/50 bg-white/5",
   };
 

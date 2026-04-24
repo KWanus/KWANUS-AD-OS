@@ -238,7 +238,7 @@ function BroadcastCard({
           <button
             onClick={(e) => void handleSend(e)}
             disabled={sending}
-            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-gradient-to-r from-cyan-500/20 to-[#e07850]/20 hover:from-cyan-500/30 hover:to-[#e07850]/30 border border-[#f5a623]/30 hover:border-cyan-400/50 text-[#f5a623] hover:text-white text-[11px] font-bold transition-all disabled:opacity-40"
+            className="flex-1 flex items-center justify-center gap-1.5 py-2 rounded-xl bg-gradient-to-r from-[#f5a623]/20 to-[#e07850]/20 hover:from-[#f5a623]/30 hover:to-[#e07850]/30 border border-[#f5a623]/30 hover:border-[#f5a623]/50 text-[#f5a623] hover:text-white text-[11px] font-bold transition-all disabled:opacity-40"
           >
             {sending ? <Loader2 className="w-3 h-3 animate-spin" /> : <Send className="w-3 h-3" />}
             {sending ? "Sending..." : "Send Now"}
@@ -433,7 +433,7 @@ function ComposeModal({
           <button
             onClick={() => void handleAIGenerate()}
             disabled={generating}
-            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[#e07850]/20 to-cyan-600/20 border border-purple-500/30 hover:border-purple-400/50 text-sm font-bold text-purple-300 hover:text-white transition disabled:opacity-40"
+            className="w-full flex items-center justify-center gap-2 py-2.5 rounded-xl bg-gradient-to-r from-[#e07850]/20 to-[#e07850]/20 border border-[#e07850]/30 hover:border-[#e07850]/50 text-sm font-bold text-[#f5a623] hover:text-white transition disabled:opacity-40"
           >
             <Sparkles className="w-4 h-4" />
             {generating ? "Generating content..." : `AI Generate ${executionTier === "elite" ? "Elite" : "Core"} Content`}
@@ -553,7 +553,7 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
   return (
     <div className="flex flex-col items-center justify-center py-16 text-center">
       <div className="relative mb-6">
-        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-purple-500/20 to-cyan-600/20 border border-white/10 flex items-center justify-center">
+        <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#e07850]/20 to-[#e07850]/20 border border-white/10 flex items-center justify-center">
           <Send className="w-9 h-9 text-[#e07850]/70" />
         </div>
       </div>
@@ -573,7 +573,7 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
           <button
             key={tpl.label}
             onClick={onCreateClick}
-            className="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/10 bg-white/[0.03] hover:border-cyan-400/30 hover:bg-[#f5a623]/5 text-left transition"
+            className="flex items-center gap-3 px-4 py-3 rounded-xl border border-white/10 bg-white/[0.03] hover:border-[#f5a623]/30 hover:bg-[#f5a623]/5 text-left transition"
           >
             <span className="text-lg">{tpl.icon}</span>
             <div>

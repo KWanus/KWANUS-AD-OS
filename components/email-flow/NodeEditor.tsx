@@ -138,7 +138,7 @@ function EmailEditor({
       <button
         onClick={() => void handleAIGenerate()}
         disabled={generating}
-        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-purple-600/20 to-cyan-600/20 border border-purple-500/30 hover:border-purple-400/50 text-xs font-bold text-purple-300 hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed"
+        className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#e07850]/20 to-[#e07850]/20 border border-[#e07850]/30 hover:border-[#e07850]/50 text-xs font-bold text-[#f5a623] hover:text-white transition disabled:opacity-40 disabled:cursor-not-allowed"
       >
         <Sparkles className="w-3.5 h-3.5" />
         {generating ? "Generating..." : "AI Generate Email"}

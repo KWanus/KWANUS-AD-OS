@@ -32,7 +32,7 @@ const NUDGE_CONFIG: Record<NudgeContext, {
     headline: "Your foundation is ready. Now make it work.",
     message: "Unlock execution tracking, deployment, and outcome learning to turn this foundation into real results that improve over time.",
     cta: "Unlock Full Execution",
-    color: "from-cyan-500/[0.06] to-purple-500/[0.06] border-[#f5a623]/15",
+    color: "from-[#f5a623]/[0.06] to-[#e07850]/[0.06] border-[#f5a623]/15",
     urgency: "Most users upgrade after seeing their first results",
   },
   after_deploy: {
@@ -40,7 +40,7 @@ const NUDGE_CONFIG: Record<NudgeContext, {
     headline: "Your site is live. Now optimize it.",
     message: "Track which changes actually improve conversions, get adaptive insights, and regenerate assets based on real performance data.",
     cta: "Unlock Tracking & Optimization",
-    color: "from-emerald-500/[0.06] to-cyan-500/[0.06] border-emerald-500/15",
+    color: "from-emerald-500/[0.06] to-[#f5a623]/[0.06] border-emerald-500/15",
     urgency: "Don't just launch — learn and improve",
   },
   after_outcome: {
@@ -48,7 +48,7 @@ const NUDGE_CONFIG: Record<NudgeContext, {
     headline: "This is where Himalaya gets powerful.",
     message: "Your outcome data feeds the learning loop. With Pro, every run gets smarter — better recommendations, sharper assets, higher conversion rates.",
     cta: "Unlock Adaptive Intelligence",
-    color: "from-purple-500/[0.06] to-pink-500/[0.06] border-purple-500/15",
+    color: "from-[#e07850]/[0.06] to-pink-500/[0.06] border-[#e07850]/15",
     urgency: "The system improves with every outcome you report",
   },
   after_execution: {
@@ -63,7 +63,7 @@ const NUDGE_CONFIG: Record<NudgeContext, {
     headline: "This feature is part of the full system.",
     message: "Himalaya Pro unlocks competitive intelligence, deployment, execution tracking, and adaptive learning that improves your results over time.",
     cta: "Upgrade to Pro",
-    color: "from-cyan-500/[0.06] to-purple-500/[0.06] border-[#f5a623]/15",
+    color: "from-[#f5a623]/[0.06] to-[#e07850]/[0.06] border-[#f5a623]/15",
   },
 };
 

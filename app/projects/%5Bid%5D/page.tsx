@@ -27,7 +27,7 @@ export default function ProjectWorkspace() {
     if (loading) {
         return (
             <div className="min-h-screen bg-t-bg flex flex-col items-center justify-center gap-4">
-                <Loader2 className="w-8 h-8 text-cyan-500 animate-spin" />
+                <Loader2 className="w-8 h-8 text-[#f5a623] animate-spin" />
                 <p className="text-[10px] font-black uppercase text-white/30 tracking-widest">Loading Master Workflow...</p>
             </div>
         );

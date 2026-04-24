@@ -95,7 +95,7 @@ export default function WhiteLabelPage() {
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-[#e07850]/10 border border-[#e07850]/20 flex items-center justify-center">
               <Building2 className="w-5 h-5 text-[#e07850]" />
             </div>
             <div>
@@ -103,7 +103,7 @@ export default function WhiteLabelPage() {
               <p className="text-xs text-white/35">Resell Himalaya under your own brand</p>
             </div>
           </div>
-          <button onClick={saveConfig} disabled={saving} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-purple-500 text-white text-sm font-bold hover:bg-purple-400 transition disabled:opacity-40">
+          <button onClick={saveConfig} disabled={saving} className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-[#e07850] text-white text-sm font-bold hover:bg-[#e07850] transition disabled:opacity-40">
             {saved ? <><Check className="w-4 h-4" /> Saved!</> : saving ? <><Loader2 className="w-4 h-4 animate-spin" /> Saving...</> : <><Save className="w-4 h-4" /> Save</>}
           </button>
         </div>
@@ -117,7 +117,7 @@ export default function WhiteLabelPage() {
               <div className="flex items-center gap-3 mb-4">
                 <label className="text-xs text-white/50">Enable White-Label</label>
                 <button onClick={() => setConfig({ ...config, enabled: !config.enabled })}
-                  className={`w-10 h-6 rounded-full transition ${config.enabled ? "bg-purple-500" : "bg-white/10"} relative`}>
+                  className={`w-10 h-6 rounded-full transition ${config.enabled ? "bg-[#e07850]" : "bg-white/10"} relative`}>
                   <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition ${config.enabled ? "left-5" : "left-1"}`} />
                 </button>
               </div>
@@ -125,7 +125,7 @@ export default function WhiteLabelPage() {
               <div>
                 <label className="block text-[10px] text-white/30 mb-1">Brand Name</label>
                 <input type="text" value={config.brandName} onChange={(e) => setConfig({ ...config, brandName: e.target.value })} placeholder="Your Agency Name"
-                  className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-purple-500/50 transition" />
+                  className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#e07850]/50 transition" />
               </div>
 
               <div>
@@ -155,7 +155,7 @@ export default function WhiteLabelPage() {
               <div className="flex items-center gap-3">
                 <label className="text-xs text-white/50">Hide Himalaya branding</label>
                 <button onClick={() => setConfig({ ...config, hideHimalayaBranding: !config.hideHimalayaBranding })}
-                  className={`w-10 h-6 rounded-full transition ${config.hideHimalayaBranding ? "bg-purple-500" : "bg-white/10"} relative`}>
+                  className={`w-10 h-6 rounded-full transition ${config.hideHimalayaBranding ? "bg-[#e07850]" : "bg-white/10"} relative`}>
                   <div className={`w-4 h-4 rounded-full bg-white absolute top-1 transition ${config.hideHimalayaBranding ? "left-5" : "left-1"}`} />
                 </button>
               </div>
@@ -171,7 +171,7 @@ export default function WhiteLabelPage() {
                       <p className="text-xs font-bold text-white">{tier.name}</p>
                       <p className="text-[10px] text-white/25">{tier.features.length} features</p>
                     </div>
-                    <p className="text-sm font-bold text-purple-300">${tier.price}/{tier.interval === "monthly" ? "mo" : "yr"}</p>
+                    <p className="text-sm font-bold text-[#f5a623]">${tier.price}/{tier.interval === "monthly" ? "mo" : "yr"}</p>
                   </div>
                 ))}
               </div>
@@ -192,7 +192,7 @@ export default function WhiteLabelPage() {
                 <input type="email" value={newClientEmail} onChange={(e) => setNewClientEmail(e.target.value)} placeholder="Client email"
                   className="flex-1 bg-white/[0.04] border border-white/[0.1] rounded-lg px-3 py-2 text-xs text-white placeholder-white/20 focus:outline-none transition" />
                 <button onClick={addClient} disabled={addingClient || !newClientName.trim() || !newClientEmail.trim()}
-                  className="px-3 py-2 rounded-lg bg-purple-500 text-white text-xs font-bold hover:bg-purple-400 transition disabled:opacity-40">
+                  className="px-3 py-2 rounded-lg bg-[#e07850] text-white text-xs font-bold hover:bg-[#e07850] transition disabled:opacity-40">
                   <Plus className="w-3.5 h-3.5" />
                 </button>
               </div>
@@ -203,7 +203,7 @@ export default function WhiteLabelPage() {
                 <div className="space-y-2">
                   {subAccounts.map((client) => (
                     <div key={client.id} className="flex items-center gap-3 p-3 rounded-xl border border-white/[0.06] bg-white/[0.02]">
-                      <div className="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center text-xs font-bold text-purple-300">
+                      <div className="w-8 h-8 rounded-full bg-[#e07850]/20 flex items-center justify-center text-xs font-bold text-[#f5a623]">
                         {client.name.charAt(0)}
                       </div>
                       <div className="flex-1 min-w-0">
@@ -224,7 +224,7 @@ export default function WhiteLabelPage() {
 
             {/* Preview */}
             {config.brandName && (
-              <div className="rounded-2xl border border-purple-500/15 bg-purple-500/5 p-5">
+              <div className="rounded-2xl border border-[#e07850]/15 bg-[#e07850]/5 p-5">
                 <p className="text-[10px] font-black uppercase tracking-widest text-[#e07850]/60 mb-3">Preview</p>
                 <div className="rounded-xl overflow-hidden" style={{ border: `1px solid ${config.primaryColor}30` }}>
                   <div className="h-1.5" style={{ backgroundColor: config.primaryColor }} />

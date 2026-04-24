@@ -103,7 +103,7 @@ No explanations. Just the JSON array.`,
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-[#e07850]/10 border border-[#e07850]/20 flex items-center justify-center">
               <BookOpen className="w-5 h-5 text-[#e07850]" />
             </div>
             <div>
@@ -112,23 +112,23 @@ No explanations. Just the JSON array.`,
             </div>
           </div>
           <button onClick={() => setShowCreate(!showCreate)}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-purple-500 to-pink-500 text-white text-sm font-bold hover:opacity-90 transition">
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#e07850] to-pink-500 text-white text-sm font-bold hover:opacity-90 transition">
             <Plus className="w-4 h-4" /> New Course
           </button>
         </div>
 
         {/* Create form */}
         {showCreate && (
-          <div className="rounded-2xl border border-purple-500/20 bg-purple-500/5 p-6 mb-6 space-y-4">
+          <div className="rounded-2xl border border-[#e07850]/20 bg-[#e07850]/5 p-6 mb-6 space-y-4">
             <input type="text" value={newTitle} onChange={(e) => setNewTitle(e.target.value)} placeholder="Course title (e.g. Facebook Ads Mastery)"
-              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-purple-500/50 transition font-bold" />
+              className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none focus:border-[#e07850]/50 transition font-bold" />
             <textarea value={newDesc} onChange={(e) => setNewDesc(e.target.value)} placeholder="Course description..." rows={2}
               className="w-full bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none transition resize-none" />
             <div className="flex gap-3">
               <input type="number" value={newPrice} onChange={(e) => setNewPrice(e.target.value)} placeholder="Price"
                 className="w-32 bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white placeholder-white/20 focus:outline-none transition" />
               <button onClick={createCourse} disabled={creating || !newTitle.trim()}
-                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-purple-500 text-white text-sm font-bold hover:bg-purple-400 transition disabled:opacity-40">
+                className="flex-1 flex items-center justify-center gap-2 px-6 py-3 rounded-xl bg-[#e07850] text-white text-sm font-bold hover:bg-[#e07850] transition disabled:opacity-40">
                 {generating ? <><Loader2 className="w-4 h-4 animate-spin" /> AI generating outline...</> : creating ? "Creating..." : <><BookOpen className="w-4 h-4" /> Create Course</>}
               </button>
             </div>
@@ -145,7 +145,7 @@ No explanations. Just the JSON array.`,
         ) : (
           <div className="space-y-3">
             {courses.map((course) => (
-              <div key={course.id} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 hover:border-purple-400/20 transition">
+              <div key={course.id} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 hover:border-[#e07850]/20 transition">
                 <div className="flex items-start justify-between gap-4">
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-2 mb-1">

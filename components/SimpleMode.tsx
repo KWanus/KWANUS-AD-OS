@@ -200,7 +200,7 @@ export default function SimpleMode() {
     check: { icon: Globe, color: "text-blue-400" },
     share: { icon: ArrowRight, color: "text-emerald-400" },
     setup: { icon: Mountain, color: "text-[#f5a623]" },
-    follow_up: { icon: Mail, color: "text-purple-400" },
+    follow_up: { icon: Mail, color: "text-[#e07850]" },
   };
 
   return (

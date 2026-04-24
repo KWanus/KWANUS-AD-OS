@@ -36,7 +36,7 @@ const BUNDLES: {
     credits: 400,
     perCredit: "$0.07",
     badge: "Most Popular",
-    color: "from-cyan-500/20 to-cyan-500/5",
+    color: "from-[#f5a623]/20 to-[#f5a623]/5",
     highlights: ["400 credits", "~400 AI images", "~80 video clips", "Save 22% vs Starter"],
   },
   {
@@ -45,7 +45,7 @@ const BUNDLES: {
     price: 79,
     credits: 1200,
     perCredit: "$0.07",
-    color: "from-purple-500/20 to-purple-500/5",
+    color: "from-[#e07850]/20 to-[#e07850]/5",
     highlights: ["1,200 credits", "~1200 AI images", "~240 video clips", "Save 34% vs Starter"],
   },
   {
@@ -229,7 +229,7 @@ function BillingContent() {
 
         {/* Hero */}
         <div className="text-center mb-14">
-          <p className="text-[11px] font-black tracking-[0.3em] text-cyan-500/60 uppercase mb-3">Plans & Credits</p>
+          <p className="text-[11px] font-black tracking-[0.3em] text-[#f5a623]/60 uppercase mb-3">Plans & Credits</p>
           <h1 className="text-4xl font-black mb-3">One platform. No bloat.</h1>
           <p className="text-white/35 text-base max-w-md mx-auto leading-relaxed">
             Start free. Upgrade when you&apos;re ready. Studio credits are separate pay-per-use — they never expire.
@@ -246,7 +246,7 @@ function BillingContent() {
             {SUBSCRIPTION_TIERS.map((tier) => (
               <div
                 key={tier.key}
-                className={`relative rounded-2xl border p-6 flex flex-col gap-5 ${tier.color} ${tier.key === "pro" ? "bg-gradient-to-b from-cyan-500/[0.07] to-transparent" : tier.key === "elite" ? "bg-gradient-to-b from-amber-500/[0.05] to-transparent" : "bg-white/[0.02]"}`}
+                className={`relative rounded-2xl border p-6 flex flex-col gap-5 ${tier.color} ${tier.key === "pro" ? "bg-gradient-to-b from-[#f5a623]/[0.07] to-transparent" : tier.key === "elite" ? "bg-gradient-to-b from-amber-500/[0.05] to-transparent" : "bg-white/[0.02]"}`}
               >
                 {tier.badge && (
                   <div className="absolute -top-3 left-1/2 -translate-x-1/2">
@@ -369,7 +369,7 @@ function BillingContent() {
             <div key={b.key}
               className={`relative rounded-2xl border p-6 flex flex-col gap-5 transition-all duration-200
                 ${b.badge === "Most Popular"
-                  ? "border-[#f5a623]/40 bg-gradient-to-b from-cyan-500/10 to-transparent"
+                  ? "border-[#f5a623]/40 bg-gradient-to-b from-[#f5a623]/10 to-transparent"
                   : b.badge === "Best Value"
                   ? "border-amber-500/30 bg-gradient-to-b from-amber-500/[0.08] to-transparent"
                   : "border-white/[0.08] bg-white/[0.02] hover:border-white/[0.15]"

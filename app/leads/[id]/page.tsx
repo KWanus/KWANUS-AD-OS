@@ -399,12 +399,12 @@ function WebsiteTab({ lead }: { lead: Lead }) {
 
       {/* Hero */}
       {w.hero && (
-        <div className="p-5 bg-gradient-to-r from-cyan-500/[0.06] to-purple-500/[0.06] border border-white/[0.08] rounded-2xl">
+        <div className="p-5 bg-gradient-to-r from-[#f5a623]/[0.06] to-[#e07850]/[0.06] border border-white/[0.08] rounded-2xl">
           <p className="text-[10px] font-black text-white/30 uppercase tracking-widest mb-3">Hero Section</p>
           <p className="text-xl font-black text-white mb-2">{w.hero.headline}</p>
           <p className="text-sm text-white/55 mb-4">{w.hero.subheadline}</p>
           <div className="flex flex-wrap gap-2">
-            {w.hero.primary_cta && <div className="px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500/25 to-purple-500/25 border border-[#f5a623]/25 text-sm font-bold text-white">{w.hero.primary_cta}</div>}
+            {w.hero.primary_cta && <div className="px-4 py-2 rounded-xl bg-gradient-to-r from-[#f5a623]/25 to-[#e07850]/25 border border-[#f5a623]/25 text-sm font-bold text-white">{w.hero.primary_cta}</div>}
             {w.hero.secondary_cta && <div className="px-4 py-2 rounded-xl border border-white/10 text-sm text-white/50">{w.hero.secondary_cta}</div>}
           </div>
         </div>
@@ -735,7 +735,7 @@ function OutreachTab({ lead, onSent }: { lead: Lead; onSent: () => void }) {
           <button
             onClick={() => void send()}
             disabled={sending}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-500/20 text-blue-400 text-sm font-bold hover:opacity-90 transition disabled:opacity-40"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-500/20 to-[#f5a623]/20 border border-blue-500/20 text-blue-400 text-sm font-bold hover:opacity-90 transition disabled:opacity-40"
           >
             {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
             Send
@@ -918,7 +918,7 @@ export default function LeadDetailPage() {
           )}
           {(lead.status === "analyzed" || lead.status === "ready") && (
             <button onClick={() => void generate()} disabled={generating || isProcessing}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-purple-500/10 border border-purple-500/20 text-[#e07850] text-sm font-bold hover:bg-purple-500/20 transition disabled:opacity-40">
+              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#e07850]/10 border border-[#e07850]/20 text-[#e07850] text-sm font-bold hover:bg-[#e07850]/20 transition disabled:opacity-40">
               {generating ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <Zap className="w-3.5 h-3.5" />}
               {generating ? "Running 4 Skills…" : lead.status === "ready" ? "Regenerate Assets" : "Generate Assets"}
             </button>
@@ -954,7 +954,7 @@ export default function LeadDetailPage() {
               }`}>
               {tab.icon}
               {tab.label}
-              {tab.available && activeTab !== tab.key && <div className="w-1 h-1 rounded-full bg-cyan-400/50" />}
+              {tab.available && activeTab !== tab.key && <div className="w-1 h-1 rounded-full bg-[#f5a623]/50" />}
             </button>
           ))}
         </div>

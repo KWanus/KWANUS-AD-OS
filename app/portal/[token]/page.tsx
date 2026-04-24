@@ -45,7 +45,7 @@ export default function ClientPortalPage({ params }: { params: Promise<{ token: 
   if (loading) {
     return (
       <div className="min-h-screen bg-t-bg text-white flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#f5a623]/30 border-t-cyan-500 rounded-full animate-spin" />
+        <div className="w-8 h-8 border-2 border-[#f5a623]/30 border-t-[#f5a623] rounded-full animate-spin" />
       </div>
     );
   }

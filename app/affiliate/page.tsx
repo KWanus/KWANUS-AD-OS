@@ -51,7 +51,7 @@ type ResearchResult = {
 const PLATFORM_BADGE: Record<Platform, string> = {
   clickbank:   "bg-green-500/15 text-green-400 border-green-500/30",
   jvzoo:       "bg-blue-500/15 text-blue-400 border-blue-500/30",
-  warriorplus: "bg-purple-500/15 text-[#e07850] border-purple-500/30",
+  warriorplus: "bg-[#e07850]/15 text-[#e07850] border-[#e07850]/30",
   cj:          "bg-indigo-500/15 text-indigo-400 border-indigo-500/30",
   amazon:      "bg-orange-500/15 text-orange-400 border-orange-500/30",
   digistore24: "bg-yellow-500/15 text-yellow-400 border-yellow-500/30",
@@ -889,14 +889,14 @@ function FunnelsTab({ offers }: { offers: AffiliateOffer[] }) {
           <div key={o.id}
             onClick={() => setSelected(o)}
             className="group rounded-2xl bg-white/[0.02] border border-white/[0.06] p-5 cursor-pointer hover:bg-white/[0.04] hover:border-white/[0.1] transition-all flex items-center gap-4">
-            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border border-white/[0.06] flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-[#f5a623]/20 to-[#e07850]/20 border border-white/[0.06] flex items-center justify-center shrink-0">
               <Layers className="w-4 h-4 text-[#f5a623]/70" />
             </div>
             <div className="flex-1 min-w-0">
               <h3 className="text-sm font-black text-white group-hover:text-[#f5a623] transition truncate">{o.name}</h3>
               <div className="flex items-center gap-3 mt-1">
                 {funnel?.type && (
-                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-purple-500/10 border border-purple-500/20 text-[#e07850] font-bold uppercase tracking-wider">
+                  <span className="text-[10px] px-2 py-0.5 rounded-full bg-[#e07850]/10 border border-[#e07850]/20 text-[#e07850] font-bold uppercase tracking-wider">
                     {String(funnel.type)}
                   </span>
                 )}
@@ -957,7 +957,7 @@ export default function AffiliatePage() {
       {/* Background */}
       <div className="fixed inset-0 pointer-events-none">
         <div className="absolute top-0 right-1/3 w-[600px] h-[300px] opacity-[0.04] blur-[120px] bg-[#f5a623] rounded-full" />
-        <div className="absolute bottom-0 left-0 w-[500px] h-[280px] opacity-[0.03] blur-[100px] bg-purple-500 rounded-full" />
+        <div className="absolute bottom-0 left-0 w-[500px] h-[280px] opacity-[0.03] blur-[100px] bg-[#e07850] rounded-full" />
         <div className="absolute inset-0 opacity-[0.018]"
           style={{ backgroundImage: "radial-gradient(circle, #fff 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
       </div>
@@ -973,7 +973,7 @@ export default function AffiliatePage() {
           </div>
           <h1 className="text-4xl font-black tracking-tight">
             Affiliate{" "}
-            <span className="bg-gradient-to-r from-cyan-400 to-purple-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-[#f5a623] to-[#e07850] bg-clip-text text-transparent">
               Marketing OS
             </span>
           </h1>

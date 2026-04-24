@@ -44,7 +44,7 @@ export default function CheckInBanner() {
   // Run has execution in progress but no outcome
   if (run.hasExecution && !run.executionComplete) {
     return (
-      <div className="mb-6 rounded-2xl border border-[#f5a623]/10 bg-gradient-to-br from-cyan-500/[0.05] via-cyan-500/[0.025] to-transparent p-4">
+      <div className="mb-6 rounded-2xl border border-[#f5a623]/10 bg-gradient-to-br from-[#f5a623]/[0.05] via-[#f5a623]/[0.025] to-transparent p-4">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div className="flex items-center gap-3">
             <Play className="w-4 h-4 text-[#f5a623]/60" />

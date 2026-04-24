@@ -341,7 +341,7 @@ export default function WebsiteCopilotPanel({
                     {tier.id}
                   </span>
                 </div>
-                <p className={`mt-2 text-xs leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+                <p className={`mt-2 text-xs leading-relaxed ${active ? "text-[#f5a623]/80" : "text-white/45"}`}>
                   {tier.description}
                 </p>
               </button>
@@ -355,13 +355,13 @@ export default function WebsiteCopilotPanel({
           <p className="text-[10px] font-black uppercase tracking-[0.22em] text-white/25">Selected Block</p>
           <div className="mt-3 rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-3 py-3">
             <p className="text-sm font-bold text-white">{selectedBlock.type}</p>
-            <p className="mt-1 text-sm leading-6 text-cyan-50/80">
+            <p className="mt-1 text-sm leading-6 text-[#f5f0e8]/80">
               Regenerate just this section while keeping the rest of the page intact.
             </p>
             <button
               onClick={() => void runAction(`regenerate this ${selectedBlock.type} section`)}
               disabled={working}
-              className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-black text-cyan-900 disabled:opacity-40"
+              className="mt-3 flex w-full items-center justify-center gap-2 rounded-xl bg-white px-4 py-2.5 text-sm font-black text-[#0c0a08] disabled:opacity-40"
             >
               <Wand2 className="h-4 w-4" />
               Regenerate This Section
@@ -484,14 +484,14 @@ export default function WebsiteCopilotPanel({
             <p className="text-sm font-bold text-white">{pendingChange.summary}</p>
             <div className="mt-3 space-y-1">
               {pendingChange.diff.map((line) => (
-                <p key={line} className="text-sm leading-6 text-cyan-50/90">{line}</p>
+                <p key={line} className="text-sm leading-6 text-[#f5f0e8]/90">{line}</p>
               ))}
             </div>
             {pendingChange.changedBlocks.length > 0 && (
               <div className="mt-4 space-y-3">
                 {pendingChange.changedBlocks.map((block) => (
                   <div key={block.id} className="rounded-2xl border border-white/10 bg-black/20 p-3">
-                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-cyan-200/80">{block.type}</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.2em] text-[#f5a623]/80">{block.type}</p>
                     <div className="mt-3 grid gap-3 md:grid-cols-2">
                       <div className="rounded-xl border border-amber-500/20 bg-amber-500/10 p-3">
                         <p className="text-[10px] font-black uppercase tracking-[0.18em] text-amber-200/80">Before</p>
@@ -509,7 +509,7 @@ export default function WebsiteCopilotPanel({
             <div className="mt-4 flex gap-2">
               <button
                 onClick={applyPendingChange}
-                className="flex-1 rounded-xl bg-white px-4 py-2.5 text-sm font-black text-cyan-900"
+                className="flex-1 rounded-xl bg-white px-4 py-2.5 text-sm font-black text-[#0c0a08]"
               >
                 Apply Change
               </button>
@@ -531,7 +531,7 @@ export default function WebsiteCopilotPanel({
             className={`rounded-2xl px-3 py-3 text-sm leading-6 ${
               message.role === "assistant"
                 ? "border border-white/[0.08] bg-white/[0.03] text-white/70"
-                : "border border-[#f5a623]/20 bg-[#f5a623]/10 text-cyan-100"
+                : "border border-[#f5a623]/20 bg-[#f5a623]/10 text-[#f5a623]"
             }`}
           >
             {message.content}

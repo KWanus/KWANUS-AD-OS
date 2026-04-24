@@ -132,7 +132,7 @@ export default function RevenueDashboard() {
                   <Link
                     key={site.siteId}
                     href={`/websites/${site.siteId}`}
-                    className="flex items-center justify-between p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-cyan-400/20 transition"
+                    className="flex items-center justify-between p-3 rounded-xl bg-white/[0.03] border border-white/[0.06] hover:border-[#f5a623]/20 transition"
                   >
                     <div className="min-w-0">
                       <p className="text-xs font-bold text-white truncate">{site.name}</p>
@@ -170,7 +170,7 @@ export default function RevenueDashboard() {
                   <Link
                     key={flow.id}
                     href={`/emails/flows/${flow.id}`}
-                    className="flex items-center justify-between p-2.5 rounded-lg bg-white/[0.02] border border-white/[0.05] hover:border-purple-400/20 transition text-xs"
+                    className="flex items-center justify-between p-2.5 rounded-lg bg-white/[0.02] border border-white/[0.05] hover:border-[#e07850]/20 transition text-xs"
                   >
                     <span className="text-white/60 truncate">{flow.name}</span>
                     <span className="text-white/30 shrink-0">{flow.enrolled} enrolled · {flow.sent} sent</span>

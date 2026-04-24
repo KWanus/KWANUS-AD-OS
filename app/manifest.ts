@@ -4,11 +4,11 @@ export default function manifest(): MetadataRoute.Manifest {
   return {
     name: "Himalaya — AI Marketing OS",
     short_name: "Himalaya",
-    description: "The complete marketing engine: AI-powered funnel builder, ad creatives, email automations, and competitive intelligence.",
+    description: "Build a complete business in 60 seconds. Website, ads, emails, scripts, funnels — built with AI. No skills required.",
     start_url: "/",
     display: "standalone",
     background_color: "#0c0a08",
-    theme_color: "#06b6d4",
+    theme_color: "#f5a623",
     icons: [
       {
         src: "/icon-192.png",

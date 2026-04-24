@@ -93,7 +93,7 @@ Score 0-100 for overall viability. Be realistic with income estimates. Sort by s
             {result.niches.map((n, i) => {
               const scoreColor = n.score >= 80 ? "text-emerald-400" : n.score >= 60 ? "text-[#f5a623]" : "text-amber-400";
               return (
-                <div key={i} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 hover:border-cyan-400/20 transition">
+                <div key={i} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 hover:border-[#f5a623]/20 transition">
                   <div className="flex items-start justify-between gap-3 mb-3">
                     <div>
                       <h3 className="text-base font-black text-white">{n.name}</h3>

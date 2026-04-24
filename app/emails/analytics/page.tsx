@@ -243,7 +243,7 @@ function ContactSourceChart({ contacts }: { contacts: EmailContact[] }) {
   if (total === 0) return null;
 
   const items = Object.entries(sources).sort((a, b) => b[1] - a[1]);
-  const colors = ["bg-[#f5a623]", "bg-purple-500", "bg-green-500", "bg-amber-500", "bg-rose-500"];
+  const colors = ["bg-[#f5a623]", "bg-[#e07850]", "bg-green-500", "bg-amber-500", "bg-rose-500"];
 
   return (
     <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl p-5">

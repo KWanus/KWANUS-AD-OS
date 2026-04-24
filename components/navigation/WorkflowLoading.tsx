@@ -30,7 +30,7 @@ export default function WorkflowLoading({
             <div
               key={step}
               className={`h-1.5 rounded-full transition-all duration-500 ${
-                index <= activeIndex ? "w-6 bg-cyan-400" : "w-1.5 bg-white/10"
+                index <= activeIndex ? "w-6 bg-[#f5a623]" : "w-1.5 bg-white/10"
               }`}
             />
           ))}

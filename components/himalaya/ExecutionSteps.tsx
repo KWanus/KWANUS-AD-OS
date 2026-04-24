@@ -16,7 +16,7 @@ type Props = {
 
 const GROWTH_COLORS: Record<string, string> = {
   cyan: "bg-[#f5a623]/5 border-[#f5a623]/10",
-  purple: "bg-purple-500/5 border-purple-500/10",
+  purple: "bg-[#e07850]/5 border-[#e07850]/10",
   amber: "bg-amber-500/5 border-amber-500/10",
   emerald: "bg-emerald-500/5 border-emerald-500/10",
 };

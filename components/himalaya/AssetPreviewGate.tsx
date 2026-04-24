@@ -43,7 +43,7 @@ export default function AssetPreviewGate({ children }: { children: React.ReactNo
         <Link
           href="/himalaya/upgrade"
           onClick={() => track.upgradeClick("asset_gate")}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gradient-to-r from-cyan-500/20 to-purple-500/20 border border-[#f5a623]/20 text-[11px] font-bold text-[#f5a623] hover:from-cyan-500/30 hover:to-purple-500/30 transition"
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-gradient-to-r from-[#f5a623]/20 to-[#e07850]/20 border border-[#f5a623]/20 text-[11px] font-bold text-[#f5a623] hover:from-[#f5a623]/30 hover:to-[#e07850]/30 transition"
         >
           <Zap className="w-3 h-3" /> Unlock Execution & Assets
         </Link>

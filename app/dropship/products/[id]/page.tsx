@@ -283,7 +283,7 @@ function TabAnalysis({ product, onRunAnalysis, running }: {
         <button
           onClick={onRunAnalysis}
           disabled={running}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-cyan-600/30 to-blue-600/30 border border-[#f5a623]/30 hover:border-cyan-400/50 text-sm font-bold text-white transition disabled:opacity-40"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#e07850]/30 to-blue-600/30 border border-[#f5a623]/30 hover:border-[#f5a623]/50 text-sm font-bold text-white transition disabled:opacity-40"
         >
           {running ? <Loader2 className="w-4 h-4 animate-spin" /> : <Sparkles className="w-4 h-4" />}
           Run Full Analysis
@@ -387,7 +387,7 @@ function TabAnalysis({ product, onRunAnalysis, running }: {
                 <p className="text-[10px] font-black uppercase tracking-widest text-white/25 mb-2">Interests</p>
                 <div className="flex flex-wrap gap-1.5">
                   {a.targetAudience.interests.map((int, i) => (
-                    <span key={i} className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-purple-500/10 text-[#e07850] border border-purple-500/20">{int}</span>
+                    <span key={i} className="px-2.5 py-1 rounded-lg text-[11px] font-bold bg-[#e07850]/10 text-[#e07850] border border-[#e07850]/20">{int}</span>
                   ))}
                 </div>
               </div>
@@ -764,7 +764,7 @@ function TabAdCreatives({ product, onGenerate, running }: {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     {data.thumbnailConcepts.map((tc, i) => (
                       <div key={i} className="p-3 bg-white/[0.02] rounded-xl border border-white/[0.05]">
-                        <span className="inline-flex px-2 py-0.5 rounded-lg text-[10px] font-black bg-purple-500/15 text-[#e07850] border border-purple-500/25 mb-2">{tc.style}</span>
+                        <span className="inline-flex px-2 py-0.5 rounded-lg text-[10px] font-black bg-[#e07850]/15 text-[#e07850] border border-[#e07850]/25 mb-2">{tc.style}</span>
                         <p className="text-xs text-white/60">{tc.concept}</p>
                       </div>
                     ))}
@@ -893,7 +893,7 @@ function TabEmailFlows({ product, onGenerate, running }: {
         <button
           onClick={onGenerate}
           disabled={running}
-          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600/30 to-cyan-600/30 border border-blue-500/30 hover:border-blue-400/50 text-sm font-bold text-white transition disabled:opacity-40"
+          className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-600/30 to-[#e07850]/30 border border-blue-500/30 hover:border-blue-400/50 text-sm font-bold text-white transition disabled:opacity-40"
         >
           {running ? <Loader2 className="w-4 h-4 animate-spin" /> : <Mail className="w-4 h-4" />}
           Generate Email Flows
@@ -913,7 +913,7 @@ function TabEmailFlows({ product, onGenerate, running }: {
   const DELAY_COLORS: Record<string, string> = {
     "1h": "bg-amber-500/15 text-amber-400 border-amber-500/25",
     "24h": "bg-blue-500/15 text-blue-400 border-blue-500/25",
-    "48h": "bg-purple-500/15 text-[#e07850] border-purple-500/25",
+    "48h": "bg-[#e07850]/15 text-[#e07850] border-[#e07850]/25",
     "3d": "bg-indigo-500/15 text-indigo-400 border-indigo-500/25",
     "7d": "bg-[#f5a623]/15 text-[#f5a623] border-[#f5a623]/25",
     "14d": "bg-green-500/15 text-green-400 border-green-500/25",
@@ -1198,7 +1198,7 @@ export default function DropshipProductPage() {
               {sb && (
                 <div className="flex flex-wrap gap-4">
                   <ScoreBar label="Demand" value={sb.demand} color="bg-[#f5a623]" />
-                  <ScoreBar label="Competition" value={sb.competition} color="bg-purple-500" />
+                  <ScoreBar label="Competition" value={sb.competition} color="bg-[#e07850]" />
                   <ScoreBar label="Trend" value={sb.trend} color="bg-amber-500" />
                   <ScoreBar label="Margin" value={sb.margin} color="bg-green-500" />
                 </div>

@@ -168,7 +168,7 @@ export default function RunCompareView({ runIdA, runIdB }: Props) {
       {/* Headers */}
       <CompareSection title="Summary">
         <CompareCard vm={vmA} color="border-[#f5a623]/15" />
-        <CompareCard vm={vmB} color="border-purple-500/15" />
+        <CompareCard vm={vmB} color="border-[#e07850]/15" />
       </CompareSection>
 
       {/* Priorities */}

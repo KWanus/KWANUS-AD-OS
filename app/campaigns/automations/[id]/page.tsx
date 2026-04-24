@@ -155,7 +155,7 @@ export default function AutomationDetailPage({ params }: { params: Promise<{ id:
   if (loading) {
     return (
       <div className="min-h-screen bg-t-bg flex items-center justify-center">
-        <Loader2 className="w-6 h-6 text-cyan-500 animate-spin" />
+        <Loader2 className="w-6 h-6 text-[#f5a623] animate-spin" />
       </div>
     );
   }

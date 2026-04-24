@@ -33,7 +33,7 @@ const TYPE_ICONS: Record<string, React.ElementType> = {
 
 const TYPE_COLORS: Record<string, string> = {
   funnel: "text-[#f5a623] bg-[#f5a623]/10 border-[#f5a623]/20",
-  email_sequence: "text-[#e07850] bg-purple-500/10 border-purple-500/20",
+  email_sequence: "text-[#e07850] bg-[#e07850]/10 border-[#e07850]/20",
   ad_pack: "text-amber-400 bg-amber-500/10 border-amber-500/20",
   site_template: "text-blue-400 bg-blue-500/10 border-blue-500/20",
   prompt_pack: "text-pink-400 bg-pink-500/10 border-pink-500/20",
@@ -131,7 +131,7 @@ export default function MarketplacePage() {
               const colors = TYPE_COLORS[item.type] ?? "text-white/40 bg-white/5 border-white/10";
 
               return (
-                <div key={item.id} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] overflow-hidden hover:border-cyan-400/20 transition group">
+                <div key={item.id} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] overflow-hidden hover:border-[#f5a623]/20 transition group">
                   {item.featured && (
                     <div className="bg-gradient-to-r from-[#f5a623] to-[#e07850] px-4 py-1 text-[10px] font-bold text-white text-center">
                       Featured

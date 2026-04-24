@@ -165,7 +165,7 @@ function DetailCard({ title, items, color }: { title: string; items: string[]; c
     cyan: "border-[#f5a623]/15 bg-[#f5a623]/5 text-[#f5a623]/60",
     amber: "border-amber-500/15 bg-amber-500/5 text-amber-400/60",
     blue: "border-blue-500/15 bg-blue-500/5 text-blue-400/60",
-    purple: "border-purple-500/15 bg-purple-500/5 text-[#e07850]/60",
+    purple: "border-[#e07850]/15 bg-[#e07850]/5 text-[#e07850]/60",
   };
   const c = colorMap[color] ?? colorMap.cyan;
   return (

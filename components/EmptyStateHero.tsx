@@ -17,17 +17,17 @@ type Props = {
 };
 
 const COLORS = {
-  cyan: "from-cyan-500/[0.06] to-purple-500/[0.04] border-[#f5a623]/15",
-  purple: "from-purple-500/[0.06] to-cyan-500/[0.04] border-purple-500/15",
+  cyan: "from-[#f5a623]/[0.06] to-[#e07850]/[0.04] border-[#f5a623]/15",
+  purple: "from-[#e07850]/[0.06] to-[#f5a623]/[0.04] border-[#e07850]/15",
   amber: "from-amber-500/[0.06] to-orange-500/[0.04] border-amber-500/15",
-  emerald: "from-emerald-500/[0.06] to-cyan-500/[0.04] border-emerald-500/15",
+  emerald: "from-emerald-500/[0.06] to-[#f5a623]/[0.04] border-emerald-500/15",
 };
 
 const CTA_COLORS = {
   cyan: "from-[#f5a623] to-[#e07850]",
-  purple: "from-purple-500 to-cyan-600",
+  purple: "from-[#e07850] to-[#e07850]",
   amber: "from-amber-500 to-orange-600",
-  emerald: "from-emerald-500 to-cyan-600",
+  emerald: "from-emerald-500 to-[#e07850]",
 };
 
 export default function EmptyStateHero({ icon, title, description, ctaLabel, ctaHref, onCtaClick, steps, color = "cyan" }: Props) {

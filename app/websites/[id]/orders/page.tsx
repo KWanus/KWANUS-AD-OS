@@ -151,7 +151,7 @@ export default function OrdersDashboard({ params }: { params: Promise<{ id: stri
     if (loading) {
         return (
             <div className="min-h-screen bg-t-bg flex items-center justify-center">
-                <Loader2 className="w-6 h-6 text-cyan-500 animate-spin" />
+                <Loader2 className="w-6 h-6 text-[#f5a623] animate-spin" />
             </div>
         );
     }
@@ -248,7 +248,7 @@ export default function OrdersDashboard({ params }: { params: Promise<{ id: stri
 
                 {orders.length === 0 ? (
                     <div className="border border-dashed border-white/[0.1] rounded-3xl p-12 flex flex-col items-center justify-center text-center bg-white/[0.01]">
-                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-purple-500/10 border border-white/[0.05] flex items-center justify-center mb-6">
+                        <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#f5a623]/10 to-[#e07850]/10 border border-white/[0.05] flex items-center justify-center mb-6">
                             <ShoppingBag className="w-8 h-8 text-white/40" />
                         </div>
                         <h3 className="text-lg font-black text-white mb-2">No orders yet</h3>

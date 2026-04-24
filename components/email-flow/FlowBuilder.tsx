@@ -154,8 +154,8 @@ const PALETTE_NODES = [
     label: "Email",
     desc: "Send an email",
     icon: Mail,
-    color: "border-purple-500/30 bg-purple-500/10 text-purple-300",
-    dot: "bg-purple-400",
+    color: "border-[#e07850]/30 bg-[#e07850]/10 text-[#f5a623]",
+    dot: "bg-[#e07850]",
   },
   {
     type: "wait",
@@ -775,7 +775,7 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
                       {tier.id}
                     </span>
                   </div>
-                  <p className={`mt-2 text-[11px] leading-relaxed ${active ? "text-cyan-100/80" : "text-white/45"}`}>
+                  <p className={`mt-2 text-[11px] leading-relaxed ${active ? "text-[#f5a623]/80" : "text-white/45"}`}>
                     {tier.description}
                   </p>
                 </button>
@@ -922,7 +922,7 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
                       </p>
                     )}
                     {retryResults[enrollment.id] && (
-                      <p className="mt-1 text-[9px] leading-4 text-cyan-200/75">
+                      <p className="mt-1 text-[9px] leading-4 text-[#f5a623]/75">
                         Retried {formatRelativeTime(new Date(retryResults[enrollment.id].at).toISOString())}
                         {` -> ${retryResults[enrollment.id].status}`}
                       </p>
@@ -953,7 +953,7 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
           <button
             onClick={() => void handleManualSave()}
             disabled={saveState === "saving"}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#f5a623] hover:bg-cyan-400 text-[#050a14] text-xs font-black transition disabled:opacity-60 shadow-[0_0_20px_rgba(245,166,35,0.2)]"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#f5a623] hover:bg-[#f5a623] text-[#050a14] text-xs font-black transition disabled:opacity-60 shadow-[0_0_20px_rgba(245,166,35,0.2)]"
           >
             {saveState === "saving" ? (
               <>

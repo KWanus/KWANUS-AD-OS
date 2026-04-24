@@ -105,7 +105,7 @@ export default function PublicBookingPage({ params }: { params: Promise<{ userId
   return (
     <div className="min-h-screen bg-t-bg text-white">
       <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
-        <div className="mb-6 rounded-3xl border border-[#f5a623]/12 bg-gradient-to-br from-cyan-500/[0.06] via-transparent to-purple-500/[0.05] p-6 sm:p-8">
+        <div className="mb-6 rounded-3xl border border-[#f5a623]/12 bg-gradient-to-br from-[#f5a623]/[0.06] via-transparent to-[#e07850]/[0.05] p-6 sm:p-8">
           <WorkflowHeader
             title="Book a Call"
             description="Choose a time that works for you and lock it in directly. No extra scheduling tool needed."

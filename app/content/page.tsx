@@ -92,7 +92,7 @@ export default function ContentCalendarPage() {
 
         {!generated ? (
           <div className="flex flex-col items-center justify-center py-20 text-center">
-            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/20 to-[#e07850]/20 border border-white/10 flex items-center justify-center mb-6">
+            <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-[#f5a623]/20 to-[#e07850]/20 border border-white/10 flex items-center justify-center mb-6">
               <Calendar className="w-9 h-9 text-[#f5a623]/70" />
             </div>
             <h2 className="text-xl font-black text-white mb-2">Generate Your Content Calendar</h2>

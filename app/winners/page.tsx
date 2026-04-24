@@ -140,7 +140,7 @@ export default function WinnerFinder() {
         <main className="min-h-screen bg-t-bg text-white flex flex-col font-inter">
             {/* Subtle background glow */}
             <div className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-[#f5a623]/10 blur-[120px] rounded-full pointer-events-none" />
-            <div className="fixed bottom-0 right-1/4 w-[500px] h-[500px] bg-purple-500/10 blur-[120px] rounded-full pointer-events-none" />
+            <div className="fixed bottom-0 right-1/4 w-[500px] h-[500px] bg-[#e07850]/10 blur-[120px] rounded-full pointer-events-none" />
 
             <AppNav />
 
@@ -207,14 +207,14 @@ export default function WinnerFinder() {
                                     value={researchNiche}
                                     onChange={(e) => setResearchNiche(e.target.value)}
                                     placeholder={researchMode === "affiliate" ? "Niche: weight loss, dogs, finance" : "Niche: home fitness, pets, kitchen"}
-                                    className="rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-cyan-400/40 focus:outline-none"
+                                    className="rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-[#f5a623]/40 focus:outline-none"
                                 />
                                 <input
                                     type="text"
                                     value={researchBudget}
                                     onChange={(e) => setResearchBudget(e.target.value)}
                                     placeholder="Budget: $500 test, $2k/mo, etc."
-                                    className="rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-cyan-400/40 focus:outline-none"
+                                    className="rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-[#f5a623]/40 focus:outline-none"
                                 />
                             </div>
 
@@ -223,7 +223,7 @@ export default function WinnerFinder() {
                                 value={researchExtra}
                                 onChange={(e) => setResearchExtra(e.target.value)}
                                 placeholder={researchMode === "affiliate" ? "Traffic source: Meta, TikTok, SEO, YouTube" : "Target market: US women 25-44, homeowners, etc."}
-                                className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-cyan-400/40 focus:outline-none"
+                                className="w-full rounded-2xl border border-white/[0.08] bg-white/[0.03] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-[#f5a623]/40 focus:outline-none"
                             />
 
                             <button
@@ -343,7 +343,7 @@ export default function WinnerFinder() {
                             placeholder="Search niches, products..."
                             value={search}
                             onChange={e => setSearch(e.target.value)}
-                            className="bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-2 text-sm outline-none focus:border-cyan-400/50 transition w-64"
+                            className="bg-white/5 border border-white/10 rounded-xl pl-10 pr-4 py-2 text-sm outline-none focus:border-[#f5a623]/50 transition w-64"
                         />
                     </div>
                     <button className="p-2.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition text-white/40 hover:text-white">
@@ -352,7 +352,7 @@ export default function WinnerFinder() {
                 </div>
                 {loading ? (
                     <div className="flex flex-col items-center justify-center h-64 gap-4">
-                        <Loader2 className="w-8 h-8 text-cyan-500 animate-spin" />
+                        <Loader2 className="w-8 h-8 text-[#f5a623] animate-spin" />
                         <p className="text-sm font-black text-white/20 uppercase tracking-widest">Scanning Market Data...</p>
                     </div>
                 ) : filtered.length === 0 ? (

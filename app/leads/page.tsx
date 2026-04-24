@@ -408,7 +408,7 @@ export default function LeadsPage() {
           eyebrow="Lead Engine"
           title="Build the outreach pipeline like a command center"
           description="Find businesses by niche and city, score where the opportunity is real, generate assets, and keep your best prospects moving without the page feeling like a plain spreadsheet."
-          accent="from-emerald-300 via-cyan-300 to-blue-300"
+          accent="from-emerald-300 via-[#f5a623] to-blue-300"
           actions={(
             <>
               <Link
@@ -484,7 +484,7 @@ export default function LeadsPage() {
 
               <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="xl:col-span-2" />
 
-              <div className="xl:col-span-2 rounded-[28px] border border-[#f5a623]/20 bg-gradient-to-br from-cyan-500/[0.08] to-emerald-500/[0.03] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.24)]">
+              <div className="xl:col-span-2 rounded-[28px] border border-[#f5a623]/20 bg-gradient-to-br from-[#f5a623]/[0.08] to-emerald-500/[0.03] p-6 shadow-[0_18px_50px_rgba(0,0,0,0.24)]">
                 <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
                   <div className="max-w-3xl">
                     <p className="text-[10px] font-black uppercase tracking-[0.28em] text-[#f5a623]/70">Recommended Lead Engine Move</p>
@@ -505,7 +505,7 @@ export default function LeadsPage() {
                         if (businessProfile.location) setLocation(businessProfile.location);
                         void runSearch();
                       }}
-                      className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(16,185,129,0.22)]"
+                      className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-[#f5a623] px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(16,185,129,0.22)]"
                     >
                       <Search className="h-4 w-4" />
                       Run Recommended Search
@@ -558,7 +558,7 @@ export default function LeadsPage() {
                 onChange={(event) => setNiche(event.target.value)}
                 onKeyDown={(event) => event.key === "Enter" && void runSearch()}
                 placeholder="Niche: roofers, med spas, dentists"
-                className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-cyan-400/40 focus:outline-none"
+                className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-[#f5a623]/40 focus:outline-none"
               />
               <input
                 type="text"
@@ -566,12 +566,12 @@ export default function LeadsPage() {
                 onChange={(event) => setLocation(event.target.value)}
                 onKeyDown={(event) => event.key === "Enter" && void runSearch()}
                 placeholder="Location: Miami FL, Austin TX"
-                className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-cyan-400/40 focus:outline-none"
+                className="rounded-2xl border border-white/[0.1] bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-[#f5a623]/40 focus:outline-none"
               />
               <button
                 onClick={() => void runSearch()}
                 disabled={!niche.trim() || !location.trim() || searching}
-                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-cyan-500 px-5 py-3 text-sm font-black text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+                className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-[#f5a623] px-5 py-3 text-sm font-black text-white transition hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
               >
                 {searching ? <Loader2 className="h-4 w-4 animate-spin" /> : <Search className="h-4 w-4" />}
                 {searching ? "Searching" : "Find Businesses"}
@@ -656,7 +656,7 @@ export default function LeadsPage() {
                   value={leadQuery}
                   onChange={(event) => setLeadQuery(event.target.value)}
                   placeholder="Search leads by name, niche, city, address, or website"
-                  className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-cyan-400/40 focus:outline-none"
+                  className="w-full rounded-2xl border border-white/[0.1] bg-white/[0.04] px-4 py-3 text-sm text-white placeholder:text-white/25 focus:border-[#f5a623]/40 focus:outline-none"
                 />
               </div>
 

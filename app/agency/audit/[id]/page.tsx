@@ -222,7 +222,7 @@ function ScoreRing({ score }: { score: number }) {
 }
 
 function ScoreBar({ label, value }: { label: string; value: number }) {
-  const color = value >= 70 ? "bg-cyan-400" : value >= 50 ? "bg-yellow-400" : "bg-red-400";
+  const color = value >= 70 ? "bg-[#f5a623]" : value >= 50 ? "bg-yellow-400" : "bg-red-400";
   return (
     <div className="flex items-center gap-3">
       <span className="text-xs text-white/50 w-28 shrink-0">{label}</span>
@@ -389,8 +389,8 @@ function StrategyTab({ audit, onRefresh }: { audit: AgencyAudit; onRefresh: () =
   }
 
   const PHASE_COLORS = [
-    "from-cyan-500/10 to-cyan-500/5 border-[#f5a623]/20",
-    "from-purple-500/10 to-purple-500/5 border-purple-500/20",
+    "from-[#f5a623]/10 to-[#f5a623]/5 border-[#f5a623]/20",
+    "from-[#e07850]/10 to-[#e07850]/5 border-[#e07850]/20",
     "from-green-500/10 to-green-500/5 border-green-500/20",
   ];
 
@@ -429,7 +429,7 @@ function StrategyTab({ audit, onRefresh }: { audit: AgencyAudit; onRefresh: () =
                     <div className="flex items-center gap-2 mt-1 flex-wrap">
                       <span className="text-[10px] text-white/25">{task.timeline}</span>
                       {task.tool && (
-                        <span className="text-[10px] text-[#e07850]/70 bg-purple-500/10 px-1.5 py-0.5 rounded">
+                        <span className="text-[10px] text-[#e07850]/70 bg-[#e07850]/10 px-1.5 py-0.5 rounded">
                           {task.tool}
                         </span>
                       )}
@@ -526,7 +526,7 @@ function ProposalTab({ audit, onRefresh }: { audit: AgencyAudit; onRefresh: () =
   const TIER_COLORS = [
     "border-white/[0.06] bg-white/[0.02]",
     "border-[#f5a623]/40 bg-[#f5a623]/[0.04]",
-    "border-purple-500/30 bg-purple-500/[0.03]",
+    "border-[#e07850]/30 bg-[#e07850]/[0.03]",
   ];
 
   const TIER_NAMES = ["Starter", "Growth", "Partnership"];
@@ -708,7 +708,7 @@ function PricingTab({ audit, onRefresh }: { audit: AgencyAudit; onRefresh: () =>
   const PKG_COLORS = [
     "border-white/[0.06] bg-white/[0.02]",
     "border-[#f5a623]/40 bg-[#f5a623]/[0.04]",
-    "border-purple-500/30 bg-purple-500/[0.03]",
+    "border-[#e07850]/30 bg-[#e07850]/[0.03]",
   ];
 
   return (
