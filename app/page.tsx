@@ -455,14 +455,14 @@ export default function Dashboard() {
                   <h2 className="mt-2 text-2xl font-black text-white md:text-3xl">{nextBestAction.title}</h2>
                   <p className="mt-3 text-sm leading-7 text-white/60">{nextBestAction.body}</p>
                   {businessProfile?.recommendedSystems?.firstAction && (
-                    <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-black/20 px-3 py-2 text-xs text-cyan-100">
+                    <div className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-black/20 backdrop-blur-sm px-3 py-2 text-xs text-cyan-100">
                       <CheckCircle2 className="h-3.5 w-3.5 text-cyan-300" />
                       {businessProfile.recommendedSystems.firstAction}
                     </div>
                   )}
                 </div>
 
-                <div className="min-w-[220px] rounded-[28px] border border-white/10 bg-black/20 p-4">
+                <div className="min-w-[220px] rounded-[28px] border border-white/[0.08] bg-black/20 backdrop-blur-sm p-4">
                   <div className="flex items-center justify-between gap-3">
                     <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/35">System Health</p>
                     <span className="text-[11px] font-bold text-cyan-300">{recommendationFreshness}</span>
@@ -595,7 +595,7 @@ export default function Dashboard() {
                 className={`rounded-[28px] border bg-gradient-to-br p-5 transition hover:scale-[1.01] ${ACCENTS[card.accent]}`}
               >
                 <div className="mb-5 flex items-center justify-between">
-                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-black/20">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-sm">
                     <card.icon className="h-5 w-5" />
                   </div>
                   <span className="text-3xl font-black text-white">{loading ? "…" : card.value}</span>
@@ -729,7 +729,7 @@ export default function Dashboard() {
                 href={hub.href}
                 className={`rounded-3xl border bg-gradient-to-br p-5 transition hover:border-white/20 hover:bg-white/[0.05] hover:scale-[1.01] hover:shadow-[0_0_30px_rgba(6,182,212,0.04)] ${ACCENTS[hub.accent]}`}
               >
-                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl border border-white/10 bg-black/20">
+                <div className="mb-4 flex h-11 w-11 items-center justify-center rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-sm">
                   <hub.icon className="h-5 w-5" />
                 </div>
                 <h3 className="text-lg font-black text-white">{hub.label}</h3>

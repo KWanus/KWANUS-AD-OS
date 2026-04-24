@@ -189,7 +189,7 @@ function ClientRow({ client, onDelete, onUpdate, selected, onToggle }: { client:
       />
 
       {/* Avatar */}
-      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500/20 to-purple-600/20 border border-white/10 flex items-center justify-center text-sm font-black text-white/70 shrink-0">
+      <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-white/[0.08] backdrop-blur-sm flex items-center justify-center text-sm font-black text-white/70 shrink-0">
         {client.name.charAt(0).toUpperCase()}
       </div>
 

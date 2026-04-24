@@ -837,7 +837,7 @@ function ResetButton({ onReset }: { onReset: () => void }) {
 
 function Stat({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-black/20 p-3">
+    <div className="rounded-xl border border-white/[0.08] bg-black/20 backdrop-blur-sm p-3">
       <p className="text-xs text-white/40 mb-0.5">{label}</p>
       <p className="text-sm font-semibold text-white">{value}</p>
     </div>

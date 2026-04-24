@@ -788,7 +788,7 @@ export default function CampaignWorkspace() {
                       This sets the quality bar for regenerated hooks, scripts, emails, and checklist guidance. Switching lanes updates the stored campaign strategy so future generations stay aligned.
                     </p>
                   </div>
-                  <div className="shrink-0 rounded-xl border border-white/10 bg-black/20 px-3 py-2 text-xs uppercase tracking-[0.18em] text-white/45">
+                  <div className="shrink-0 rounded-xl border border-white/[0.08] bg-black/20 backdrop-blur-sm px-3 py-2 text-xs uppercase tracking-[0.18em] text-white/45">
                     Stored on campaign
                   </div>
                 </div>
@@ -1902,7 +1902,7 @@ function EmailFlowDiagram({ emails }: { emails: EmailDraft[] }) {
   if (sorted.length === 0) return null;
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/20 backdrop-blur-sm p-5 overflow-x-auto relative">
+    <div className="rounded-2xl border border-white/[0.08] bg-black/20 backdrop-blur-sm backdrop-blur-sm p-5 overflow-x-auto relative">
       <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
       <p className="text-xs uppercase tracking-widest text-white/25 mb-4">Email Flow Timeline</p>
       <div className="flex items-center gap-0 min-w-max">

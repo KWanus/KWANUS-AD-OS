@@ -485,7 +485,7 @@ export default function ClientProfilePage({ params }: { params: Promise<{ id: st
           <div className="bg-white/[0.02] border border-white/[0.07] rounded-2xl p-6">
             <div className="flex items-start gap-5 mb-5">
               {/* Avatar */}
-              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-purple-600/20 border border-white/10 flex items-center justify-center text-xl font-black text-white/70 shrink-0">
+              <div className="w-14 h-14 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-white/[0.08] backdrop-blur-sm flex items-center justify-center text-xl font-black text-white/70 shrink-0">
                 {client.name.charAt(0).toUpperCase()}
               </div>
 

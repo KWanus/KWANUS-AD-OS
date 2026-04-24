@@ -222,7 +222,7 @@ function SkeletonRow() {
 function EmptyState({ filtered }: { filtered: boolean }) {
   return (
     <div className="flex flex-col items-center justify-center py-24 text-center px-4">
-      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/20 to-purple-600/20 border border-white/10 flex items-center justify-center mb-5">
+      <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-cyan-500/10 to-blue-500/10 border border-white/[0.08] backdrop-blur-sm flex items-center justify-center mb-5">
         <ScanSearch className="w-7 h-7 text-cyan-400/70" />
       </div>
       {filtered ? (
