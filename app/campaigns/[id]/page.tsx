@@ -748,7 +748,8 @@ export default function CampaignWorkspace() {
               )}
 
               {campaign.analysisRun && (
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+                <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6 relative overflow-hidden">
+                  <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-white/[0.08] to-transparent" />
                   <p className="text-xs uppercase tracking-widest text-white/30 mb-3">Analysis Summary</p>
                   <div className="flex items-start justify-between gap-4 mb-4">
                     <div>
@@ -775,7 +776,8 @@ export default function CampaignWorkspace() {
                 </div>
               )}
 
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-6 relative overflow-hidden">
+                <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/15 to-transparent" />
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                   <div className="max-w-2xl">
                     <p className="text-xs uppercase tracking-widest text-white/30 mb-3">Execution Lane</p>
@@ -828,7 +830,7 @@ export default function CampaignWorkspace() {
               </div>
 
               {/* Notes */}
-              <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+              <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-5">
                 <p className="text-xs uppercase tracking-widest text-white/30 mb-3">Notes</p>
                 <textarea
                   defaultValue={campaign.notes ?? ""}
@@ -854,7 +856,7 @@ export default function CampaignWorkspace() {
                     <button
                       onClick={() => void regenerateAssets("briefs")}
                       disabled={regenerating !== null}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-cyan-500/30 bg-cyan-500/5 hover:bg-cyan-500/10 text-cyan-400 text-xs font-bold transition disabled:opacity-40"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-cyan-500/20 bg-cyan-500/[0.06] hover:bg-cyan-500/[0.12] backdrop-blur-sm text-cyan-400 text-xs font-bold transition disabled:opacity-40 hover:shadow-[0_0_15px_rgba(6,182,212,0.12)]"
                     >
                       {regenerating === "briefs" ? "⟳ Regenerating..." : "⟳ Regenerate"}
                     </button>
@@ -874,7 +876,7 @@ export default function CampaignWorkspace() {
                     const c = v.content;
                     const scenes = (c.scenes as unknown[]) ?? [];
                     return (
-                      <div key={v.id} className="rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden hover:border-cyan-400/20 transition">
+                      <div key={v.id} className="rounded-2xl border border-white/10 bg-white/[0.03] overflow-hidden hover:border-cyan-400/20 hover:scale-[1.003] transition-all backdrop-blur-sm" style={{ boxShadow: "0 4px 25px rgba(0,0,0,0.2)" }}>
                         <div className="p-5">
                           <div className="flex items-start justify-between gap-4 mb-3">
                             <div className="flex items-center gap-2 flex-wrap">
@@ -925,14 +927,14 @@ export default function CampaignWorkspace() {
                     <button
                       onClick={() => void regenerateAssets("hooks")}
                       disabled={regenerating !== null}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-cyan-500/30 bg-cyan-500/5 hover:bg-cyan-500/10 text-cyan-400 text-xs font-bold transition disabled:opacity-40"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-cyan-500/20 bg-cyan-500/[0.06] hover:bg-cyan-500/[0.12] backdrop-blur-sm text-cyan-400 text-xs font-bold transition disabled:opacity-40 hover:shadow-[0_0_15px_rgba(6,182,212,0.12)]"
                     >
                       {regenerating === "hooks" ? "⟳ Regenerating..." : "⟳ Hooks"}
                     </button>
                     <button
                       onClick={() => void regenerateAssets("scripts")}
                       disabled={regenerating !== null}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-purple-500/30 bg-purple-500/5 hover:bg-purple-500/10 text-purple-400 text-xs font-bold transition disabled:opacity-40"
+                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-purple-500/20 bg-purple-500/[0.06] hover:bg-purple-500/[0.12] backdrop-blur-sm text-purple-400 text-xs font-bold transition disabled:opacity-40 hover:shadow-[0_0_15px_rgba(139,92,246,0.12)]"
                     >
                       {regenerating === "scripts" ? "⟳ Regenerating..." : "⟳ Scripts"}
                     </button>
@@ -986,7 +988,8 @@ export default function CampaignWorkspace() {
 
               {/* Add Variation */}
               {showAddForm ? (
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-5 space-y-3">
+                <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-5 space-y-3 relative overflow-hidden">
+                  <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
                   <p className="text-xs font-semibold text-white/60 uppercase tracking-widest">New Variation</p>
                   <div className="flex gap-2">
                     <button onClick={() => setAddType("hook")} className={`flex-1 rounded-xl border px-3 py-2 text-xs font-semibold transition ${addType === "hook" ? "border-cyan-400/50 bg-cyan-500/10 text-cyan-300" : "border-white/10 text-white/40"}`}>Hook</button>
@@ -1001,14 +1004,15 @@ export default function CampaignWorkspace() {
                   </div>
                 </div>
               ) : (
-                <button onClick={() => setShowAddForm(true)} className="w-full rounded-2xl border border-dashed border-white/10 hover:border-cyan-400/30 hover:bg-cyan-500/5 py-4 text-sm text-white/30 hover:text-cyan-400 transition">
+                <button onClick={() => setShowAddForm(true)} className="w-full rounded-2xl border border-dashed border-white/[0.08] hover:border-cyan-400/30 hover:bg-cyan-500/[0.04] py-4 text-sm text-white/30 hover:text-cyan-400 transition-all hover:shadow-[0_0_20px_rgba(6,182,212,0.06)]">
                   + Add Variation
                 </button>
               )}
 
               {/* Testing guide */}
               {(hooks.length > 0 || scripts.length > 0) && (
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-5 relative overflow-hidden">
+                  <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-purple-500/20 to-transparent" />
                   <p className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">How to test these</p>
                   <ol className="space-y-1.5 text-xs text-white/50">
                     <li><span className="text-white/70">1.</span> Set each new ad to <span className="text-yellow-300">Testing</span></li>
@@ -1226,7 +1230,7 @@ export default function CampaignWorkspace() {
 
                       {/* FAQ (read-only display, not editable inline since structure differs) */}
                       {campaign.landingDraft.faqItems && campaign.landingDraft.faqItems.length > 0 && (
-                        <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                        <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-5">
                           <p className="text-xs uppercase tracking-widest text-white/30 mb-3">FAQ Items</p>
                           <div className="space-y-3">
                             {campaign.landingDraft.faqItems.map((faq, i) => (
@@ -1263,7 +1267,7 @@ export default function CampaignWorkspace() {
                   <button
                     onClick={() => void regenerateAssets("emails")}
                     disabled={regenerating !== null}
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-purple-500/30 bg-purple-500/5 hover:bg-purple-500/10 text-purple-400 text-xs font-bold transition disabled:opacity-40"
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-purple-500/20 bg-purple-500/[0.06] hover:bg-purple-500/[0.12] backdrop-blur-sm text-purple-400 text-xs font-bold transition disabled:opacity-40 hover:shadow-[0_0_15px_rgba(139,92,246,0.12)]"
                   >
                     {regenerating === "emails" ? "⟳ Regenerating..." : "⟳ Regenerate All"}
                   </button>
@@ -1370,7 +1374,8 @@ export default function CampaignWorkspace() {
               )}
 
               {campaign.emailDrafts.length > 0 && (
-                <div className="rounded-2xl border border-white/10 bg-white/5 p-5">
+                <div className="rounded-2xl border border-white/10 bg-white/[0.03] backdrop-blur-sm p-5 relative overflow-hidden">
+                  <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-purple-500/20 to-transparent" />
                   <p className="text-xs font-semibold text-white/40 uppercase tracking-widest mb-2">How to use these</p>
                   <ol className="space-y-1.5 text-xs text-white/50">
                     <li><span className="text-white/70">1.</span> Copy each email into Klaviyo, Mailchimp, or your email tool</li>
@@ -1413,14 +1418,14 @@ export default function CampaignWorkspace() {
                           {items.map((item) => (
                             <label
                               key={item.id}
-                              className={`flex items-start gap-3 rounded-xl border p-3 cursor-pointer transition ${
+                              className={`flex items-start gap-3 rounded-xl border p-3 cursor-pointer transition-all backdrop-blur-sm ${
                                 item.done
-                                  ? "border-white/5 bg-white/2 opacity-50"
+                                  ? "border-white/5 bg-white/[0.02] opacity-50"
                                   : isWarning
-                                  ? "border-red-500/20 bg-red-500/5 hover:border-red-500/30"
+                                  ? "border-red-500/15 bg-red-500/[0.04] hover:border-red-500/25 hover:bg-red-500/[0.08]"
                                   : isScaling
-                                  ? "border-green-500/20 bg-green-500/5 hover:border-green-500/30"
-                                  : "border-white/10 bg-white/5 hover:border-cyan-400/20 hover:bg-cyan-500/5"
+                                  ? "border-green-500/15 bg-green-500/[0.04] hover:border-green-500/25 hover:bg-green-500/[0.08]"
+                                  : "border-white/[0.08] bg-white/[0.03] hover:border-cyan-400/20 hover:bg-cyan-500/[0.05]"
                               }`}
                             >
                               <input
