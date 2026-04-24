@@ -899,7 +899,7 @@ export default function CampaignWorkspace() {
                           <div className="flex items-center gap-3">
                             <button
                               onClick={() => openStudio(v)}
-                              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-[#0a0f1e] text-xs font-black uppercase tracking-wide transition shadow-[0_0_20px_rgba(6,182,212,0.25)]"
+                              className="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-[#020509] text-xs font-black uppercase tracking-wide transition shadow-[0_0_20px_rgba(6,182,212,0.25)] hover:shadow-[0_0_30px_rgba(6,182,212,0.35)]"
                             >
                               ✦ Open in Studio
                             </button>
@@ -996,7 +996,7 @@ export default function CampaignWorkspace() {
                   <textarea value={addContent} onChange={(e) => setAddContent(e.target.value)} placeholder={addType === "hook" ? "Write your hook copy here..." : "Write your script here..."} rows={3} className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-cyan-400/40 resize-none transition" />
                   <input value={addPlatform} onChange={(e) => setAddPlatform(e.target.value)} placeholder="Platform (optional — TikTok, Facebook...)" className="w-full rounded-xl border border-white/10 bg-black/30 px-4 py-2.5 text-sm text-white placeholder-white/20 outline-none focus:border-cyan-400/40 transition" />
                   <div className="flex gap-2">
-                    <button onClick={() => void addVariation()} disabled={adding || !addContent.trim()} className="flex-1 rounded-xl bg-cyan-500 hover:bg-cyan-400 disabled:opacity-50 px-4 py-2.5 text-sm font-semibold text-[#0a0f1e] transition">{adding ? "Adding..." : "Add Variation"}</button>
+                    <button onClick={() => void addVariation()} disabled={adding || !addContent.trim()} className="flex-1 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 disabled:opacity-50 px-4 py-2.5 text-sm font-semibold text-[#020509] transition shadow-[0_0_15px_rgba(6,182,212,0.15)] hover:shadow-[0_0_25px_rgba(6,182,212,0.25)]">{adding ? "Adding..." : "Add Variation"}</button>
                     <button onClick={() => { setShowAddForm(false); setAddName(""); setAddContent(""); setAddPlatform(""); }} className="rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 px-4 py-2.5 text-sm text-white/50 transition">Cancel</button>
                   </div>
                 </div>
@@ -1509,7 +1509,9 @@ function VariationCard({
     "border-white/10 bg-white/5";
 
   return (
-    <div className={`rounded-xl border overflow-hidden transition ${borderClass} ${isBrief ? "shadow-lg" : ""}`}>
+    <div className={`rounded-xl border overflow-hidden transition backdrop-blur-sm hover:scale-[1.005] hover:shadow-lg ${borderClass} ${isBrief ? "shadow-lg" : ""}`} style={{ boxShadow: variation.status === "winner" ? "0 0 25px rgba(34,197,94,0.08)" : variation.status === "live" || variation.status === "testing" ? "0 0 20px rgba(6,182,212,0.06)" : undefined }}>
+      {/* Top shine line on hover */}
+      <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-white/[0.06] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       <div className={`${isBrief ? "p-5" : "p-4"}`}>
         <div className="flex items-start justify-between gap-3 mb-2">
           <div className="flex items-center gap-2 flex-wrap">
@@ -1583,7 +1585,7 @@ function VariationCard({
                     <p className="text-xs uppercase tracking-widest text-white/25 mb-2">Scene Breakdown</p>
                     <div className="space-y-3">
                       {briefScenes.map((scene, i) => (
-                        <div key={i} className="rounded-lg border border-white/8 bg-black/20 p-3 space-y-1.5">
+                        <div key={i} className="rounded-lg border border-white/[0.08] bg-black/20 backdrop-blur-sm p-3 space-y-1.5 hover:border-white/[0.12] transition">
                           <div className="flex items-center gap-2">
                             <span className="text-cyan-400 font-bold text-xs shrink-0 w-12">{scene.timestamp}</span>
                             <span className="text-xs text-white/40 border border-white/10 px-1.5 py-0.5 rounded">{scene.shotType}</span>
@@ -1604,7 +1606,7 @@ function VariationCard({
                 {briefKit && (
                   <div>
                     <p className="text-xs uppercase tracking-widest text-white/25 mb-2">Production Kit</p>
-                    <div className="rounded-lg border border-white/8 bg-black/20 p-3 grid grid-cols-2 gap-2">
+                    <div className="rounded-lg border border-white/[0.08] bg-black/20 backdrop-blur-sm p-3 grid grid-cols-2 gap-2">
                       {([
                         ["Location", briefKit.location],
                         ["Casting", briefKit.casting],
@@ -1630,7 +1632,7 @@ function VariationCard({
                 {briefImageAd && (
                   <div>
                     <p className="text-xs uppercase tracking-widest text-white/25 mb-2">Static Ad Copy</p>
-                    <div className="rounded-lg border border-white/8 bg-black/20 p-3 space-y-2">
+                    <div className="rounded-lg border border-white/[0.08] bg-black/20 backdrop-blur-sm p-3 space-y-2">
                       <p className="text-sm font-bold text-white">{briefImageAd.headline}</p>
                       <p className="text-xs text-white/50 leading-relaxed">{briefImageAd.bodyCopy}</p>
                       <p className="text-xs text-white/30 italic">{briefImageAd.visualDirection}</p>
@@ -1672,33 +1674,33 @@ function MetricsBar({ metrics }: { metrics: VariationMetrics | null }) {
     );
   }
   return (
-    <div className="mt-3 pt-3 border-t border-white/5 flex flex-wrap gap-4">
+    <div className="mt-3 pt-3 border-t border-white/5 flex flex-wrap gap-2">
       {metrics.roas != null && (
-        <div>
-          <p className="text-[8px] font-bold text-white/20 uppercase tracking-widest">ROAS</p>
-          <p className="text-sm font-black text-green-400">{metrics.roas}x</p>
+        <div className="rounded-lg bg-green-500/[0.06] border border-green-500/10 px-3 py-1.5 backdrop-blur-sm">
+          <p className="text-[8px] font-bold text-green-400/40 uppercase tracking-widest">ROAS</p>
+          <p className="text-sm font-black bg-gradient-to-r from-green-400 to-emerald-300 bg-clip-text text-transparent">{metrics.roas}x</p>
         </div>
       )}
       {metrics.ctr != null && (
-        <div>
-          <p className="text-[8px] font-bold text-white/20 uppercase tracking-widest">CTR</p>
-          <p className="text-sm font-black text-cyan-400">{metrics.ctr}</p>
+        <div className="rounded-lg bg-cyan-500/[0.06] border border-cyan-500/10 px-3 py-1.5 backdrop-blur-sm">
+          <p className="text-[8px] font-bold text-cyan-400/40 uppercase tracking-widest">CTR</p>
+          <p className="text-sm font-black bg-gradient-to-r from-cyan-400 to-blue-300 bg-clip-text text-transparent">{metrics.ctr}</p>
         </div>
       )}
       {metrics.spend != null && (
-        <div>
+        <div className="rounded-lg bg-white/[0.03] border border-white/[0.06] px-3 py-1.5 backdrop-blur-sm">
           <p className="text-[8px] font-bold text-white/20 uppercase tracking-widest">Spend</p>
           <p className="text-sm font-black text-white/60">${metrics.spend}</p>
         </div>
       )}
       {metrics.impressions != null && (
-        <div>
+        <div className="rounded-lg bg-white/[0.03] border border-white/[0.06] px-3 py-1.5 backdrop-blur-sm">
           <p className="text-[8px] font-bold text-white/20 uppercase tracking-widest">Impr.</p>
           <p className="text-sm font-black text-white/60">{metrics.impressions.toLocaleString()}</p>
         </div>
       )}
       {metrics.conversions != null && (
-        <div>
+        <div className="rounded-lg bg-white/[0.03] border border-white/[0.06] px-3 py-1.5 backdrop-blur-sm">
           <p className="text-[8px] font-bold text-white/20 uppercase tracking-widest">Conv.</p>
           <p className="text-sm font-black text-white/60">{metrics.conversions}</p>
         </div>
@@ -1733,7 +1735,7 @@ function EmailEditorCard({
 
   if (isEditing) {
     return (
-      <div className="rounded-xl border border-cyan-500/30 bg-[#070c1a] overflow-hidden shadow-[0_0_30px_rgba(6,182,212,0.08)]">
+      <div className="rounded-xl border border-cyan-500/30 bg-[#070c1a]/80 backdrop-blur-xl overflow-hidden shadow-[0_0_30px_rgba(6,182,212,0.08)]">
         <div className="p-5 space-y-3">
           {/* Edit mode header */}
           <div className="flex items-center justify-between mb-1">
@@ -1747,7 +1749,7 @@ function EmailEditorCard({
               </button>
               <button
                 onClick={onSave}
-                className="px-3 py-1 rounded-lg bg-cyan-500 hover:bg-cyan-400 text-xs font-semibold text-[#0a0f1e] transition"
+                className="px-3 py-1 rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 text-xs font-semibold text-[#020509] transition shadow-[0_0_12px_rgba(6,182,212,0.15)]"
               >
                 Save
               </button>
@@ -1819,7 +1821,8 @@ function EmailEditorCard({
 
   // View mode
   return (
-    <div className="rounded-xl border border-white/10 bg-white/5 overflow-hidden hover:border-white/20 transition group">
+    <div className="rounded-xl border border-white/10 bg-white/[0.03] overflow-hidden hover:border-white/20 hover:scale-[1.005] transition-all backdrop-blur-sm group" style={{ boxShadow: "0 4px 20px rgba(0,0,0,0.15)" }}>
+      <div className="h-[1px] w-full bg-gradient-to-r from-transparent via-white/[0.06] to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       <div className="p-4">
         <div className="flex items-start justify-between gap-3 mb-1">
           <div className="flex-1 min-w-0">
@@ -1894,7 +1897,8 @@ function EmailFlowDiagram({ emails }: { emails: EmailDraft[] }) {
   if (sorted.length === 0) return null;
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/30 p-5 overflow-x-auto">
+    <div className="rounded-2xl border border-white/10 bg-black/20 backdrop-blur-sm p-5 overflow-x-auto relative">
+      <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent" />
       <p className="text-xs uppercase tracking-widest text-white/25 mb-4">Email Flow Timeline</p>
       <div className="flex items-center gap-0 min-w-max">
         {sorted.map((email, i) => {
@@ -1922,14 +1926,14 @@ function EmailFlowDiagram({ emails }: { emails: EmailDraft[] }) {
                 <span className="text-[10px] text-white/25 font-mono">{dayLabel}</span>
                 <div className={`relative w-8 h-8 rounded-full border-2 flex items-center justify-center ${seqColor.split(" ").slice(0, 2).join(" ")} transition`}>
                   <span className={`w-2.5 h-2.5 rounded-full ${dotColor}`} />
-                  <span className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full border border-[#0a0f1e] ${statusDot}`} />
+                  <span className={`absolute -top-0.5 -right-0.5 w-2 h-2 rounded-full border border-[#020509] ${statusDot}`} />
                 </div>
                 <div className={`px-2 py-0.5 rounded-md border text-[9px] font-medium whitespace-nowrap max-w-[90px] truncate ${seqColor}`}>
                   {email.subject ? email.subject.slice(0, 14) + (email.subject.length > 14 ? "…" : "") : EMAIL_SEQ_LABELS[email.sequence]}
                 </div>
               </div>
               {!isLast && (
-                <div className="w-6 h-px bg-white/10 mx-0.5 shrink-0" />
+                <div className="w-6 h-px mx-0.5 shrink-0" style={{ background: "linear-gradient(90deg, rgba(6,182,212,0.2), rgba(139,92,246,0.2))" }} />
               )}
             </div>
           );
@@ -2198,12 +2202,12 @@ function LandingPreview({ landing }: { landing: Partial<LandingDraft> }) {
 function CopyBar({ text }: { text: string }) {
   const [copied, setCopied] = useState(false);
   return (
-    <div className="flex justify-end px-3 pb-2">
+    <div className="flex justify-end px-3 pb-2 border-t border-white/[0.04]">
       <button
         onClick={() => { void navigator.clipboard.writeText(text).then(() => { setCopied(true); setTimeout(() => setCopied(false), 1600); }); }}
-        className="text-xs text-white/20 hover:text-white/50 transition"
+        className={`text-xs transition mt-1.5 ${copied ? "text-cyan-400" : "text-white/20 hover:text-cyan-300/60"}`}
       >
-        {copied ? "Copied!" : "Copy"}
+        {copied ? "✓ Copied!" : "Copy"}
       </button>
     </div>
   );
