@@ -25,7 +25,7 @@ import "reactflow/dist/style.css";
 
 function TriggerNode({ data, selected }: { data: any; selected: boolean }) {
     return (
-        <div className={`px-4 py-3 rounded-xl border-2 ${selected ? "border-cyan-500" : "border-white/10"} bg-[#050a14] shadow-xl min-w-[200px]`}>
+        <div className={`px-4 py-3 rounded-xl border-2 ${selected ? "border-cyan-500" : "border-white/10"} bg-[#020509] shadow-xl min-w-[200px]`}>
             <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-cyan-500 border-2 border-[#050a14]" />
             <div className="flex items-center gap-2 mb-2 text-cyan-400">
                 <Zap className="w-4 h-4" />
@@ -39,7 +39,7 @@ function TriggerNode({ data, selected }: { data: any; selected: boolean }) {
 
 function EmailNode({ data, selected }: { data: any; selected: boolean }) {
     return (
-        <div className={`px-4 py-3 rounded-xl border-2 ${selected ? "border-purple-500" : "border-white/10"} bg-[#050a14] shadow-xl min-w-[200px]`}>
+        <div className={`px-4 py-3 rounded-xl border-2 ${selected ? "border-purple-500" : "border-white/10"} bg-[#020509] shadow-xl min-w-[200px]`}>
             <Handle type="target" position={Position.Top} className="w-3 h-3 bg-purple-500 border-2 border-[#050a14]" />
             <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-purple-500 border-2 border-[#050a14]" />
             <div className="flex items-center gap-2 mb-2 text-purple-400">
@@ -54,7 +54,7 @@ function EmailNode({ data, selected }: { data: any; selected: boolean }) {
 
 function DelayNode({ data, selected }: { data: any; selected: boolean }) {
     return (
-        <div className={`px-4 py-3 rounded-xl border-2 ${selected ? "border-orange-500" : "border-white/10"} bg-[#050a14] shadow-xl min-w-[200px]`}>
+        <div className={`px-4 py-3 rounded-xl border-2 ${selected ? "border-orange-500" : "border-white/10"} bg-[#020509] shadow-xl min-w-[200px]`}>
             <Handle type="target" position={Position.Top} className="w-3 h-3 bg-orange-500 border-2 border-[#050a14]" />
             <Handle type="source" position={Position.Bottom} className="w-3 h-3 bg-orange-500 border-2 border-[#050a14]" />
             <div className="flex items-center gap-2 mb-2 text-orange-400">
@@ -68,7 +68,7 @@ function DelayNode({ data, selected }: { data: any; selected: boolean }) {
 
 function ConditionNode({ data, selected }: { data: any; selected: boolean }) {
     return (
-        <div className={`px-4 py-3 rounded-xl border-2 ${selected ? "border-green-500" : "border-white/10"} bg-[#050a14] shadow-xl min-w-[200px]`}>
+        <div className={`px-4 py-3 rounded-xl border-2 ${selected ? "border-green-500" : "border-white/10"} bg-[#020509] shadow-xl min-w-[200px]`}>
             <Handle type="target" position={Position.Top} className="w-3 h-3 bg-green-500 border-2 border-[#050a14]" />
             <Handle type="source" position={Position.Bottom} id="yes" style={{ left: '25%' }} className="w-3 h-3 bg-green-500 border-2 border-[#050a14]" />
             <Handle type="source" position={Position.Bottom} id="no" style={{ left: '75%' }} className="w-3 h-3 bg-red-500 border-2 border-[#050a14]" />
@@ -326,7 +326,7 @@ export default function AutomationsBuilder() {
     return (
         <div className="h-screen bg-[#020509] flex flex-col font-sans">
             {/* Header */}
-            <header className="h-14 shrink-0 bg-[#050a14] border-b border-white/[0.08] flex items-center justify-between px-6 z-10">
+            <header className="h-14 shrink-0 bg-[#020509]/80 backdrop-blur-2xl border-b border-white/[0.08] flex items-center justify-between px-6 z-10">
                 <div className="flex items-center gap-4">
                     <a href="/campaigns" className="flex items-center gap-1.5 text-white/40 hover:text-white transition group">
                         <ArrowLeft className="w-4 h-4" />
@@ -363,7 +363,7 @@ export default function AutomationsBuilder() {
                         >
                             <option value="">Load saved automation...</option>
                             {automationList.map(a => (
-                                <option key={a.id} value={a.id} className="bg-[#0d1525]">{a.name} ({a.status})</option>
+                                <option key={a.id} value={a.id} className="bg-[#020509]">{a.name} ({a.status})</option>
                             ))}
                         </select>
                     )}
@@ -397,7 +397,8 @@ export default function AutomationsBuilder() {
             {/* Main Builder Interface */}
             <div className="flex-1 flex overflow-hidden">
                 {/* Left Toolbar */}
-                <aside className="w-64 shrink-0 bg-[#050a14] border-r border-white/[0.08] flex flex-col pt-4">
+                <aside className="w-64 shrink-0 bg-[#020509]/60 backdrop-blur-xl border-r border-white/[0.08] flex flex-col pt-4 relative">
+                    <div className="absolute top-0 right-0 w-[1px] h-full bg-gradient-to-b from-cyan-500/15 via-transparent to-transparent pointer-events-none" />
                     <div className="px-4 pb-4 border-b border-white/[0.08]">
                         <div className="flex items-center gap-1.5 mb-3 text-cyan-400">
                             <Sparkles className="w-4 h-4" />
@@ -530,7 +531,7 @@ export default function AutomationsBuilder() {
                             <button
                                 onClick={handleAutoGenerate}
                                 disabled={!selectedCampaignId || loading}
-                                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-purple-600 text-[#050a14] text-xs font-black disabled:opacity-50 transition shadow-[0_0_15px_rgba(6,182,212,0.3)] hover:shadow-[0_0_20px_rgba(6,182,212,0.5)]"
+                                className="w-full py-2.5 rounded-lg bg-gradient-to-r from-cyan-500 to-purple-600 text-[#020509] text-xs font-black disabled:opacity-50 transition shadow-[0_0_15px_rgba(6,182,212,0.3)] hover:shadow-[0_0_20px_rgba(6,182,212,0.5)]"
                             >
                                 GENERATE FLOW
                             </button>

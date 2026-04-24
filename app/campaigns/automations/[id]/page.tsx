@@ -163,7 +163,7 @@ export default function AutomationDetailPage({ params }: { params: Promise<{ id:
   return (
     <div className="min-h-screen bg-[#020509] text-white">
       {/* Header */}
-      <header className="h-14 bg-[#050a14] border-b border-white/[0.08] flex items-center justify-between px-6">
+      <header className="h-14 bg-[#020509]/80 backdrop-blur-2xl border-b border-white/[0.08] flex items-center justify-between px-6">
         <div className="flex items-center gap-4">
           <Link href="/campaigns/automations" className="flex items-center gap-1.5 text-white/40 hover:text-white transition">
             <ArrowLeft className="w-4 h-4" />
@@ -241,11 +241,11 @@ export default function AutomationDetailPage({ params }: { params: Promise<{ id:
               onChange={(e) => setStatusFilter(e.target.value)}
               className="bg-white/[0.03] border border-white/[0.08] rounded-lg px-3 py-1.5 text-xs text-white/50 outline-none"
             >
-              <option value="all" className="bg-[#0d1525]">All</option>
-              <option value="completed" className="bg-[#0d1525]">Completed</option>
-              <option value="running" className="bg-[#0d1525]">Running</option>
-              <option value="failed" className="bg-[#0d1525]">Failed</option>
-              <option value="paused" className="bg-[#0d1525]">Paused</option>
+              <option value="all" className="bg-[#020509]">All</option>
+              <option value="completed" className="bg-[#020509]">Completed</option>
+              <option value="running" className="bg-[#020509]">Running</option>
+              <option value="failed" className="bg-[#020509]">Failed</option>
+              <option value="paused" className="bg-[#020509]">Paused</option>
             </select>
           </div>
         </div>
