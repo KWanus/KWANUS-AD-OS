@@ -214,7 +214,13 @@ export default function CampaignsPage() {
           : "Campaign Workspace";
 
   return (
-    <div className="min-h-screen bg-[#020509] text-white flex flex-col">
+    <div className="min-h-screen bg-[#020509] text-white flex flex-col relative">
+      {/* Ambient mesh background */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute inset-0 opacity-[0.015]" style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.5) 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
+        <div className="absolute top-0 left-1/4 w-[600px] h-[400px] opacity-[0.04]" style={{ background: "radial-gradient(ellipse, #06b6d4, transparent 70%)", filter: "blur(100px)" }} />
+        <div className="absolute top-1/3 right-1/4 w-[500px] h-[400px] opacity-[0.03]" style={{ background: "radial-gradient(ellipse, #8b5cf6, transparent 70%)", filter: "blur(100px)" }} />
+      </div>
       <AppNav />
       <CampaignSubNav />
       <WorkspaceShell>
@@ -317,7 +323,8 @@ export default function CampaignsPage() {
         )}
 
         {businessProfile && (
-          <div className="mb-6 rounded-[28px] border border-white/[0.08] bg-white/[0.03] p-5">
+          <div className="mb-6 rounded-[28px] border border-white/[0.08] bg-white/[0.025] backdrop-blur-sm p-5 relative overflow-hidden">
+            <div className="absolute -top-20 -right-20 w-40 h-40 rounded-full opacity-[0.04] pointer-events-none" style={{ background: "radial-gradient(circle, #06b6d4, transparent)", filter: "blur(30px)" }} />
             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-3xl">
                 <p className="text-[10px] font-black uppercase tracking-[0.26em] text-white/35">Business OS Status</p>
@@ -365,7 +372,9 @@ export default function CampaignsPage() {
         <DatabaseFallbackNotice visible={osStats?.databaseUnavailable} className="mb-6" />
 
         {businessProfile && (
-          <div className="mb-6 rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] to-blue-500/[0.03] p-6">
+          <div className="mb-6 rounded-[28px] border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.08] to-blue-500/[0.03] p-6 backdrop-blur-sm relative overflow-hidden">
+            <div className="absolute -top-16 -left-16 w-48 h-48 rounded-full opacity-[0.06] pointer-events-none" style={{ background: "radial-gradient(circle, #06b6d4, transparent)", filter: "blur(40px)" }} />
+            <div className="absolute -bottom-12 -right-12 w-40 h-40 rounded-full opacity-[0.04] pointer-events-none" style={{ background: "radial-gradient(circle, #8b5cf6, transparent)", filter: "blur(40px)" }} />
             <div className="flex flex-col gap-5 lg:flex-row lg:items-start lg:justify-between">
               <div className="max-w-3xl">
                 <p className="text-[10px] font-black uppercase tracking-[0.26em] text-cyan-200/70">Recommended Next Campaign</p>
@@ -402,8 +411,8 @@ export default function CampaignsPage() {
         {/* Loading */}
         {loading && (
           <div className="flex flex-col items-center justify-center py-32 gap-4">
-            <div className="w-8 h-8 border-2 border-white/10 border-t-cyan-500 rounded-full animate-spin" />
-            <span className="text-sm text-white/25 font-semibold">Loading campaigns...</span>
+            <div className="w-10 h-10 rounded-full animate-spin" style={{ border: "2px solid rgba(255,255,255,0.06)", borderTopColor: "#06b6d4", borderRightColor: "#8b5cf6", boxShadow: "0 0 20px rgba(6,182,212,0.15)" }} />
+            <span className="text-sm text-white/30 font-semibold">Loading campaigns...</span>
           </div>
         )}
 
@@ -412,15 +421,18 @@ export default function CampaignsPage() {
           <div className="mt-8 relative rounded-3xl border border-white/[0.06] bg-gradient-to-br from-cyan-500/[0.04] to-purple-500/[0.02] p-20 flex flex-col items-center text-center overflow-hidden">
             <div className="absolute inset-0 opacity-[0.013]"
               style={{ backgroundImage: "radial-gradient(circle, #06b6d4 1px, transparent 1px)", backgroundSize: "24px 24px" }} />
-            <div className="relative w-24 h-24 rounded-3xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border border-white/[0.07] flex items-center justify-center mb-6 shadow-[0_0_50px_rgba(6,182,212,0.15)]">
-              <BarChart2 className="w-10 h-10 text-cyan-400/50" />
+            {/* Ambient glow */}
+            <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[400px] h-[300px] opacity-[0.08] pointer-events-none" style={{ background: "radial-gradient(ellipse, #06b6d4, transparent 70%)", filter: "blur(80px)" }} />
+            <div className="absolute bottom-1/4 right-1/4 w-[300px] h-[200px] opacity-[0.05] pointer-events-none" style={{ background: "radial-gradient(ellipse, #8b5cf6, transparent 70%)", filter: "blur(60px)" }} />
+            <div className="relative w-28 h-28 rounded-3xl bg-gradient-to-br from-cyan-500/20 to-purple-500/20 border border-white/[0.08] flex items-center justify-center mb-8 shadow-[0_0_60px_rgba(6,182,212,0.2),0_0_120px_rgba(139,92,246,0.1)]" style={{ animation: "hm-float 6s ease-in-out infinite" }}>
+              <BarChart2 className="w-12 h-12 text-cyan-400/60" />
             </div>
-            <h2 className="text-2xl font-black text-white mb-2">No campaigns yet</h2>
-            <p className="text-sm text-white/35 max-w-sm mb-10 leading-relaxed">
-              Paste a product or competitor URL into the Copilot. In seconds, you'll get a full ad package — hooks, briefs, scripts, landing page copy, and email sequences.
+            <h2 className="text-3xl font-black text-white mb-3" style={{ background: "linear-gradient(135deg, #ffffff 40%, #06b6d4 100%)", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>No campaigns yet</h2>
+            <p className="text-sm text-white/40 max-w-sm mb-12 leading-relaxed">
+              Paste a product or competitor URL into the Copilot. In seconds, you&apos;ll get a full ad package — hooks, briefs, scripts, landing page copy, and email sequences.
             </p>
             <Link href="/analyze"
-              className="flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black shadow-[0_0_30px_rgba(6,182,212,0.25)] hover:scale-[1.02] transition-all">
+              className="flex items-center gap-2 px-8 py-4 rounded-2xl bg-gradient-to-r from-cyan-500 to-purple-600 text-white text-sm font-black shadow-[0_0_40px_rgba(6,182,212,0.3),0_8px_32px_rgba(0,0,0,0.3)] hover:shadow-[0_0_60px_rgba(6,182,212,0.4)] hover:scale-[1.03] transition-all duration-300">
               <Zap className="w-4 h-4" />
               Analyze Your First Market →
             </Link>
@@ -441,13 +453,15 @@ export default function CampaignsPage() {
               return (
                 <div key={c.id}
                   onClick={() => router.push(`/campaigns/${c.id}`)}
-                  className={`group relative rounded-2xl border ${s.border} bg-white/[0.02] hover:bg-white/[0.04] p-5 cursor-pointer transition-all duration-200 flex items-center gap-4 overflow-hidden`}
+                  className={`group relative rounded-2xl border ${s.border} bg-white/[0.02] hover:bg-white/[0.04] p-5 cursor-pointer transition-all duration-300 flex items-center gap-4 overflow-hidden backdrop-blur-sm hover:shadow-[0_8px_40px_rgba(0,0,0,0.3)] hover:scale-[1.005]`}
                 >
-                  {/* Subtle left accent */}
-                  <div className={`absolute left-0 top-0 bottom-0 w-0.5 ${s.dot} opacity-60`} />
+                  {/* Gradient left accent */}
+                  <div className="absolute left-0 top-0 bottom-0 w-[2px]" style={{ background: c.status === "active" || c.status === "scaling" ? "linear-gradient(to bottom, #06b6d4, #8b5cf6)" : c.status === "testing" ? "linear-gradient(to bottom, #eab308, #f97316)" : "linear-gradient(to bottom, rgba(255,255,255,0.1), rgba(255,255,255,0.03))" }} />
+                  {/* Top shine line */}
+                  <div className="absolute top-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "linear-gradient(90deg, transparent, rgba(6,182,212,0.3), transparent)" }} />
 
                   {/* Mode icon */}
-                  <div className="shrink-0 w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-xl">
+                  <div className="shrink-0 w-10 h-10 rounded-xl bg-white/[0.04] border border-white/[0.06] flex items-center justify-center text-xl group-hover:border-cyan-500/20 transition-colors" style={{ boxShadow: "0 4px 12px rgba(0,0,0,0.2)" }}>
                     {MODE_ICONS[c.mode] ?? "📊"}
                   </div>
 
@@ -550,8 +564,8 @@ export default function CampaignsPage() {
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
-                        <div className="w-7 h-7 rounded-lg bg-white/[0.05] border border-white/[0.07] flex items-center justify-center">
-                          <ArrowRight className="w-4 h-4 text-cyan-400/60" />
+                        <div className="w-7 h-7 rounded-lg bg-white/[0.05] border border-white/[0.07] flex items-center justify-center group-hover:bg-cyan-500/10 group-hover:border-cyan-500/25 transition-all">
+                          <ArrowRight className="w-4 h-4 text-cyan-400/60 group-hover:translate-x-0.5 transition-transform" />
                         </div>
                       </>
                     )}

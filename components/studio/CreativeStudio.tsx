@@ -196,7 +196,7 @@ export default function CreativeStudio({ isOpen, onClose, brief, executionTier: 
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[900px] h-[280px] opacity-[0.06] blur-[100px] pointer-events-none" style={{ background: `linear-gradient(to bottom, ${theme.from}, ${theme.to})` }} />
 
       {/* ── Header ── */}
-      <header className="relative z-10 px-5 py-3 border-b border-white/[0.06] flex items-center gap-4 bg-black/40 backdrop-blur-sm shrink-0">
+      <header className="relative z-10 px-5 py-3 border-b border-white/[0.06] flex items-center gap-4 bg-black/40 backdrop-blur-2xl shrink-0" style={{ boxShadow: "0 4px 30px rgba(0,0,0,0.3)" }}>
         <div className="flex items-center gap-3 w-64 shrink-0 min-w-0">
           <div className="w-7 h-7 rounded-lg shrink-0 flex items-center justify-center" style={{ background: `linear-gradient(135deg,${theme.from},${theme.to})` }}>
             <Sparkles className="w-3.5 h-3.5 text-white" />
@@ -268,26 +268,29 @@ function StoryboardMode({ brief, theme, executionTier }: { brief: StudioBrief; t
   return (
     <div className="flex h-full">
       {/* Scene list */}
-      <aside className="w-60 shrink-0 border-r border-white/[0.06] flex flex-col bg-black/20">
+      <aside className="w-60 shrink-0 border-r border-white/[0.06] flex flex-col bg-black/30 backdrop-blur-xl relative overflow-hidden">
+        <div className="absolute top-0 left-0 right-0 h-px" style={{ background: `linear-gradient(90deg, transparent, ${theme.from}40, ${theme.to}40, transparent)` }} />
         <div className="p-4 border-b border-white/[0.06]">
-          <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/20">{brief.scenes.length} Scenes · {brief.duration}</p>
+          <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/25">{brief.scenes.length} Scenes · {brief.duration}</p>
         </div>
         <div className="flex-1 overflow-y-auto p-2 space-y-1">
           {brief.scenes.map((s, i) => (
             <button key={i} onClick={() => setActive(i)}
-              className={`w-full text-left p-3 rounded-xl transition border text-xs ${active === i ? "border-white/15 bg-white/8" : "border-transparent hover:bg-white/[0.03]"}`}>
+              className={`w-full text-left p-3 rounded-xl transition-all border text-xs ${active === i ? "border-white/12 bg-white/[0.06] backdrop-blur-sm shadow-[0_4px_20px_rgba(0,0,0,0.2)]" : "border-transparent hover:bg-white/[0.03] hover:border-white/[0.04]"}`}
+              style={active === i ? { boxShadow: `0 0 20px ${theme.from}10` } : {}}>
               <div className="flex items-center gap-2 mb-1">
-                <span className="font-mono text-[10px] px-1.5 py-0.5 rounded bg-white/5 text-white/30">{s.timestamp}</span>
-                {active === i && <div className="ml-auto w-1.5 h-1.5 rounded-full" style={{ background: theme.from }} />}
+                <span className="font-mono text-[10px] px-1.5 py-0.5 rounded text-white/30" style={active === i ? { background: `${theme.from}15`, color: `${theme.from}cc` } : { background: "rgba(255,255,255,0.04)" }}>{s.timestamp}</span>
+                {active === i && <div className="ml-auto w-1.5 h-1.5 rounded-full" style={{ background: theme.from, boxShadow: `0 0 6px ${theme.from}` }} />}
               </div>
-              <p className="text-white/55 line-clamp-2 leading-snug">{s.visual}</p>
+              <p className={`line-clamp-2 leading-snug ${active === i ? "text-white/70" : "text-white/45"}`}>{s.visual}</p>
               <p className="text-[9px] text-white/20 uppercase font-bold mt-1 tracking-wider">{s.shotType}</p>
             </button>
           ))}
         </div>
-        <div className="p-4 border-t border-white/[0.06]">
-          <p className="text-[9px] font-black uppercase tracking-[0.15em] text-white/15 mb-2">Concept</p>
-          <p className="text-[11px] text-white/40 leading-relaxed italic">{brief.concept}</p>
+        <div className="p-4 border-t border-white/[0.06] relative">
+          <div className="absolute inset-0 opacity-[0.04]" style={{ background: `radial-gradient(ellipse at bottom, ${theme.from}, transparent)` }} />
+          <p className="text-[9px] font-black uppercase tracking-[0.15em] text-white/20 mb-2 relative">Concept</p>
+          <p className="text-[11px] text-white/40 leading-relaxed italic relative">{brief.concept}</p>
         </div>
       </aside>
 
@@ -308,15 +311,16 @@ function StoryboardMode({ brief, theme, executionTier }: { brief: StudioBrief; t
             </div>
 
             <div className="grid grid-cols-2 gap-4">
-              <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] p-5">
-                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/20 mb-3 flex items-center gap-2"><ImageIcon className="w-3 h-3" /> Visual</p>
+              <div className="rounded-2xl border border-white/[0.06] bg-white/[0.025] backdrop-blur-sm p-5 hover:border-white/[0.1] transition-all">
+                <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/25 mb-3 flex items-center gap-2"><ImageIcon className="w-3 h-3" /> Visual</p>
                 <p className="text-sm text-white/75 leading-relaxed">{scene.visual}</p>
               </div>
-              <div className="rounded-2xl p-5" style={{ border: `1px solid ${theme.from}20`, background: `${theme.from}07` }}>
-                <p className="text-[9px] font-black uppercase tracking-[0.2em] mb-3 flex items-center gap-2" style={{ color: `${theme.from}99` }}><Film className="w-3 h-3" /> Voiceover</p>
-                <p className="text-sm text-white/75 leading-relaxed">{scene.audio}</p>
+              <div className="rounded-2xl p-5 backdrop-blur-sm hover:border-opacity-40 transition-all relative overflow-hidden" style={{ border: `1px solid ${theme.from}20`, background: `${theme.from}07` }}>
+                <div className="absolute -top-10 -right-10 w-24 h-24 rounded-full opacity-20 pointer-events-none" style={{ background: `radial-gradient(circle, ${theme.from}30, transparent)`, filter: "blur(20px)" }} />
+                <p className="text-[9px] font-black uppercase tracking-[0.2em] mb-3 flex items-center gap-2 relative" style={{ color: `${theme.from}99` }}><Film className="w-3 h-3" /> Voiceover</p>
+                <p className="text-sm text-white/75 leading-relaxed relative">{scene.audio}</p>
                 {scene.textOverlay && (
-                  <div className="mt-3 pt-3 border-t border-white/[0.07]">
+                  <div className="mt-3 pt-3 border-t border-white/[0.07] relative">
                     <p className="text-[9px] font-black uppercase tracking-widest text-white/15 mb-1">Text Overlay</p>
                     <p className="text-sm font-black text-white uppercase">{scene.textOverlay}</p>
                   </div>
@@ -324,12 +328,13 @@ function StoryboardMode({ brief, theme, executionTier }: { brief: StudioBrief; t
               </div>
             </div>
 
-            <div className="rounded-2xl border border-white/[0.06] bg-black/20 p-5">
-              <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/20 mb-4">Production Notes</p>
-              <div className="grid grid-cols-3 gap-3">
+            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm p-5 relative overflow-hidden">
+              <div className="absolute -bottom-8 -left-8 w-32 h-32 rounded-full pointer-events-none opacity-[0.03]" style={{ background: `radial-gradient(circle, ${theme.from}, transparent)`, filter: "blur(20px)" }} />
+              <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/25 mb-4 relative">Production Notes</p>
+              <div className="grid grid-cols-3 gap-3 relative">
                 {([["Location", brief.productionKit.location], ["Casting", brief.productionKit.casting], ["Lighting", brief.productionKit.lighting], ["Audio", brief.productionKit.audioStyle], ["Color Grade", brief.productionKit.colorGrade], ["Props", brief.productionKit.props.join(", ")]] as [string, string][]).map(([k, v]) => (
-                  <div key={k}>
-                    <p className="text-[9px] text-white/15 uppercase font-bold mb-0.5">{k}</p>
+                  <div key={k} className="rounded-xl bg-white/[0.02] border border-white/[0.04] p-2.5">
+                    <p className="text-[9px] text-white/20 uppercase font-bold mb-0.5">{k}</p>
                     <p className="text-xs text-white/60">{v}</p>
                   </div>
                 ))}
@@ -337,8 +342,8 @@ function StoryboardMode({ brief, theme, executionTier }: { brief: StudioBrief; t
             </div>
 
             {/* Quick prompts */}
-            <div className="rounded-2xl border border-white/[0.06] bg-black/20 p-5 space-y-3">
-              <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/20">AI Prompts for This Scene</p>
+            <div className="rounded-2xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm p-5 space-y-3">
+              <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/25">AI Prompts for This Scene</p>
               {(["runway", "midjourney"] as PromptTool[]).map(tool => (
                 <div key={tool} className="flex items-start gap-3">
                   <span className="text-[9px] font-black uppercase text-white/15 w-16 pt-0.5 shrink-0">{tool}</span>
@@ -580,7 +585,8 @@ function ImageStudio({ brief, theme, executionTier }: { brief: StudioBrief; them
   return (
     <div className="flex h-full">
       {/* Left: Layer controls + format */}
-      <aside className="w-64 shrink-0 border-r border-white/[0.06] flex flex-col bg-black/20 overflow-y-auto">
+      <aside className="w-64 shrink-0 border-r border-white/[0.06] flex flex-col bg-black/30 backdrop-blur-xl overflow-y-auto relative">
+        <div className="absolute top-0 left-0 right-0 h-px" style={{ background: `linear-gradient(90deg, transparent, ${theme.from}30, ${theme.to}30, transparent)` }} />
         {/* Format */}
         <div className="p-4 border-b border-white/[0.06]">
           <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/20 mb-2">Format</p>
@@ -634,8 +640,8 @@ function ImageStudio({ brief, theme, executionTier }: { brief: StudioBrief; them
             <p className="text-[10px] text-red-400 mb-2">{genError}</p>
           ) : null}
           <button onClick={generateImage} disabled={generating}
-            className="w-full py-2.5 rounded-xl font-black text-[11px] uppercase tracking-widest text-[#050a14] flex items-center justify-center gap-2 disabled:opacity-60 transition"
-            style={{ background: `linear-gradient(135deg,${theme.from},${theme.to})` }}>
+            className="w-full py-2.5 rounded-xl font-black text-[11px] uppercase tracking-widest text-[#050a14] flex items-center justify-center gap-2 disabled:opacity-60 transition-all hover:scale-[1.02]"
+            style={{ background: `linear-gradient(135deg,${theme.from},${theme.to})`, boxShadow: `0 4px 20px ${theme.from}30` }}>
             {generating ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Generating...</> : <><Sparkles className="w-3.5 h-3.5" /> Generate {executionTier === "elite" ? "Elite" : "Core"} Image</>}
           </button>
         </div>
@@ -721,7 +727,8 @@ function ImageStudio({ brief, theme, executionTier }: { brief: StudioBrief; them
       </div>
 
       {/* Right: Properties of selected layer */}
-      <aside className="w-64 shrink-0 border-l border-white/[0.06] overflow-y-auto p-5 bg-black/20">
+      <aside className="w-64 shrink-0 border-l border-white/[0.06] overflow-y-auto p-5 bg-black/30 backdrop-blur-xl relative">
+        <div className="absolute top-0 left-0 right-0 h-px" style={{ background: `linear-gradient(90deg, transparent, ${theme.to}30, ${theme.from}30, transparent)` }} />
         {selectedLayer ? (
           <div className="space-y-4">
             <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/20">Layer Properties</p>
@@ -917,9 +924,10 @@ function VideoLab({ brief, theme, executionTier }: { brief: StudioBrief; theme: 
             {scenes.map((scene, i) => {
               const job = videoJobs[i];
               return (
-                <div key={i} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] overflow-hidden">
-                  <div className="px-5 py-3 border-b border-white/[0.07] flex items-center gap-3">
-                    <span className="w-7 h-7 rounded-lg flex items-center justify-center font-black text-xs text-white" style={{ background: `${theme.from}22` }}>{i + 1}</span>
+                <div key={i} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] backdrop-blur-sm overflow-hidden hover:border-white/[0.12] transition-all" style={job.status === "succeeded" ? { borderColor: `${theme.from}25`, boxShadow: `0 0 30px ${theme.from}08` } : {}}>
+                  <div className="px-5 py-3 border-b border-white/[0.07] flex items-center gap-3 relative">
+                    {job.status === "running" && <div className="absolute bottom-0 left-0 right-0 h-px" style={{ background: `linear-gradient(90deg, transparent, ${theme.from}, transparent)`, animation: "hm-shimmer 2s linear infinite", backgroundSize: "200% 100%" }} />}
+                    <span className="w-7 h-7 rounded-lg flex items-center justify-center font-black text-xs text-white" style={{ background: `${theme.from}22`, boxShadow: `0 0 12px ${theme.from}15` }}>{i + 1}</span>
                     <span className="text-[10px] font-mono text-white/30">{scene.timestamp}</span>
                     <span className="text-[10px] text-white/20 uppercase font-bold tracking-widest flex-1">{scene.shotType}</span>
                     {job.status === "succeeded" && job.videoUrl && (
@@ -983,19 +991,20 @@ function VideoLab({ brief, theme, executionTier }: { brief: StudioBrief; theme: 
       </div>
 
       {/* Setup guide */}
-      <aside className="w-64 shrink-0 border-l border-white/[0.06] p-5 bg-black/20 overflow-y-auto">
-        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/20 mb-4">Setup Guide</p>
+      <aside className="w-64 shrink-0 border-l border-white/[0.06] p-5 bg-black/30 backdrop-blur-xl overflow-y-auto relative">
+        <div className="absolute top-0 left-0 right-0 h-px" style={{ background: `linear-gradient(90deg, transparent, ${theme.to}30, ${theme.from}30, transparent)` }} />
+        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/25 mb-4">Setup Guide</p>
         <div className="space-y-3">
-          <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
+          <div className="rounded-xl border border-white/[0.06] bg-white/[0.025] backdrop-blur-sm p-3 hover:border-white/[0.1] transition-all">
             <p className="text-[10px] font-bold text-white mb-1">1. Get Runway Key</p>
             <p className="text-[10px] text-white/40 leading-relaxed mb-2">Sign up at runwayml.com. Go to Account → API Keys.</p>
             <a href="https://runwayml.com" target="_blank" rel="noopener" className="text-[10px] text-cyan-400 flex items-center gap-1 hover:underline">runwayml.com <ExternalLink className="w-3 h-3" /></a>
           </div>
-          <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
+          <div className="rounded-xl border border-white/[0.06] bg-white/[0.025] backdrop-blur-sm p-3 hover:border-white/[0.1] transition-all">
             <p className="text-[10px] font-bold text-white mb-1">2. Add to .env</p>
-            <code className="text-[10px] font-mono text-cyan-300/70 block bg-black/30 rounded p-2">RUNWAY_API_KEY=your_key_here</code>
+            <code className="text-[10px] font-mono text-cyan-300/70 block bg-black/40 rounded-lg p-2 border border-white/[0.04]">RUNWAY_API_KEY=your_key_here</code>
           </div>
-          <div className="rounded-xl border border-white/[0.06] bg-white/[0.02] p-3">
+          <div className="rounded-xl border border-white/[0.06] bg-white/[0.025] backdrop-blur-sm p-3 hover:border-white/[0.1] transition-all">
             <p className="text-[10px] font-bold text-white mb-1">3. Restart dev server</p>
             <code className="text-[10px] font-mono text-white/40">npm run dev</code>
           </div>
@@ -1031,17 +1040,19 @@ function PromptLab({ brief, theme, executionTier }: { brief: StudioBrief; theme:
   return (
     <div className="flex h-full">
       {/* Tool selector */}
-      <aside className="w-52 shrink-0 border-r border-white/[0.06] p-4 bg-black/20">
-        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/20 mb-3">Select Tool</p>
+      <aside className="w-52 shrink-0 border-r border-white/[0.06] p-4 bg-black/30 backdrop-blur-xl relative">
+        <div className="absolute top-0 left-0 right-0 h-px" style={{ background: `linear-gradient(90deg, transparent, ${theme.from}30, ${theme.to}30, transparent)` }} />
+        <p className="text-[9px] font-black uppercase tracking-[0.2em] text-white/25 mb-3">Select Tool</p>
         <div className="space-y-1.5">
           {PROMPT_TOOLS.map(t => (
             <button key={t.id} onClick={() => setTool(t.id)}
-              className={`w-full text-left p-3 rounded-xl transition border ${tool === t.id ? "border-white/15 bg-white/8" : "border-transparent hover:bg-white/[0.03]"}`}>
+              className={`w-full text-left p-3 rounded-xl transition-all border ${tool === t.id ? "border-white/12 bg-white/[0.06] backdrop-blur-sm" : "border-transparent hover:bg-white/[0.03] hover:border-white/[0.04]"}`}
+              style={tool === t.id ? { boxShadow: `0 0 20px ${t.color}10` } : {}}>
               <div className="flex items-center gap-2 mb-0.5">
-                <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: t.color }} />
+                <div className="w-2 h-2 rounded-full shrink-0" style={{ background: t.color, boxShadow: tool === t.id ? `0 0 8px ${t.color}` : "none" }} />
                 <span className="text-xs font-bold text-white">{t.label}</span>
               </div>
-              <a href={t.link} target="_blank" rel="noopener" onClick={e => e.stopPropagation()} className="text-[9px] text-white/20 hover:text-white/50 pl-3.5 flex items-center gap-1 transition">
+              <a href={t.link} target="_blank" rel="noopener" onClick={e => e.stopPropagation()} className="text-[9px] text-white/20 hover:text-white/50 pl-4 flex items-center gap-1 transition">
                 {t.link.replace("https://", "")} <ExternalLink className="w-2.5 h-2.5" />
               </a>
             </button>
@@ -1103,15 +1114,15 @@ function PromptLab({ brief, theme, executionTier }: { brief: StudioBrief; theme:
           )}
 
           {brief.scenes.map((scene, i) => (
-            <div key={i} className="rounded-2xl border border-white/[0.07] bg-white/[0.02] overflow-hidden">
+            <div key={i} className="rounded-2xl border border-white/[0.07] bg-white/[0.025] backdrop-blur-sm overflow-hidden hover:border-white/[0.12] transition-all group">
               <div className="px-4 py-3 border-b border-white/[0.06] flex items-center gap-3">
-                <span className="w-6 h-6 rounded-lg flex items-center justify-center font-black text-[10px] text-white" style={{ background: `${theme.from}22` }}>{i + 1}</span>
-                <span className="text-[10px] font-mono text-white/25">{scene.timestamp}</span>
+                <span className="w-6 h-6 rounded-lg flex items-center justify-center font-black text-[10px] text-white" style={{ background: `${theme.from}22`, boxShadow: `0 0 10px ${theme.from}10` }}>{i + 1}</span>
+                <span className="text-[10px] font-mono text-white/30 px-1.5 py-0.5 rounded bg-white/[0.03]">{scene.timestamp}</span>
                 <span className="text-[10px] uppercase font-bold text-white/15 tracking-widest flex-1">{scene.shotType}</span>
                 <CopyBtn text={genPrompt(scene, brief.productionKit, tool, brief.platform, executionTier)} />
               </div>
               <div className="p-4">
-                <p className="text-[11px] text-white/50 font-mono leading-relaxed bg-black/20 rounded-lg p-3">{genPrompt(scene, brief.productionKit, tool, brief.platform, executionTier)}</p>
+                <p className="text-[11px] text-white/50 font-mono leading-relaxed bg-black/30 rounded-lg p-3 border border-white/[0.04]">{genPrompt(scene, brief.productionKit, tool, brief.platform, executionTier)}</p>
                 <p className="text-[9px] text-white/20 mt-2 italic">From: {scene.visual.slice(0, 70)}…</p>
               </div>
             </div>

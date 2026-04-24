@@ -165,12 +165,14 @@ function NavItem({
   return (
     <button
       onClick={onClick}
-      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition flex items-center justify-between ${
+      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all flex items-center justify-between relative ${
         active
-          ? "bg-cyan-500/10 text-cyan-300 font-medium"
-          : "text-white/40 hover:text-white/70 hover:bg-white/5"
+          ? "bg-cyan-500/[0.08] text-cyan-300 font-semibold backdrop-blur-sm border border-cyan-500/[0.12]"
+          : "text-white/40 hover:text-white/70 hover:bg-white/[0.04] border border-transparent"
       }`}
+      style={active ? { boxShadow: "0 0 16px rgba(6,182,212,0.06)" } : {}}
     >
+      {active && <div className="absolute left-0 top-1/4 bottom-1/4 w-[3px] rounded-r-full bg-gradient-to-b from-cyan-400 to-purple-500" />}
       <span>{label}</span>
       {count !== undefined && count !== null && (
         <span className={`text-xs ${active ? "text-cyan-400" : "text-white/20"}`}>{count}</span>
@@ -530,15 +532,19 @@ export default function CampaignWorkspace() {
 
   if (loading) {
     return (
-      <main className="min-h-screen bg-[#0a0f1e] text-white flex items-center justify-center">
-        <p className="text-white/30 text-sm">Loading workspace...</p>
+      <main className="min-h-screen bg-[#020509] text-white flex items-center justify-center relative">
+        <div className="absolute inset-0 opacity-[0.012]" style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.5) 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-10 h-10 rounded-full animate-spin" style={{ border: "2px solid rgba(255,255,255,0.06)", borderTopColor: "#06b6d4", borderRightColor: "#8b5cf6", boxShadow: "0 0 20px rgba(6,182,212,0.15)" }} />
+          <p className="text-white/30 text-sm font-medium">Loading workspace...</p>
+        </div>
       </main>
     );
   }
 
   if (!campaign) {
     return (
-      <main className="min-h-screen bg-[#0a0f1e] px-4 text-white flex items-center justify-center">
+      <main className="min-h-screen bg-[#020509] px-4 text-white flex items-center justify-center">
         <div className="w-full max-w-3xl space-y-4">
           <DatabaseFallbackNotice visible={databaseUnavailable} />
           <div className="text-center rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8">
@@ -564,10 +570,17 @@ export default function CampaignWorkspace() {
     : landingEdits;
 
   return (
-    <main className="flex h-screen bg-[#0a0f1e] text-white overflow-hidden">
+    <main className="flex h-screen bg-[#020509] text-white overflow-hidden relative">
+      {/* Ambient mesh */}
+      <div className="fixed inset-0 pointer-events-none z-0">
+        <div className="absolute inset-0 opacity-[0.012]" style={{ backgroundImage: "radial-gradient(rgba(255,255,255,0.5) 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
+        <div className="absolute top-0 right-1/4 w-[500px] h-[400px] opacity-[0.03]" style={{ background: "radial-gradient(ellipse, #06b6d4, transparent 70%)", filter: "blur(100px)" }} />
+      </div>
 
       {/* LEFT SIDEBAR (fixed, 220px) */}
-      <aside className="w-[220px] shrink-0 border-r border-white/10 flex flex-col">
+      <aside className="w-[220px] shrink-0 border-r border-white/[0.08] flex flex-col bg-[#020509]/80 backdrop-blur-2xl relative z-10">
+        {/* Top gradient accent */}
+        <div className="absolute top-0 left-0 right-0 h-[2px]" style={{ background: "linear-gradient(90deg, #06b6d4, #8b5cf6)" }} />
 
         {/* Campaign info */}
         <div className="p-4 border-b border-white/10">
@@ -582,7 +595,7 @@ export default function CampaignWorkspace() {
               className={`text-xs px-2 py-0.5 rounded-full border cursor-pointer bg-transparent outline-none ${STATUS_STYLES[campaign.status] ?? ""}`}
             >
               {CAMPAIGN_STATUS_OPTIONS.map((s) => (
-                <option key={s} value={s} className="bg-[#0a0f1e]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+                <option key={s} value={s} className="bg-[#020509]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
               ))}
             </select>
             <span className="rounded-full border border-cyan-500/20 bg-cyan-500/10 px-2 py-0.5 text-[10px] font-black uppercase tracking-[0.22em] text-cyan-300">
@@ -606,11 +619,12 @@ export default function CampaignWorkspace() {
                   key={phase}
                   className={`flex-1 h-1.5 rounded-full transition-all ${
                     i < (campaign.currentPhase ?? 1)
-                      ? "bg-cyan-500"
+                      ? ""
                       : i === (campaign.currentPhase ?? 1) - 1
-                      ? "bg-cyan-500/50"
+                      ? "opacity-60"
                       : "bg-white/[0.06]"
                   }`}
+                  style={i < (campaign.currentPhase ?? 1) ? { background: "linear-gradient(90deg, #06b6d4, #8b5cf6)", boxShadow: "0 0 8px rgba(6,182,212,0.3)" } : i === (campaign.currentPhase ?? 1) - 1 ? { background: "linear-gradient(90deg, #06b6d4, #8b5cf6)", boxShadow: "0 0 6px rgba(6,182,212,0.2)" } : {}}
                   title={phase}
                 />
               ))}
@@ -693,17 +707,18 @@ export default function CampaignWorkspace() {
       </aside>
 
       {/* MAIN CONTENT */}
-      <div className="flex-1 overflow-y-auto">
+      <div className="flex-1 overflow-y-auto relative z-10">
         <div className={`mx-auto p-8 ${activeTab === "landing" ? "max-w-6xl" : "max-w-3xl"}`}>
 
           {/* ── Overview ── */}
           {activeTab === "overview" && (
             <div className="space-y-4">
               {businessProfile && (
-                <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/[0.06] p-6">
-                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                <div className="rounded-2xl border border-cyan-500/20 bg-cyan-500/[0.06] backdrop-blur-sm p-6 relative overflow-hidden">
+                  <div className="absolute -top-12 -right-12 w-40 h-40 rounded-full opacity-[0.06] pointer-events-none" style={{ background: "radial-gradient(circle, #06b6d4, transparent)", filter: "blur(30px)" }} />
+                  <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between relative">
                     <div className="max-w-2xl">
-                      <p className="text-xs uppercase tracking-widest text-cyan-200/70 mb-3">Business Context</p>
+                      <p className="text-[10px] font-black uppercase tracking-[0.22em] text-cyan-200/70 mb-3">Business Context</p>
                       <h3 className="text-xl font-bold text-white">
                         {businessProfile.businessName || campaign.productName || campaign.name}
                       </h3>
@@ -874,7 +889,7 @@ export default function CampaignWorkspace() {
                             <div className="flex items-center gap-2 shrink-0">
                               <select value={v.status} onChange={(e) => void updateVariationStatus(v.id, e.target.value)}
                                 className="text-[10px] px-2 py-1 rounded-lg border border-white/10 bg-transparent text-white/40 outline-none cursor-pointer">
-                                {["draft","testing","live","winner","dead"].map(s => <option key={s} value={s} className="bg-[#0a0f1e]">{s.charAt(0).toUpperCase()+s.slice(1)}</option>)}
+                                {["draft","testing","live","winner","dead"].map(s => <option key={s} value={s} className="bg-[#020509]">{s.charAt(0).toUpperCase()+s.slice(1)}</option>)}
                               </select>
                               <button onClick={() => void deleteVariation(v.id)} className="text-xs text-white/15 hover:text-red-400 transition">✕</button>
                             </div>
@@ -1023,7 +1038,7 @@ export default function CampaignWorkspace() {
                       className={`text-xs px-2 py-1 rounded-full border cursor-pointer bg-transparent outline-none ${STATUS_STYLES[campaign.landingDraft.status] ?? ""}`}
                     >
                       {["draft", "ready", "live"].map((s) => (
-                        <option key={s} value={s} className="bg-[#0a0f1e]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+                        <option key={s} value={s} className="bg-[#020509]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
                       ))}
                     </select>
                   </div>
@@ -1378,8 +1393,8 @@ export default function CampaignWorkspace() {
                 <>
                   <div className="flex items-center justify-between mb-2">
                     <p className="text-sm text-white/50">{doneCount} of {totalCount} done</p>
-                    <div className="flex-1 mx-4 h-1.5 bg-white/10 rounded-full overflow-hidden">
-                      <div className="h-full bg-cyan-400 rounded-full transition-all" style={{ width: `${totalCount > 0 ? (doneCount / totalCount) * 100 : 0}%` }} />
+                    <div className="flex-1 mx-4 h-2 bg-white/[0.06] rounded-full overflow-hidden">
+                      <div className="h-full rounded-full transition-all" style={{ width: `${totalCount > 0 ? (doneCount / totalCount) * 100 : 0}%`, background: "linear-gradient(90deg, #06b6d4, #8b5cf6)", boxShadow: "0 0 12px rgba(6,182,212,0.3)" }} />
                     </div>
                     <p className="text-sm font-semibold text-white">{totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0}%</p>
                   </div>
@@ -1445,8 +1460,8 @@ export default function CampaignWorkspace() {
 
 function ContextChip({ label, value }: { label: string; value: string }) {
   return (
-    <div className="rounded-xl border border-white/10 bg-black/20 px-4 py-3">
-      <p className="text-[10px] uppercase tracking-[0.2em] text-white/25">{label}</p>
+    <div className="rounded-xl border border-white/[0.07] bg-white/[0.02] backdrop-blur-sm px-4 py-3 hover:border-white/[0.12] transition-all">
+      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/25">{label}</p>
       <p className="mt-2 text-sm font-medium leading-relaxed text-white/75">{value}</p>
     </div>
   );
@@ -1456,10 +1471,11 @@ function ContextChip({ label, value }: { label: string; value: string }) {
 
 function AssetStatusCard({ label, count, live, onNav }: { label: string; count: number; live: number; onNav: () => void }) {
   return (
-    <button onClick={onNav} className="rounded-xl border border-white/10 bg-white/5 hover:border-cyan-400/20 hover:bg-cyan-500/5 p-4 text-left transition">
-      <p className="text-xs text-white/30 mb-1">{label}</p>
-      <p className="text-xl font-bold text-white">{count}</p>
-      {live > 0 && <p className="text-xs text-cyan-400 mt-0.5">{live} active</p>}
+    <button onClick={onNav} className="rounded-xl border border-white/[0.07] bg-white/[0.025] hover:border-cyan-400/20 hover:bg-cyan-500/[0.06] p-4 text-left transition-all hover:scale-[1.02] backdrop-blur-sm relative overflow-hidden group" style={{ boxShadow: "0 4px 20px rgba(0,0,0,0.15)" }}>
+      <div className="absolute top-0 left-0 right-0 h-px opacity-0 group-hover:opacity-100 transition-opacity" style={{ background: "linear-gradient(90deg, transparent, rgba(6,182,212,0.3), transparent)" }} />
+      <p className="text-[10px] font-black uppercase tracking-[0.2em] text-white/30 mb-1.5">{label}</p>
+      <p className="text-2xl font-black" style={{ background: "linear-gradient(135deg, #ffffff 40%, #06b6d4)", backgroundClip: "text", WebkitBackgroundClip: "text", WebkitTextFillColor: "transparent" }}>{count}</p>
+      {live > 0 && <p className="text-xs text-cyan-400 mt-1 font-semibold">{live} active</p>}
     </button>
   );
 }
@@ -1515,7 +1531,7 @@ function VariationCard({
               className={`text-xs px-2 py-0.5 rounded-full border cursor-pointer bg-transparent outline-none ${STATUS_STYLES[variation.status] ?? ""}`}
             >
               {STATUS_OPTIONS.map((s) => (
-                <option key={s} value={s} className="bg-[#0a0f1e]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+                <option key={s} value={s} className="bg-[#020509]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
               ))}
             </select>
             <button onClick={onDelete} className="text-xs text-white/20 hover:text-red-400 transition">✕</button>
@@ -1792,7 +1808,7 @@ function EmailEditorCard({
               className="rounded-lg border border-white/10 bg-black/40 px-3 py-2 text-sm text-white outline-none focus:border-cyan-400/50 transition cursor-pointer"
             >
               {["draft", "ready", "live"].map((s) => (
-                <option key={s} value={s} className="bg-[#0a0f1e]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+                <option key={s} value={s} className="bg-[#020509]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
               ))}
             </select>
           </div>
@@ -1827,7 +1843,7 @@ function EmailEditorCard({
               className={`text-xs px-2 py-0.5 rounded-full border cursor-pointer bg-transparent outline-none ${statusStyle}`}
             >
               {["draft", "ready", "live"].map((s) => (
-                <option key={s} value={s} className="bg-[#0a0f1e]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
+                <option key={s} value={s} className="bg-[#020509]">{s.charAt(0).toUpperCase() + s.slice(1)}</option>
               ))}
             </select>
             <button
@@ -2085,13 +2101,15 @@ function LandingPreview({ landing }: { landing: Partial<LandingDraft> }) {
   const trustBar = landing.trustBar ?? [];
 
   return (
-    <div className="rounded-2xl border border-white/10 bg-black/40 overflow-hidden">
+    <div className="rounded-2xl border border-white/[0.08] bg-black/40 overflow-hidden backdrop-blur-sm relative" style={{ boxShadow: "0 20px 60px rgba(0,0,0,0.4), 0 0 40px rgba(6,182,212,0.04)" }}>
+      {/* Ambient glow behind preview */}
+      <div className="absolute -top-20 left-1/2 -translate-x-1/2 w-[300px] h-[200px] opacity-[0.04] pointer-events-none" style={{ background: "radial-gradient(ellipse, #06b6d4, transparent)", filter: "blur(60px)" }} />
       {/* Browser chrome mockup bar */}
-      <div className="flex items-center gap-1.5 px-3 py-2 bg-white/[0.03] border-b border-white/10">
-        <span className="w-2 h-2 rounded-full bg-red-500/40" />
-        <span className="w-2 h-2 rounded-full bg-yellow-500/40" />
-        <span className="w-2 h-2 rounded-full bg-green-500/40" />
-        <div className="flex-1 mx-3 h-4 rounded bg-white/5 flex items-center px-2">
+      <div className="flex items-center gap-1.5 px-3 py-2.5 bg-white/[0.03] border-b border-white/[0.08] relative">
+        <span className="w-2.5 h-2.5 rounded-full bg-red-500/50" />
+        <span className="w-2.5 h-2.5 rounded-full bg-yellow-500/50" />
+        <span className="w-2.5 h-2.5 rounded-full bg-green-500/50" />
+        <div className="flex-1 mx-3 h-5 rounded-lg bg-white/[0.04] border border-white/[0.05] flex items-center px-3">
           <span className="text-[9px] text-white/20 font-mono truncate">yoursite.com</span>
         </div>
       </div>
@@ -2140,7 +2158,7 @@ function LandingPreview({ landing }: { landing: Partial<LandingDraft> }) {
         {/* CTA */}
         <div>
           {landing.ctaCopy ? (
-            <button className="w-full py-3 rounded-xl bg-cyan-500 text-[#0a0f1e] text-sm font-black uppercase tracking-wide shadow-[0_0_24px_rgba(6,182,212,0.3)] hover:bg-cyan-400 transition">
+            <button className="w-full py-3 rounded-xl text-[#0a0f1e] text-sm font-black uppercase tracking-wide hover:scale-[1.02] transition-all" style={{ background: "linear-gradient(135deg, #06b6d4, #8b5cf6)", boxShadow: "0 0 30px rgba(6,182,212,0.35), 0 8px 20px rgba(0,0,0,0.3)" }}>
               {landing.ctaCopy}
             </button>
           ) : (
@@ -2193,10 +2211,13 @@ function CopyBar({ text }: { text: string }) {
 
 function EmptyState({ icon, title, sub }: { icon: string; title: string; sub: string }) {
   return (
-    <div className="flex flex-col items-center justify-center py-16 text-center">
-      <span className="text-4xl mb-3">{icon}</span>
-      <p className="text-sm font-semibold text-white/40 mb-1">{title}</p>
-      <p className="text-xs text-white/20 max-w-xs">{sub}</p>
+    <div className="flex flex-col items-center justify-center py-20 text-center relative">
+      <div className="absolute top-1/3 left-1/2 -translate-x-1/2 w-[200px] h-[150px] opacity-[0.06] pointer-events-none" style={{ background: "radial-gradient(ellipse, #06b6d4, transparent 70%)", filter: "blur(50px)" }} />
+      <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-white/[0.04] to-white/[0.02] border border-white/[0.06] flex items-center justify-center mb-5" style={{ boxShadow: "0 8px 30px rgba(0,0,0,0.2)" }}>
+        <span className="text-4xl">{icon}</span>
+      </div>
+      <p className="text-sm font-black text-white/50 mb-1.5">{title}</p>
+      <p className="text-xs text-white/25 max-w-xs leading-relaxed">{sub}</p>
     </div>
   );
 }
