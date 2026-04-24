@@ -180,7 +180,7 @@ export function buildAdImagePrompts(input: {
     },
     // 4. Bold statement graphic
     {
-      prompt: `Bold, eye-catching advertisement background graphic. Abstract modern design with electric blue (#06b6d4) and dark navy (#050a14) color scheme. Dynamic geometric shapes suggesting transformation and progress. Clean, premium feel. No text. Suitable as a background for a direct response advertisement.`,
+      prompt: `Bold, eye-catching advertisement background graphic. Abstract modern design with electric blue (#f5a623) and dark navy (#0c0a08) color scheme. Dynamic geometric shapes suggesting transformation and progress. Clean, premium feel. No text. Suitable as a background for a direct response advertisement.`,
       size: "1792x1024" as const,
       quality: "standard" as const,
     },

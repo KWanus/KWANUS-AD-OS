@@ -651,14 +651,14 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050a14] flex items-center justify-center">
+      <div className="min-h-screen bg-[#0c0a08] flex items-center justify-center">
         <Loader2 className="w-6 h-6 text-[#f5a623] animate-spin" />
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen w-screen overflow-hidden bg-[#050a14]">
+    <div className="flex h-screen w-screen overflow-hidden bg-[#0c0a08]">
 
       {/* ------------------------------------------------------------------ */}
       {/* LEFT SIDEBAR                                                         */}
@@ -953,7 +953,7 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
           <button
             onClick={() => void handleManualSave()}
             disabled={saveState === "saving"}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#f5a623] hover:bg-[#f5a623] text-[#050a14] text-xs font-black transition disabled:opacity-60 shadow-[0_0_20px_rgba(245,166,35,0.2)]"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-[#f5a623] hover:bg-[#f5a623] text-[#0c0a08] text-xs font-black transition disabled:opacity-60 shadow-[0_0_20px_rgba(245,166,35,0.2)]"
           >
             {saveState === "saving" ? (
               <>
@@ -998,7 +998,7 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
           minZoom={0.3}
           maxZoom={1.8}
           proOptions={{ hideAttribution: true }}
-          className="bg-[#050a14]"
+          className="bg-[#0c0a08]"
         >
           {/* Dot-grid background */}
           <Background

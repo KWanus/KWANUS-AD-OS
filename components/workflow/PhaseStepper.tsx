@@ -35,10 +35,10 @@ export default function PhaseStepper({ currentPhase, onPhaseClick }: PhaseSteppe
                         <div key={phase.id} className="relative z-10 flex flex-col items-center gap-2 group cursor-pointer" onClick={() => onPhaseClick?.(phase.id)}>
                             <div
                                 className={`w-10 h-10 rounded-xl flex items-center justify-center transition-all duration-500 border-2 font-black text-xs ${isActive
-                                        ? "bg-[#f5a623] border-[#f5a623] text-[#050a14] shadow-[0_0_20px_rgba(245,166,35,0.4)] scale-110"
+                                        ? "bg-[#f5a623] border-[#f5a623] text-[#0c0a08] shadow-[0_0_20px_rgba(245,166,35,0.4)] scale-110"
                                         : isCompleted
-                                            ? "bg-[#050a14] border-[#f5a623] text-[#f5a623]"
-                                            : "bg-[#050a14] border-white/10 text-white/20 group-hover:border-white/30"
+                                            ? "bg-[#0c0a08] border-[#f5a623] text-[#f5a623]"
+                                            : "bg-[#0c0a08] border-white/10 text-white/20 group-hover:border-white/30"
                                     }`}
                             >
                                 {isCompleted ? <Check className="w-5 h-5" /> : <Icon className="w-4 h-4" />}

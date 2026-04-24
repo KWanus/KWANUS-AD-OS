@@ -130,7 +130,7 @@ function buildGoldenBlocks(siteName: string, draft: any, executionTier: Executio
           { icon: "🛡️", title: trustStrings[2], body: "Fully covered for your peace of mind" },
           { icon: "⚡", title: trustStrings[3], body: "We show up when it matters" },
         ],
-        bgColor: "#050a14",
+        bgColor: "#0c0a08",
       },
     },
     {
@@ -199,7 +199,7 @@ function buildGoldenBlocks(siteName: string, draft: any, executionTier: Executio
             a: "Absolutely. We carry full liability insurance and all required state licenses.",
           },
         ],
-        bgColor: "#050a14",
+        bgColor: "#0c0a08",
       },
     },
     {

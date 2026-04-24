@@ -25,7 +25,7 @@ export async function POST(req: NextRequest) {
       painPoints: body.painPoints ?? ["wasting time", "not seeing results"],
       offer: body.offer ?? "a better way",
       uniqueAngle: body.uniqueAngle ?? "proven system",
-      brandColor: body.brandColor ?? "#06b6d4",
+      brandColor: body.brandColor ?? "#f5a623",
       tone: body.tone ?? "bold",
       landingUrl: body.landingUrl,
       existingWinners: body.existingWinners,

@@ -20,7 +20,7 @@ export function generateAccessibilityScript(): string {
   var skip = document.createElement('a');
   skip.href = '#main-content';
   skip.textContent = 'Skip to main content';
-  skip.style.cssText = 'position:absolute;top:-40px;left:0;background:#06b6d4;color:#fff;padding:8px 16px;z-index:10000;font-size:14px;font-weight:700;border-radius:0 0 8px 0;transition:top 0.2s;';
+  skip.style.cssText = 'position:absolute;top:-40px;left:0;background:#f5a623;color:#fff;padding:8px 16px;z-index:10000;font-size:14px;font-weight:700;border-radius:0 0 8px 0;transition:top 0.2s;';
   skip.onfocus = function(){ this.style.top = '0'; };
   skip.onblur = function(){ this.style.top = '-40px'; };
   document.body.prepend(skip);
@@ -44,7 +44,7 @@ export function generateAccessibilityScript(): string {
 
   // Add focus visible styles
   var style = document.createElement('style');
-  style.textContent = ':focus-visible{outline:2px solid #06b6d4;outline-offset:2px;border-radius:4px;}';
+  style.textContent = ':focus-visible{outline:2px solid #f5a623;outline-offset:2px;border-radius:4px;}';
   document.head.appendChild(style);
 })();
 </script>`;
@@ -54,7 +54,7 @@ export function generateAccessibilityScript(): string {
 export function generatePerformanceMeta(input: { primaryFont?: string; primaryColor?: string }): string {
   return `
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
-<meta name="theme-color" content="${input.primaryColor ?? "#06b6d4"}" />
+<meta name="theme-color" content="${input.primaryColor ?? "#f5a623"}" />
 <meta name="color-scheme" content="dark light" />
 <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin />
 <link rel="dns-prefetch" href="https://fonts.googleapis.com" />

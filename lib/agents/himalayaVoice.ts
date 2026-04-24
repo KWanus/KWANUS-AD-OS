@@ -326,7 +326,7 @@ export function generateVoiceWidgetScript(input: {
 (function(){
   var w = document.createElement('div');
   w.id = 'himalaya-voice';
-  w.innerHTML = '<button id="hv-btn" style="position:fixed;bottom:20px;right:80px;z-index:9999;width:52px;height:52px;border-radius:50%;border:none;background:linear-gradient(135deg,#06b6d4,#8b5cf6);color:#fff;cursor:pointer;box-shadow:0 4px 20px rgba(6,182,212,0.4);font-size:20px;" title="Talk to us">🎤</button>';
+  w.innerHTML = '<button id="hv-btn" style="position:fixed;bottom:20px;right:80px;z-index:9999;width:52px;height:52px;border-radius:50%;border:none;background:linear-gradient(135deg,#f5a623,#e07850);color:#fff;cursor:pointer;box-shadow:0 4px 20px rgba(245,166,35,0.4);font-size:20px;" title="Talk to us">🎤</button>';
   document.body.appendChild(w);
 
   var btn = document.getElementById('hv-btn');
@@ -352,7 +352,7 @@ export function generateVoiceWidgetScript(input: {
   btn.onclick = function() {
     if (listening) {
       recognition.stop();
-      btn.style.background = 'linear-gradient(135deg,#06b6d4,#8b5cf6)';
+      btn.style.background = 'linear-gradient(135deg,#f5a623,#e07850)';
       btn.textContent = '🎤';
       listening = false;
     } else {
@@ -365,7 +365,7 @@ export function generateVoiceWidgetScript(input: {
 
   recognition.onresult = function(e) {
     var t = e.results[0][0].transcript;
-    btn.style.background = 'linear-gradient(135deg,#06b6d4,#8b5cf6)';
+    btn.style.background = 'linear-gradient(135deg,#f5a623,#e07850)';
     btn.textContent = '🎤';
     listening = false;
 
@@ -381,7 +381,7 @@ export function generateVoiceWidgetScript(input: {
   };
 
   recognition.onerror = function() {
-    btn.style.background = 'linear-gradient(135deg,#06b6d4,#8b5cf6)';
+    btn.style.background = 'linear-gradient(135deg,#f5a623,#e07850)';
     btn.textContent = '🎤';
     listening = false;
   };

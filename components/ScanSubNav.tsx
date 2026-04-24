@@ -14,7 +14,7 @@ export default function ScanSubNav() {
   const pathname = usePathname();
 
   return (
-    <div className="border-b border-white/[0.06] bg-[#050a14]">
+    <div className="border-b border-white/[0.06] bg-[#0c0a08]">
       <div className="max-w-3xl mx-auto px-4">
         <nav className="flex items-center gap-1 overflow-x-auto scrollbar-none">
           {SCAN_TABS.map(({ href, label, icon: Icon, exact }) => {

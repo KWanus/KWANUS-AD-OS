@@ -372,7 +372,7 @@ export function getStarterBlocksForContext(template: string, siteName: string, c
       subheadline: `Built for ${niche || labelBusinessType(type)} conversion${location ? ` in ${location}` : ""}.`,
       buttonText: "Get Started",
       buttonUrl: "#",
-      bgColor: "#050a14",
+      bgColor: "#0c0a08",
       textAlign: "center",
     },
   };

@@ -211,7 +211,7 @@ function generateEmbedCode(scenes: VideoScene[], presenterImageUrl?: string, con
     @keyframes slideUp { from { opacity:0; transform:translateY(40px); } to { opacity:1; transform:translateY(0); } }
     @keyframes zoomIn { from { opacity:0; transform:scale(0.8); } to { opacity:1; transform:scale(1); } }
     .hv-scene { position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:40px 24px; }
-    .hv-progress { position:absolute; bottom:0; left:0; height:3px; background:linear-gradient(90deg,#06b6d4,#8b5cf6); transition:width 0.3s linear; z-index:10; }
+    .hv-progress { position:absolute; bottom:0; left:0; height:3px; background:linear-gradient(90deg,#f5a623,#e07850); transition:width 0.3s linear; z-index:10; }
   </style>
   ${sceneHtml}
   <div class="hv-progress" style="width:0%"></div>

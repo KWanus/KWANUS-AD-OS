@@ -94,7 +94,7 @@ export async function runPostDeploy(input: {
         painPoints: painPoints.length > 0 ? painPoints : ["not getting results", "wasting time"],
         offer: offerDesc,
         uniqueAngle: angle,
-        brandColor: "#06b6d4",
+        brandColor: "#f5a623",
         tone: "bold",
         landingUrl: siteUrl,
       };
@@ -185,7 +185,7 @@ export async function runPostDeploy(input: {
         businessName,
         greeting: `Hey! 👋 How can we help you with ${niche}?`,
         webhookUrl: `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/api/voice/reply`,
-        primaryColor: "#06b6d4",
+        primaryColor: "#f5a623",
       });
 
       const schema = generateSchemaMarkup({
@@ -212,12 +212,12 @@ export async function runPostDeploy(input: {
               offer: `Get our free ${niche} guide. No spam, just value.`,
               ctaText: "Get the Free Guide",
               ctaUrl: siteUrl ? `${siteUrl}#form` : "#form",
-              primaryColor: "#06b6d4",
+              primaryColor: "#f5a623",
             }),
             testimonialWidget: generateTestimonialWidget({
               businessName,
               webhookUrl: `${process.env.NEXT_PUBLIC_APP_URL ?? ""}/api/forms/submit`,
-              primaryColor: "#06b6d4",
+              primaryColor: "#f5a623",
             }),
           },
         },

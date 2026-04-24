@@ -70,7 +70,7 @@ export function generateEmailSignature(input: {
   website?: string;
   primaryColor?: string;
 }): string {
-  const color = input.primaryColor ?? "#06b6d4";
+  const color = input.primaryColor ?? "#f5a623";
   return `
 <table cellpadding="0" cellspacing="0" style="font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;color:#374151;">
   <tr>
@@ -186,7 +186,7 @@ export function generateLinkInBioBlocks(input: {
         title: input.businessName,
         subtitle: input.tagline,
         layout: "centered",
-        bgColor: "#050a14",
+        bgColor: "#0c0a08",
       },
     },
     ...input.links.map((link, i) => ({
@@ -321,7 +321,7 @@ export async function sendTestimonialRequest(input: {
 <p>Hey${input.customerName ? ` ${input.customerName.split(" ")[0]}` : ""},</p>
 <p>It's been about a week since you got ${input.productName}. I wanted to check in.</p>
 <p>How's everything going? If you have a moment, I'd love to hear about your experience.</p>
-${input.reviewUrl ? `<p><a href="${input.reviewUrl}" style="display:inline-block;padding:12px 24px;background:#06b6d4;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;">Leave a Quick Review</a></p>` : `<p>Just reply to this email with a sentence or two — it means the world to us.</p>`}
+${input.reviewUrl ? `<p><a href="${input.reviewUrl}" style="display:inline-block;padding:12px 24px;background:#f5a623;color:#fff;border-radius:10px;text-decoration:none;font-weight:700;">Leave a Quick Review</a></p>` : `<p>Just reply to this email with a sentence or two — it means the world to us.</p>`}
 <p>If anything isn't working perfectly, reply and I'll personally make sure it gets fixed.</p>
 <p>Thanks for choosing ${input.businessName}.</p>
 </div>`,

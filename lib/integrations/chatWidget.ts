@@ -120,7 +120,7 @@ export function generateChatWidgetScript(siteId: string): string {
 
   function render(){
     root.innerHTML = open ? '<div style="width:340px;height:440px;background:#fff;border-radius:16px;box-shadow:0 8px 32px rgba(0,0,0,0.15);display:flex;flex-direction:column;overflow:hidden;">' +
-      '<div style="background:linear-gradient(135deg,#06b6d4,#8b5cf6);padding:16px;color:#fff;display:flex;justify-content:space-between;align-items:center;">' +
+      '<div style="background:linear-gradient(135deg,#f5a623,#e07850);padding:16px;color:#fff;display:flex;justify-content:space-between;align-items:center;">' +
         '<div><strong style="font-size:14px;">Chat with us</strong><br><span style="font-size:11px;opacity:0.8;">We usually reply within minutes</span></div>' +
         '<button onclick="document.getElementById(\\'himalaya-chat\\').querySelector(\\'[data-close]\\').click()" style="background:none;border:none;color:#fff;font-size:20px;cursor:pointer;">×</button>' +
       '</div>' +
@@ -130,11 +130,11 @@ export function generateChatWidgetScript(siteId: string): string {
       '</form>' +
       '<form id="hc-msg-form" style="padding:0 12px 12px;display:flex;gap:8px;">' +
         '<input name="message" placeholder="Type a message..." style="flex:1;border:1px solid #ddd;border-radius:8px;padding:8px 12px;font-size:12px;outline:none;" required />' +
-        '<button type="submit" style="background:#06b6d4;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:bold;cursor:pointer;">Send</button>' +
+        '<button type="submit" style="background:#f5a623;color:#fff;border:none;border-radius:8px;padding:8px 16px;font-size:12px;font-weight:bold;cursor:pointer;">Send</button>' +
       '</form>' +
     '</div>' +
     '<button data-close onclick="window._hcToggle()" style="display:none;"></button>'
-    : '<button onclick="window._hcToggle()" style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#06b6d4,#8b5cf6);border:none;cursor:pointer;box-shadow:0 4px 16px rgba(6,182,212,0.4);display:flex;align-items:center;justify-content:center;">' +
+    : '<button onclick="window._hcToggle()" style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#f5a623,#e07850);border:none;cursor:pointer;box-shadow:0 4px 16px rgba(245,166,35,0.4);display:flex;align-items:center;justify-content:center;">' +
         '<svg width="24" height="24" fill="none" stroke="#fff" stroke-width="2" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>' +
       '</button>';
 
@@ -146,7 +146,7 @@ export function generateChatWidgetScript(siteId: string): string {
         var emailInput = document.querySelector('#hc-form input[name="email"]');
         if(!input.value.trim()) return;
         var msgs = document.getElementById('hc-messages');
-        msgs.innerHTML += '<div style="background:#06b6d4;color:#fff;padding:8px 12px;border-radius:12px;margin:4px 0;max-width:80%;margin-left:auto;font-size:13px;">' + input.value + '</div>';
+        msgs.innerHTML += '<div style="background:#f5a623;color:#fff;padding:8px 12px;border-radius:12px;margin:4px 0;max-width:80%;margin-left:auto;font-size:13px;">' + input.value + '</div>';
         fetch('/api/chat/message', {
           method: 'POST',
           headers: {'Content-Type':'application/json'},

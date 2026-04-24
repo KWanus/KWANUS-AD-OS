@@ -70,7 +70,7 @@ export const SKILLS: SkillMeta[] = [
       { key: "audience", label: "Who is it for?", type: "text", placeholder: "e.g. Life coaches 0–5k/mo", required: true },
       { key: "business_name", label: "Business / brand name", type: "text", placeholder: "e.g. Himalaya Coaching", required: true },
       { key: "tone", label: "Tone & style", type: "select", options: ["Professional & clean", "Bold & energetic", "Minimal & premium", "Friendly & conversational"] },
-      { key: "primary_color", label: "Brand accent color", type: "text", placeholder: "#06b6d4" },
+      { key: "primary_color", label: "Brand accent color", type: "text", placeholder: "#f5a623" },
     ],
     outputs: ["8-block landing page with AI copy", "New published site on your account", "SEO title + meta description"],
   },

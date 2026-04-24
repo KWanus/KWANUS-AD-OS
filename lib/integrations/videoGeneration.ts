@@ -61,7 +61,7 @@ async function generateWithCreatomate(input: VideoGenInput): Promise<VideoGenRes
             shape: "rectangle",
             width: "100%",
             height: "100%",
-            fill_color: scene.backgroundColor ?? "#050a14",
+            fill_color: scene.backgroundColor ?? "#0c0a08",
           },
           // Text overlay
           {
@@ -271,7 +271,7 @@ export function adBriefToVideoInput(brief: {
       duration,
       transition: "fade",
       backgroundType: "solid",
-      backgroundColor: "#050a14",
+      backgroundColor: "#0c0a08",
       textPosition: "center",
       fontSize: "large",
     };

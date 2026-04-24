@@ -100,7 +100,7 @@ export async function generateBrandGuide(input: {
       primary: input.primaryColor,
       secondary: adjustColor(input.primaryColor, -30),
       accent: "#f59e0b",
-      background: "#050a14",
+      background: "#0c0a08",
       text: "#ffffff",
     },
     typography: {

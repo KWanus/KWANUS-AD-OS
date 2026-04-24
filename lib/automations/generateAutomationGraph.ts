@@ -125,13 +125,13 @@ export function generateAutomationGraph(
         },
       ],
       edges: [
-        { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#06b6d4" } },
-        { id: "e2-3", source: "2", target: "3", animated: true, style: { stroke: "#8b5cf6" } },
-        { id: "e3-4", source: "3", target: "4", animated: true, style: { stroke: "#06b6d4" } },
+        { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#f5a623" } },
+        { id: "e2-3", source: "2", target: "3", animated: true, style: { stroke: "#e07850" } },
+        { id: "e3-4", source: "3", target: "4", animated: true, style: { stroke: "#f5a623" } },
         { id: "e4-5", source: "4", target: "5", animated: true, style: { stroke: "#22c55e" } },
         { id: "e5-6", source: "5", sourceHandle: "yes", target: "6", animated: true, style: { stroke: "#22c55e" } },
-        { id: "e6-7", source: "6", target: "7", animated: true, style: { stroke: "#8b5cf6" } },
-        { id: "e7-8", source: "7", target: "8", animated: true, style: { stroke: "#06b6d4" } },
+        { id: "e6-7", source: "6", target: "7", animated: true, style: { stroke: "#e07850" } },
+        { id: "e7-8", source: "7", target: "8", animated: true, style: { stroke: "#f5a623" } },
         { id: "e5-9", source: "5", sourceHandle: "no", target: "9", animated: true, style: { stroke: "#ef4444" } },
       ],
     };
@@ -164,10 +164,10 @@ export function generateAutomationGraph(
       },
     ],
     edges: [
-      { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#06b6d4" } },
-      { id: "e2-3", source: "2", target: "3", animated: true, style: { stroke: "#8b5cf6" } },
-      { id: "e3-4", source: "3", target: "4", animated: true, style: { stroke: "#06b6d4" } },
-      { id: "e4-5", source: "4", target: "5", animated: true, style: { stroke: "#8b5cf6" } },
+      { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#f5a623" } },
+      { id: "e2-3", source: "2", target: "3", animated: true, style: { stroke: "#e07850" } },
+      { id: "e3-4", source: "3", target: "4", animated: true, style: { stroke: "#f5a623" } },
+      { id: "e4-5", source: "4", target: "5", animated: true, style: { stroke: "#e07850" } },
     ],
   };
 }

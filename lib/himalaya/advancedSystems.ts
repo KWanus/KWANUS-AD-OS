@@ -27,7 +27,7 @@ export function generateSocialProofWidget(siteId: string): string {
   return `
 <div id="hm-social-proof" style="position:fixed;bottom:20px;left:20px;z-index:9998;display:none;">
   <div style="background:#fff;border-radius:12px;padding:12px 16px;box-shadow:0 4px 24px rgba(0,0,0,0.12);display:flex;align-items:center;gap:10px;max-width:300px;">
-    <div style="width:36px;height:36px;border-radius:50%;background:#06b6d4;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;">✓</div>
+    <div style="width:36px;height:36px;border-radius:50%;background:#f5a623;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;">✓</div>
     <div>
       <p id="hm-proof-text" style="margin:0;font-size:13px;font-weight:600;color:#0f172a;">Someone just took action</p>
       <p style="margin:2px 0 0;font-size:11px;color:#94a3b8;">Just now</p>

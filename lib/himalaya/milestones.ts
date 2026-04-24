@@ -298,7 +298,7 @@ export function generateWhiteLabelSiteTheme(config: WhiteLabelConfig): Record<st
   return {
     font: "Inter",
     primaryColor: config.primaryColor,
-    backgroundColor: "#050a14",
+    backgroundColor: "#0c0a08",
     textColor: "#ffffff",
     brandName: config.agencyName,
     brandLogo: config.agencyLogo,

@@ -249,7 +249,7 @@ export default function AdminDashboard() {
                 label="Credit Purchases"
                 amount={creditRev}
                 total={totalRevenue}
-                color="#06b6d4"
+                color="#f5a623"
               />
               <RevenueRow
                 label="Platform Fees (5%)"

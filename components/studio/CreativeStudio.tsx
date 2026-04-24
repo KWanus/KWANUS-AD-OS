@@ -189,7 +189,7 @@ export default function CreativeStudio({ isOpen, onClose, brief, executionTier: 
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex flex-col" style={{ background: "#050a14" }}>
+    <div className="fixed inset-0 z-50 flex flex-col" style={{ background: "#0c0a08" }}>
       {/* Dot grid */}
       <div className="absolute inset-0 opacity-[0.03]" style={{ backgroundImage: "radial-gradient(#fff 1px,transparent 1px)", backgroundSize: "32px 32px" }} />
       {/* Glow */}
@@ -213,7 +213,7 @@ export default function CreativeStudio({ isOpen, onClose, brief, executionTier: 
               <button key={id} onClick={() => setMode(id)}
                 className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-bold transition-all"
                 style={mode === id
-                  ? { background: `linear-gradient(135deg,${theme.from},${theme.to})`, color: "#050a14" }
+                  ? { background: `linear-gradient(135deg,${theme.from},${theme.to})`, color: "#0c0a08" }
                   : { color: "rgba(255,255,255,0.35)" }}>
                 <Icon className="w-3.5 h-3.5" />{label}
               </button>
@@ -231,7 +231,7 @@ export default function CreativeStudio({ isOpen, onClose, brief, executionTier: 
                   onClick={() => setExecutionTier(tier)}
                   className="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-[0.18em] transition"
                   style={active
-                    ? { background: `linear-gradient(135deg,${theme.from},${theme.to})`, color: "#050a14" }
+                    ? { background: `linear-gradient(135deg,${theme.from},${theme.to})`, color: "#0c0a08" }
                     : { color: "rgba(255,255,255,0.4)" }}
                 >
                   {tier}
@@ -634,7 +634,7 @@ function ImageStudio({ brief, theme, executionTier }: { brief: StudioBrief; them
             <p className="text-[10px] text-red-400 mb-2">{genError}</p>
           ) : null}
           <button onClick={generateImage} disabled={generating}
-            className="w-full py-2.5 rounded-xl font-black text-[11px] uppercase tracking-widest text-[#050a14] flex items-center justify-center gap-2 disabled:opacity-60 transition"
+            className="w-full py-2.5 rounded-xl font-black text-[11px] uppercase tracking-widest text-[#0c0a08] flex items-center justify-center gap-2 disabled:opacity-60 transition"
             style={{ background: `linear-gradient(135deg,${theme.from},${theme.to})` }}>
             {generating ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Generating...</> : <><Sparkles className="w-3.5 h-3.5" /> Generate {executionTier === "elite" ? "Elite" : "Core"} Image</>}
           </button>
@@ -701,7 +701,7 @@ function ImageStudio({ brief, theme, executionTier }: { brief: StudioBrief; them
         </div>
         <div className="flex items-center gap-3">
           <button onClick={downloadCanvas} disabled={downloading}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest text-[#050a14] transition disabled:opacity-50"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-xl font-black text-xs uppercase tracking-widest text-[#0c0a08] transition disabled:opacity-50"
             style={{ background: `linear-gradient(135deg,${theme.from},${theme.to})` }}>
             {downloading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />}
             Export {fmt.w}×{fmt.h} PNG
@@ -909,7 +909,7 @@ function VideoLab({ brief, theme, executionTier }: { brief: StudioBrief; theme: 
               <button className="px-3 py-1.5 rounded-lg text-[9px] font-black uppercase bg-white/5 text-white/40 border border-white/[0.07]">
                 {executionTier === "elite" ? "Elite Framing" : "Hook First"}
               </button>
-              <span className="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase text-[#050a14]" style={{ background: `linear-gradient(135deg,${theme.from},${theme.to})` }}>1080×1920</span>
+              <span className="px-3 py-1.5 rounded-lg text-[10px] font-black uppercase text-[#0c0a08]" style={{ background: `linear-gradient(135deg,${theme.from},${theme.to})` }}>1080×1920</span>
             </div>
           </div>
 
@@ -966,7 +966,7 @@ function VideoLab({ brief, theme, executionTier }: { brief: StudioBrief; theme: 
 
                     <button onClick={() => void generateScene(i)}
                       disabled={job.status === "running" || job.status === "pending"}
-                      className="flex items-center gap-2 px-4 py-2 rounded-xl font-black text-xs uppercase text-[#050a14] transition disabled:opacity-50"
+                      className="flex items-center gap-2 px-4 py-2 rounded-xl font-black text-xs uppercase text-[#0c0a08] transition disabled:opacity-50"
                       style={{ background: `linear-gradient(135deg,${theme.from},${theme.to})` }}>
                       {job.status === "running" || job.status === "pending"
                         ? <><Loader2 className="w-3.5 h-3.5 animate-spin" /> Processing...</>

@@ -12,7 +12,7 @@ export function generatePrintableHtml(input: {
   footer?: string;
   brandColor?: string;
 }): string {
-  const color = input.brandColor ?? "#06b6d4";
+  const color = input.brandColor ?? "#f5a623";
 
   const sectionHtml = input.sections.map((s) => `
     <div style="margin-bottom:32px;">

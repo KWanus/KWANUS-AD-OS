@@ -194,7 +194,7 @@ export function generatePersonalizationScript(siteId: string, defaults: {
     setTimeout(function(){
       var popup=document.createElement('div');
       popup.style.cssText='position:fixed;bottom:20px;left:20px;max-width:320px;background:#fff;border-radius:16px;padding:20px;box-shadow:0 8px 32px rgba(0,0,0,0.2);z-index:9998;font-family:system-ui';
-      popup.innerHTML='<p style="font-size:14px;font-weight:700;color:#111;margin:0 0 8px">Still deciding?</p><p style="font-size:12px;color:#666;margin:0 0 12px">You\\'ve visited '+ctx.visitCount+' times. Here\\'s why people just like you chose us.</p><button onclick="this.parentElement.remove()" style="background:#06b6d4;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">Show Me</button><button onclick="this.parentElement.remove()" style="background:none;border:none;color:#999;font-size:11px;cursor:pointer;margin-left:8px">Not now</button>';
+      popup.innerHTML='<p style="font-size:14px;font-weight:700;color:#111;margin:0 0 8px">Still deciding?</p><p style="font-size:12px;color:#666;margin:0 0 12px">You\\'ve visited '+ctx.visitCount+' times. Here\\'s why people just like you chose us.</p><button onclick="this.parentElement.remove()" style="background:#f5a623;color:#fff;border:none;padding:8px 16px;border-radius:8px;font-size:12px;font-weight:700;cursor:pointer">Show Me</button><button onclick="this.parentElement.remove()" style="background:none;border:none;color:#999;font-size:11px;cursor:pointer;margin-left:8px">Not now</button>';
       document.body.appendChild(popup);
     },5000);
   }

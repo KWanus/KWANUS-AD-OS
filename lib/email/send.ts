@@ -61,8 +61,8 @@ function wrapHtml(body: string, fromName?: string): string {
   .wrapper { max-width: 600px; margin: 40px auto; background: #fff; border-radius: 12px; overflow: hidden; }
   .content { padding: 40px; color: #1a1a1a; font-size: 15px; line-height: 1.7; }
   p { margin: 0 0 16px; }
-  a { color: #06b6d4; text-decoration: none; font-weight: 600; }
-  .btn { display: inline-block; background: #06b6d4; color: #fff !important; padding: 12px 24px; border-radius: 8px; font-weight: 700; text-decoration: none; }
+  a { color: #f5a623; text-decoration: none; font-weight: 600; }
+  .btn { display: inline-block; background: #f5a623; color: #fff !important; padding: 12px 24px; border-radius: 8px; font-weight: 700; text-decoration: none; }
   .footer { padding: 20px 40px; background: #fafafa; border-top: 1px solid #eee; font-size: 12px; color: #999; }
 </style>
 </head>

@@ -257,7 +257,7 @@ export async function POST(
         name: lead.name,
         slug,
         published: true,
-        theme: { primaryColor: "#06b6d4", mode: "dark" } as Prisma.InputJsonValue,
+        theme: { primaryColor: "#f5a623", mode: "dark" } as Prisma.InputJsonValue,
         pages: {
           create: {
             title: "Home",

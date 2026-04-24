@@ -272,7 +272,7 @@ function convertToBlocks(json: WebsiteJson, siteName: string): SiteBlock[] {
             subtitle: section.body ?? "",
             columns: 3,
             items,
-            bgColor: "#050a14",
+            bgColor: "#0c0a08",
           },
         });
         break;
@@ -320,7 +320,7 @@ function convertToBlocks(json: WebsiteJson, siteName: string): SiteBlock[] {
           props: {
             title: section.headline,
             items,
-            bgColor: "#050a14",
+            bgColor: "#0c0a08",
           },
         });
         break;

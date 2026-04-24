@@ -167,7 +167,7 @@ function buildImagePrompts(ctx: BusinessContext): ImagePrompt[] {
       platform: "Universal",
       size: "1024x1024",
       useCase: "hero-product",
-      prompt: `Professional product advertisement photo for "${ctx.title}". Clean, modern, minimalist composition on a premium dark gradient background (#050a14 to #0a1628). Studio lighting with cyan (#06b6d4) accent highlights. The product/service should be the clear hero of the image. No text overlays. Commercial photography quality.`,
+      prompt: `Professional product advertisement photo for "${ctx.title}". Clean, modern, minimalist composition on a premium dark gradient background (#0c0a08 to #0a1628). Studio lighting with cyan (#f5a623) accent highlights. The product/service should be the clear hero of the image. No text overlays. Commercial photography quality.`,
     },
     {
       id: "img-problem-solution",
@@ -199,7 +199,7 @@ function buildImagePrompts(ctx: BusinessContext): ImagePrompt[] {
       platform: "Universal",
       size: "1024x1024",
       useCase: "social-proof",
-      prompt: `Clean graphic design for a social proof advertisement. Premium dark background (#050a14) with subtle glowing elements. Five gold/yellow stars prominently displayed. Abstract shapes suggesting growth, success, and trust. Cyan (#06b6d4) accent highlights. No text, no faces. Suitable as a background for overlaying customer testimonials or review quotes.`,
+      prompt: `Clean graphic design for a social proof advertisement. Premium dark background (#0c0a08) with subtle glowing elements. Five gold/yellow stars prominently displayed. Abstract shapes suggesting growth, success, and trust. Cyan (#f5a623) accent highlights. No text, no faces. Suitable as a background for overlaying customer testimonials or review quotes.`,
     },
     {
       id: "img-urgency",

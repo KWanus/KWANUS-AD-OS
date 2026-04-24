@@ -381,8 +381,8 @@ export async function deployRun(input: {
         slug,
         theme: {
           font: "Inter",
-          primaryColor: "#06b6d4",
-          backgroundColor: "#050a14",
+          primaryColor: "#f5a623",
+          backgroundColor: "#0c0a08",
           textColor: "#ffffff",
           trackingScript: buildTrackingScript(trackingConfig),
           formTrackingScript: buildFormTrackingScript(trackingConfig),
@@ -605,8 +605,8 @@ export async function deployRun(input: {
       data: {
         theme: {
           font: "Inter",
-          primaryColor: sitePlaybook?.offer.structure ? "#06b6d4" : "#06b6d4",
-          backgroundColor: "#050a14",
+          primaryColor: sitePlaybook?.offer.structure ? "#f5a623" : "#f5a623",
+          backgroundColor: "#0c0a08",
           textColor: "#ffffff",
           trackingScript: buildTrackingScript(trackingConfig),
           formTrackingScript: buildFormTrackingScript(trackingConfig),

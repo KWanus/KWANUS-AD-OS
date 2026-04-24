@@ -58,7 +58,7 @@ export default function TriggerNode({ data, selected }: NodeProps) {
       <Handle
         type="source"
         position={Position.Bottom}
-        className="!w-3 !h-3 !border-2 !border-[#f5a623] !bg-[#050a14] hover:!bg-[#f5a623] transition-colors"
+        className="!w-3 !h-3 !border-2 !border-[#f5a623] !bg-[#0c0a08] hover:!bg-[#f5a623] transition-colors"
         style={{ bottom: -6 }}
       />
     </div>

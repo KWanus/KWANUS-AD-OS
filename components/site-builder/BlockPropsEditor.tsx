@@ -61,7 +61,7 @@ function HeroProps({ block, onChange }: { block: Block; onChange: (b: Block) => 
       <Field label="Button URL"><TextInput value={p(block, "buttonUrl")} onChange={v => set("buttonUrl", v)} placeholder="https://..." /></Field>
       <Field label="Secondary Button"><TextInput value={p(block, "secondaryButtonText")} onChange={v => set("secondaryButtonText", v)} placeholder="Learn More (optional)" /></Field>
       <Field label="Text Align"><AlignSelect value={p(block, "textAlign", "center")} onChange={v => set("textAlign", v)} /></Field>
-      <Field label="Background Color"><TextInput value={p(block, "bgColor")} onChange={v => set("bgColor", v)} placeholder="#050a14" /></Field>
+      <Field label="Background Color"><TextInput value={p(block, "bgColor")} onChange={v => set("bgColor", v)} placeholder="#0c0a08" /></Field>
     </div>
   );
 }

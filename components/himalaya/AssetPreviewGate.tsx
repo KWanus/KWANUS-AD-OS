@@ -34,7 +34,7 @@ export default function AssetPreviewGate({ children }: { children: React.ReactNo
         {children}
       </div>
 
-      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#050a14] via-[#050a14]/90 to-transparent" />
+      <div className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-[#0c0a08] via-[#0c0a08]/90 to-transparent" />
 
       <div className="relative -mt-4 flex flex-col items-center gap-2 py-4">
         <p className="text-[10px] text-white/30 text-center max-w-xs">

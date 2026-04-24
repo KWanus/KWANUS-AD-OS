@@ -142,7 +142,7 @@ export async function POST(req: NextRequest) {
         slug,
         description: body.description?.trim() || null,
         theme: {
-          primaryColor: "#06b6d4",
+          primaryColor: "#f5a623",
           font: "inter",
           mode: "dark",
           generation: {

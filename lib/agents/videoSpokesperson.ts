@@ -48,7 +48,7 @@ export async function createVideo(config: VideoConfig): Promise<VideoResult> {
             input_text: config.script,
             voice_id: config.voiceId ?? "en-US-JennyNeural",
           },
-          background: config.background ? { type: "image", value: config.background } : { type: "color", value: "#050a14" },
+          background: config.background ? { type: "image", value: config.background } : { type: "color", value: "#0c0a08" },
         }],
         dimension,
         test: false,

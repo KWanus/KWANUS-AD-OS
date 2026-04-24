@@ -585,7 +585,7 @@ function productCardHtml(p: ProductData): string {
         </h3>
         <div style="margin-bottom:12px;">${priceHtml(p.price, p.originalPrice)}</div>
         <a href="${escapeHtml(productLink(p))}" target="_blank"
-           style="display:inline-block;background:#06b6d4;color:#ffffff;text-decoration:none;padding:10px 24px;border-radius:6px;font-size:14px;font-weight:600;text-align:center;">
+           style="display:inline-block;background:#f5a623;color:#ffffff;text-decoration:none;padding:10px 24px;border-radius:6px;font-size:14px;font-weight:600;text-align:center;">
           Shop Now
         </a>
       </div>
@@ -632,7 +632,7 @@ function heroBlock(p: ProductData): string {
         ${desc}
         <div style="margin-bottom:16px;">${priceHtml(p.price, p.originalPrice)}</div>
         <a href="${escapeHtml(productLink(p))}" target="_blank"
-           style="display:inline-block;background:#06b6d4;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:6px;font-size:16px;font-weight:700;text-align:center;">
+           style="display:inline-block;background:#f5a623;color:#ffffff;text-decoration:none;padding:14px 32px;border-radius:6px;font-size:16px;font-weight:700;text-align:center;">
           Shop Now
         </a>
       </div>
@@ -685,7 +685,7 @@ function listBlock(products: ProductData[]): string {
             </h3>
             <div style="margin-bottom:10px;">${priceHtml(p.price, p.originalPrice)}</div>
             <a href="${escapeHtml(productLink(p))}" target="_blank"
-               style="display:inline-block;background:#06b6d4;color:#ffffff;text-decoration:none;padding:8px 20px;border-radius:6px;font-size:13px;font-weight:600;">
+               style="display:inline-block;background:#f5a623;color:#ffffff;text-decoration:none;padding:8px 20px;border-radius:6px;font-size:13px;font-weight:600;">
               Shop Now
             </a>
           </td>
@@ -764,7 +764,7 @@ export async function generateBestSellerBlock(
 function wrapSection(title: string, content: string): string {
   return `
     <div style="max-width:600px;margin:0 auto 24px;font-family:Arial,Helvetica,sans-serif;">
-      <h2 style="text-align:center;font-size:22px;font-weight:700;color:#1a1a1a;margin:0 0 16px;padding-bottom:12px;border-bottom:2px solid #06b6d4;">
+      <h2 style="text-align:center;font-size:22px;font-weight:700;color:#1a1a1a;margin:0 0 16px;padding-bottom:12px;border-bottom:2px solid #f5a623;">
         ${escapeHtml(title)}
       </h2>
       ${content}

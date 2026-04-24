@@ -29,7 +29,7 @@ type Usage = {
 const TIER_COLORS: Record<string, string> = {
   free: "text-emerald-400 bg-emerald-500/10 border-emerald-500/20",
   pro: "text-[#f5a623] bg-[#f5a623]/10 border-[#f5a623]/20",
-  enterprise: "text-purple-400 bg-purple-500/10 border-purple-500/20",
+  enterprise: "text-[#f5a623] bg-[#e07850]/10 border-[#e07850]/20",
 };
 
 export default function DeveloperConsolePage() {

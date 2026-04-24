@@ -48,13 +48,13 @@ export default function TagNode({ data, selected }: NodeProps) {
       <Handle
         type="target"
         position={Position.Top}
-        className="!w-3 !h-3 !border-2 !border-emerald-400 !bg-[#050a14] hover:!bg-emerald-400 transition-colors"
+        className="!w-3 !h-3 !border-2 !border-emerald-400 !bg-[#0c0a08] hover:!bg-emerald-400 transition-colors"
         style={{ top: -6 }}
       />
       <Handle
         type="source"
         position={Position.Bottom}
-        className="!w-3 !h-3 !border-2 !border-emerald-400 !bg-[#050a14] hover:!bg-emerald-400 transition-colors"
+        className="!w-3 !h-3 !border-2 !border-emerald-400 !bg-[#0c0a08] hover:!bg-emerald-400 transition-colors"
         style={{ bottom: -6 }}
       />
     </div>

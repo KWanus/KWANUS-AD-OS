@@ -19,7 +19,7 @@ export async function GET() {
 
     return NextResponse.json({
       ok: true,
-      config: config ?? { enabled: false, brandName: "", primaryColor: "#06b6d4", hideHimalayaBranding: false },
+      config: config ?? { enabled: false, brandName: "", primaryColor: "#f5a623", hideHimalayaBranding: false },
       subAccounts,
       defaultTiers,
     });

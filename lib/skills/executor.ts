@@ -300,7 +300,7 @@ async function saveResults(
             name: `AI Landing Page — ${new Date().toLocaleDateString()}`,
             slug: baseSlug,
             published: false,
-            theme: { primaryColor: "#06b6d4", font: "inter", mode: "dark" },
+            theme: { primaryColor: "#f5a623", font: "inter", mode: "dark" },
             pages: {
               create: {
                 title: "Home",
@@ -362,7 +362,7 @@ async function saveResults(
           name: `Lead Magnet — ${new Date().toLocaleDateString()}`,
           slug: `lead-magnet-${Date.now()}`,
           published: false,
-          theme: { primaryColor: "#8b5cf6", font: "inter", mode: "dark" },
+          theme: { primaryColor: "#e07850", font: "inter", mode: "dark" },
           pages: {
             create: {
               title: "Opt-In Page",

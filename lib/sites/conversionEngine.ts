@@ -1123,7 +1123,7 @@ export function renderBlueprintToBlocks(blueprint: SiteBlueprint, options?: { re
           "More visible trust, process, and action flow",
           "A more elevated, conversion-focused visual direction",
         ],
-        bgColor: "#050a14",
+        bgColor: "#0c0a08",
       },
     });
   }
@@ -1173,7 +1173,7 @@ export function renderBlueprintToBlocks(blueprint: SiteBlueprint, options?: { re
           type: "text",
           props: {
             content: `## ${section.headline}\n\n${section.body ?? ""}`,
-            bgColor: section.type === "problem" ? "#07101f" : "#050a14",
+            bgColor: section.type === "problem" ? "#07101f" : "#0c0a08",
           },
         });
         break;
@@ -1186,7 +1186,7 @@ export function renderBlueprintToBlocks(blueprint: SiteBlueprint, options?: { re
             columns: 3,
             layout: "grid",
             items: (Array.isArray(section.items) ? section.items : []).map((item) => ({ icon: "✓", title: String(item), body: "" })),
-            bgColor: "#050a14",
+            bgColor: "#0c0a08",
           },
         });
         break;
@@ -1225,7 +1225,7 @@ export function renderBlueprintToBlocks(blueprint: SiteBlueprint, options?: { re
                 ? { q: item, a: "" }
                 : { q: item.question, a: item.answer }
             ),
-            bgColor: "#050a14",
+            bgColor: "#0c0a08",
           },
         });
         break;
@@ -1305,7 +1305,7 @@ function buildServicesPageBlocks(blueprint: SiteBlueprint): RenderBlock[] {
         columns: Math.min(3, Math.max(1, benefitItems.length)),
         layout: "grid",
         items: benefitItems.slice(0, 6).map((item) => ({ icon: "✓", title: item, body: "" })),
-        bgColor: "#050a14",
+        bgColor: "#0c0a08",
       },
     });
   }
@@ -1408,7 +1408,7 @@ function buildFaqPageBlocks(blueprint: SiteBlueprint): RenderBlock[] {
             a: "Use the call to action on this page and you will be guided into the best next step.",
           },
         ],
-      bgColor: "#050a14",
+      bgColor: "#0c0a08",
     },
   });
 
@@ -1484,7 +1484,7 @@ function buildProofPageBlocks(blueprint: SiteBlueprint): RenderBlock[] {
         columns: Math.min(3, Math.max(1, benefitItems.length)),
         layout: "grid",
         items: benefitItems.slice(0, 6).map((item) => ({ icon: "✓", title: item, body: "" })),
-        bgColor: "#050a14",
+        bgColor: "#0c0a08",
       },
     });
   }
@@ -1620,7 +1620,7 @@ export async function createSiteFromBlueprint(input: {
       slug,
       description: input.description ?? null,
       theme: {
-        primaryColor: input.blueprint.template_id === "medical-aesthetic-v1" ? "#14b8a6" : "#06b6d4",
+        primaryColor: input.blueprint.template_id === "medical-aesthetic-v1" ? "#14b8a6" : "#f5a623",
         font: "outfit",
         mode: "dark",
         generation,
