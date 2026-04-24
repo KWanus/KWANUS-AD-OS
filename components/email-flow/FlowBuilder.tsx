@@ -274,6 +274,7 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
   const [retryingFailed, setRetryingFailed] = useState(false);
   const [retryingEnrollmentId, setRetryingEnrollmentId] = useState<string | null>(null);
   const [retryResults, setRetryResults] = useState<RetryResultState>({});
+  const [showQuickAdd, setShowQuickAdd] = useState(false);
 
   const saveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const pendingSaveRef = useRef(false);
@@ -532,6 +533,31 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
       default:
         return {};
     }
+  }
+
+  // -------------------------------------------------------------------------
+  // Quick-add node (floating button)
+  // -------------------------------------------------------------------------
+
+  function addQuickNode(type: string) {
+    const id = `${type}-${Date.now()}`;
+    const defaultData = getDefaultData(type);
+    // Place below the lowest existing node
+    let maxY = 0;
+    (nodes as Node<AnyRecord>[]).forEach((n) => {
+      if (n.position.y > maxY) maxY = n.position.y;
+    });
+    const newNode: Node<AnyRecord> = {
+      id,
+      type,
+      position: { x: 250, y: maxY + 160 },
+      data: defaultData,
+    };
+    setNodes((nds) => {
+      const updated = [...nds, newNode] as Node<AnyRecord>[];
+      scheduleSave(updated, edges);
+      return updated;
+    });
   }
 
   // -------------------------------------------------------------------------
@@ -953,7 +979,7 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
       {/* MAIN CANVAS                                                          */}
       {/* ------------------------------------------------------------------ */}
       <div
-        className="flex-1 h-full"
+        className="flex-1 h-full relative"
         onDrop={handleDrop}
         onDragOver={handleDragOver}
       >
@@ -1053,6 +1079,36 @@ export default function FlowBuilder({ flowId }: { flowId: string }) {
             </div>
           </Panel>
         </ReactFlow>
+
+        {/* Quick-add floating button */}
+        <div className="absolute bottom-6 right-6 z-10">
+          <div className="relative">
+            {showQuickAdd && (
+              <div className="absolute bottom-14 right-0 w-48 rounded-xl border border-white/10 bg-[#0d1525] shadow-xl p-2 space-y-1">
+                {[
+                  { type: "email", label: "Send Email", icon: "\u2709\uFE0F" },
+                  { type: "wait", label: "Wait / Delay", icon: "\u23F1\uFE0F" },
+                  { type: "condition", label: "If/Then Branch", icon: "\uD83D\uDD00" },
+                  { type: "tag", label: "Add Tag", icon: "\uD83C\uDFF7\uFE0F" },
+                ].map((item) => (
+                  <button
+                    key={item.type}
+                    onClick={() => { addQuickNode(item.type); setShowQuickAdd(false); }}
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-bold text-white/50 hover:bg-[#f5a623]/10 hover:text-[#f5a623] transition"
+                  >
+                    <span>{item.icon}</span> {item.label}
+                  </button>
+                ))}
+              </div>
+            )}
+            <button
+              onClick={() => setShowQuickAdd(!showQuickAdd)}
+              className="w-12 h-12 rounded-full bg-gradient-to-r from-[#f5a623] to-[#e07850] text-[#0c0a08] font-black text-xl shadow-lg hover:opacity-90 transition"
+            >
+              +
+            </button>
+          </div>
+        </div>
       </div>
 
       {/* ------------------------------------------------------------------ */}

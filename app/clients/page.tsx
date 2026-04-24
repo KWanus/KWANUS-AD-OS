@@ -19,8 +19,12 @@ import {
   AlertTriangle,
   ArrowUpDown,
   Trash2,
+  LayoutList,
+  Columns3,
 } from "lucide-react";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
+import KanbanBoard from "@/components/crm/KanbanBoard";
+import type { Deal } from "@/components/crm/KanbanBoard";
 
 type BusinessProfileSummary = {
   businessType: string;
@@ -370,6 +374,7 @@ export default function ClientsPage() {
   const [bulkLoading, setBulkLoading] = useState(false);
   const [bulkStage, setBulkStage] = useState("lead");
   const [bulkTags, setBulkTags] = useState("");
+  const [viewMode, setViewMode] = useState<"list" | "kanban">("list");
 
   const fetchClients = useCallback(async () => {
     setLoading(true);
@@ -624,6 +629,30 @@ export default function ClientsPage() {
           >
             Export CSV
           </a>
+
+          {/* View toggle */}
+          <div className="ml-auto flex items-center rounded-xl border border-white/[0.08] overflow-hidden">
+            <button
+              onClick={() => setViewMode("list")}
+              className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold transition ${
+                viewMode === "list"
+                  ? "bg-[#f5a623]/15 text-[#f5a623]"
+                  : "bg-white/[0.03] text-white/35 hover:text-white/60"
+              }`}
+            >
+              <LayoutList className="w-3.5 h-3.5" /> List
+            </button>
+            <button
+              onClick={() => setViewMode("kanban")}
+              className={`flex items-center gap-1.5 px-3 py-2 text-xs font-bold transition ${
+                viewMode === "kanban"
+                  ? "bg-[#f5a623]/15 text-[#f5a623]"
+                  : "bg-white/[0.03] text-white/35 hover:text-white/60"
+              }`}
+            >
+              <Columns3 className="w-3.5 h-3.5" /> Kanban
+            </button>
+          </div>
         </div>
       )}
 
@@ -770,42 +799,108 @@ export default function ClientsPage() {
         </div>
       )}
 
-      {/* Table */}
-      <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl overflow-hidden">
-        {/* Header row */}
-        <div className="flex items-center gap-4 px-5 py-3 border-b border-white/[0.06] bg-white/[0.015]">
-          <input
-            type="checkbox"
-            checked={clients.length > 0 && selectedIds.size === clients.length}
-            onChange={toggleSelectAll}
-            className="w-3.5 h-3.5 rounded accent-cyan-500 shrink-0"
-          />
-          <div className="w-9 shrink-0" />
-          <div className="flex-1 text-[10px] font-black uppercase tracking-widest text-white/25">Client</div>
-          <div className="hidden sm:block w-20 text-[10px] font-black uppercase tracking-widest text-white/25">Stage</div>
-          <div className="hidden lg:block w-24 text-right text-[10px] font-black uppercase tracking-widest text-white/25">Value</div>
-          <div className="hidden xl:block w-32 text-right text-[10px] font-black uppercase tracking-widest text-white/25">Last Contact</div>
-          <div className="text-[10px] font-black uppercase tracking-widest text-white/25">Health</div>
-          <div className="w-16 shrink-0" />
-        </div>
-
-        {loading ? (
-          Array.from({ length: 6 }).map((_, i) => <SkeletonRow key={i} />)
+      {/* Content: List or Kanban */}
+      {viewMode === "kanban" ? (
+        loading ? (
+          <div className="flex items-center justify-center py-24">
+            <Loader2 className="w-6 h-6 text-[#f5a623] animate-spin" />
+          </div>
         ) : clients.length === 0 ? (
           <EmptyState filtered={isFiltered} />
         ) : (
-          clients.map((client) => (
-            <ClientRow
-              key={client.id}
-              client={client}
-              selected={selectedIds.has(client.id)}
-              onToggle={() => toggleSelect(client.id)}
-              onDelete={(id) => setClients((prev) => prev.filter((c) => c.id !== id))}
-              onUpdate={(id, data) => setClients((prev) => prev.map(c => c.id === id ? { ...c, ...data } as Client : c))}
+          <KanbanBoard
+            deals={clients.map((c): Deal => ({
+              id: c.id,
+              clientName: c.name,
+              title: c.company || c.niche || "Deal",
+              value: (c.dealValue ?? 0) * 100,
+              stage: (
+                c.pipelineStage === "active" ? "negotiation" :
+                c.pipelineStage === "churned" ? "lost" :
+                ["lead", "qualified", "proposal", "negotiation", "won", "lost"].includes(c.pipelineStage)
+                  ? c.pipelineStage as Deal["stage"]
+                  : "lead"
+              ),
+              probability:
+                c.pipelineStage === "won" ? 100 :
+                c.pipelineStage === "churned" || c.pipelineStage === "lost" ? 0 :
+                c.healthScore,
+              createdAt: c.createdAt,
+            }))}
+            onStageChange={async (dealId, newStage) => {
+              // Map kanban stages back to client pipeline stages
+              const stageMap: Record<string, string> = {
+                lead: "lead",
+                qualified: "qualified",
+                proposal: "proposal",
+                negotiation: "active",
+                won: "won",
+                lost: "churned",
+              };
+              const pipelineStage = stageMap[newStage] ?? newStage;
+              try {
+                const res = await fetch(`/api/clients/${dealId}`, {
+                  method: "PATCH",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ pipelineStage }),
+                });
+                const data = await res.json() as { ok: boolean; client?: Client };
+                if (data.ok && data.client) {
+                  setClients((prev) =>
+                    prev.map((c) =>
+                      c.id === dealId
+                        ? { ...c, pipelineStage, healthScore: data.client!.healthScore, healthStatus: data.client!.healthStatus }
+                        : c,
+                    ),
+                  );
+                  toast.success(`Moved to ${newStage}`);
+                }
+              } catch {
+                toast.error("Failed to change stage");
+              }
+            }}
+            onDealClick={(dealId) => {
+              window.location.href = `/clients/${dealId}`;
+            }}
+          />
+        )
+      ) : (
+        <div className="bg-white/[0.02] border border-white/[0.06] rounded-2xl overflow-hidden">
+          {/* Header row */}
+          <div className="flex items-center gap-4 px-5 py-3 border-b border-white/[0.06] bg-white/[0.015]">
+            <input
+              type="checkbox"
+              checked={clients.length > 0 && selectedIds.size === clients.length}
+              onChange={toggleSelectAll}
+              className="w-3.5 h-3.5 rounded accent-cyan-500 shrink-0"
             />
-          ))
-        )}
-      </div>
+            <div className="w-9 shrink-0" />
+            <div className="flex-1 text-[10px] font-black uppercase tracking-widest text-white/25">Client</div>
+            <div className="hidden sm:block w-20 text-[10px] font-black uppercase tracking-widest text-white/25">Stage</div>
+            <div className="hidden lg:block w-24 text-right text-[10px] font-black uppercase tracking-widest text-white/25">Value</div>
+            <div className="hidden xl:block w-32 text-right text-[10px] font-black uppercase tracking-widest text-white/25">Last Contact</div>
+            <div className="text-[10px] font-black uppercase tracking-widest text-white/25">Health</div>
+            <div className="w-16 shrink-0" />
+          </div>
+
+          {loading ? (
+            Array.from({ length: 6 }).map((_, i) => <SkeletonRow key={i} />)
+          ) : clients.length === 0 ? (
+            <EmptyState filtered={isFiltered} />
+          ) : (
+            clients.map((client) => (
+              <ClientRow
+                key={client.id}
+                client={client}
+                selected={selectedIds.has(client.id)}
+                onToggle={() => toggleSelect(client.id)}
+                onDelete={(id) => setClients((prev) => prev.filter((c) => c.id !== id))}
+                onUpdate={(id, data) => setClients((prev) => prev.map(c => c.id === id ? { ...c, ...data } as Client : c))}
+              />
+            ))
+          )}
+        </div>
+      )}
 
       {/* Load more */}
       {clients.length < total && !loading && (
