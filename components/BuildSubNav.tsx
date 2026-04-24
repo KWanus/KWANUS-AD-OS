@@ -18,7 +18,7 @@ export default function CampaignSubNav() {
   const pathname = usePathname();
 
   return (
-    <div className="border-b border-white/[0.06] bg-[#020509]">
+    <div className="border-b border-white/[0.06] bg-[#020509]/80 backdrop-blur-xl">
       <div className="max-w-7xl mx-auto px-4 sm:px-6">
         <nav className="flex items-center gap-1 overflow-x-auto scrollbar-none">
           {CAMPAIGN_TABS.map(({ href, label, icon: Icon, match }) => {
