@@ -10,7 +10,7 @@ import {
   LayoutDashboard, Globe, Mail, Users, Settings, Zap,
   ScanSearch, Sparkles, FolderOpen, ChevronDown, Search,
   Briefcase, MapPin, TrendingUp, ShoppingCart, Building,
-  Package, BotMessageSquare, Building2, Radar,
+  Package, BotMessageSquare, Building2, Radar, Rocket,
 } from "lucide-react";
 
 const CreditsDisplay = dynamic(() => import("@/components/CreditsDisplay"), { ssr: false });
@@ -150,6 +150,19 @@ export default function AppNav() {
             {showBizDropdown && (
               <div className="absolute top-full right-0 mt-2 w-64 rounded-2xl border border-white/[0.1] bg-[#020509]/95 backdrop-blur-2xl shadow-2xl overflow-hidden z-50">
                 <div className="p-2">
+                  <Link
+                    href="/himalaya"
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition mb-1 ${
+                      pathname.startsWith("/himalaya") ? "bg-cyan-500/10 text-white" : "text-white/60 hover:bg-white/[0.05] hover:text-white"
+                    }`}
+                  >
+                    <Rocket className={`w-4 h-4 shrink-0 ${pathname.startsWith("/himalaya") ? "text-cyan-400" : "text-white/30"}`} />
+                    <div className="min-w-0">
+                      <p className="text-xs font-bold">Build Foundation</p>
+                      <p className="text-[10px] text-white/30">Start or improve a business</p>
+                    </div>
+                  </Link>
+                  <div className="border-t border-white/[0.04] my-1" />
                   {BUSINESS_NAV.map(({ href, label, icon: Icon, sub }) => {
                     const active = pathname.startsWith(href);
                     return (

@@ -23,6 +23,7 @@ import {
   Users,
   Zap,
   Radar,
+  Rocket,
   BarChart2,
   AlertTriangle,
   ExternalLink,
@@ -426,6 +427,13 @@ export default function Dashboard() {
               >
                 <ScanSearch className="h-4 w-4" />
                 Scan a URL
+              </Link>
+              <Link
+                href="/himalaya"
+                className="flex items-center gap-2 rounded-2xl border border-white/[0.08] bg-white/[0.04] px-5 py-3 text-sm font-bold text-white/70"
+              >
+                <Rocket className="h-4 w-4" />
+                Build Business
               </Link>
             </>
           )}
