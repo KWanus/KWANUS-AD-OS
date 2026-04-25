@@ -532,7 +532,13 @@ export default function Home() {
                           try {
                             const res = await fetch(`/api/himalaya/projects/${project.id}/clone`, { method: "POST" });
                             const data = await res.json();
-                            if (data.ok) void load();
+                            if (data.ok) {
+                              await load();
+                              // Show success toast (assuming toast is imported)
+                              if (typeof window !== 'undefined' && (window as { toast?: { success: (msg: string) => void } }).toast) {
+                                (window as { toast: { success: (msg: string) => void } }).toast.success(`"${project.name}" cloned successfully!`);
+                              }
+                            }
                           } catch { /* ignore */ }
                         }} title="Clone business"
                           className="p-1 rounded text-t-text-faint/30 hover:text-[#f5a623] transition">
