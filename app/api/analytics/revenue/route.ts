@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
-import { getDashboardMetrics, getCampaignROI } from "@/lib/analytics/revenueAttribution";
+import { getDashboardMetrics, getCampaignROI, getRevenueHistory } from "@/lib/analytics/revenueAttribution";
 
 /** GET — Fetch revenue dashboard metrics */
 export async function GET() {
@@ -12,15 +12,17 @@ export async function GET() {
     const user = await getOrCreateUser();
     if (!user) return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
 
-    const [metrics, campaigns] = await Promise.all([
+    const [metrics, campaigns, history] = await Promise.all([
       getDashboardMetrics(user.id),
       getCampaignROI(user.id),
+      getRevenueHistory(user.id),
     ]);
 
     return NextResponse.json({
       ok: true,
       metrics,
       campaigns,
+      history,
     });
   } catch (err) {
     console.error("Revenue analytics error:", err);

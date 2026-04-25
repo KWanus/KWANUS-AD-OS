@@ -255,3 +255,41 @@ export async function getCampaignROI(userId: string): Promise<Array<{
     clients: source.clients,
   }));
 }
+
+/**
+ * Get revenue history for the last 6 months
+ */
+export async function getRevenueHistory(userId: string): Promise<Array<{
+  month: string;
+  revenue: number;
+  clients: number;
+}>> {
+  const history = [];
+  const now = new Date();
+
+  for (let i = 5; i >= 0; i--) {
+    const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
+    const nextMonth = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
+
+    const clients = await prisma.himalayaClient.findMany({
+      where: {
+        userId,
+        createdAt: {
+          gte: monthDate,
+          lt: nextMonth,
+        },
+      },
+      select: { dealValue: true },
+    });
+
+    const revenue = clients.reduce((sum, c) => sum + (c.dealValue || 0), 0);
+
+    history.push({
+      month: monthDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }),
+      revenue: Math.round(revenue),
+      clients: clients.length,
+    });
+  }
+
+  return history;
+}
