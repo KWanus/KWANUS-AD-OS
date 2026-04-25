@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import AppNav from "@/components/AppNav";
 import {
@@ -92,9 +92,12 @@ const STAGES = [
 
 export default function MarketIntelligencePage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [niche, setNiche] = useState("");
   const [subNiche, setSubNiche] = useState("");
-  const [vertical, setVertical] = useState<MarketVertical>("affiliate");
+  const [vertical, setVertical] = useState<MarketVertical>(
+    (searchParams.get("vertical") as MarketVertical) || "affiliate"
+  );
   const [executionTier, setExecutionTier] = useState<ExecutionTier>("elite");
   const [running, setRunning] = useState(false);
   const [currentStage, setCurrentStage] = useState<string | null>(null);

@@ -1,11 +1,12 @@
 "use client";
 import { useState, useEffect, useCallback, useMemo } from "react";
+import Link from "next/link";
 import AppNav from "@/components/AppNav";
 import { toast } from "sonner";
 import {
   Plus, X, Copy, ChevronRight, Loader2, CheckCircle2,
   AlertTriangle, TrendingUp, ShoppingCart, Package,
-  BarChart2, Zap, Mail, Megaphone, Globe, FileText,
+  BarChart2, Zap, Mail, Megaphone, Globe, FileText, Radar,
 } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -1097,6 +1098,14 @@ export default function DropshipPage() {
             </span>
           </h1>
           <p className="text-white/30 mt-2 text-sm">Find winners, calculate profit, generate every asset you need.</p>
+          <Link
+            href="/market-intelligence?vertical=dropship"
+            className="mt-4 inline-flex items-center gap-2 rounded-xl border border-purple-500/20 bg-purple-500/[0.06] px-4 py-2.5 text-xs font-bold text-purple-300 hover:bg-purple-500/10 transition"
+          >
+            <Radar className="w-3.5 h-3.5" />
+            Run Market Intelligence — Discover winning products
+            <ChevronRight className="w-3 h-3 text-purple-500/40" />
+          </Link>
         </header>
 
         {/* Stats */}

@@ -2,10 +2,11 @@
 import { useState, useEffect, useCallback } from "react";
 import AppNav from "@/components/AppNav";
 import { toast } from "sonner";
+import Link from "next/link";
 import {
   Plus, X, Copy, ChevronRight, ExternalLink, AlertTriangle,
   Loader2, CheckCircle2, TrendingUp, Link2, DollarSign,
-  BarChart2, Target, Layers, Mail, Megaphone, Globe,
+  BarChart2, Target, Layers, Mail, Megaphone, Globe, Radar,
 } from "lucide-react";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
@@ -978,6 +979,14 @@ export default function AffiliatePage() {
             </span>
           </h1>
           <p className="text-white/30 mt-2 text-sm">Research, build assets, and track every offer in one place.</p>
+          <Link
+            href="/market-intelligence"
+            className="mt-4 inline-flex items-center gap-2 rounded-xl border border-cyan-500/20 bg-cyan-500/[0.06] px-4 py-2.5 text-xs font-bold text-cyan-300 hover:bg-cyan-500/10 transition"
+          >
+            <Radar className="w-3.5 h-3.5" />
+            Run Market Intelligence — Find winning products automatically
+            <ChevronRight className="w-3 h-3 text-cyan-500/40" />
+          </Link>
         </header>
 
         {/* Tabs */}
