@@ -105,6 +105,20 @@ export async function POST(req: NextRequest) {
       }).catch(() => {});
     }
 
+    // 2c. Notify on hot leads (score >= 70)
+    if (leadScore.score >= 70 && userId) {
+      try {
+        const { createNotification } = await import("@/lib/notifications/notify");
+        createNotification({
+          userId,
+          type: "new_lead",
+          title: `🔥 Hot lead: ${name ?? email}`,
+          body: `Score: ${leadScore.score}/100 — ${leadScore.grade}. Follow up immediately.`,
+          href: "/leads",
+        }).catch(() => {});
+      } catch { /* non-blocking */ }
+    }
+
     // 3. Find active email flows for this site and auto-enroll
     // Look for flows created from the same deployment
     const deployment = await prisma.himalayaDeployment.findFirst({

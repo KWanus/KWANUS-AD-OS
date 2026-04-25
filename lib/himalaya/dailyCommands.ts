@@ -160,6 +160,33 @@ export async function generateDailyCommands(userId: string): Promise<CommandsRes
     }
 
     if (bizType === "dropship") {
+      // Check yesterday's orders
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+      const yesterdayStr = yesterday.toISOString().split("T")[0];
+
+      const siteIds = sites.map(s => s.id);
+      const recentOrders = siteIds.length > 0 ? await prisma.siteOrder.count({
+        where: {
+          siteId: { in: siteIds },
+          status: { in: ["paid", "fulfilled"] },
+          createdAt: { gte: new Date(yesterdayStr) },
+        },
+      }).catch(() => 0) : 0;
+
+      if (recentOrders > 0) {
+        commands.push({
+          id: `cmd-${cmdId++}`,
+          priority: 1,
+          action: `You got ${recentOrders} order${recentOrders > 1 ? "s" : ""} yesterday — scale that ad!`,
+          details: `${recentOrders} paid order${recentOrders > 1 ? "s" : ""} came in. If your ROAS is above 2x, increase ad spend by 50%. This product is working.`,
+          estimatedTime: "5 min",
+          category: "review",
+          href: "/orders",
+          completed: false,
+        });
+      }
+
       commands.push({
         id: `cmd-${cmdId++}`,
         priority: 2,

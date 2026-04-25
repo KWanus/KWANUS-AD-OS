@@ -257,6 +257,19 @@ export default function SimpleMode() {
         </Link>
       )}
 
+      {/* Playbook link */}
+      <Link href="/playbook"
+        className="flex items-center justify-between rounded-xl border border-t-border bg-t-bg-raised px-4 py-3 mb-4 group hover:border-[#f5a623]/15 transition">
+        <div className="flex items-center gap-2.5">
+          <span className="text-lg">📖</span>
+          <div>
+            <p className="text-xs font-bold">Your Playbook</p>
+            <p className="text-[10px] text-t-text-faint">Step-by-step plan for your business type</p>
+          </div>
+        </div>
+        <ChevronRight className="w-4 h-4 text-t-text-faint/40 group-hover:text-t-text-faint transition" />
+      </Link>
+
       {/* Stats row */}
       {(d.totalRevenue > 0 || d.totalLeads > 0) && (
         <div className="flex gap-3 mb-6">
