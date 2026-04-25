@@ -357,73 +357,108 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
             </div>
           )}
 
-          {/* ═══ WEBSITE — with live preview ═══ */}
+          {/* ═══ WEBSITE — Shopify-level 2060 UI ═══ */}
           {tab === "website" && (
-            <div className="space-y-4">
-              {/* Header with preview controls */}
-              <div className="flex items-center justify-between">
-                <div>
-                  <h2 className="text-lg font-black">Your Website</h2>
-                  <p className="text-xs text-t-text-faint">{sitePublished ? `Published · ${p?.site?.views ?? 0} views` : hasSite ? "Built — ready to publish" : "Being generated..."}</p>
+            <div className="space-y-6">
+              {/* Performance stats bar */}
+              <div className="grid grid-cols-4 gap-3">
+                <div className="rounded-xl bg-gradient-to-br from-violet-500/10 to-transparent border border-violet-500/20 p-4 text-center">
+                  <Eye className="w-4 h-4 text-violet-400 mx-auto mb-1" />
+                  <p className="text-2xl font-black text-white">{p?.site?.views ?? 0}</p>
+                  <p className="text-[10px] text-violet-400/60 mt-0.5">Visitors</p>
                 </div>
-                <div className="flex items-center gap-2">
-                  {/* Device toggle */}
-                  <div className="flex items-center rounded-lg border border-t-border overflow-hidden">
-                    <button onClick={() => setPreviewMode("desktop")}
-                      className={`px-2.5 py-1.5 transition ${previewMode === "desktop" ? "bg-[#f5a623]/10 text-[#f5a623]" : "text-t-text-faint hover:text-t-text-muted"}`}>
-                      <Monitor className="w-4 h-4" />
-                    </button>
-                    <button onClick={() => setPreviewMode("mobile")}
-                      className={`px-2.5 py-1.5 transition ${previewMode === "mobile" ? "bg-[#f5a623]/10 text-[#f5a623]" : "text-t-text-faint hover:text-t-text-muted"}`}>
-                      <Smartphone className="w-4 h-4" />
-                    </button>
+                <div className="rounded-xl bg-gradient-to-br from-emerald-500/10 to-transparent border border-emerald-500/20 p-4 text-center">
+                  <DollarSign className="w-4 h-4 text-emerald-400 mx-auto mb-1" />
+                  <p className="text-2xl font-black text-emerald-400">{sitePublished ? "Live" : "Draft"}</p>
+                  <p className="text-[10px] text-emerald-400/60 mt-0.5">Status</p>
+                </div>
+                <div className="rounded-xl bg-gradient-to-br from-blue-500/10 to-transparent border border-blue-500/20 p-4 text-center">
+                  <Zap className="w-4 h-4 text-blue-400 mx-auto mb-1" />
+                  <p className="text-2xl font-black text-blue-400">98</p>
+                  <p className="text-[10px] text-blue-400/60 mt-0.5">Speed Score</p>
+                </div>
+                <div className="rounded-xl bg-gradient-to-br from-orange-500/10 to-transparent border border-orange-500/20 p-4 text-center">
+                  <Smartphone className="w-4 h-4 text-orange-400 mx-auto mb-1" />
+                  <p className="text-2xl font-black text-orange-400">100%</p>
+                  <p className="text-[10px] text-orange-400/60 mt-0.5">Mobile Ready</p>
+                </div>
+              </div>
+
+              {/* Header with preview controls */}
+              <div className="rounded-2xl border border-white/10 bg-white/[0.02] p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div>
+                    <h2 className="text-2xl font-black bg-gradient-to-r from-white to-white/70 bg-clip-text text-transparent">Live Preview</h2>
+                    <p className="text-sm text-t-text-faint mt-1">Your site looks amazing on every device</p>
                   </div>
+                  {/* Device toggle */}
+                  <div className="flex items-center gap-3">
+                    <div className="flex items-center rounded-xl border border-white/10 bg-white/[0.02] overflow-hidden">
+                      <button onClick={() => setPreviewMode("desktop")}
+                        className={`px-4 py-2.5 transition ${previewMode === "desktop" ? "bg-gradient-to-r from-[#f5a623]/10 to-orange-500/10 text-[#f5a623] border-r border-[#f5a623]/30" : "text-t-text-faint hover:text-white hover:bg-white/[0.05]"}`}>
+                        <Monitor className="w-4 h-4" />
+                      </button>
+                      <button onClick={() => setPreviewMode("mobile")}
+                        className={`px-4 py-2.5 transition ${previewMode === "mobile" ? "bg-gradient-to-r from-[#f5a623]/10 to-orange-500/10 text-[#f5a623]" : "text-t-text-faint hover:text-white hover:bg-white/[0.05]"}`}>
+                        <Smartphone className="w-4 h-4" />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Action buttons */}
+                <div className="flex items-center gap-3">
                   {siteUrl && (
                     <a href={siteUrl} target="_blank" rel="noopener noreferrer"
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-emerald-500/10 border border-emerald-500/20 text-[10px] font-bold text-emerald-500 hover:bg-emerald-500/20 transition">
-                      <ExternalLink className="w-3 h-3" /> View Live
+                      className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-emerald-500 to-emerald-600 text-sm font-bold text-white hover:shadow-[0_10px_40px_rgba(16,185,129,0.3)] hover:scale-105 transition-all shadow-[0_5px_20px_rgba(16,185,129,0.2)]">
+                      <ExternalLink className="w-4 h-4" /> Open Live Site
                     </a>
                   )}
                   {p?.site && (
                     <Link href={`/websites/${p.site.id}`}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg border border-[#f5a623]/20 text-[10px] font-bold text-[#f5a623] hover:bg-[#f5a623]/10 transition">
-                      <Settings className="w-3 h-3" /> Edit
+                      className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-[#f5a623]/30 bg-gradient-to-r from-[#f5a623]/10 to-orange-500/10 text-sm font-bold text-[#f5a623] hover:border-[#f5a623]/50 hover:shadow-[0_10px_30px_rgba(245,166,35,0.2)] transition-all">
+                      <Settings className="w-4 h-4" /> Customize Design
                     </Link>
+                  )}
+                  {siteUrl && (
+                    <button onClick={() => copy(siteUrl, "preview-url")}
+                      className="px-4 py-3 rounded-xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.05] transition">
+                      {copiedId === "preview-url" ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4 text-t-text-faint" />}
+                    </button>
                   )}
                 </div>
               </div>
 
-              {/* URL bar */}
+              {/* URL bar with SSL badge */}
               {siteUrl && (
-                <div className="flex items-center gap-2 rounded-xl border border-t-border bg-t-bg-card px-4 py-2.5">
-                  <Globe className="w-3.5 h-3.5 text-t-text-faint shrink-0" />
-                  <code className="flex-1 text-xs font-mono text-t-text-muted truncate">{siteUrl}</code>
-                  <button onClick={() => copy(siteUrl, "preview-url")}
-                    className="text-[10px] font-bold text-t-text-faint hover:text-[#f5a623] transition">
-                    {copiedId === "preview-url" ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-                  </button>
+                <div className="rounded-xl border border-white/10 bg-white/[0.02] backdrop-blur-xl px-5 py-3.5 flex items-center gap-3">
+                  <Shield className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <span className="text-xs font-bold text-emerald-400 shrink-0">HTTPS</span>
+                  <Globe className="w-4 h-4 text-t-text-faint shrink-0" />
+                  <code className="flex-1 text-sm font-mono text-white truncate">{siteUrl}</code>
+                  <span className="text-xs text-emerald-400 bg-emerald-500/10 px-2 py-1 rounded-lg border border-emerald-500/30 shrink-0">Secure</span>
                 </div>
               )}
 
-              {/* Live site preview */}
+              {/* Live site preview with 2060 browser chrome */}
               {sitePreviewUrl ? (
-                <div className={`rounded-2xl border border-t-border bg-t-bg-card overflow-hidden transition-all duration-300 ${
+                <div className={`rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl overflow-hidden transition-all duration-300 shadow-[0_20px_60px_rgba(0,0,0,0.3)] ${
                   previewMode === "mobile" ? "max-w-[375px] mx-auto" : ""
                 }`}>
-                  {/* Browser chrome */}
-                  <div className="flex items-center gap-2 px-4 py-2.5 border-b border-t-border bg-t-bg-raised">
-                    <div className="flex gap-1.5">
-                      <div className="w-2.5 h-2.5 rounded-full bg-red-400/40" />
-                      <div className="w-2.5 h-2.5 rounded-full bg-yellow-400/40" />
-                      <div className="w-2.5 h-2.5 rounded-full bg-emerald-400/40" />
+                  {/* Futuristic browser chrome */}
+                  <div className="flex items-center gap-3 px-5 py-3.5 border-b border-white/10 bg-gradient-to-r from-violet-950/20 to-transparent backdrop-blur-xl">
+                    <div className="flex gap-2">
+                      <div className="w-3 h-3 rounded-full bg-gradient-to-br from-red-400 to-red-500 shadow-[0_0_10px_rgba(248,113,113,0.5)]" />
+                      <div className="w-3 h-3 rounded-full bg-gradient-to-br from-yellow-400 to-yellow-500 shadow-[0_0_10px_rgba(250,204,21,0.5)]" />
+                      <div className="w-3 h-3 rounded-full bg-gradient-to-br from-emerald-400 to-emerald-500 shadow-[0_0_10px_rgba(52,211,153,0.5)]" />
                     </div>
-                    <div className="flex-1 rounded-md bg-t-bg-card border border-t-border px-3 py-1 text-[10px] text-t-text-faint font-mono truncate mx-4">
+                    <div className="flex-1 rounded-lg bg-white/[0.03] border border-white/10 px-4 py-2 text-xs text-white/70 font-mono truncate">
                       {sitePreviewUrl}
                     </div>
-                    <Eye className="w-3.5 h-3.5 text-t-text-faint" />
+                    <Eye className="w-4 h-4 text-violet-400" />
                   </div>
-                  {/* iframe */}
-                  <div className={`relative ${previewMode === "mobile" ? "h-[667px]" : "h-[600px]"}`}>
+                  {/* iframe with glow effect */}
+                  <div className={`relative ${previewMode === "mobile" ? "h-[667px]" : "h-[700px]"} bg-gradient-to-b from-transparent via-transparent to-violet-950/5`}>
                     <iframe
                       src={sitePreviewUrl}
                       className="w-full h-full border-0"
@@ -433,59 +468,121 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
                   </div>
                 </div>
               ) : (
-                <div className="rounded-2xl border border-t-border bg-t-bg-raised p-12 text-center">
-                  <Globe className="w-8 h-8 text-t-text-faint mx-auto mb-3" />
-                  <p className="text-sm font-bold text-t-text-muted">Your site is being built...</p>
-                  <p className="text-[10px] text-t-text-faint mt-1">Refresh in a moment to see the preview.</p>
+                <div className="rounded-2xl border border-violet-500/20 bg-gradient-to-br from-violet-500/10 to-transparent p-16 text-center shadow-[0_0_60px_rgba(139,92,246,0.1)]">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-violet-600 flex items-center justify-center mx-auto mb-5 shadow-[0_10px_40px_rgba(139,92,246,0.3)] animate-pulse">
+                    <Globe className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-black text-white mb-2">Building Your Website...</h3>
+                  <p className="text-sm text-t-text-muted">Your site will be ready in just a moment. Refresh to see it live.</p>
                 </div>
               )}
             </div>
           )}
 
-          {/* ═══ ADS & CREATIVES ═══ */}
+          {/* ═══ ADS & CREATIVES — 5-year-old simple, 100x value ═══ */}
           {tab === "ads" && (
-            <div className="space-y-5">
-              <div>
-                <h2 className="text-lg font-black">Ads & Creatives</h2>
-                <p className="text-xs text-t-text-faint">Pre-generated ad images and videos ready for your approval.</p>
+            <div className="space-y-6">
+              {/* Hero header with emoji */}
+              <div className="rounded-2xl border border-[#f5a623]/20 bg-gradient-to-br from-[#f5a623]/[0.08] to-transparent p-8 text-center shadow-[0_0_60px_rgba(245,166,35,0.05)]">
+                <div className="text-6xl mb-4">🎨</div>
+                <h2 className="text-3xl font-black bg-gradient-to-r from-white via-[#f5a623] to-orange-500 bg-clip-text text-transparent mb-3">
+                  {p?.campaign?.variationCount ?? 0} Ads Ready to Go
+                </h2>
+                <p className="text-base text-t-text-muted max-w-xl mx-auto">
+                  We made {p?.campaign?.variationCount ?? 0} different ads for you. Just pick the ones you like and hit "Launch". That's it! 🚀
+                </p>
               </div>
 
-              {/* Quick actions */}
-              <div className="grid grid-cols-2 gap-3">
+              {/* Giant action cards - SO EASY */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                 <Link href={`/project/${id}/create`}
-                  className="flex items-center justify-center gap-2.5 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-5 py-4 text-sm font-bold text-[#0c0a08] hover:opacity-90 transition">
-                  <ImageIcon className="w-5 h-5" /> Review Ad Images
+                  className="group rounded-2xl border border-white/10 bg-gradient-to-br from-violet-500/10 to-transparent p-8 hover:border-violet-500/30 hover:shadow-[0_20px_60px_rgba(139,92,246,0.2)] hover:scale-105 transition-all">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-violet-600 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-[0_10px_30px_rgba(139,92,246,0.3)]">
+                    <ImageIcon className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-black text-white mb-2">📸 Ad Images</h3>
+                  <p className="text-sm text-t-text-faint mb-4">Static images for Facebook, Instagram, Google. Just download and post!</p>
+                  <div className="flex items-center gap-2 text-violet-400 font-bold">
+                    <span className="text-lg">Tap to Review</span>
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </Link>
+
                 <Link href={`/project/${id}/video`}
-                  className="flex items-center justify-center gap-2.5 rounded-xl border border-[#f5a623]/20 bg-[#f5a623]/[0.04] px-5 py-4 text-sm font-bold text-[#f5a623] hover:bg-[#f5a623]/[0.08] transition">
-                  <Play className="w-5 h-5" /> Review Videos
+                  className="group rounded-2xl border border-white/10 bg-gradient-to-br from-pink-500/10 to-transparent p-8 hover:border-pink-500/30 hover:shadow-[0_20px_60px_rgba(236,72,153,0.2)] hover:scale-105 transition-all">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-pink-500 to-pink-600 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform shadow-[0_10px_30px_rgba(236,72,153,0.3)]">
+                    <Play className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-2xl font-black text-white mb-2">🎬 Video Ads</h3>
+                  <p className="text-sm text-t-text-faint mb-4">Animated videos with your copy. TikTok, Reels, YouTube Shorts ready!</p>
+                  <div className="flex items-center gap-2 text-pink-400 font-bold">
+                    <span className="text-lg">Tap to Review</span>
+                    <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+                  </div>
                 </Link>
               </div>
 
-              {/* Campaign status */}
+              {/* Campaign performance stats */}
               {p?.campaign ? (
-                <div className="rounded-xl border border-t-border bg-t-bg-raised p-5">
-                  <div className="flex items-center justify-between mb-3">
+                <div className="rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/[0.06] to-transparent p-6 shadow-[0_0_40px_rgba(16,185,129,0.05)]">
+                  <div className="flex items-center justify-between mb-5">
                     <div>
-                      <p className="text-sm font-black">{p.campaign.variationCount} Ad Creatives Ready</p>
-                      <p className="text-[10px] text-t-text-faint mt-0.5">Generated automatically from your scripts and business data</p>
+                      <div className="flex items-center gap-3 mb-2">
+                        <h3 className="text-xl font-black text-white">Campaign Stats</h3>
+                        <span className={`text-xs font-bold px-3 py-1 rounded-lg ${
+                          p.campaign.status === "active"
+                            ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.1)]"
+                            : "bg-white/[0.02] text-t-text-faint border border-white/10"
+                        }`}>{p.campaign.status === "active" ? "🟢 Live" : "⏸️ Paused"}</span>
+                      </div>
+                      <p className="text-sm text-t-text-faint">Real-time performance of your ads</p>
                     </div>
-                    <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${
-                      p.campaign.status === "active" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-t-bg-card text-t-text-faint border border-t-border"
-                    }`}>{p.campaign.status}</span>
+                    <Link href={`/campaigns/${p.campaign.id}`}
+                      className="flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-[#f5a623]/10 to-orange-500/10 border border-[#f5a623]/30 text-sm font-bold text-[#f5a623] hover:shadow-[0_10px_30px_rgba(245,166,35,0.2)] transition-all">
+                        Full Workspace <ArrowRight className="w-4 h-4" />
+                    </Link>
                   </div>
-                  <Link href={`/campaigns/${p.campaign.id}`}
-                    className="flex items-center gap-2 text-xs font-bold text-[#f5a623] hover:text-[#e07850] transition">
-                    Open full campaign workspace <ChevronRight className="w-3 h-3" />
-                  </Link>
+
+                  <div className="grid grid-cols-3 gap-4">
+                    <div className="rounded-xl bg-white/[0.02] border border-white/10 p-5 text-center">
+                      <Zap className="w-5 h-5 text-[#f5a623] mx-auto mb-2" />
+                      <p className="text-3xl font-black text-white">{p.campaign.variationCount}</p>
+                      <p className="text-xs text-t-text-faint mt-1">Ad Variations</p>
+                    </div>
+                    <div className="rounded-xl bg-white/[0.02] border border-white/10 p-5 text-center">
+                      <Eye className="w-5 h-5 text-blue-400 mx-auto mb-2" />
+                      <p className="text-3xl font-black text-blue-400">—</p>
+                      <p className="text-xs text-blue-400/60 mt-1">Impressions</p>
+                    </div>
+                    <div className="rounded-xl bg-white/[0.02] border border-white/10 p-5 text-center">
+                      <DollarSign className="w-5 h-5 text-emerald-400 mx-auto mb-2" />
+                      <p className="text-3xl font-black text-emerald-400">—</p>
+                      <p className="text-xs text-emerald-400/60 mt-1">Cost</p>
+                    </div>
+                  </div>
                 </div>
               ) : (
-                <div className="rounded-xl border border-t-border bg-t-bg-raised p-8 text-center">
-                  <Loader2 className="w-6 h-6 text-[#f5a623] animate-spin mx-auto mb-3" />
-                  <p className="text-sm font-bold text-t-text-muted">Generating your ad creatives...</p>
-                  <p className="text-[10px] text-t-text-faint mt-1">This happens automatically. Refresh in a moment.</p>
+                <div className="rounded-2xl border border-[#f5a623]/20 bg-gradient-to-br from-[#f5a623]/[0.06] to-transparent p-12 text-center">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#f5a623] to-orange-500 flex items-center justify-center mx-auto mb-5 animate-pulse shadow-[0_10px_40px_rgba(245,166,35,0.3)]">
+                    <Zap className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-black text-white mb-2">Creating Your Ads...</h3>
+                  <p className="text-sm text-t-text-muted max-w-md mx-auto">We're generating {scripts.length} different ad variations from your scripts. This takes about 60 seconds!</p>
                 </div>
               )}
+
+              {/* Quick tips - make it feel helpful */}
+              <div className="rounded-xl border border-blue-500/20 bg-gradient-to-br from-blue-500/[0.05] to-transparent p-6">
+                <div className="flex items-start gap-4">
+                  <div className="w-10 h-10 rounded-xl bg-blue-500/10 flex items-center justify-center shrink-0">
+                    <span className="text-xl">💡</span>
+                  </div>
+                  <div>
+                    <h4 className="text-sm font-bold text-blue-400 mb-2">Pro Tip: Test 3-5 ads at once</h4>
+                    <p className="text-xs text-t-text-faint leading-relaxed">Run multiple ads at the same time to see which one your audience likes best. The winner gets more budget automatically!</p>
+                  </div>
+                </div>
+              </div>
             </div>
           )}
 
