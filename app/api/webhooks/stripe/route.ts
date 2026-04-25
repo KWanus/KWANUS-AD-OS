@@ -175,6 +175,96 @@ export async function POST(req: NextRequest) {
             }
         }
 
+        // Handle payment intent succeeded (for client payments)
+        if (event.type === "payment_intent.succeeded") {
+            const paymentIntent = event.data.object as Stripe.PaymentIntent;
+            const { clientId, userId } = paymentIntent.metadata || {};
+
+            if (clientId && userId) {
+                try {
+                    await prisma.himalayaClient.update({
+                        where: { id: clientId },
+                        data: {
+                            pipelineStage: "won",
+                            dealValue: { increment: paymentIntent.amount / 100 },
+                        },
+                    });
+
+                    await prisma.himalayaActivity.create({
+                        data: {
+                            clientId,
+                            userId,
+                            type: "payment",
+                            title: "Payment Received",
+                            description: `Received $${(paymentIntent.amount / 100).toFixed(2)} payment`,
+                            status: "completed",
+                        },
+                    });
+                } catch {
+                    // non-fatal
+                }
+            }
+        }
+
+        // Handle invoice paid
+        if (event.type === "invoice.paid") {
+            const invoice = event.data.object as Stripe.Invoice;
+            const { clientId, userId } = invoice.metadata || {};
+
+            if (clientId && userId) {
+                try {
+                    await prisma.himalayaActivity.create({
+                        data: {
+                            clientId,
+                            userId,
+                            type: "invoice",
+                            title: "Invoice Paid",
+                            description: `Invoice for $${((invoice.amount_paid || 0) / 100).toFixed(2)} has been paid`,
+                            status: "completed",
+                        },
+                    });
+
+                    await prisma.himalayaClient.update({
+                        where: { id: clientId },
+                        data: { dealValue: { increment: (invoice.amount_paid || 0) / 100 } },
+                    });
+                } catch {
+                    // non-fatal
+                }
+            }
+        }
+
+        // Handle invoice payment failed
+        if (event.type === "invoice.payment_failed") {
+            const invoice = event.data.object as Stripe.Invoice;
+            const { clientId, userId } = invoice.metadata || {};
+
+            if (clientId && userId) {
+                try {
+                    await prisma.himalayaActivity.create({
+                        data: {
+                            clientId,
+                            userId,
+                            type: "invoice",
+                            title: "Invoice Payment Failed",
+                            description: `Payment failed for invoice of $${((invoice.amount_due || 0) / 100).toFixed(2)}`,
+                            status: "failed",
+                        },
+                    });
+
+                    await prisma.himalayaClient.update({
+                        where: { id: clientId },
+                        data: {
+                            healthStatus: "yellow",
+                            healthScore: { decrement: 10 },
+                        },
+                    });
+                } catch {
+                    // non-fatal
+                }
+            }
+        }
+
         return NextResponse.json({ received: true });
     } catch (err) {
         console.error("Stripe Webhook Error:", err);
