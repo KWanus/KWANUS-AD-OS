@@ -5,7 +5,7 @@ import {
   Sparkles, Wand2, Eye, Code, Smartphone, Monitor, Undo2, Redo2,
   Save, Upload, Download, Zap, Copy, Check, RefreshCw, Settings,
   X, ChevronRight, Palette, Type, Layout, Image as ImageIcon,
-  MousePointer2, Lock, Unlock,
+  MousePointer2, Lock, Unlock, ExternalLink,
 } from "lucide-react";
 import { BlockLibraryBrowser } from "./BlockLibraryBrowser";
 import { DesignQualityDashboard, calculateDesignScores, type DesignQualityScores } from "./DesignQualityDashboard";
@@ -304,6 +304,16 @@ export function InlineEditor({ siteId, blocks: initialBlocks, theme, onSave, onP
                 Saved
               </span>
             )}
+
+            <a
+              href={`/preview/${siteId}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2 rounded-xl border border-blue-500/20 bg-blue-500/10 text-xs font-bold text-blue-400 hover:bg-blue-500/20 hover:border-blue-500/30 transition flex items-center gap-2"
+            >
+              <ExternalLink className="w-3.5 h-3.5" />
+              Open Preview
+            </a>
 
             <button
               onClick={handleSave}
