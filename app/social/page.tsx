@@ -4,6 +4,7 @@ import { useState } from "react";
 import AppNav from "@/components/AppNav";
 import {
   Loader2, Copy, Check, Instagram, Music, Twitter, Linkedin, Facebook,
+  Send, Clock,
 } from "lucide-react";
 
 const PLATFORMS = [
@@ -29,6 +30,10 @@ export default function SocialContentPage() {
   const [generating, setGenerating] = useState(false);
   const [result, setResult] = useState("");
   const [copied, setCopied] = useState(false);
+  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
+  const [scheduleDate, setScheduleDate] = useState("");
+  const [scheduling, setScheduling] = useState(false);
+  const [scheduleStatus, setScheduleStatus] = useState<string | null>(null);
 
   async function generate() {
     setGenerating(true);
@@ -137,6 +142,118 @@ export default function SocialContentPage() {
               <div className="p-5">
                 <pre className="text-sm text-white/70 leading-relaxed whitespace-pre-wrap font-sans">{result}</pre>
               </div>
+            </div>
+          )}
+
+          {/* Schedule Post */}
+          {result && (
+            <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-5 space-y-4">
+              <p className="text-[10px] font-black uppercase tracking-widest text-white/30">Schedule Post</p>
+
+              {/* Platform checkboxes */}
+              <div>
+                <p className="text-[10px] font-bold text-white/40 mb-2">Post to</p>
+                <div className="flex flex-wrap gap-2">
+                  {PLATFORMS.map((p) => {
+                    const Icon = p.icon;
+                    const selected = selectedPlatforms.includes(p.id);
+                    return (
+                      <button
+                        key={p.id}
+                        onClick={() =>
+                          setSelectedPlatforms((prev) =>
+                            selected ? prev.filter((x) => x !== p.id) : [...prev, p.id]
+                          )
+                        }
+                        className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-bold transition border ${
+                          selected
+                            ? "border-[#f5a623]/40 bg-[#f5a623]/10 text-[#f5a623]"
+                            : "border-white/10 bg-white/[0.03] text-white/40 hover:border-white/20"
+                        }`}
+                      >
+                        <Icon className="w-3.5 h-3.5" />
+                        {p.label}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Date/time picker */}
+              <div>
+                <p className="text-[10px] font-bold text-white/40 mb-2">Schedule for (optional)</p>
+                <input
+                  type="datetime-local"
+                  value={scheduleDate}
+                  onChange={(e) => setScheduleDate(e.target.value)}
+                  className="bg-white/[0.04] border border-white/[0.1] rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-[#f5a623]/50 transition"
+                />
+              </div>
+
+              {/* Action buttons */}
+              <div className="flex gap-3">
+                <button
+                  disabled={selectedPlatforms.length === 0 || scheduling}
+                  onClick={async () => {
+                    setScheduling(true);
+                    setScheduleStatus(null);
+                    try {
+                      const res = await fetch("/api/himalaya/tools", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          tool: "social_post",
+                          params: { platforms: selectedPlatforms, content: result, scheduledAt: null },
+                        }),
+                      });
+                      const data = await res.json();
+                      setScheduleStatus(data.ok ? "Posted!" : "Failed to post");
+                    } catch {
+                      setScheduleStatus("Failed to post");
+                    } finally {
+                      setScheduling(false);
+                    }
+                  }}
+                  className="flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-sm font-bold text-white hover:opacity-90 transition disabled:opacity-40"
+                >
+                  {scheduling ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                  Post Now
+                </button>
+                <button
+                  disabled={selectedPlatforms.length === 0 || !scheduleDate || scheduling}
+                  onClick={async () => {
+                    setScheduling(true);
+                    setScheduleStatus(null);
+                    try {
+                      const res = await fetch("/api/himalaya/tools", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                          tool: "social_post",
+                          params: { platforms: selectedPlatforms, content: result, scheduledAt: scheduleDate },
+                        }),
+                      });
+                      const data = await res.json();
+                      setScheduleStatus(data.ok ? `Scheduled for ${new Date(scheduleDate).toLocaleString()}` : "Failed to schedule");
+                    } catch {
+                      setScheduleStatus("Failed to schedule");
+                    } finally {
+                      setScheduling(false);
+                    }
+                  }}
+                  className="flex items-center gap-2 px-5 py-3 rounded-xl border border-white/10 bg-white/[0.03] text-sm font-bold text-white/60 hover:text-white hover:border-white/20 transition disabled:opacity-40"
+                >
+                  <Clock className="w-4 h-4" />
+                  Schedule
+                </button>
+              </div>
+
+              {/* Status message */}
+              {scheduleStatus && (
+                <p className={`text-xs font-bold ${scheduleStatus.startsWith("Failed") ? "text-red-400" : "text-emerald-400"}`}>
+                  {scheduleStatus}
+                </p>
+              )}
             </div>
           )}
         </div>

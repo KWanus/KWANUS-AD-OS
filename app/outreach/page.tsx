@@ -33,6 +33,7 @@ export default function OutreachPage() {
   const [generating, setGenerating] = useState(false);
   const [sending, setSending] = useState(false);
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
+  const [importing, setImporting] = useState(false);
 
   // Step 1: Scrape businesses
   async function scrapeBusinesses() {
@@ -228,6 +229,49 @@ export default function OutreachPage() {
               <button key={s} onClick={() => setNiche(s.toLowerCase())}
                 className="px-3 py-1.5 rounded-lg border border-t-border text-[10px] font-bold text-t-text-faint hover:text-[#f5a623] hover:border-[#f5a623]/20 transition">{s}</button>
             ))}
+          </div>
+          {/* CSV Import */}
+          <div className="mt-3 pt-3 border-t border-t-border">
+            <label className="flex items-center justify-center gap-2 px-4 py-3 rounded-xl border border-dashed border-t-border hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.02] transition cursor-pointer">
+              <input type="file" accept=".csv" className="hidden" onChange={async (e) => {
+                const file = e.target.files?.[0];
+                if (!file) return;
+                setImporting(true);
+                try {
+                  const text = await file.text();
+                  const lines = text.split("\n").filter(l => l.trim());
+                  const headers = lines[0].toLowerCase().split(",").map(h => h.trim().replace(/"/g, ""));
+                  const nameIdx = headers.findIndex(h => h === "name" || h === "company" || h === "business");
+                  const emailIdx = headers.findIndex(h => h === "email" || h === "email_address");
+                  const phoneIdx = headers.findIndex(h => h === "phone" || h === "phone_number");
+                  const websiteIdx = headers.findIndex(h => h === "website" || h === "url" || h === "domain");
+
+                  const imported: Business[] = [];
+                  for (let i = 1; i < lines.length; i++) {
+                    const cols = lines[i].split(",").map(c => c.trim().replace(/"/g, ""));
+                    if (cols.length < 2) continue;
+                    imported.push({
+                      name: cols[nameIdx] ?? cols[0] ?? `Business ${i}`,
+                      email: emailIdx >= 0 ? cols[emailIdx] : undefined,
+                      phone: phoneIdx >= 0 ? cols[phoneIdx] : undefined,
+                      website: websiteIdx >= 0 ? cols[websiteIdx] : undefined,
+                      selected: true,
+                    });
+                  }
+                  if (imported.length > 0) {
+                    setBusinesses(imported);
+                    setStep(2);
+                  }
+                } catch { /* ignore */ }
+                setImporting(false);
+                e.target.value = "";
+              }} />
+              {importing ? (
+                <><Loader2 className="w-4 h-4 animate-spin text-[#f5a623]" /> Importing...</>
+              ) : (
+                <><span className="text-sm">📄</span> <span className="text-xs font-bold text-t-text-faint">Import from CSV</span> <span className="text-[10px] text-t-text-faint">(Apollo, Instantly, Hunter, etc.)</span></>
+              )}
+            </label>
           </div>
         </div>
 

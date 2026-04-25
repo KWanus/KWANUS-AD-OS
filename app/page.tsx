@@ -10,7 +10,7 @@ import { useAppMode } from "@/lib/theme/ModeProvider";
 import {
   ArrowRight, Sparkles, Mountain, Send, Loader2,
   Zap, Globe, Mail, Users, Flame, BarChart2,
-  Target, ExternalLink, Trash2, ToggleLeft, ToggleRight,
+  Target, ExternalLink, Trash2, Copy, ToggleLeft, ToggleRight,
 } from "lucide-react";
 
 type Project = {
@@ -527,6 +527,17 @@ export default function Home() {
                           className="flex items-center gap-1 text-[10px] font-bold text-[#f5a623] hover:text-[#e07850] transition">
                           Open Hub <ArrowRight className="w-3 h-3" />
                         </Link>
+                        <button onClick={async (e) => {
+                          e.preventDefault();
+                          try {
+                            const res = await fetch(`/api/himalaya/projects/${project.id}/clone`, { method: "POST" });
+                            const data = await res.json();
+                            if (data.ok) void load();
+                          } catch { /* ignore */ }
+                        }} title="Clone business"
+                          className="p-1 rounded text-t-text-faint/30 hover:text-[#f5a623] transition">
+                          <Copy className="w-3 h-3" />
+                        </button>
                         <button onClick={(e) => { e.preventDefault(); void deleteProject(project.id); }} title="Delete business"
                           className="p-1 rounded text-t-text-faint/30 hover:text-red-400 transition">
                           <Trash2 className="w-3 h-3" />

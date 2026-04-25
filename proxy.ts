@@ -23,6 +23,7 @@ const isPublicRoute = createRouteMatcher([
   "/api/portal(.*)",
   "/api/opt-in-forms(.*)",
   "/launch(.*)",
+  "/report(.*)",
   "/review(.*)",
   "/wall(.*)",
   "/go(.*)",
