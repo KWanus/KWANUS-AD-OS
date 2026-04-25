@@ -176,9 +176,12 @@ export default function HimalayaPage() {
         return sum;
       }, 0);
 
-      if (elapsed >= cumulativeTime + AUTOMATION_STAGES[buildStage].duration) {
-        if (buildStage < AUTOMATION_STAGES.length - 1) {
-          setBuildStage(prev => prev + 1);
+      // Safety check: ensure buildStage is within bounds
+      if (buildStage < AUTOMATION_STAGES.length) {
+        if (elapsed >= cumulativeTime + AUTOMATION_STAGES[buildStage].duration) {
+          if (buildStage < AUTOMATION_STAGES.length - 1) {
+            setBuildStage(prev => prev + 1);
+          }
         }
       }
     }, 100);
@@ -237,6 +240,7 @@ export default function HimalayaPage() {
   // ── Building State ─────────────────────────────────────────────────────────
   if (phase === "building") {
     const progress = ((buildStage + 1) / AUTOMATION_STAGES.length) * 100;
+    const currentStage = AUTOMATION_STAGES[Math.min(buildStage, AUTOMATION_STAGES.length - 1)];
 
     return (
       <main className="min-h-screen bg-gradient-to-br from-[#0c0a08] via-[#0c0a08] to-violet-950/20 text-white">
@@ -259,7 +263,7 @@ export default function HimalayaPage() {
             </div>
 
             <h2 className="text-2xl font-black text-white">
-              {AUTOMATION_STAGES[buildStage].label}
+              {currentStage.label}
             </h2>
 
             <p className="text-sm text-white/40">
