@@ -415,9 +415,9 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
                     </a>
                   )}
                   {p?.site && (
-                    <Link href={`/websites/${p.site.id}`}
-                      className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl border border-[#f5a623]/30 bg-gradient-to-r from-[#f5a623]/10 to-orange-500/10 text-sm font-bold text-[#f5a623] hover:border-[#f5a623]/50 hover:shadow-[0_10px_30px_rgba(245,166,35,0.2)] transition-all">
-                      <Settings className="w-4 h-4" /> Customize Design
+                    <Link href={`/websites/${p.site.id}/edit`}
+                      className="flex-1 flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-violet-500 to-violet-600 text-sm font-bold text-white hover:shadow-[0_10px_40px_rgba(139,92,246,0.3)] hover:scale-105 transition-all shadow-[0_5px_20px_rgba(139,92,246,0.2)]">
+                      <Wrench className="w-4 h-4" /> Edit Inline (2060 Mode)
                     </Link>
                   )}
                   {siteUrl && (
