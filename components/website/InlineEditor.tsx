@@ -7,6 +7,8 @@ import {
   X, ChevronRight, Palette, Type, Layout, Image as ImageIcon,
   MousePointer2, Lock, Unlock,
 } from "lucide-react";
+import { BlockLibraryBrowser } from "./BlockLibraryBrowser";
+import type { BlockTemplate } from "@/lib/sites/blockLibrary";
 
 type Block = {
   id: string;
@@ -37,6 +39,7 @@ export function InlineEditor({ siteId, blocks: initialBlocks, theme, onSave, onP
   const [aiMode, setAiMode] = useState(false);
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [locked, setLocked] = useState(false);
+  const [showLibrary, setShowLibrary] = useState(false);
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -115,6 +118,22 @@ export function InlineEditor({ siteId, blocks: initialBlocks, theme, onSave, onP
     setSelectedBlockId(null);
   };
 
+  const addBlockFromTemplate = (template: BlockTemplate) => {
+    const newBlock: Block = {
+      id: `${template.id}-${Date.now()}`,
+      type: template.category,
+      props: template.props,
+    };
+    setBlocks([...blocks, newBlock]);
+
+    // Add to history
+    const newBlocks = [...blocks, newBlock];
+    const newHistory = history.slice(0, historyIndex + 1);
+    newHistory.push(newBlocks);
+    setHistory(newHistory);
+    setHistoryIndex(newHistory.length - 1);
+  };
+
   return (
     <div className="fixed inset-0 bg-[#0c0a08] flex">
       {/* Left Sidebar - Block Tree */}
@@ -151,12 +170,22 @@ export function InlineEditor({ siteId, blocks: initialBlocks, theme, onSave, onP
 
         {/* Add Block Button */}
         <div className="p-3 border-t border-white/10">
-          <button className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-violet-500 to-violet-600 text-sm font-bold text-white hover:shadow-[0_10px_40px_rgba(139,92,246,0.3)] hover:scale-105 transition-all">
+          <button
+            onClick={() => setShowLibrary(true)}
+            className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-gradient-to-r from-violet-500 to-violet-600 text-sm font-bold text-white hover:shadow-[0_10px_40px_rgba(139,92,246,0.3)] hover:scale-105 transition-all">
             <Sparkles className="w-4 h-4" />
             Add Section
           </button>
         </div>
       </aside>
+
+      {/* Block Library Modal */}
+      {showLibrary && (
+        <BlockLibraryBrowser
+          onSelectBlock={addBlockFromTemplate}
+          onClose={() => setShowLibrary(false)}
+        />
+      )}
 
       {/* Center - Live Preview */}
       <main className="flex-1 flex flex-col">
