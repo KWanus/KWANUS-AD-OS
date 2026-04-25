@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { Prisma } from "@prisma/client";
 import { runHimalaya } from "@/lib/himalaya";
 import type { HimalayaInput } from "@/lib/himalaya";
 
@@ -34,11 +35,11 @@ export async function POST(req: NextRequest) {
           userId,
           mode,
           input: input || {},
-          diagnosis: diagnosis || null,
-          strategy: strategy || null,
-          generation: generated || null,
+          diagnosis: diagnosis || Prisma.JsonNull,
+          strategy: strategy || Prisma.JsonNull,
+          generation: generated || Prisma.JsonNull,
           results: { mode, diagnosis, strategy, generated, created: safeCreated },
-          trace: null,
+          trace: Prisma.JsonNull,
           status: "complete",
         },
       });
@@ -59,12 +60,12 @@ export async function POST(req: NextRequest) {
       data: {
         userId,
         mode: input.mode,
-        input: input as Record<string, unknown>,
-        diagnosis: results.diagnosis as Record<string, unknown>,
-        strategy: results.strategy as Record<string, unknown>,
-        generation: results.generated as Record<string, unknown>,
-        results: results as Record<string, unknown>,
-        trace: results.trace as Record<string, unknown>,
+        input: input as unknown as Prisma.InputJsonValue,
+        diagnosis: results.diagnosis as unknown as Prisma.InputJsonValue,
+        strategy: results.strategy as unknown as Prisma.InputJsonValue,
+        generation: results.generated as unknown as Prisma.InputJsonValue,
+        results: results as unknown as Prisma.InputJsonValue,
+        trace: results.trace as unknown as Prisma.InputJsonValue,
         status: "complete",
       },
     });

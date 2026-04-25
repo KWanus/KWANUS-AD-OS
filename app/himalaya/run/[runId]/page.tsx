@@ -235,7 +235,7 @@ export default function HimalayaRunPage() {
               <div className="flex-1 min-w-0">
                 <p className="text-white font-semibold text-lg">Business Health</p>
                 <p className="text-white/50 text-sm mt-1">{String(audit.summary || "")}</p>
-                {audit.strengths && (
+                {Array.isArray(audit.strengths) && (
                   <div className="mt-3 flex flex-wrap gap-2">
                     {(audit.strengths as string[]).slice(0, 3).map((s, i) => (
                       <span key={i} className="text-xs px-2 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">{s}</span>
@@ -302,13 +302,13 @@ export default function HimalayaRunPage() {
         {idealCustomer && (
           <Section title="Ideal Customer" icon={Target} defaultOpen={mode === "scratch"}>
             <div className="space-y-3">
-              {idealCustomer.demographics && (
+              {typeof idealCustomer.demographics === "string" && (
                 <div>
                   <p className="text-white/40 text-xs">Demographics</p>
-                  <p className="text-white text-sm mt-0.5">{String(idealCustomer.demographics)}</p>
+                  <p className="text-white text-sm mt-0.5">{idealCustomer.demographics}</p>
                 </div>
               )}
-              {idealCustomer.painPoints && (
+              {Array.isArray(idealCustomer.painPoints) && (
                 <div>
                   <p className="text-white/40 text-xs mb-1">Pain Points</p>
                   {(idealCustomer.painPoints as string[]).map((p, i) => (
@@ -316,7 +316,7 @@ export default function HimalayaRunPage() {
                   ))}
                 </div>
               )}
-              {idealCustomer.desires && (
+              {Array.isArray(idealCustomer.desires) && (
                 <div>
                   <p className="text-white/40 text-xs mb-1">Desires</p>
                   {(idealCustomer.desires as string[]).map((d, i) => (
@@ -324,7 +324,7 @@ export default function HimalayaRunPage() {
                   ))}
                 </div>
               )}
-              {idealCustomer.buyingTriggers && (
+              {Array.isArray(idealCustomer.buyingTriggers) && (
                 <div>
                   <p className="text-white/40 text-xs mb-1">What makes them buy</p>
                   {(idealCustomer.buyingTriggers as string[]).map((t, i) => (
@@ -360,20 +360,20 @@ export default function HimalayaRunPage() {
                     <span className="text-xs px-2 py-0.5 rounded-full bg-white/[0.03] text-white/40 uppercase tracking-wider">
                       {String(section.type)}
                     </span>
-                    {section.title && <p className="text-white text-sm font-medium">{String(section.title)}</p>}
-                    {!section.title && section.headline && <p className="text-white text-sm font-medium">{String(section.headline)}</p>}
+                    {typeof section.title === "string" && <p className="text-white text-sm font-medium">{section.title}</p>}
+                    {!section.title && typeof section.headline === "string" && <p className="text-white text-sm font-medium">{section.headline}</p>}
                   </div>
                   {(section.items as Array<Record<string, string>> | undefined)?.map((item, j) => (
                     <div key={j} className="py-1.5 border-t border-white/[0.04] first:border-0">
                       {item.title && <p className="text-white text-sm">{item.title}</p>}
                       {item.body && <p className="text-white/50 text-xs mt-0.5">{item.body}</p>}
                       {item.name && <p className="text-white/60 text-xs">{item.name}</p>}
-                      {item.quote && <p className="text-white/50 text-xs italic">"{item.quote}"</p>}
+                      {item.quote && <p className="text-white/50 text-xs italic">&quot;{item.quote}&quot;</p>}
                       {item.q && <p className="text-white text-sm">{item.q}</p>}
                       {item.a && <p className="text-white/50 text-xs mt-0.5">{item.a}</p>}
                     </div>
                   ))}
-                  {section.buttonText && (
+                  {typeof section.buttonText === "string" && (
                     <div className="mt-2 inline-block px-3 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-400 text-xs font-medium">
                       {String(section.buttonText)}
                     </div>

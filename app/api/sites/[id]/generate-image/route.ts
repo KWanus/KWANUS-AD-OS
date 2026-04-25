@@ -28,7 +28,7 @@ export async function POST(
 
   const site = await prisma.site.findFirst({
     where: { id: siteId, userId: user.id },
-    select: { id: true, name: true, niche: true, theme: true },
+    select: { id: true, name: true, description: true, theme: true },
   });
   if (!site) {
     return NextResponse.json({ ok: false, error: "Site not found" }, { status: 404 });
@@ -56,13 +56,13 @@ export async function POST(
   } else if (body.blockType) {
     const theme = (site.theme as Record<string, string> | null)?.mode ?? "dark";
     finalPrompt = buildGenericBlockImagePrompt(body.blockType, {
-      niche: site.niche ?? undefined,
+      niche: site.description ?? undefined,
       businessName: site.name,
       theme,
     });
   } else {
     finalPrompt = buildHeroImagePrompt(
-      site.niche ?? "professional services",
+      site.description ?? "professional services",
       site.name
     );
   }
