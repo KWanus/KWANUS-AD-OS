@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
 import AppNav from "@/components/AppNav";
+import EmailTemplateSelector from "@/components/EmailTemplateSelector";
 import CRMSubNav from "@/components/CRMSubNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import Link from "next/link";
@@ -669,8 +670,10 @@ function EmailsTab({ lead }: { lead: Lead }) {
 function OutreachTab({ lead, onSent }: { lead: Lead; onSent: () => void }) {
   const [toEmail, setToEmail] = useState(lead.email ?? "");
   const [customBody, setCustomBody] = useState(lead.emailsJson?.outreach_email?.body ?? lead.outreachEmail?.body ?? "");
+  const [customSubject, setCustomSubject] = useState(lead.emailsJson?.outreach_email?.subject ?? lead.outreachEmail?.subject ?? "");
   const [sending, setSending] = useState(false);
   const [msg, setMsg] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [showTemplates, setShowTemplates] = useState(false);
 
   async function send() {
     if (!toEmail.trim()) { setMsg({ type: "error", text: "Enter recipient email" }); return; }
@@ -686,7 +689,14 @@ function OutreachTab({ lead, onSent }: { lead: Lead; onSent: () => void }) {
     setSending(false);
   }
 
-  const subject = lead.emailsJson?.outreach_email?.subject ?? lead.outreachEmail?.subject ?? "";
+  function handleTemplateSelect(subject: string, body: string) {
+    setCustomSubject(subject);
+    setCustomBody(body);
+    setShowTemplates(false);
+    setMsg({ type: "success", text: "Template loaded! Edit as needed." });
+  }
+
+  const subject = customSubject || lead.emailsJson?.outreach_email?.subject || lead.outreachEmail?.subject || "";
 
   return (
     <div className="space-y-5">
@@ -706,42 +716,81 @@ function OutreachTab({ lead, onSent }: { lead: Lead; onSent: () => void }) {
         </div>
       )}
 
-      <div className="p-5 bg-white/[0.025] border border-white/[0.07] rounded-2xl space-y-4">
-        <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Send Outreach</p>
-
-        <div>
-          <p className="text-[10px] text-white/25 mb-1">Subject</p>
-          <p className="text-sm font-bold text-white">{subject}</p>
-        </div>
-
-        <div>
-          <p className="text-[10px] text-white/25 mb-2">Email Body (editable)</p>
-          <textarea
-            value={customBody}
-            onChange={(e) => setCustomBody(e.target.value)}
-            rows={8}
-            className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-4 py-3 text-xs text-white/70 focus:outline-none focus:border-[#f5a623]/30 transition resize-none leading-relaxed"
+      {/* Template Selector */}
+      {showTemplates ? (
+        <div className="p-5 bg-white/[0.025] border border-white/[0.07] rounded-2xl">
+          <div className="flex items-center justify-between mb-4">
+            <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Choose Template</p>
+            <button
+              onClick={() => setShowTemplates(false)}
+              className="text-xs text-white/40 hover:text-white/70 transition"
+            >
+              Cancel
+            </button>
+          </div>
+          <EmailTemplateSelector
+            onSelect={handleTemplateSelect}
+            leadData={{
+              name: lead.name,
+              business: lead.business ?? undefined,
+              niche: lead.niche ?? undefined,
+              website: lead.website ?? undefined,
+              city: lead.city ?? undefined,
+              rating: lead.googleRating?.toString() ?? undefined,
+            }}
           />
         </div>
+      ) : (
+        <div className="p-5 bg-white/[0.025] border border-white/[0.07] rounded-2xl space-y-4">
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] font-black text-white/30 uppercase tracking-widest">Send Outreach</p>
+            <button
+              onClick={() => setShowTemplates(true)}
+              className="text-xs font-bold text-[#f5a623] hover:text-[#f5a623]/80 transition"
+            >
+              Use Template →
+            </button>
+          </div>
 
-        <div className="flex gap-2">
-          <input
-            type="email"
-            value={toEmail}
-            onChange={(e) => setToEmail(e.target.value)}
-            placeholder="Recipient email address…"
-            className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/25 focus:outline-none focus:border-blue-500/40 transition"
-          />
-          <button
-            onClick={() => void send()}
-            disabled={sending}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-500/20 to-[#f5a623]/20 border border-blue-500/20 text-blue-400 text-sm font-bold hover:opacity-90 transition disabled:opacity-40"
-          >
-            {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
-            Send
-          </button>
+          <div>
+            <p className="text-[10px] text-white/25 mb-2">Subject (editable)</p>
+            <input
+              type="text"
+              value={customSubject}
+              onChange={(e) => setCustomSubject(e.target.value)}
+              className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-[#f5a623]/30 transition"
+            />
+          </div>
+
+          <div>
+            <p className="text-[10px] text-white/25 mb-2">Email Body (editable)</p>
+            <textarea
+              value={customBody}
+              onChange={(e) => setCustomBody(e.target.value)}
+              rows={8}
+              className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl px-4 py-3 text-xs text-white/70 focus:outline-none focus:border-[#f5a623]/30 transition resize-none leading-relaxed"
+            />
+          </div>
+
+          <div className="flex gap-2">
+            <input
+              type="email"
+              value={toEmail}
+              onChange={(e) => setToEmail(e.target.value)}
+              placeholder="Recipient email address…"
+              className="flex-1 bg-white/[0.04] border border-white/[0.08] rounded-xl px-4 py-2.5 text-sm text-white placeholder-white/25 focus:outline-none focus:border-blue-500/40 transition"
+            />
+            <button
+              onClick={() => void send()}
+              disabled={sending}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-blue-500/20 to-[#f5a623]/20 border border-blue-500/20 text-blue-400 text-sm font-bold hover:opacity-90 transition disabled:opacity-40"
+            >
+              {sending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+              Send
+            </button>
+          </div>
         </div>
-      </div>
+      )}
 
       {/* Mark as replied */}
       {lead.outreachSentAt && !lead.emailReplied && (
