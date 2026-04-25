@@ -7,7 +7,7 @@ import Link from "next/link";
 import {
   ArrowLeft, Globe, Zap, Mail, Users, ExternalLink, Copy, Check,
   Play, DollarSign, Shield, Mountain, Loader2, ChevronDown,
-  BarChart2, Settings, ChevronRight, Wrench,
+  BarChart2, Settings, ChevronRight, Wrench, ArrowRight,
   Image as ImageIcon, Monitor, Smartphone, Eye, FileText,
   Send, CalendarDays,
 } from "lucide-react";
@@ -586,50 +586,80 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
             </div>
           )}
 
-          {/* ═══ SCRIPTS ═══ */}
+          {/* ═══ SCRIPTS — TikTok Creator Studio vibes ═══ */}
           {tab === "scripts" && (
-            <div className="space-y-5">
-              <div>
-                <h2 className="text-lg font-black">Video Scripts</h2>
-                <p className="text-xs text-t-text-faint">{scripts.length} scripts ready to record. Each is 15-30 seconds — just read it off your phone.</p>
+            <div className="space-y-6">
+              {/* Hero header */}
+              <div className="rounded-2xl border border-violet-500/20 bg-gradient-to-br from-violet-500/[0.08] to-transparent p-8 text-center shadow-[0_0_60px_rgba(139,92,246,0.05)]">
+                <div className="text-6xl mb-4">🎬</div>
+                <h2 className="text-3xl font-black bg-gradient-to-r from-white via-violet-400 to-violet-500 bg-clip-text text-transparent mb-3">
+                  {scripts.length} Video Scripts Ready
+                </h2>
+                <p className="text-base text-t-text-muted max-w-2xl mx-auto">
+                  Just read these off your phone! Each script is 15-30 seconds. Record, post, and watch the views roll in. 📱
+                </p>
               </div>
 
               {scripts.length === 0 ? (
-                <div className="rounded-xl border border-t-border bg-t-bg-raised p-8 text-center">
-                  <Play className="w-6 h-6 text-t-text-faint mx-auto mb-3" />
-                  <p className="text-sm font-bold text-t-text-muted">Scripts are being generated...</p>
+                <div className="rounded-2xl border border-violet-500/20 bg-gradient-to-br from-violet-500/10 to-transparent p-16 text-center">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-violet-500 to-violet-600 flex items-center justify-center mx-auto mb-5 animate-pulse shadow-[0_10px_40px_rgba(139,92,246,0.3)]">
+                    <Play className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-black text-white mb-2">Writing Your Scripts...</h3>
+                  <p className="text-sm text-t-text-muted">AI is crafting scroll-stopping hooks for your niche. Almost done!</p>
                 </div>
               ) : (
-                <div className="space-y-3">
-                  {scripts.map(script => (
-                    <details key={script.id} className="group rounded-xl border border-t-border bg-t-bg-raised overflow-hidden">
-                      <summary className="flex items-center justify-between cursor-pointer px-5 py-3.5 hover:bg-t-bg-card transition">
-                        <div className="flex items-center gap-3">
-                          <span className="w-7 h-7 rounded-full bg-t-bg-card border border-t-border flex items-center justify-center text-[10px] font-black text-t-text-faint">{script.id}</span>
-                          {script.postFirst && <span className="text-[8px] font-black uppercase px-1.5 py-0.5 rounded bg-[#f5a623]/10 text-[#f5a623] border border-[#f5a623]/20">POST FIRST</span>}
-                          <span className="text-sm font-bold">{script.title}</span>
-                          <span className="text-[10px] text-t-text-faint">{script.length}</span>
+                <div className="space-y-4">
+                  {scripts.map((script, idx) => (
+                    <details key={script.id} className="group rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl overflow-hidden hover:border-white/20 transition-all">
+                      <summary className="flex items-center justify-between cursor-pointer px-6 py-5 hover:bg-white/[0.04] transition">
+                        <div className="flex items-center gap-4">
+                          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-violet-500 to-violet-600 flex items-center justify-center text-sm font-black text-white shadow-[0_0_15px_rgba(139,92,246,0.3)]">
+                            {script.id}
+                          </div>
+                          {script.postFirst && <span className="text-[10px] font-black uppercase px-2.5 py-1 rounded-lg bg-[#f5a623]/10 text-[#f5a623] border border-[#f5a623]/30 shadow-[0_0_10px_rgba(245,166,35,0.1)]">⭐ POST FIRST</span>}
+                          <div className="flex-1">
+                            <p className="text-base font-bold text-white">{script.title}</p>
+                            <p className="text-xs text-violet-400 mt-0.5">{script.length} • Perfect for TikTok & Reels</p>
+                          </div>
                         </div>
-                        <ChevronDown className="w-4 h-4 text-t-text-faint group-open:rotate-180 transition" />
+                        <ChevronDown className="w-5 h-5 text-t-text-faint group-open:rotate-180 transition-transform" />
                       </summary>
-                      <div className="px-5 pb-5 space-y-3">
-                        <div className="rounded-lg bg-[#f5a623]/[0.04] border border-[#f5a623]/10 p-3">
-                          <p className="text-[9px] font-black text-[#f5a623] tracking-wider mb-1">HOOK</p>
-                          <p className="text-sm font-bold">&ldquo;{script.hook}&rdquo;</p>
+
+                      <div className="px-6 pb-6 space-y-4 bg-gradient-to-b from-transparent to-violet-950/5">
+                        {/* Hook section */}
+                        <div className="rounded-xl bg-gradient-to-br from-[#f5a623]/[0.08] to-transparent border border-[#f5a623]/20 p-5 shadow-[0_0_20px_rgba(245,166,35,0.05)]">
+                          <div className="flex items-center gap-2 mb-3">
+                            <Zap className="w-4 h-4 text-[#f5a623]" />
+                            <p className="text-xs font-black text-[#f5a623] tracking-wider">HOOK (First 3 seconds)</p>
+                          </div>
+                          <p className="text-lg font-bold text-white leading-relaxed">&ldquo;{script.hook}&rdquo;</p>
                         </div>
-                        <div>
-                          <p className="text-[9px] font-black text-t-text-faint tracking-wider mb-1">BODY</p>
-                          <p className="text-xs text-t-text-muted leading-relaxed">{script.body}</p>
+
+                        {/* Body section */}
+                        <div className="rounded-xl bg-white/[0.02] border border-white/10 p-5">
+                          <p className="text-[10px] font-black text-t-text-faint tracking-wider mb-3">BODY (Main message)</p>
+                          <p className="text-sm text-white/90 leading-relaxed">{script.body}</p>
                         </div>
-                        <div>
-                          <p className="text-[9px] font-black text-t-text-faint tracking-wider mb-1">CTA</p>
-                          <p className="text-xs text-t-text-muted">&ldquo;{script.cta}&rdquo;</p>
+
+                        {/* CTA section */}
+                        <div className="rounded-xl bg-gradient-to-br from-emerald-500/[0.08] to-transparent border border-emerald-500/20 p-5">
+                          <p className="text-[10px] font-black text-emerald-400 tracking-wider mb-3">CALL TO ACTION</p>
+                          <p className="text-sm font-bold text-white">&ldquo;{script.cta}&rdquo;</p>
                         </div>
-                        <div className="flex items-center justify-between pt-3 border-t border-t-border">
-                          <div className="flex flex-wrap gap-1">{script.hashtags.map(h => <span key={h} className="text-[9px] text-t-text-faint bg-t-bg-card px-1.5 py-0.5 rounded">#{h}</span>)}</div>
-                          <button onClick={() => copy(`${script.hook}\n\n${script.body}\n\n${script.cta}`, `s-${script.id}`)}
-                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#f5a623]/10 border border-[#f5a623]/20 text-[10px] font-bold text-[#f5a623] hover:bg-[#f5a623]/20 transition">
-                            {copiedId === `s-${script.id}` ? <><Check className="w-3 h-3" /> Copied</> : <><Copy className="w-3 h-3" /> Copy Script</>}
+
+                        {/* Hashtags and copy button */}
+                        <div className="flex items-center justify-between pt-4 border-t border-white/10">
+                          <div className="flex flex-wrap gap-2">
+                            {script.hashtags.map(h => (
+                              <span key={h} className="text-xs text-violet-400 bg-violet-500/10 px-2.5 py-1 rounded-lg border border-violet-500/30">
+                                #{h}
+                              </span>
+                            ))}
+                          </div>
+                          <button onClick={() => copy(`${script.hook}\n\n${script.body}\n\n${script.cta}\n\n${script.hashtags.map(h => `#${h}`).join(' ')}`, `s-${script.id}`)}
+                            className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#f5a623]/10 to-orange-500/10 border border-[#f5a623]/30 text-sm font-bold text-[#f5a623] hover:shadow-[0_10px_30px_rgba(245,166,35,0.2)] hover:scale-105 transition-all">
+                            {copiedId === `s-${script.id}` ? <><Check className="w-4 h-4" /> Copied!</> : <><Copy className="w-4 h-4" /> Copy Full Script</>}
                           </button>
                         </div>
                       </div>
@@ -640,189 +670,329 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
             </div>
           )}
 
-          {/* ═══ EMAILS ═══ */}
+          {/* ═══ EMAILS — Klaviyo-level 2060 UI ═══ */}
           {tab === "emails" && (
-            <div className="space-y-5">
-              <div>
-                <h2 className="text-lg font-black">Email Automation</h2>
-                <p className="text-xs text-t-text-faint">Welcome sequences, cart recovery, and follow-ups — all running automatically.</p>
+            <div className="space-y-6">
+              {/* Hero header */}
+              <div className="rounded-2xl border border-blue-500/20 bg-gradient-to-br from-blue-500/[0.08] to-transparent p-8 text-center shadow-[0_0_60px_rgba(59,130,246,0.05)]">
+                <div className="text-6xl mb-4">📧</div>
+                <h2 className="text-3xl font-black bg-gradient-to-r from-white via-blue-400 to-blue-500 bg-clip-text text-transparent mb-3">
+                  Email Automation Running
+                </h2>
+                <p className="text-base text-t-text-muted max-w-2xl mx-auto">
+                  Set it and forget it! Welcome emails, cart recovery, and follow-ups send automatically while you sleep. 💤
+                </p>
               </div>
 
               {p?.emailFlow ? (
                 <>
-                  <div className="rounded-xl border border-t-border bg-t-bg-raised p-5">
-                    <div className="flex items-center justify-between mb-4">
-                      <p className="text-sm font-black">Email Flow</p>
-                      <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${
-                        p.emailFlow.status === "active" ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20" : "bg-t-bg-card text-t-text-faint border border-t-border"
-                      }`}>{p.emailFlow.status}</span>
+                  {/* Main flow stats card */}
+                  <div className="rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl p-6 shadow-[0_10px_40px_rgba(0,0,0,0.1)]">
+                    <div className="flex items-center justify-between mb-6">
+                      <div>
+                        <div className="flex items-center gap-3 mb-2">
+                          <h3 className="text-2xl font-black text-white">Active Flow</h3>
+                          <span className={`text-xs font-bold px-3 py-1.5 rounded-lg ${
+                            p.emailFlow.status === "active"
+                              ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.1)]"
+                              : "bg-white/[0.02] text-t-text-faint border border-white/10"
+                          }`}>{p.emailFlow.status === "active" ? "🟢 Live" : "⏸️ Paused"}</span>
+                        </div>
+                        <p className="text-sm text-t-text-faint">Nurturing your audience on autopilot</p>
+                      </div>
+                      <Link href={`/emails/flows/${p.emailFlow.id}`}
+                        className="flex items-center gap-2 px-5 py-3 rounded-xl bg-gradient-to-r from-[#f5a623]/10 to-orange-500/10 border border-[#f5a623]/30 text-sm font-bold text-[#f5a623] hover:shadow-[0_10px_30px_rgba(245,166,35,0.2)] hover:scale-105 transition-all">
+                        Edit Flow <Settings className="w-4 h-4" />
+                      </Link>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-3 mb-4">
-                      <div className="rounded-lg bg-t-bg-card border border-t-border p-3 text-center">
-                        <p className="text-xl font-black">{p.emailFlow.enrolled}</p>
-                        <p className="text-[9px] text-t-text-faint">Enrolled</p>
+                    <div className="grid grid-cols-3 gap-4">
+                      <div className="rounded-xl bg-gradient-to-br from-violet-500/10 to-transparent border border-violet-500/20 p-5 text-center">
+                        <Users className="w-5 h-5 text-violet-400 mx-auto mb-2" />
+                        <p className="text-3xl font-black text-white">{p.emailFlow.enrolled}</p>
+                        <p className="text-xs text-violet-400/60 mt-1">Subscribers</p>
                       </div>
-                      <div className="rounded-lg bg-t-bg-card border border-t-border p-3 text-center">
-                        <p className="text-xl font-black">{p.emailFlow.sent}</p>
-                        <p className="text-[9px] text-t-text-faint">Sent</p>
+                      <div className="rounded-xl bg-gradient-to-br from-blue-500/10 to-transparent border border-blue-500/20 p-5 text-center">
+                        <Send className="w-5 h-5 text-blue-400 mx-auto mb-2" />
+                        <p className="text-3xl font-black text-blue-400">{p.emailFlow.sent}</p>
+                        <p className="text-xs text-blue-400/60 mt-1">Emails Sent</p>
                       </div>
-                      <div className="rounded-lg bg-t-bg-card border border-t-border p-3 text-center">
-                        <p className="text-xl font-black text-emerald-400">—</p>
-                        <p className="text-[9px] text-t-text-faint">Opens</p>
+                      <div className="rounded-xl bg-gradient-to-br from-emerald-500/10 to-transparent border border-emerald-500/20 p-5 text-center">
+                        <Eye className="w-5 h-5 text-emerald-400 mx-auto mb-2" />
+                        <p className="text-3xl font-black text-emerald-400">—</p>
+                        <p className="text-xs text-emerald-400/60 mt-1">Open Rate</p>
                       </div>
                     </div>
-
-                    <Link href={`/emails/flows/${p.emailFlow.id}`}
-                      className="flex items-center gap-2 text-xs font-bold text-[#f5a623] hover:text-[#e07850] transition">
-                      Open flow editor <ChevronRight className="w-3 h-3" />
-                    </Link>
                   </div>
 
-                  {/* Email & lead features */}
-                  <div className="grid grid-cols-2 gap-3">
-                    <Link href="/websites/submissions" className="rounded-xl border border-emerald-500/15 bg-emerald-500/[0.03] p-4 hover:border-emerald-500/25 transition">
-                      <FileText className="w-4 h-4 text-emerald-400 mb-2" />
-                      <p className="text-xs font-bold text-emerald-400">Submissions</p>
-                      <p className="text-[10px] text-t-text-faint">Form leads from your site</p>
-                    </Link>
-                    <Link href="/emails/contacts" className="rounded-xl border border-t-border bg-t-bg-raised p-4 hover:border-[#f5a623]/15 transition">
-                      <Users className="w-4 h-4 text-t-text-faint mb-2" />
-                      <p className="text-xs font-bold">Contacts</p>
-                      <p className="text-[10px] text-t-text-faint">Manage your list</p>
-                    </Link>
-                    <Link href="/emails/broadcasts" className="rounded-xl border border-t-border bg-t-bg-raised p-4 hover:border-[#f5a623]/15 transition">
-                      <Mail className="w-4 h-4 text-t-text-faint mb-2" />
-                      <p className="text-xs font-bold">Broadcasts</p>
-                      <p className="text-[10px] text-t-text-faint">One-off sends</p>
-                    </Link>
-                    <Link href="/emails/analytics" className="rounded-xl border border-t-border bg-t-bg-raised p-4 hover:border-[#f5a623]/15 transition">
-                      <BarChart2 className="w-4 h-4 text-t-text-faint mb-2" />
-                      <p className="text-xs font-bold">Analytics</p>
-                      <p className="text-[10px] text-t-text-faint">Opens, clicks, revenue</p>
-                    </Link>
+                  {/* Email features grid */}
+                  <div>
+                    <p className="text-xs font-black text-t-text-faint tracking-widest mb-4">EMAIL TOOLS</p>
+                    <div className="grid grid-cols-2 gap-4">
+                      <Link href="/websites/submissions" className="group rounded-2xl border border-white/10 bg-gradient-to-br from-emerald-500/[0.05] to-transparent p-6 hover:border-emerald-500/30 hover:shadow-[0_20px_60px_rgba(16,185,129,0.1)] hover:scale-105 transition-all">
+                        <div className="w-12 h-12 rounded-xl bg-emerald-500/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                          <FileText className="w-6 h-6 text-emerald-400" />
+                        </div>
+                        <h4 className="text-lg font-black text-emerald-400 mb-2">Form Submissions</h4>
+                        <p className="text-xs text-t-text-faint">Leads captured from your website</p>
+                      </Link>
+
+                      <Link href="/emails/contacts" className="group rounded-2xl border border-white/10 bg-white/[0.02] p-6 hover:border-white/20 hover:shadow-[0_20px_60px_rgba(255,255,255,0.05)] hover:scale-105 transition-all">
+                        <div className="w-12 h-12 rounded-xl bg-white/[0.05] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                          <Users className="w-6 h-6 text-white" />
+                        </div>
+                        <h4 className="text-lg font-black text-white mb-2">Contacts</h4>
+                        <p className="text-xs text-t-text-faint">Manage your email list</p>
+                      </Link>
+
+                      <Link href="/emails/broadcasts" className="group rounded-2xl border border-white/10 bg-white/[0.02] p-6 hover:border-white/20 hover:shadow-[0_20px_60px_rgba(255,255,255,0.05)] hover:scale-105 transition-all">
+                        <div className="w-12 h-12 rounded-xl bg-white/[0.05] flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                          <Mail className="w-6 h-6 text-blue-400" />
+                        </div>
+                        <h4 className="text-lg font-black text-white mb-2">Broadcasts</h4>
+                        <p className="text-xs text-t-text-faint">Send one-time campaigns</p>
+                      </Link>
+
+                      <Link href="/emails/analytics" className="group rounded-2xl border border-white/10 bg-gradient-to-br from-[#f5a623]/[0.05] to-transparent p-6 hover:border-[#f5a623]/30 hover:shadow-[0_20px_60px_rgba(245,166,35,0.1)] hover:scale-105 transition-all">
+                        <div className="w-12 h-12 rounded-xl bg-[#f5a623]/10 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+                          <BarChart2 className="w-6 h-6 text-[#f5a623]" />
+                        </div>
+                        <h4 className="text-lg font-black text-[#f5a623] mb-2">Analytics</h4>
+                        <p className="text-xs text-t-text-faint">Opens, clicks, and revenue</p>
+                      </Link>
+                    </div>
                   </div>
                 </>
               ) : (
-                <div className="rounded-xl border border-t-border bg-t-bg-raised p-8 text-center">
-                  <Mail className="w-6 h-6 text-t-text-faint mx-auto mb-3" />
-                  <p className="text-sm font-bold text-t-text-muted">Email automation is being set up...</p>
-                  <p className="text-[10px] text-t-text-faint mt-1">Welcome, cart recovery, and follow-up sequences will appear here.</p>
+                <div className="rounded-2xl border border-blue-500/20 bg-gradient-to-br from-blue-500/10 to-transparent p-16 text-center">
+                  <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center mx-auto mb-5 animate-pulse shadow-[0_10px_40px_rgba(59,130,246,0.3)]">
+                    <Mail className="w-8 h-8 text-white" />
+                  </div>
+                  <h3 className="text-xl font-black text-white mb-2">Building Your Email Flow...</h3>
+                  <p className="text-sm text-t-text-muted max-w-md mx-auto">We're creating welcome emails, cart recovery, and follow-up sequences. They'll run automatically!</p>
                 </div>
               )}
             </div>
           )}
 
-          {/* ═══ ANALYTICS ═══ */}
+          {/* ═══ ANALYTICS — Real-time insights, 2060 UI ═══ */}
           {tab === "analytics" && (
-            <div className="space-y-5">
-              <div>
-                <h2 className="text-lg font-black">Analytics</h2>
-                <p className="text-xs text-t-text-faint">Track your business performance across all channels.</p>
+            <div className="space-y-6">
+              {/* Hero header with 📊 emoji */}
+              <div className="rounded-2xl border border-violet-500/20 bg-gradient-to-br from-violet-500/[0.08] to-transparent p-8 text-center">
+                <div className="text-6xl mb-4">📊</div>
+                <h2 className="text-3xl font-black bg-gradient-to-r from-white via-violet-400 to-violet-500 bg-clip-text text-transparent mb-3">
+                  Your Business in Real-Time
+                </h2>
+                <p className="text-base text-t-text-muted max-w-xl mx-auto">
+                  Every number updates live. See exactly what's working across all channels. 🎯
+                </p>
               </div>
 
-              <div className="grid grid-cols-2 gap-3">
-                <div className="rounded-xl border border-t-border bg-t-bg-raised p-5 text-center">
-                  <Globe className="w-5 h-5 text-[#e07850] mx-auto mb-2" />
-                  <p className="text-3xl font-black">{p?.site?.views ?? 0}</p>
-                  <p className="text-xs text-t-text-faint">Site Views</p>
+              {/* Main metrics grid - 2x2 with gradients */}
+              <div className="grid grid-cols-2 gap-4">
+                {/* Site Views - Orange gradient */}
+                <div className="rounded-2xl border border-[#f5a623]/20 bg-gradient-to-br from-[#f5a623]/[0.08] to-transparent p-6 text-center hover:scale-105 transition-transform shadow-[0_0_20px_rgba(245,166,35,0.1)]">
+                  <Globe className="w-6 h-6 text-[#f5a623] mx-auto mb-3" />
+                  <p className="text-4xl font-black text-white mb-2">{(p?.site?.views ?? 0).toLocaleString()}</p>
+                  <p className="text-sm text-[#f5a623]/60">Site Views</p>
                 </div>
-                <div className="rounded-xl border border-t-border bg-t-bg-raised p-5 text-center">
-                  <Users className="w-5 h-5 text-emerald-400 mx-auto mb-2" />
-                  <p className="text-3xl font-black">{p?.leadCount ?? 0}</p>
-                  <p className="text-xs text-t-text-faint">Leads</p>
+
+                {/* Leads - Emerald gradient */}
+                <div className="rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/[0.08] to-transparent p-6 text-center hover:scale-105 transition-transform shadow-[0_0_20px_rgba(16,185,129,0.1)]">
+                  <Users className="w-6 h-6 text-emerald-400 mx-auto mb-3" />
+                  <p className="text-4xl font-black text-white mb-2">{(p?.leadCount ?? 0).toLocaleString()}</p>
+                  <p className="text-sm text-emerald-400/60">Leads</p>
                 </div>
-                <div className="rounded-xl border border-t-border bg-t-bg-raised p-5 text-center">
-                  <Mail className="w-5 h-5 text-blue-400 mx-auto mb-2" />
-                  <p className="text-3xl font-black">{p?.emailFlow?.sent ?? 0}</p>
-                  <p className="text-xs text-t-text-faint">Emails Sent</p>
+
+                {/* Emails Sent - Blue gradient */}
+                <div className="rounded-2xl border border-blue-500/20 bg-gradient-to-br from-blue-500/[0.08] to-transparent p-6 text-center hover:scale-105 transition-transform shadow-[0_0_20px_rgba(59,130,246,0.1)]">
+                  <Mail className="w-6 h-6 text-blue-400 mx-auto mb-3" />
+                  <p className="text-4xl font-black text-white mb-2">{(p?.emailFlow?.sent ?? 0).toLocaleString()}</p>
+                  <p className="text-sm text-blue-400/60">Emails Sent</p>
                 </div>
-                <div className="rounded-xl border border-emerald-500/15 bg-emerald-500/[0.03] p-5 text-center">
-                  <DollarSign className="w-5 h-5 text-emerald-400 mx-auto mb-2" />
-                  <p className="text-3xl font-black text-emerald-400">${(p?.revenue ?? 0).toLocaleString()}</p>
-                  <p className="text-xs text-emerald-400/60">Revenue</p>
+
+                {/* Revenue - Emerald gradient (emphasized) */}
+                <div className="rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-transparent p-6 text-center hover:scale-105 transition-transform shadow-[0_0_30px_rgba(16,185,129,0.2)]">
+                  <DollarSign className="w-6 h-6 text-emerald-400 mx-auto mb-3" />
+                  <p className="text-4xl font-black text-emerald-400 mb-2">${(p?.revenue ?? 0).toLocaleString()}</p>
+                  <p className="text-sm text-emerald-400/60">Total Revenue</p>
                 </div>
               </div>
 
+              {/* Performance indicator bar */}
+              <div className="rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl p-6">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="flex items-center gap-2">
+                    <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.5)]" />
+                    <p className="text-sm font-bold text-white">All Systems Running</p>
+                  </div>
+                  <span className="text-[10px] font-black uppercase px-3 py-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+                    Live
+                  </span>
+                </div>
+
+                <div className="grid grid-cols-3 gap-3">
+                  <div className="text-center">
+                    <p className="text-xs text-t-text-faint mb-1">Website</p>
+                    <div className="flex items-center justify-center gap-1">
+                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                      <p className="text-xs font-bold text-emerald-400">Online</p>
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs text-t-text-faint mb-1">Email</p>
+                    <div className="flex items-center justify-center gap-1">
+                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                      <p className="text-xs font-bold text-emerald-400">Active</p>
+                    </div>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-xs text-t-text-faint mb-1">Tracking</p>
+                    <div className="flex items-center justify-center gap-1">
+                      <div className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                      <p className="text-xs font-bold text-emerald-400">Recording</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Full dashboard link - giant button */}
               <Link href="/dashboard"
-                className="flex items-center justify-center gap-2 rounded-xl border border-t-border bg-t-bg-raised px-4 py-3.5 text-sm font-bold text-t-text-muted hover:text-t-text hover:border-[#f5a623]/15 transition">
-                <BarChart2 className="w-4 h-4" /> Full Dashboard
+                className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-violet-500 to-violet-600 px-6 py-4 text-base font-black text-white hover:shadow-[0_20px_60px_rgba(139,92,246,0.3)] hover:scale-105 transition-all">
+                <BarChart2 className="w-5 h-5" /> See Full Analytics Dashboard
               </Link>
             </div>
           )}
 
-          {/* ═══ ORDERS ═══ */}
+          {/* ═══ ORDERS — Stripe-level commerce, 2060 UI ═══ */}
           {tab === "orders" && (
-            <div className="space-y-5">
-              <div>
-                <h2 className="text-lg font-black">Orders</h2>
-                <p className="text-xs text-t-text-faint">Track customer purchases and revenue.</p>
+            <div className="space-y-6">
+              {/* Hero header with 💳 emoji */}
+              <div className="rounded-2xl border border-emerald-500/20 bg-gradient-to-br from-emerald-500/[0.08] to-transparent p-8 text-center">
+                <div className="text-6xl mb-4">💳</div>
+                <h2 className="text-3xl font-black bg-gradient-to-r from-white via-emerald-400 to-emerald-500 bg-clip-text text-transparent mb-3">
+                  {orders.length === 0 ? "Ready for Your First Sale" : `${orders.length} ${orders.length === 1 ? "Order" : "Orders"} Processed`}
+                </h2>
+                <p className="text-base text-t-text-muted max-w-xl mx-auto">
+                  {orders.length === 0
+                    ? "Stripe is connected. Payments will appear here automatically. 💰"
+                    : "Every transaction tracked. Money in your account. Customer data captured. 🎉"
+                  }
+                </p>
               </div>
 
-              {/* Revenue stat card */}
-              <div className="rounded-xl border border-emerald-500/15 bg-emerald-500/[0.03] p-5 text-center">
-                <DollarSign className="w-5 h-5 text-emerald-400 mx-auto mb-2" />
-                <p className="text-3xl font-black text-emerald-400">
+              {/* Revenue stat card - giant */}
+              <div className="rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/10 to-transparent p-8 text-center shadow-[0_0_40px_rgba(16,185,129,0.15)]">
+                <div className="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 mb-4 shadow-[0_0_20px_rgba(16,185,129,0.2)]">
+                  <DollarSign className="w-8 h-8 text-emerald-400" />
+                </div>
+                <p className="text-5xl font-black text-emerald-400 mb-2">
                   ${(orders.reduce((sum, o) => sum + o.amountCents, 0) / 100).toLocaleString(undefined, { minimumFractionDigits: 2 })}
                 </p>
-                <p className="text-xs text-emerald-400/60">Total Revenue</p>
+                <p className="text-sm text-emerald-400/60">Total Revenue (All-Time)</p>
+                {orders.length > 0 && (
+                  <p className="text-xs text-t-text-faint mt-3">
+                    Average order: ${((orders.reduce((sum, o) => sum + o.amountCents, 0) / 100) / orders.length).toFixed(2)}
+                  </p>
+                )}
               </div>
 
+              {/* Orders list or loading/empty state */}
               {ordersLoading ? (
-                <div className="rounded-xl border border-t-border bg-t-bg-raised p-8 text-center">
-                  <Loader2 className="w-6 h-6 text-[#f5a623] animate-spin mx-auto mb-3" />
-                  <p className="text-sm font-bold text-t-text-muted">Loading orders...</p>
+                <div className="rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl p-12 text-center">
+                  <Loader2 className="w-10 h-10 text-[#f5a623] animate-spin mx-auto mb-4" />
+                  <p className="text-base font-bold text-t-text-muted">Loading orders...</p>
                 </div>
               ) : orders.length === 0 ? (
-                <div className="rounded-xl border border-t-border bg-t-bg-raised p-8 text-center">
-                  <DollarSign className="w-6 h-6 text-t-text-faint mx-auto mb-3" />
-                  <p className="text-sm font-bold text-t-text-muted">No orders yet</p>
-                  <p className="text-[10px] text-t-text-faint mt-1">Orders will appear here once customers start purchasing.</p>
+                <div className="rounded-2xl border border-violet-500/20 bg-gradient-to-br from-violet-500/[0.05] to-transparent p-12 text-center">
+                  <div className="inline-flex items-center justify-center w-20 h-20 rounded-2xl bg-violet-500/10 border border-violet-500/20 mb-5">
+                    <DollarSign className="w-10 h-10 text-violet-400" />
+                  </div>
+                  <h3 className="text-2xl font-black text-white mb-2">No Orders Yet</h3>
+                  <p className="text-sm text-t-text-faint max-w-md mx-auto">
+                    Orders will appear here once customers start purchasing. Your payment system is ready! 🚀
+                  </p>
                 </div>
               ) : (
-                <div className="space-y-2">
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between px-2">
+                    <p className="text-xs font-black text-t-text-faint uppercase tracking-widest">Recent Transactions</p>
+                    <p className="text-xs text-t-text-faint">{orders.length} total</p>
+                  </div>
                   {orders.map(order => (
-                    <div key={order.id} className="rounded-xl border border-t-border bg-t-bg-raised px-5 py-3.5 flex items-center justify-between">
-                      <div className="flex-1 min-w-0">
-                        <p className="text-sm font-bold truncate">{order.customerName || order.customerEmail}</p>
-                        {order.customerName && <p className="text-[10px] text-t-text-faint truncate">{order.customerEmail}</p>}
-                        {order.productName && <p className="text-[10px] text-t-text-faint mt-0.5">{order.productName}</p>}
-                      </div>
-                      <div className="flex items-center gap-3 shrink-0 ml-4">
-                        <span className="text-sm font-black">${(order.amountCents / 100).toFixed(2)}</span>
-                        <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full ${
-                          order.status === "paid" || order.status === "completed"
-                            ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/20"
-                            : order.status === "refunded"
-                            ? "bg-red-500/10 text-red-400 border border-red-500/20"
-                            : "bg-t-bg-card text-t-text-faint border border-t-border"
-                        }`}>{order.status}</span>
-                        <span className="text-[10px] text-t-text-faint">{new Date(order.createdAt).toLocaleDateString()}</span>
+                    <div key={order.id}
+                      className="group rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl px-6 py-5 hover:border-emerald-500/30 hover:bg-emerald-500/[0.03] transition-all">
+                      <div className="flex items-center justify-between gap-4">
+                        {/* Customer info */}
+                        <div className="flex-1 min-w-0">
+                          <div className="flex items-center gap-2 mb-1">
+                            <p className="text-base font-black text-white truncate">{order.customerName || order.customerEmail}</p>
+                            <span className={`text-[10px] font-bold px-2.5 py-1 rounded-lg shrink-0 ${
+                              order.status === "paid" || order.status === "completed"
+                                ? "bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 shadow-[0_0_10px_rgba(16,185,129,0.1)]"
+                                : order.status === "refunded"
+                                ? "bg-red-500/10 text-red-400 border border-red-500/30"
+                                : "bg-white/[0.05] text-t-text-faint border border-white/10"
+                            }`}>
+                              {order.status === "paid" || order.status === "completed" ? "✓ Paid" : order.status === "refunded" ? "↩ Refunded" : order.status}
+                            </span>
+                          </div>
+                          {order.customerName && <p className="text-xs text-t-text-faint truncate">{order.customerEmail}</p>}
+                          {order.productName && (
+                            <p className="text-xs text-t-text-muted mt-1.5 flex items-center gap-1.5">
+                              <span className="w-1 h-1 rounded-full bg-violet-400" />
+                              {order.productName}
+                            </p>
+                          )}
+                        </div>
+
+                        {/* Amount + date */}
+                        <div className="text-right shrink-0">
+                          <p className="text-2xl font-black text-emerald-400 mb-1">
+                            ${(order.amountCents / 100).toFixed(2)}
+                          </p>
+                          <p className="text-[10px] text-t-text-faint">
+                            {new Date(order.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                          </p>
+                        </div>
                       </div>
                     </div>
                   ))}
                 </div>
               )}
 
+              {/* Full order management link - giant button */}
               <Link href="/orders"
-                className="flex items-center justify-center gap-2 rounded-xl border border-t-border bg-t-bg-raised px-4 py-3.5 text-sm font-bold text-t-text-muted hover:text-t-text hover:border-[#f5a623]/15 transition">
-                <DollarSign className="w-4 h-4" /> Full Order Management
+                className="flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-emerald-500 to-emerald-600 px-6 py-4 text-base font-black text-white hover:shadow-[0_20px_60px_rgba(16,185,129,0.3)] hover:scale-105 transition-all">
+                <DollarSign className="w-5 h-5" /> Full Order Management
               </Link>
             </div>
           )}
 
-          {/* ═══ TOOLS ═══ */}
+          {/* ═══ TOOLS — AI power features, 2060 UI ═══ */}
           {tab === "tools" && (
-            <div className="space-y-5">
-              <div>
-                <h2 className="text-lg font-black">Business Tools</h2>
-                <p className="text-xs text-t-text-faint">AI-powered tools to grow faster. Click any tool to generate content instantly.</p>
+            <div className="space-y-6">
+              {/* Hero header with 🤖 emoji */}
+              <div className="rounded-2xl border border-[#f5a623]/20 bg-gradient-to-br from-[#f5a623]/[0.08] to-transparent p-8 text-center">
+                <div className="text-6xl mb-4">🤖</div>
+                <h2 className="text-3xl font-black bg-gradient-to-r from-white via-[#f5a623] to-orange-500 bg-clip-text text-transparent mb-3">
+                  AI Power Tools
+                </h2>
+                <p className="text-base text-t-text-muted max-w-2xl mx-auto">
+                  Click any tool to generate content instantly. No setup, no coding, just results. Every tool runs on AI. ⚡
+                </p>
               </div>
 
-              {/* Power features */}
+              {/* Power features - bigger, bolder */}
               <div>
-                <p className="text-[10px] font-black text-[#f5a623] tracking-widest mb-3">POWER FEATURES</p>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#f5a623]/30 to-transparent" />
+                  <p className="text-xs font-black text-[#f5a623] tracking-widest">⚡ POWER FEATURES</p>
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-[#f5a623]/30 to-transparent" />
+                </div>
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   {[
                     { id: "digital_twin", label: "Digital Twin", desc: "Simulate how your target customer reacts to headlines, offers, and prices before you spend money", icon: "🧬", action: "Test my funnel" },
                     { id: "business_cloner", label: "Clone Competitor", desc: "Paste a competitor URL — we analyze what works, find their weaknesses, and build you something better", icon: "🔬", action: "Clone a business" },
@@ -833,78 +1003,96 @@ export default function ProjectHubPage({ params }: { params: Promise<{ id: strin
                   ].map(feat => (
                     <button key={feat.id} onClick={() => void runTool(feat.id, feat.label)}
                       disabled={toolLoading === feat.id}
-                      className="flex items-start gap-3 rounded-xl border border-[#f5a623]/15 bg-[#f5a623]/[0.03] p-4 hover:border-[#f5a623]/25 hover:bg-[#f5a623]/[0.06] transition text-left disabled:opacity-50">
-                      <span className="text-2xl mt-0.5">{feat.icon}</span>
-                      <div className="flex-1">
-                        <p className="text-sm font-black">{feat.label}</p>
-                        <p className="text-[10px] text-t-text-faint mt-0.5 leading-relaxed">{feat.desc}</p>
-                        <p className="text-[10px] font-bold text-[#f5a623] mt-2">{feat.action} →</p>
+                      className="group flex items-start gap-4 rounded-2xl border border-[#f5a623]/20 bg-gradient-to-br from-[#f5a623]/[0.05] to-transparent p-6 hover:border-[#f5a623]/40 hover:bg-[#f5a623]/[0.08] hover:scale-105 transition-all text-left disabled:opacity-50 shadow-[0_0_20px_rgba(245,166,35,0.05)] hover:shadow-[0_0_30px_rgba(245,166,35,0.15)]">
+                      <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-gradient-to-br from-[#f5a623]/10 to-transparent border border-[#f5a623]/30 shrink-0 text-3xl group-hover:scale-110 transition-transform shadow-[0_0_15px_rgba(245,166,35,0.1)]">
+                        {feat.icon}
                       </div>
-                      {toolLoading === feat.id && <Loader2 className="w-4 h-4 text-[#f5a623] animate-spin shrink-0 mt-1" />}
+                      <div className="flex-1 min-w-0">
+                        <p className="text-base font-black text-white mb-1.5">{feat.label}</p>
+                        <p className="text-xs text-t-text-faint leading-relaxed mb-3">{feat.desc}</p>
+                        <div className="flex items-center gap-1.5 text-[#f5a623]">
+                          <p className="text-xs font-bold">{feat.action}</p>
+                          <span className="text-sm">→</span>
+                        </div>
+                      </div>
+                      {toolLoading === feat.id && <Loader2 className="w-5 h-5 text-[#f5a623] animate-spin shrink-0 mt-2" />}
                     </button>
                   ))}
                 </div>
               </div>
 
-              {/* Regular tools */}
-              <p className="text-[10px] font-black text-t-text-faint tracking-widest">CONTENT TOOLS</p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-                {[
-                  { id: "webinar", label: "Webinar", desc: "Evergreen funnel", icon: "🎥" },
-                  { id: "vsl", label: "VSL Script", desc: "10-min sales video", icon: "📹" },
-                  { id: "challenge", label: "Challenge", desc: "7-day funnel", icon: "🏆" },
-                  { id: "case_study", label: "Case Study", desc: "Client proof", icon: "📊" },
-                  { id: "blog_post", label: "Blog Post", desc: "SEO content", icon: "📝" },
-                  { id: "offer_stack", label: "Offer Stack", desc: "No-brainer offer", icon: "💰" },
-                  { id: "quiz_funnel", label: "Quiz Funnel", desc: "Segment visitors", icon: "❓" },
-                  { id: "sales_script", label: "Sales Script", desc: "Close calls", icon: "📞" },
-                  { id: "proposal", label: "Proposal", desc: "Win clients", icon: "📋" },
-                  { id: "flash_sale", label: "Flash Sale", desc: "48hr promo", icon: "⚡" },
-                  { id: "launch_sequence", label: "Launch", desc: "Product launch", icon: "🚀" },
-                  { id: "influencer_outreach", label: "Influencer", desc: "Collab DMs", icon: "🤝" },
-                  { id: "partnerships", label: "Partners", desc: "Find collabs", icon: "🔗" },
-                  { id: "market_trends", label: "Trends", desc: "What's hot", icon: "📈" },
-                  { id: "profit_margins", label: "Profit Calc", desc: "Real margins", icon: "🧮" },
-                  { id: "valuation", label: "Valuation", desc: "Business worth", icon: "💎" },
-                  { id: "brand_guide", label: "Brand Guide", desc: "Style guide", icon: "🎨" },
-                  { id: "pitch_deck", label: "Pitch Deck", desc: "For investors", icon: "🎯" },
-                ].map(tool => (
-                  <button key={tool.id} onClick={() => void runTool(tool.id, tool.label)}
-                    disabled={toolLoading === tool.id}
-                    className="flex items-start gap-3 rounded-xl border border-t-border bg-t-bg-raised px-4 py-3.5 hover:border-[#f5a623]/20 hover:bg-[#f5a623]/[0.03] transition text-left disabled:opacity-50">
-                    <span className="text-lg">{tool.icon}</span>
-                    <div>
-                      <span className="text-xs font-bold block">{tool.label}</span>
-                      <span className="text-[10px] text-t-text-faint">{tool.desc}</span>
-                    </div>
-                    {toolLoading === tool.id && <Loader2 className="w-3 h-3 text-[#f5a623] animate-spin ml-auto mt-1" />}
-                  </button>
-                ))}
+              {/* Content tools - 3-column grid */}
+              <div>
+                <div className="flex items-center gap-2 mb-4">
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-violet-500/30 to-transparent" />
+                  <p className="text-xs font-black text-violet-400 tracking-widest">📝 CONTENT GENERATORS</p>
+                  <div className="h-px flex-1 bg-gradient-to-r from-transparent via-violet-500/30 to-transparent" />
+                </div>
+
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                  {[
+                    { id: "webinar", label: "Webinar", desc: "Evergreen funnel", icon: "🎥" },
+                    { id: "vsl", label: "VSL Script", desc: "10-min sales video", icon: "📹" },
+                    { id: "challenge", label: "Challenge", desc: "7-day funnel", icon: "🏆" },
+                    { id: "case_study", label: "Case Study", desc: "Client proof", icon: "📊" },
+                    { id: "blog_post", label: "Blog Post", desc: "SEO content", icon: "📝" },
+                    { id: "offer_stack", label: "Offer Stack", desc: "No-brainer offer", icon: "💰" },
+                    { id: "quiz_funnel", label: "Quiz Funnel", desc: "Segment visitors", icon: "❓" },
+                    { id: "sales_script", label: "Sales Script", desc: "Close calls", icon: "📞" },
+                    { id: "proposal", label: "Proposal", desc: "Win clients", icon: "📋" },
+                    { id: "flash_sale", label: "Flash Sale", desc: "48hr promo", icon: "⚡" },
+                    { id: "launch_sequence", label: "Launch", desc: "Product launch", icon: "🚀" },
+                    { id: "influencer_outreach", label: "Influencer", desc: "Collab DMs", icon: "🤝" },
+                    { id: "partnerships", label: "Partners", desc: "Find collabs", icon: "🔗" },
+                    { id: "market_trends", label: "Trends", desc: "What's hot", icon: "📈" },
+                    { id: "profit_margins", label: "Profit Calc", desc: "Real margins", icon: "🧮" },
+                    { id: "valuation", label: "Valuation", desc: "Business worth", icon: "💎" },
+                    { id: "brand_guide", label: "Brand Guide", desc: "Style guide", icon: "🎨" },
+                    { id: "pitch_deck", label: "Pitch Deck", desc: "For investors", icon: "🎯" },
+                  ].map(tool => (
+                    <button key={tool.id} onClick={() => void runTool(tool.id, tool.label)}
+                      disabled={toolLoading === tool.id}
+                      className="group flex items-start gap-3 rounded-2xl border border-white/10 bg-white/[0.02] backdrop-blur-xl px-4 py-4 hover:border-violet-500/30 hover:bg-violet-500/[0.05] hover:scale-105 transition-all text-left disabled:opacity-50">
+                      <span className="text-2xl group-hover:scale-110 transition-transform">{tool.icon}</span>
+                      <div className="flex-1 min-w-0">
+                        <span className="text-sm font-bold text-white block mb-0.5">{tool.label}</span>
+                        <span className="text-[10px] text-t-text-faint">{tool.desc}</span>
+                      </div>
+                      {toolLoading === tool.id && <Loader2 className="w-4 h-4 text-violet-400 animate-spin shrink-0 mt-0.5" />}
+                    </button>
+                  ))}
+                </div>
               </div>
 
+              {/* Tool result display */}
               {toolResult && (
-                <div className="rounded-xl border border-[#f5a623]/20 bg-[#f5a623]/[0.03] p-5">
-                  <div className="flex items-center justify-between mb-3">
-                    <p className="text-sm font-black text-[#f5a623]">{toolResult.name}</p>
+                <div className="rounded-2xl border border-[#f5a623]/30 bg-gradient-to-br from-[#f5a623]/[0.08] to-transparent p-6 shadow-[0_0_30px_rgba(245,166,35,0.1)]">
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center gap-2">
+                      <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.5)]" />
+                      <p className="text-base font-black text-[#f5a623]">{toolResult.name}</p>
+                    </div>
                     <button onClick={() => { navigator.clipboard.writeText(typeof toolResult.data === "string" ? toolResult.data : JSON.stringify(toolResult.data, null, 2)); setCopiedId("tr"); setTimeout(() => setCopiedId(null), 2000); }}
-                      className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-[#f5a623]/10 border border-[#f5a623]/20 text-[10px] font-bold text-[#f5a623] hover:bg-[#f5a623]/20 transition">
-                      {copiedId === "tr" ? <><Check className="w-3 h-3" /> Copied</> : <><Copy className="w-3 h-3" /> Copy</>}
+                      className="flex items-center gap-2 px-4 py-2 rounded-xl bg-[#f5a623]/10 border border-[#f5a623]/30 text-xs font-bold text-[#f5a623] hover:bg-[#f5a623]/20 hover:scale-105 transition-all shadow-[0_0_15px_rgba(245,166,35,0.1)]">
+                      {copiedId === "tr" ? <><Check className="w-4 h-4" /> Copied!</> : <><Copy className="w-4 h-4" /> Copy Result</>}
                     </button>
                   </div>
-                  <pre className="text-[11px] text-t-text-muted whitespace-pre-wrap leading-relaxed max-h-96 overflow-y-auto">
-                    {typeof toolResult.data === "string" ? toolResult.data : JSON.stringify(toolResult.data, null, 2)}
-                  </pre>
+                  <div className="rounded-xl bg-black/20 border border-white/5 p-4 max-h-96 overflow-y-auto">
+                    <pre className="text-xs text-white/90 whitespace-pre-wrap leading-relaxed font-mono">
+                      {typeof toolResult.data === "string" ? toolResult.data : JSON.stringify(toolResult.data, null, 2)}
+                    </pre>
+                  </div>
                 </div>
               )}
 
-              {/* Sell on marketplace */}
+              {/* Marketplace CTA - emerald gradient */}
               <Link href="/marketplace/sell"
-                className="flex items-center justify-between rounded-xl border border-emerald-500/15 bg-emerald-500/[0.03] p-4 hover:border-emerald-500/25 transition group">
+                className="group flex items-center justify-between rounded-2xl border border-emerald-500/30 bg-gradient-to-br from-emerald-500/[0.08] to-transparent p-6 hover:border-emerald-500/50 hover:bg-emerald-500/[0.12] hover:scale-105 transition-all shadow-[0_0_20px_rgba(16,185,129,0.1)] hover:shadow-[0_0_40px_rgba(16,185,129,0.2)]">
                 <div>
-                  <p className="text-sm font-black text-emerald-400">Sell on Marketplace</p>
-                  <p className="text-[10px] text-t-text-faint mt-0.5">List your campaigns, emails, and funnels. Earn 80% of every sale.</p>
+                  <p className="text-lg font-black text-emerald-400 mb-1">💰 Sell on Marketplace</p>
+                  <p className="text-xs text-t-text-faint">List your campaigns, emails, and funnels. Earn 80% of every sale. Passive income awaits.</p>
                 </div>
-                <ChevronRight className="w-4 h-4 text-emerald-400/40 group-hover:text-emerald-400 transition" />
+                <ChevronRight className="w-6 h-6 text-emerald-400/40 group-hover:text-emerald-400 group-hover:translate-x-1 transition-all" />
               </Link>
             </div>
           )}
