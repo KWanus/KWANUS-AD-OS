@@ -107,6 +107,140 @@ export async function generateDailyCommands(userId: string): Promise<CommandsRes
       };
     }
 
+    // ── Business-type-specific commands (added FIRST so they get priority) ──
+    const profile = await prisma.businessProfile.findUnique({
+      where: { userId },
+      select: { businessType: true },
+    }).catch(() => null);
+
+    const bizType = profile?.businessType ?? "";
+
+    if (bizType === "agency") {
+      // Check how many leads are in outreach
+      const outreachLeads = await prisma.lead.count({
+        where: { userId, status: { in: ["new", "analyzed", "ready"] } },
+      }).catch(() => 0);
+
+      if (outreachLeads < 50) {
+        commands.push({
+          id: `cmd-${cmdId++}`,
+          priority: 2,
+          action: "Find 20 more businesses to email",
+          details: `You have ${outreachLeads} leads in your pipeline. Go to Outreach → search your niche → scrape 20 more. The math: 500 emails = 5-10 conversations = 1-3 clients.`,
+          estimatedTime: "10 min",
+          category: "outreach",
+          href: "/outreach",
+          completed: false,
+        });
+      }
+
+      commands.push({
+        id: `cmd-${cmdId++}`,
+        priority: 2,
+        action: "Follow up with warm leads",
+        details: "Check your leads page for anyone who opened your email or visited your site. They're warm — reach out directly.",
+        estimatedTime: "10 min",
+        category: "outreach",
+        href: "/leads",
+        completed: false,
+      });
+    }
+
+    if (bizType === "consultant_coach") {
+      commands.push({
+        id: `cmd-${cmdId++}`,
+        priority: 2,
+        action: "Share your booking link in 3 places",
+        details: "Post your booking URL on LinkedIn, in your email signature, and DM it to 5 people in your network. One booking = one potential client.",
+        estimatedTime: "5 min",
+        category: "outreach",
+        href: "/bookings",
+        completed: false,
+      });
+    }
+
+    if (bizType === "dropship") {
+      commands.push({
+        id: `cmd-${cmdId++}`,
+        priority: 2,
+        action: "Check your store analytics",
+        details: "Are visitors adding to cart but not buying? That's a checkout problem. Are they bouncing? That's a product page problem. The data tells you what to fix.",
+        estimatedTime: "3 min",
+        category: "review",
+        href: "/dashboard",
+        completed: false,
+      });
+    }
+
+    if (bizType === "local_service") {
+      commands.push({
+        id: `cmd-${cmdId++}`,
+        priority: 2,
+        action: "Ask 3 customers for a Google review",
+        details: "Text or email your 3 happiest customers: 'Hey, would you mind leaving us a quick Google review? It really helps.' Include the direct review link.",
+        estimatedTime: "5 min",
+        category: "outreach",
+        completed: false,
+      });
+    }
+
+    if (bizType === "affiliate") {
+      commands.push({
+        id: `cmd-${cmdId++}`,
+        priority: 1,
+        action: "Write one comparison article today",
+        details: "Target a 'best X for Y' keyword in your niche. 1,500+ words. Include affiliate links. Each article is a permanent traffic machine.",
+        estimatedTime: "60 min",
+        category: "create",
+        completed: false,
+      });
+      commands.push({
+        id: `cmd-${cmdId++}`,
+        priority: 2,
+        action: "Answer 5 questions on Reddit or Quora",
+        details: "Find questions in your niche. Give genuinely helpful answers. Include your site link naturally. Google ranks these on page 1.",
+        estimatedTime: "20 min",
+        category: "post",
+        completed: false,
+      });
+    }
+
+    if (bizType === "content_creator") {
+      commands.push({
+        id: `cmd-${cmdId++}`,
+        priority: 1,
+        action: "Create and post 2 short-form videos",
+        details: "Use your scripts from the project hub. Faceless or on-camera — the algorithm doesn't care. TikTok + YouTube Shorts.",
+        estimatedTime: "30 min",
+        category: "post",
+        completed: false,
+      });
+      commands.push({
+        id: `cmd-${cmdId++}`,
+        priority: 2,
+        action: "Work on your digital product for 30 minutes",
+        details: "Template, course, guide, spreadsheet — whatever it is. 30 minutes/day = launch-ready in 2 weeks.",
+        estimatedTime: "30 min",
+        category: "create",
+        completed: false,
+      });
+    }
+
+    // Keep the playbook tip as a bonus
+    const playbook = getPlaybook(bizType);
+    if (playbook) {
+      const tip = playbook.mistakes[Math.floor(Math.random() * playbook.mistakes.length)];
+      commands.push({
+        id: `cmd-${cmdId++}`,
+        priority: 3,
+        action: `Avoid this ${playbook.niche} mistake`,
+        details: tip,
+        estimatedTime: "1 min",
+        category: "review",
+        completed: false,
+      });
+    }
+
     // ── Has assets but nothing published ──
     if (publishedSites.length === 0 && sites.length > 0) {
       commands.push({
@@ -248,98 +382,6 @@ export async function generateDailyCommands(userId: string): Promise<CommandsRes
         estimatedTime: "1 min",
         category: "post",
         content: contentAI.content,
-        completed: false,
-      });
-    }
-
-    // ── Business-type-specific commands ──
-    const profile = await prisma.businessProfile.findUnique({
-      where: { userId },
-      select: { businessType: true },
-    }).catch(() => null);
-
-    const bizType = profile?.businessType ?? "";
-
-    if (bizType === "agency" && commands.length < 5) {
-      // Check how many leads are in outreach
-      const outreachLeads = await prisma.lead.count({
-        where: { userId, status: { in: ["new", "analyzed", "ready"] } },
-      }).catch(() => 0);
-
-      if (outreachLeads < 50) {
-        commands.push({
-          id: `cmd-${cmdId++}`,
-          priority: 2,
-          action: "Find 20 more businesses to email",
-          details: `You have ${outreachLeads} leads in your pipeline. Go to Outreach → search your niche → scrape 20 more. The math: 500 emails = 5-10 conversations = 1-3 clients.`,
-          estimatedTime: "10 min",
-          category: "outreach",
-          href: "/outreach",
-          completed: false,
-        });
-      }
-
-      commands.push({
-        id: `cmd-${cmdId++}`,
-        priority: 2,
-        action: "Follow up with warm leads",
-        details: "Check your leads page for anyone who opened your email or visited your site. They're warm — reach out directly.",
-        estimatedTime: "10 min",
-        category: "outreach",
-        href: "/leads",
-        completed: false,
-      });
-    }
-
-    if (bizType === "consultant_coach" && commands.length < 5) {
-      commands.push({
-        id: `cmd-${cmdId++}`,
-        priority: 2,
-        action: "Share your booking link in 3 places",
-        details: "Post your booking URL on LinkedIn, in your email signature, and DM it to 5 people in your network. One booking = one potential client.",
-        estimatedTime: "5 min",
-        category: "outreach",
-        href: "/bookings",
-        completed: false,
-      });
-    }
-
-    if (bizType === "dropship" && commands.length < 5) {
-      commands.push({
-        id: `cmd-${cmdId++}`,
-        priority: 2,
-        action: "Check your store analytics",
-        details: "Are visitors adding to cart but not buying? That's a checkout problem. Are they bouncing? That's a product page problem. The data tells you what to fix.",
-        estimatedTime: "3 min",
-        category: "review",
-        href: "/dashboard",
-        completed: false,
-      });
-    }
-
-    if (bizType === "local_service" && commands.length < 5) {
-      commands.push({
-        id: `cmd-${cmdId++}`,
-        priority: 2,
-        action: "Ask 3 customers for a Google review",
-        details: "Text or email your 3 happiest customers: 'Hey, would you mind leaving us a quick Google review? It really helps.' Include the direct review link.",
-        estimatedTime: "5 min",
-        category: "outreach",
-        completed: false,
-      });
-    }
-
-    // Keep the playbook tip as a bonus
-    const playbook = getPlaybook(bizType);
-    if (playbook && commands.length < 6) {
-      const tip = playbook.mistakes[Math.floor(Math.random() * playbook.mistakes.length)];
-      commands.push({
-        id: `cmd-${cmdId++}`,
-        priority: 3,
-        action: `Avoid this ${playbook.niche} mistake`,
-        details: tip,
-        estimatedTime: "1 min",
-        category: "review",
         completed: false,
       });
     }

@@ -578,6 +578,52 @@ export async function deployRun(input: {
       });
     }
 
+    // Business-type-specific blocks
+    const bizProfile = await prisma.businessProfile.findUnique({
+      where: { userId: input.userId },
+      select: { businessType: true },
+    }).catch(() => null);
+
+    const siteAppUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3005";
+
+    if (bizProfile?.businessType === "local_service") {
+      blocks.push({
+        type: "trust_badges",
+        props: {
+          headline: "Why Choose Us",
+          badges: [
+            "Licensed & Insured",
+            "5-Star Google Rating",
+            "Same-Day Service Available",
+            "Free Estimates",
+            "100% Satisfaction Guarantee",
+          ],
+        },
+      });
+    }
+
+    if (bizProfile?.businessType === "dropship") {
+      blocks.push({
+        type: "products",
+        props: {
+          headline: "Our Products",
+          siteId: site.id,
+        },
+      });
+    }
+
+    if (bizProfile?.businessType === "consultant_coach") {
+      blocks.push({
+        type: "booking",
+        props: {
+          headline: "Book a Free Strategy Session",
+          subheadline: "30 minutes. No obligation. Let's see how I can help.",
+          bookingUrl: `${siteAppUrl}/book/${input.userId}`,
+          buttonText: "Book My Free Session",
+        },
+      });
+    }
+
     blocks.push({
       type: "form",
       data: {
