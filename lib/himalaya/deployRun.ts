@@ -389,7 +389,7 @@ export async function deployRun(input: {
           himalayaTrackingScript: "", // placeholder — set after site.id is known
           hasTracking: true, // Himalaya tracking always works, no pixel needed
         },
-        published: false,
+        published: true, // Auto-publish like Shopify — site is immediately accessible
       },
     });
 
