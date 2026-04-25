@@ -8,6 +8,7 @@ import {
   MousePointer2, Lock, Unlock,
 } from "lucide-react";
 import { BlockLibraryBrowser } from "./BlockLibraryBrowser";
+import { DesignQualityDashboard, calculateDesignScores, type DesignQualityScores } from "./DesignQualityDashboard";
 import type { BlockTemplate } from "@/lib/sites/blockLibrary";
 
 type Block = {
@@ -40,6 +41,10 @@ export function InlineEditor({ siteId, blocks: initialBlocks, theme, onSave, onP
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [locked, setLocked] = useState(false);
   const [showLibrary, setShowLibrary] = useState(false);
+  const [showQuality, setShowQuality] = useState(true);
+  const [qualityScores, setQualityScores] = useState<DesignQualityScores>(
+    calculateDesignScores({ blocks: initialBlocks, theme })
+  );
 
   const iframeRef = useRef<HTMLIFrameElement>(null);
 
@@ -79,6 +84,9 @@ export function InlineEditor({ siteId, blocks: initialBlocks, theme, onSave, onP
     newHistory.push(newBlocks);
     setHistory(newHistory);
     setHistoryIndex(newHistory.length - 1);
+
+    // Recalculate quality scores
+    setQualityScores(calculateDesignScores({ blocks: newBlocks, theme }));
   };
 
   const undo = () => {
@@ -124,14 +132,17 @@ export function InlineEditor({ siteId, blocks: initialBlocks, theme, onSave, onP
       type: template.category,
       props: template.props,
     };
-    setBlocks([...blocks, newBlock]);
+    const newBlocks = [...blocks, newBlock];
+    setBlocks(newBlocks);
 
     // Add to history
-    const newBlocks = [...blocks, newBlock];
     const newHistory = history.slice(0, historyIndex + 1);
     newHistory.push(newBlocks);
     setHistory(newHistory);
     setHistoryIndex(newHistory.length - 1);
+
+    // Recalculate quality scores
+    setQualityScores(calculateDesignScores({ blocks: newBlocks, theme }));
   };
 
   return (
@@ -177,6 +188,19 @@ export function InlineEditor({ siteId, blocks: initialBlocks, theme, onSave, onP
             Add Section
           </button>
         </div>
+
+        {/* Design Quality Score */}
+        {showQuality && (
+          <div className="p-3 border-t border-white/10 max-h-[50vh] overflow-y-auto">
+            <DesignQualityDashboard
+              siteId={siteId}
+              scores={qualityScores}
+              onRefresh={() => {
+                setQualityScores(calculateDesignScores({ blocks, theme }));
+              }}
+            />
+          </div>
+        )}
       </aside>
 
       {/* Block Library Modal */}
