@@ -10,7 +10,7 @@ import {
   Home, Mountain, FolderKanban, Globe, Mail, Users, Settings,
   Search, ChevronDown, LayoutGrid, Sun, Moon, Sparkles,
   MessageSquareText, TrendingUp, BarChart3, Briefcase, FileText,
-  MapPin, ShoppingCart, Building2, Package, Wrench, Send, Share2, Code2, Store,
+  MapPin, ShoppingCart, Building2, Package, Wrench, Send, Share2, Code2, Store, BookOpen,
 } from "lucide-react";
 import { useTheme, type ThemeMode } from "@/lib/theme/ThemeProvider";
 
@@ -44,6 +44,7 @@ const MORE = [
   { href: "/agents",     label: "AI Agents",  icon: Sparkles },
   { href: "/milestones", label: "Milestones", icon: TrendingUp },
   { href: "/leaderboard",label: "Leaderboard",icon: BarChart3 },
+  { href: "/playbook",   label: "Playbook",   icon: BookOpen },
   { href: "/guide",      label: "Guide",      icon: Briefcase },
   { href: "/my-system",  label: "My System",  icon: Settings },
   { href: "/developers", label: "Developers", icon: Code2 },
