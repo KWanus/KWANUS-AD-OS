@@ -13,7 +13,7 @@ export async function GET(
 
   try {
     // Fetch client data
-    const client = await prisma.himalayaClient.findUnique({
+    const client = await prisma.client.findUnique({
       where: { id: clientId },
       select: {
         id: true,
@@ -30,7 +30,7 @@ export async function GET(
     }
 
     // Fetch recent activities (notes, meetings, tasks)
-    const activities = await prisma.himalayaActivity.findMany({
+    const activities = await prisma.clientActivity.findMany({
       where: { clientId },
       orderBy: { createdAt: "desc" },
       take: 10,
@@ -45,7 +45,7 @@ export async function GET(
     });
 
     // Calculate metrics
-    const allActivities = await prisma.himalayaActivity.findMany({
+    const allActivities = await prisma.clientActivity.findMany({
       where: { clientId },
       select: {
         type: true,

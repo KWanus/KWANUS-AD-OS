@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { handleGmailCallback } from "@/lib/integrations/email/gmailOAuth";
 
 /** GET — Handle Gmail OAuth callback */
 export async function GET(req: NextRequest) {
@@ -17,6 +16,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.redirect(new URL("/settings?error=missing_params", req.url));
     }
 
+    const { handleGmailCallback } = await import("@/lib/integrations/email/gmailOAuth");
     const success = await handleGmailCallback(code, state);
 
     if (success) {

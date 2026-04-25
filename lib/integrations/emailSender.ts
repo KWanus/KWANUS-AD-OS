@@ -7,7 +7,6 @@
 // ---------------------------------------------------------------------------
 
 import nodemailer from "nodemailer";
-import { sendGmailEmail } from "./email/gmailOAuth";
 
 export type EmailInput = {
   from: string;
@@ -146,6 +145,8 @@ export async function sendEmailUnified(
   // 1. Try Gmail OAuth first (user's connected Gmail account - best for deliverability + tracking)
   if (userId) {
     try {
+      // Dynamic import to avoid bundling googleapis in all routes
+      const { sendGmailEmail } = await import("./email/gmailOAuth");
       const result = await sendGmailEmail({
         userId,
         to: input.to,

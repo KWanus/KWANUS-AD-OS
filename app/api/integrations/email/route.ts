@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getGmailAuthUrl, disconnectGmail } from "@/lib/integrations/email/gmailOAuth";
 
 /** GET — Get email integration status */
 export async function GET() {
@@ -46,11 +45,13 @@ export async function POST(req: Request) {
     const { action, provider } = body;
 
     if (action === "disconnect") {
+      const { disconnectGmail } = await import("@/lib/integrations/email/gmailOAuth");
       await disconnectGmail(user.id);
       return NextResponse.json({ ok: true });
     }
 
     if (action === "connect" && provider === "gmail") {
+      const { getGmailAuthUrl } = await import("@/lib/integrations/email/gmailOAuth");
       const authUrl = getGmailAuthUrl(user.id);
       return NextResponse.json({ ok: true, authUrl });
     }

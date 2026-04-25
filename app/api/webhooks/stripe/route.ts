@@ -182,7 +182,7 @@ export async function POST(req: NextRequest) {
 
             if (clientId && userId) {
                 try {
-                    await prisma.himalayaClient.update({
+                    await prisma.client.update({
                         where: { id: clientId },
                         data: {
                             pipelineStage: "won",
@@ -190,7 +190,7 @@ export async function POST(req: NextRequest) {
                         },
                     });
 
-                    await prisma.himalayaActivity.create({
+                    await prisma.clientActivity.create({
                         data: {
                             clientId,
                             userId,
@@ -213,7 +213,7 @@ export async function POST(req: NextRequest) {
 
             if (clientId && userId) {
                 try {
-                    await prisma.himalayaActivity.create({
+                    await prisma.clientActivity.create({
                         data: {
                             clientId,
                             userId,
@@ -224,7 +224,7 @@ export async function POST(req: NextRequest) {
                         },
                     });
 
-                    await prisma.himalayaClient.update({
+                    await prisma.client.update({
                         where: { id: clientId },
                         data: { dealValue: { increment: (invoice.amount_paid || 0) / 100 } },
                     });
@@ -241,7 +241,7 @@ export async function POST(req: NextRequest) {
 
             if (clientId && userId) {
                 try {
-                    await prisma.himalayaActivity.create({
+                    await prisma.clientActivity.create({
                         data: {
                             clientId,
                             userId,
@@ -252,7 +252,7 @@ export async function POST(req: NextRequest) {
                         },
                     });
 
-                    await prisma.himalayaClient.update({
+                    await prisma.client.update({
                         where: { id: clientId },
                         data: {
                             healthStatus: "yellow",

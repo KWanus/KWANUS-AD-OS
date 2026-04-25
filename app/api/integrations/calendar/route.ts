@@ -2,7 +2,6 @@ import { NextResponse } from "next/server";
 import { auth } from "@clerk/nextjs/server";
 import { getOrCreateUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { getGoogleCalendarAuthUrl, disconnectGoogleCalendar, createCalendarEvent, checkAvailability } from "@/lib/integrations/calendar/googleCalendar";
 
 /** GET — Get calendar integration status */
 export async function GET() {
@@ -53,11 +52,13 @@ export async function POST(req: Request) {
     const { action } = body;
 
     if (action === "disconnect") {
+      const { disconnectGoogleCalendar } = await import("@/lib/integrations/calendar/googleCalendar");
       await disconnectGoogleCalendar(user.id);
       return NextResponse.json({ ok: true });
     }
 
     if (action === "connect" && body.provider === "google") {
+      const { getGoogleCalendarAuthUrl } = await import("@/lib/integrations/calendar/googleCalendar");
       const authUrl = getGoogleCalendarAuthUrl(user.id);
       return NextResponse.json({ ok: true, authUrl });
     }
@@ -67,6 +68,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ ok: false, error: "Missing required fields" }, { status: 400 });
       }
 
+      const { createCalendarEvent } = await import("@/lib/integrations/calendar/googleCalendar");
       const result = await createCalendarEvent({
         userId: user.id,
         summary: body.summary,
@@ -85,6 +87,7 @@ export async function POST(req: Request) {
         return NextResponse.json({ ok: false, error: "Missing required fields" }, { status: 400 });
       }
 
+      const { checkAvailability } = await import("@/lib/integrations/calendar/googleCalendar");
       const result = await checkAvailability({
         userId: user.id,
         startTime: body.startTime,

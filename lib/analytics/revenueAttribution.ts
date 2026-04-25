@@ -47,7 +47,7 @@ export interface DashboardMetrics {
  */
 export async function getRevenueBySource(userId: string): Promise<RevenueSource[]> {
   // Get all clients with revenue data
-  const clients = await prisma.himalayaClient.findMany({
+  const clients = await prisma.client.findMany({
     where: { userId },
     select: {
       id: true,
@@ -60,7 +60,7 @@ export async function getRevenueBySource(userId: string): Promise<RevenueSource[
   });
 
   // Get lead counts by source for conversion rate
-  const leads = await prisma.himalayaLead.findMany({
+  const leads = await prisma.lead.findMany({
     where: { userId },
     select: { source: true, status: true },
   });
@@ -107,7 +107,7 @@ export async function getRevenueBySource(userId: string): Promise<RevenueSource[
  * Get top revenue-generating clients
  */
 export async function getTopClients(userId: string, limit = 10): Promise<ClientRevenue[]> {
-  const clients = await prisma.himalayaClient.findMany({
+  const clients = await prisma.client.findMany({
     where: { userId },
     select: {
       id: true,
@@ -135,7 +135,7 @@ export async function getTopClients(userId: string, limit = 10): Promise<ClientR
  */
 export async function getMRRProjection(userId: string): Promise<MRRProjection> {
   // Get all active subscription clients
-  const clients = await prisma.himalayaClient.findMany({
+  const clients = await prisma.client.findMany({
     where: {
       userId,
       status: { in: ["active", "onboarding"] },
@@ -271,7 +271,7 @@ export async function getRevenueHistory(userId: string): Promise<Array<{
     const monthDate = new Date(now.getFullYear(), now.getMonth() - i, 1);
     const nextMonth = new Date(now.getFullYear(), now.getMonth() - i + 1, 1);
 
-    const clients = await prisma.himalayaClient.findMany({
+    const clients = await prisma.client.findMany({
       where: {
         userId,
         createdAt: {

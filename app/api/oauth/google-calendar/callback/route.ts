@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from "next/server";
-import { handleGoogleCalendarCallback } from "@/lib/integrations/calendar/googleCalendar";
 
 /** GET — Handle Google Calendar OAuth callback */
 export async function GET(req: NextRequest) {
@@ -17,6 +16,7 @@ export async function GET(req: NextRequest) {
       return NextResponse.redirect(new URL("/settings?error=missing_params", req.url));
     }
 
+    const { handleGoogleCalendarCallback } = await import("@/lib/integrations/calendar/googleCalendar");
     const success = await handleGoogleCalendarCallback(code, state);
 
     if (success) {
