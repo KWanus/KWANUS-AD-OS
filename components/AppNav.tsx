@@ -44,8 +44,9 @@ const MORE = [
   { href: "/agents",     label: "AI Agents",  icon: Sparkles },
   { href: "/milestones", label: "Milestones", icon: TrendingUp },
   { href: "/leaderboard",label: "Leaderboard",icon: BarChart3 },
-  { href: "/playbook",   label: "Playbook",   icon: BookOpen },
+  { href: "/playbook/tasks", label: "Weekly Tasks", icon: BookOpen },
   { href: "/guide",      label: "Guide",      icon: Briefcase },
+  { href: "/settings/integrations", label: "Integrations", icon: Settings },
   { href: "/my-system",  label: "My System",  icon: Settings },
   { href: "/developers", label: "Developers", icon: Code2 },
   // Admin-only (the admin page itself does the auth check)

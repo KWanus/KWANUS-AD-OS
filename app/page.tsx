@@ -45,6 +45,7 @@ export default function Home() {
   const [bizType, setBizType] = useState("");
   const [playbookWeek, setPlaybookWeek] = useState(1);
   const [hotLeads, setHotLeads] = useState<Array<{ id: string; name: string; score: number; tier: string; urgency: string; nextAction: string }>>([]);
+  const [integrations, setIntegrations] = useState<{ gmail: boolean; calendar: boolean } | null>(null);
 
   // Don't redirect logged-out users — show landing page
   // But redirect NEW signed-in users to onboarding if they have no projects
@@ -76,7 +77,8 @@ export default function Home() {
       fetch("/api/notifications").then(r => r.json()),
       fetch("/api/himalaya/advisor").then(r => r.json()),
       fetch("/api/leads/score?limit=3").then(r => r.json()),
-    ]).then(([notifRes, advisorRes, hotLeadsRes]) => {
+      fetch("/api/settings/integrations").then(r => r.json()),
+    ]).then(([notifRes, advisorRes, hotLeadsRes, integrationsRes]) => {
       const notifs = notifRes.status === "fulfilled" ? notifRes.value : {};
       const advisor = advisorRes.status === "fulfilled" ? advisorRes.value : {};
       const hot = hotLeadsRes.status === "fulfilled" && hotLeadsRes.value.ok ? hotLeadsRes.value.hotLeads : [];
@@ -87,6 +89,15 @@ export default function Home() {
         opportunities: (notifs.notifications ?? []).filter((n: { type: string }) => n.type === "new_lead" || n.type === "insight").length,
       });
       setHotLeads(hot);
+
+      // Parse integrations
+      if (integrationsRes.status === "fulfilled" && integrationsRes.value.ok) {
+        const ints = integrationsRes.value.integrations || [];
+        setIntegrations({
+          gmail: ints.some((i: { type: string; connected: boolean }) => i.type === "email" && i.connected),
+          calendar: ints.some((i: { type: string; connected: boolean }) => i.type === "calendar" && i.connected),
+        });
+      }
     }).catch(() => {});
 
     // Check if new user needs onboarding
@@ -463,6 +474,46 @@ export default function Home() {
                   </div>
                 </Link>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── Integration Status ── */}
+        {integrations && (!integrations.gmail || !integrations.calendar) && (
+          <div className="mb-6 rounded-2xl border border-blue-500/15 bg-blue-500/[0.03] p-5">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-[10px] font-black text-blue-400 tracking-widest">BOOST YOUR WORKFLOW</p>
+              <Link href="/settings/integrations" className="text-[10px] font-bold text-t-text-faint hover:text-blue-400 transition">
+                Connect →
+              </Link>
+            </div>
+            <div className="space-y-2">
+              {!integrations.gmail && (
+                <Link
+                  href="/settings/integrations"
+                  className="flex items-center gap-3 rounded-xl bg-t-bg-card border border-t-border px-4 py-3 hover:border-blue-500/20 transition group"
+                >
+                  <Mail className="w-5 h-5 text-blue-400 shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-bold group-hover:text-blue-400 transition">Connect Gmail</p>
+                    <p className="text-[10px] text-t-text-faint">Send outreach from your account (better deliverability)</p>
+                  </div>
+                  <ArrowRight className="w-3 h-3 text-t-text-faint group-hover:text-blue-400 transition" />
+                </Link>
+              )}
+              {!integrations.calendar && (
+                <Link
+                  href="/settings/integrations"
+                  className="flex items-center gap-3 rounded-xl bg-t-bg-card border border-t-border px-4 py-3 hover:border-blue-500/20 transition group"
+                >
+                  <BarChart2 className="w-5 h-5 text-blue-400 shrink-0" />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-bold group-hover:text-blue-400 transition">Connect Google Calendar</p>
+                    <p className="text-[10px] text-t-text-faint">Auto-sync client meetings to your calendar</p>
+                  </div>
+                  <ArrowRight className="w-3 h-3 text-t-text-faint group-hover:text-blue-400 transition" />
+                </Link>
+              )}
             </div>
           </div>
         )}
