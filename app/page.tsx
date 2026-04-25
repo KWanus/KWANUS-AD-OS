@@ -42,6 +42,8 @@ export default function Home() {
   const [running, setRunning] = useState(false);
   const [stage, setStage] = useState("");
   const [insights, setInsights] = useState<{ notifications: number; advisor?: string; opportunities: number }| null>(null);
+  const [bizType, setBizType] = useState("");
+  const [playbookWeek, setPlaybookWeek] = useState(1);
 
   // Don't redirect logged-out users — show landing page
   // But redirect NEW signed-in users to onboarding if they have no projects
@@ -59,6 +61,8 @@ export default function Home() {
         setCommands(cRes.value.commands ?? []);
         setGreeting(cRes.value.greeting ?? "");
         setStreak(cRes.value.stats?.streak ?? 0);
+        setBizType(cRes.value.stats?.bizType ?? "");
+        setPlaybookWeek(cRes.value.stats?.playbookWeek ?? 1);
       }
     } finally { setLoading(false); }
   }, []);
@@ -398,6 +402,29 @@ export default function Home() {
             </button>
           </div>
         </div>
+
+        {/* ── Playbook progress ── */}
+        {bizType && projects.length > 0 && (
+          <Link href="/playbook"
+            className="flex items-center justify-between rounded-xl border border-[#f5a623]/15 bg-[#f5a623]/[0.03] px-4 py-3 mb-4 group hover:border-[#f5a623]/25 transition">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-full bg-[#f5a623]/10 border border-[#f5a623]/20 flex items-center justify-center shrink-0">
+                <span className="text-sm font-black text-[#f5a623]">{playbookWeek}</span>
+              </div>
+              <div>
+                <p className="text-xs font-bold">Week {playbookWeek} of 6 — {
+                  playbookWeek <= 1 ? "Foundation" :
+                  playbookWeek <= 2 ? "Start outreach" :
+                  playbookWeek <= 3 ? "Close first client" :
+                  playbookWeek <= 4 ? "Deliver & scale" :
+                  playbookWeek <= 5 ? "Systemize" : "Full speed"
+                }</p>
+                <p className="text-[10px] text-t-text-faint">Your {bizType.replace(/_/g, " ")} playbook</p>
+              </div>
+            </div>
+            <ArrowRight className="w-4 h-4 text-[#f5a623]/40 group-hover:text-[#f5a623] transition" />
+          </Link>
+        )}
 
         {/* ── Insights — what happened while you were away ── */}
         {insights && (insights.notifications > 0 || insights.advisor || insights.opportunities > 0) && (

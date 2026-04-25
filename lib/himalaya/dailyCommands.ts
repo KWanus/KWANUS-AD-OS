@@ -37,6 +37,8 @@ export type CommandsResult = {
     streak: number;              // days in a row they completed commands
     totalCompleted: number;
     stage: string;               // "Launch Week" / "Growth Phase" / "Scale Mode"
+    bizType?: string;
+    playbookWeek?: number;
   };
 };
 
@@ -424,11 +426,21 @@ export async function generateDailyCommands(userId: string): Promise<CommandsRes
       ? `${firstName}, your site isn't live yet. Fix that today.`
       : `Hey ${firstName}. Here's today's plan.`;
 
+    // Calculate playbook week (days since first deployment)
+    const firstDeployment = await prisma.himalayaDeployment.findFirst({
+      where: { userId },
+      orderBy: { createdAt: "asc" },
+      select: { createdAt: true },
+    }).catch(() => null);
+    const playbookWeek = firstDeployment
+      ? Math.min(6, Math.max(1, Math.ceil((Date.now() - firstDeployment.createdAt.getTime()) / (7 * 86400000))))
+      : 1;
+
     return {
       ok: true,
       greeting,
-      commands: commands.slice(0, 5), // max 5 commands
-      stats: { streak, totalCompleted: recentEvents.length, stage },
+      commands: commands.slice(0, 5),
+      stats: { streak, totalCompleted: recentEvents.length, stage, bizType, playbookWeek },
     };
   } catch (err) {
     console.error("Daily commands error:", err);
