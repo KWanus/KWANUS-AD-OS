@@ -446,9 +446,14 @@ export default function Home() {
           <div className="mb-6 rounded-2xl border border-emerald-500/15 bg-emerald-500/[0.03] p-5">
             <div className="flex items-center justify-between mb-3">
               <p className="text-[10px] font-black text-emerald-400 tracking-widest">HOT LEADS — CALL NOW</p>
-              <Link href="/leads" className="text-[10px] font-bold text-t-text-faint hover:text-emerald-400 transition">
-                View all →
-              </Link>
+              <div className="flex items-center gap-3">
+                <Link href="/revenue-analytics" className="text-[10px] font-bold text-t-text-faint hover:text-emerald-400 transition">
+                  Analytics →
+                </Link>
+                <Link href="/leads" className="text-[10px] font-bold text-t-text-faint hover:text-emerald-400 transition">
+                  View all →
+                </Link>
+              </div>
             </div>
             <div className="space-y-2">
               {hotLeads.map((lead) => (

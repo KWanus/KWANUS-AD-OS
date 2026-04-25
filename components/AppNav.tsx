@@ -33,7 +33,8 @@ const NAV = [
 const MORE = [
   { href: "/inbox",      label: "Inbox",      icon: MessageSquareText },
   { href: "/analytics",  label: "Analytics",  icon: BarChart3 },
-  { href: "/revenue",    label: "Revenue",    icon: TrendingUp },
+  { href: "/revenue-analytics", label: "CRM Revenue", icon: TrendingUp },
+  { href: "/revenue",    label: "Store Revenue", icon: DollarSign },
   { href: "/orders",     label: "Orders",     icon: ShoppingCart },
   { href: "/websites/submissions", label: "Submissions", icon: FileText },
   { href: "/affiliate",  label: "Referrals",  icon: Share2 },
