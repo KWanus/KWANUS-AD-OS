@@ -681,7 +681,7 @@ function OutreachTab({ lead, onSent }: { lead: Lead; onSent: () => void }) {
     const res = await fetch(`/api/leads/${lead.id}/outreach`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ toEmail, customBody }),
+      body: JSON.stringify({ toEmail, customBody, customSubject }),
     });
     const data = await res.json() as { ok: boolean; error?: string };
     if (data.ok) { setMsg({ type: "success", text: "Email sent!" }); onSent(); }

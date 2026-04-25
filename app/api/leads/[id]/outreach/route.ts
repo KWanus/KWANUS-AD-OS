@@ -27,7 +27,7 @@ export async function POST(
       return NextResponse.json({ ok: false, error: "Generate assets first" }, { status: 400 });
     }
 
-    const body = await req.json() as { toEmail?: string; customBody?: string };
+    const body = await req.json() as { toEmail?: string; customBody?: string; customSubject?: string };
     const toEmail = body.toEmail?.trim() ?? lead.email;
 
     if (!toEmail) {
@@ -37,11 +37,12 @@ export async function POST(
     // Use unified sender (Gmail OAuth → Resend → SMTP → fallback)
     const from = getFromAddressUnified(user);
     const emailBody = body.customBody ?? outreachEmail.body;
+    const emailSubject = body.customSubject ?? outreachEmail.subject;
 
     const result = await sendEmailUnified({
       from,
       to: toEmail,
-      subject: outreachEmail.subject,
+      subject: emailSubject,
       html: `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.7; color: #1a1a2e;">
 ${emailBody.split("\n").map((line: string) => `<p style="margin: 0 0 12px;">${line}</p>`).join("")}
 </div>`,
