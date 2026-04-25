@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, use } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -165,9 +166,28 @@ function verticalToBusinessType(vertical?: string | null): string {
 
 export default function MarketIntelligenceRunPage({ params }: { params: Promise<{ runId: string }> }) {
   const { runId } = use(params);
+  const router = useRouter();
   const [run, setRun] = useState<RunData | null>(null);
   const [loading, setLoading] = useState(true);
+  const [creatingCampaign, setCreatingCampaign] = useState(false);
   const [tab, setTab] = useState<"synthesis" | "products" | "winners" | "assets">("synthesis");
+
+  async function createCampaign() {
+    if (creatingCampaign) return;
+    setCreatingCampaign(true);
+    try {
+      const res = await fetch("/api/market-intelligence/to-campaign", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ runId }),
+      });
+      const data = (await res.json()) as { ok: boolean; campaignId?: string };
+      if (data.ok && data.campaignId) {
+        router.push(`/campaigns/${data.campaignId}`);
+      }
+    } catch { /* non-fatal */ }
+    finally { setCreatingCampaign(false); }
+  }
 
   useEffect(() => {
     async function load() {
@@ -284,6 +304,14 @@ export default function MarketIntelligenceRunPage({ params }: { params: Promise<
                   <Zap className="w-4 h-4" />
                   Build This Business
                 </Link>
+                <button
+                  onClick={createCampaign}
+                  disabled={creatingCampaign}
+                  className="inline-flex items-center gap-2 rounded-xl border border-white/[0.1] bg-white/[0.04] hover:bg-white/[0.08] px-5 py-3 text-sm font-bold text-white/70 transition disabled:opacity-40"
+                >
+                  <Sparkles className="w-4 h-4" />
+                  {creatingCampaign ? "Creating..." : "Create Campaign"}
+                </button>
               </div>
             </div>
           </div>

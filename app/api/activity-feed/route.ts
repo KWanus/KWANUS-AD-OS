@@ -11,7 +11,8 @@ import { getOrCreateUser } from "@/lib/auth";
 type FeedItem = {
   id: string;
   type: "client_created" | "client_stage_change" | "campaign_created" | "site_created" | "site_published" |
-        "analysis_run" | "email_flow_created" | "lead_found" | "proposal_created" | "client_activity";
+        "analysis_run" | "email_flow_created" | "lead_found" | "proposal_created" | "client_activity" |
+        "market_intel" | "himalaya_run";
   title: string;
   subtitle: string;
   href: string;
@@ -36,6 +37,8 @@ export async function GET(req: NextRequest) {
       recentFlows,
       recentLeads,
       recentActivities,
+      recentIntel,
+      recentHimalaya,
     ] = await Promise.all([
       prisma.client.findMany({
         where: { userId: user.id },
@@ -78,6 +81,18 @@ export async function GET(req: NextRequest) {
         orderBy: { createdAt: "desc" },
         take: 5,
         select: { id: true, type: true, content: true, createdAt: true, client: { select: { id: true, name: true } } },
+      }),
+      prisma.marketIntelligence.findMany({
+        where: { userId: user.id },
+        orderBy: { createdAt: "desc" },
+        take: 5,
+        select: { id: true, niche: true, status: true, score: true, topProductName: true, createdAt: true },
+      }),
+      prisma.himalayaRun.findMany({
+        where: { userId: user.id },
+        orderBy: { createdAt: "desc" },
+        take: 5,
+        select: { id: true, mode: true, status: true, createdAt: true },
       }),
     ]);
 
@@ -157,6 +172,28 @@ export async function GET(req: NextRequest) {
         subtitle: a.content ?? "",
         href: `/clients/${a.client.id}`,
         timestamp: a.createdAt.toISOString(),
+      });
+    }
+
+    for (const mi of recentIntel) {
+      feed.push({
+        id: `intel-${mi.id}`,
+        type: "market_intel",
+        title: `Market Intel: ${mi.niche}`,
+        subtitle: `${mi.status === "complete" ? `Score: ${mi.score}/100` : mi.status}${mi.topProductName ? ` · ${mi.topProductName}` : ""}`,
+        href: `/market-intelligence/${mi.id}`,
+        timestamp: mi.createdAt.toISOString(),
+      });
+    }
+
+    for (const hr of recentHimalaya) {
+      feed.push({
+        id: `himalaya-${hr.id}`,
+        type: "himalaya_run",
+        title: `Himalaya: ${hr.mode === "scratch" ? "New Business" : "Business Audit"}`,
+        subtitle: hr.status ?? "complete",
+        href: `/himalaya/run/${hr.id}`,
+        timestamp: hr.createdAt.toISOString(),
       });
     }
 

@@ -12,7 +12,7 @@ import { getOrCreateUser } from "@/lib/auth";
 type QuickAction = {
   id: string;
   priority: "critical" | "high" | "medium" | "low";
-  category: "client" | "campaign" | "scan" | "email" | "site" | "setup" | "system";
+  category: "client" | "campaign" | "scan" | "email" | "site" | "setup" | "system" | "intel";
   title: string;
   description: string;
   href: string;
@@ -39,6 +39,8 @@ export async function GET() {
       emailFlowCount,
       analysisCount,
       businessProfile,
+      highScoreIntel,
+      intelCount,
     ] = await Promise.all([
       prisma.client.findMany({
         where: { userId: user.id, healthStatus: "red" },
@@ -82,6 +84,13 @@ export async function GET() {
         where: { userId: user.id },
         select: { businessType: true, setupCompleted: true },
       }),
+      prisma.marketIntelligence.findMany({
+        where: { userId: user.id, status: "complete", score: { gte: 60 } },
+        select: { id: true, niche: true, score: true, topProductName: true },
+        orderBy: { createdAt: "desc" },
+        take: 3,
+      }),
+      prisma.marketIntelligence.count({ where: { userId: user.id } }),
     ]);
 
     const actions: QuickAction[] = [];
@@ -214,6 +223,33 @@ export async function GET() {
         description: "You have a site but no follow-up system. Don't let leads go cold.",
         href: "/emails",
         cta: "Build Flow",
+      });
+    }
+
+    // Market Intelligence actions
+    for (const mi of highScoreIntel) {
+      actions.push({
+        id: `intel-act-${mi.id}`,
+        priority: "high",
+        category: "intel",
+        title: `Act on "${mi.niche}" intelligence (Score: ${mi.score}/100)`,
+        description: mi.topProductName
+          ? `Top product: ${mi.topProductName}. Build a campaign or launch via Himalaya.`
+          : "High-scoring niche — review strategy and launch.",
+        href: `/market-intelligence/${mi.id}`,
+        cta: "View Intel",
+      });
+    }
+
+    if (intelCount === 0) {
+      actions.push({
+        id: "first-intel",
+        priority: "medium",
+        category: "intel",
+        title: "Run your first Market Intelligence scan",
+        description: "Discover winning products, reverse-engineer competitors, and get a complete launch system.",
+        href: "/market-intelligence",
+        cta: "Scan Market",
       });
     }
 
