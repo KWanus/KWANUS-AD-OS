@@ -44,6 +44,7 @@ export default function Home() {
   const [insights, setInsights] = useState<{ notifications: number; advisor?: string; opportunities: number }| null>(null);
   const [bizType, setBizType] = useState("");
   const [playbookWeek, setPlaybookWeek] = useState(1);
+  const [hotLeads, setHotLeads] = useState<Array<{ id: string; name: string; score: number; tier: string; urgency: string; nextAction: string }>>([]);
 
   // Don't redirect logged-out users — show landing page
   // But redirect NEW signed-in users to onboarding if they have no projects
@@ -74,15 +75,18 @@ export default function Home() {
     Promise.allSettled([
       fetch("/api/notifications").then(r => r.json()),
       fetch("/api/himalaya/advisor").then(r => r.json()),
-    ]).then(([notifRes, advisorRes]) => {
+      fetch("/api/leads/score?limit=3").then(r => r.json()),
+    ]).then(([notifRes, advisorRes, hotLeadsRes]) => {
       const notifs = notifRes.status === "fulfilled" ? notifRes.value : {};
       const advisor = advisorRes.status === "fulfilled" ? advisorRes.value : {};
+      const hot = hotLeadsRes.status === "fulfilled" && hotLeadsRes.value.ok ? hotLeadsRes.value.hotLeads : [];
       const unread = (notifs.notifications ?? []).filter((n: { read: boolean }) => !n.read).length;
       setInsights({
         notifications: unread,
         advisor: advisor.advice ?? advisor.recommendation ?? undefined,
         opportunities: (notifs.notifications ?? []).filter((n: { type: string }) => n.type === "new_lead" || n.type === "insight").length,
       });
+      setHotLeads(hot);
     }).catch(() => {});
 
     // Check if new user needs onboarding
@@ -424,6 +428,43 @@ export default function Home() {
             </div>
             <ArrowRight className="w-4 h-4 text-[#f5a623]/40 group-hover:text-[#f5a623] transition" />
           </Link>
+        )}
+
+        {/* ── Hot Leads (if any) ── */}
+        {hotLeads.length > 0 && (
+          <div className="mb-6 rounded-2xl border border-emerald-500/15 bg-emerald-500/[0.03] p-5">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-[10px] font-black text-emerald-400 tracking-widest">HOT LEADS — CALL NOW</p>
+              <Link href="/leads" className="text-[10px] font-bold text-t-text-faint hover:text-emerald-400 transition">
+                View all →
+              </Link>
+            </div>
+            <div className="space-y-2">
+              {hotLeads.map((lead) => (
+                <Link
+                  key={lead.id}
+                  href={`/leads/${lead.id}`}
+                  className="flex items-center gap-3 rounded-xl bg-t-bg-card border border-t-border px-4 py-3 hover:border-emerald-500/20 transition group"
+                >
+                  <div className="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center shrink-0">
+                    <span className="text-sm font-black text-emerald-400">{lead.score}</span>
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-bold group-hover:text-emerald-400 transition">{lead.name}</p>
+                    <p className="text-[10px] text-t-text-faint">{lead.nextAction}</p>
+                  </div>
+                  <div className="flex items-center gap-1.5 shrink-0">
+                    <span className={`text-[8px] font-black uppercase px-1.5 py-0.5 rounded ${
+                      lead.urgency === "urgent" ? "bg-red-400/10 text-red-400 border border-red-400/20" :
+                      lead.urgency === "high" ? "bg-emerald-400/10 text-emerald-400 border border-emerald-400/20" :
+                      "bg-[#f5a623]/10 text-[#f5a623] border border-[#f5a623]/20"
+                    }`}>{lead.urgency}</span>
+                    <ArrowRight className="w-3 h-3 text-t-text-faint group-hover:text-emerald-400 transition" />
+                  </div>
+                </Link>
+              ))}
+            </div>
+          </div>
         )}
 
         {/* ── Insights — what happened while you were away ── */}
