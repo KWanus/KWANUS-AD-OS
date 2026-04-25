@@ -10,7 +10,7 @@ import {
   Home, Mountain, FolderKanban, Globe, Mail, Users, Settings,
   Search, ChevronDown, LayoutGrid, Sun, Moon, Sparkles,
   MessageSquareText, TrendingUp, BarChart3, Briefcase, FileText,
-  MapPin, ShoppingCart, Building2, Package, Wrench, Send, Share2, Code2, Store, BookOpen,
+  MapPin, ShoppingCart, Building2, Package, Wrench, Send, Share2, Code2, Store, BookOpen, DollarSign,
 } from "lucide-react";
 import { useTheme, type ThemeMode } from "@/lib/theme/ThemeProvider";
 

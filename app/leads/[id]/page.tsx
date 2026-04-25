@@ -732,11 +732,10 @@ function OutreachTab({ lead, onSent }: { lead: Lead; onSent: () => void }) {
             onSelect={handleTemplateSelect}
             leadData={{
               name: lead.name,
-              business: lead.business ?? undefined,
+              business: lead.name,
               niche: lead.niche ?? undefined,
-              website: lead.website ?? undefined,
-              city: lead.city ?? undefined,
-              rating: lead.googleRating?.toString() ?? undefined,
+              city: lead.location ?? undefined,
+              rating: lead.rating?.toString() ?? undefined,
             }}
           />
         </div>
