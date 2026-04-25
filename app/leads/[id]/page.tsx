@@ -704,6 +704,7 @@ function OutreachTab({ lead, onSent }: { lead: Lead; onSent: () => void }) {
         <div className="flex items-center gap-2 p-3 rounded-xl bg-[#f5a623]/10 border border-[#f5a623]/20 text-xs text-[#f5a623] font-bold">
           <CheckCircle className="w-4 h-4" />
           Outreach sent {new Date(lead.outreachSentAt).toLocaleString()}
+          {lead.emailOpened && !lead.emailReplied && <span className="ml-2 px-2 py-0.5 bg-blue-500/20 rounded text-blue-400">Opened!</span>}
           {lead.emailReplied && <span className="ml-2 px-2 py-0.5 bg-emerald-500/20 rounded text-emerald-400">Replied!</span>}
         </div>
       )}
