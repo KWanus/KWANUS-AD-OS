@@ -1027,3 +1027,39 @@ model EmailTracking {
   @@index([leadId])
   @@index([to])
 }
+
+model CalendarIntegration {
+  id           String    @id @default(cuid())
+  userId       String    @unique
+  provider     String    // google, outlook
+  accessToken  String
+  refreshToken String
+  expiresAt    DateTime?
+  connected    Boolean   @default(true)
+  timeZone     String    @default("America/Los_Angeles")
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+model CalendarEvent {
+  id          String    @id @default(cuid())
+  userId      String
+  externalId  String?   // Google/Outlook event ID
+  clientId    String?
+  title       String
+  description String?   @db.Text
+  startTime   DateTime
+  endTime     DateTime
+  location    String?
+  attendees   String[]  @default([])
+  eventLink   String?
+  status      String    @default("confirmed") // confirmed, cancelled
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([clientId])
+  @@index([startTime])
+}

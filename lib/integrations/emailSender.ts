@@ -1,12 +1,13 @@
 // ---------------------------------------------------------------------------
 // Unified Email Sender — works with or without Resend
-// Priority: 1) Resend (if key exists) 2) SMTP via Nodemailer (free)
-// 3) Supabase Edge Functions 4) Template fallback (logs only)
+// Priority: 1) Gmail OAuth (user's account) 2) Resend (if key exists)
+// 3) SMTP via Nodemailer (free) 4) Fallback (logs only)
 //
 // This means email ALWAYS works. No paid dependency required.
 // ---------------------------------------------------------------------------
 
 import nodemailer from "nodemailer";
+import { sendGmailEmail } from "./email/gmailOAuth";
 
 export type EmailInput = {
   from: string;
@@ -138,8 +139,30 @@ function sendViaFallback(input: EmailInput): EmailResult {
 
 // ── Unified send — tries each provider in order ─────────────────────────
 
-export async function sendEmailUnified(input: EmailInput): Promise<EmailResult> {
-  // 1. Try Resend first (best deliverability)
+export async function sendEmailUnified(
+  input: EmailInput,
+  userId?: string
+): Promise<EmailResult> {
+  // 1. Try Gmail OAuth first (user's connected Gmail account - best for deliverability + tracking)
+  if (userId) {
+    try {
+      const result = await sendGmailEmail({
+        userId,
+        to: input.to,
+        subject: input.subject,
+        body: input.html,
+      });
+      if (result.ok) {
+        return { ok: true, id: result.messageId, provider: "smtp" }; // Return "smtp" to match existing type
+      }
+      // If Gmail OAuth fails (not connected, token expired, etc.), fall through
+      console.warn(`[Email] Gmail OAuth failed: ${result.error}. Trying Resend...`);
+    } catch (err) {
+      console.warn(`[Email] Gmail OAuth error:`, err);
+    }
+  }
+
+  // 2. Try Resend (best deliverability for transactional emails)
   if (process.env.RESEND_API_KEY) {
     const result = await sendViaResend(input);
     if (result.ok) return result;
@@ -147,32 +170,35 @@ export async function sendEmailUnified(input: EmailInput): Promise<EmailResult> 
     console.warn(`[Email] Resend failed: ${result.error}. Trying SMTP...`);
   }
 
-  // 2. Try custom SMTP
+  // 3. Try custom SMTP
   if (process.env.SMTP_HOST) {
     const result = await sendViaSMTP(input);
     if (result.ok) return result;
     console.warn(`[Email] SMTP failed: ${result.error}. Trying Gmail...`);
   }
 
-  // 3. Try Gmail
+  // 4. Try Gmail App Password (fallback Gmail)
   if (process.env.GMAIL_USER) {
     const result = await sendViaGmail(input);
     if (result.ok) return result;
     console.warn(`[Email] Gmail failed: ${result.error}. Using fallback...`);
   }
 
-  // 4. Fallback — just log it (development mode)
+  // 5. Fallback — just log it (development mode)
   return sendViaFallback(input);
 }
 
 /** Send batch (sequential to respect rate limits) */
-export async function sendBatchUnified(emails: EmailInput[]): Promise<{ sent: number; failed: number; provider: string }> {
+export async function sendBatchUnified(
+  emails: EmailInput[],
+  userId?: string
+): Promise<{ sent: number; failed: number; provider: string }> {
   let sent = 0;
   let failed = 0;
   let lastProvider = "none";
 
   for (const email of emails) {
-    const result = await sendEmailUnified(email);
+    const result = await sendEmailUnified(email, userId);
     if (result.ok) {
       sent++;
       lastProvider = result.provider;

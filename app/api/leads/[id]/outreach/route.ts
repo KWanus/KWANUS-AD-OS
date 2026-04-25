@@ -34,7 +34,7 @@ export async function POST(
       return NextResponse.json({ ok: false, error: "No email address for this lead. Add one manually." }, { status: 400 });
     }
 
-    // Use unified sender (Resend → SMTP → Gmail → fallback)
+    // Use unified sender (Gmail OAuth → Resend → SMTP → fallback)
     const from = getFromAddressUnified(user);
     const emailBody = body.customBody ?? outreachEmail.body;
 
@@ -45,7 +45,7 @@ export async function POST(
       html: `<div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; line-height: 1.7; color: #1a1a2e;">
 ${emailBody.split("\n").map((line: string) => `<p style="margin: 0 0 12px;">${line}</p>`).join("")}
 </div>`,
-    });
+    }, user.id);
 
     if (!result.ok) {
       return NextResponse.json({ ok: false, error: result.error ?? "Failed to send email" }, { status: 500 });
