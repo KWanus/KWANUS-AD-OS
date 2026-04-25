@@ -25,6 +25,7 @@ import {
   Link2,
   ChevronUp,
   ChevronDown,
+  Inbox,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -831,6 +832,15 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
               <Globe className="h-5 w-5 text-cyan-300" />
               <p className="mt-3 text-sm font-black text-white">Find Traffic Sources</p>
               <p className="mt-2 text-xs leading-5 text-white/40">Go straight from site readiness into lead finding so the website becomes part of a real growth loop.</p>
+            </Link>
+
+            <Link
+              href={`/websites/${siteId}/submissions`}
+              className="rounded-2xl border border-white/[0.08] bg-black/20 p-4 transition hover:border-cyan-500/20 hover:bg-cyan-500/[0.05]"
+            >
+              <Inbox className="h-5 w-5 text-cyan-300" />
+              <p className="mt-3 text-sm font-black text-white">View Form Submissions</p>
+              <p className="mt-2 text-xs leading-5 text-white/40">See leads captured through contact forms, signups, and other form blocks on your published site.</p>
             </Link>
           </div>
         </div>

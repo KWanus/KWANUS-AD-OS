@@ -398,27 +398,28 @@ function FooterProps({ block, onChange }: { block: Block; onChange: (b: Block) =
 
 function StatsProps({ block, onChange }: { block: Block; onChange: (b: Block) => void }) {
   const set = sp(block, onChange);
-  const items: { value?: string; label?: string; suffix?: string }[] = p(block, "items", []);
+  const stats: { number?: string; label?: string; suffix?: string }[] = p(block, "stats", []);
 
-  function updateItem(i: number, key: string, val: string) {
-    const next = [...items]; next[i] = { ...next[i], [key]: val }; set("items", next);
+  function updateStat(i: number, key: string, val: string) {
+    const next = [...stats]; next[i] = { ...next[i], [key]: val }; set("stats", next);
   }
 
   return (
     <div className="space-y-4">
-      <Field label="Section Title"><TextInput value={p(block, "title")} onChange={v => set("title", v)} placeholder="Our Results" /></Field>
+      <Field label="Caption"><TextInput value={p(block, "caption")} onChange={v => set("caption", v)} placeholder="Optional caption below stats" /></Field>
+      <Field label="Background Color"><TextInput value={p(block, "bgColor")} onChange={v => set("bgColor", v)} placeholder="Auto (gradient)" /></Field>
       <div>
         <label className="block text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">Stats</label>
         <div className="space-y-3">
-          {items.map((item, i) => (
+          {stats.map((stat, i) => (
             <div key={i} className="bg-white/[0.03] border border-white/[0.07] rounded-xl p-3 space-y-2">
-              <div className="flex justify-between"><span className="text-xs text-white/40">Stat {i + 1}</span><button onClick={() => set("items", items.filter((_, j) => j !== i))} className="text-white/20 hover:text-red-400 transition"><Trash2 className="w-3 h-3" /></button></div>
-              <input type="text" value={item.value ?? ""} onChange={e => updateItem(i, "value", e.target.value)} placeholder="500+" className="w-full bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none" />
-              <input type="text" value={item.label ?? ""} onChange={e => updateItem(i, "label", e.target.value)} placeholder="Clients Served" className="w-full bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none" />
-              <input type="text" value={item.suffix ?? ""} onChange={e => updateItem(i, "suffix", e.target.value)} placeholder="Suffix (optional, e.g. %)" className="w-full bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none" />
+              <div className="flex justify-between"><span className="text-xs text-white/40 font-bold">Stat {i + 1}</span><button onClick={() => set("stats", stats.filter((_, j) => j !== i))} className="text-white/20 hover:text-red-400 transition"><Trash2 className="w-3 h-3" /></button></div>
+              <input type="text" value={stat.number ?? ""} onChange={e => updateStat(i, "number", e.target.value)} placeholder="500+" className="w-full bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none" />
+              <input type="text" value={stat.label ?? ""} onChange={e => updateStat(i, "label", e.target.value)} placeholder="Clients Served" className="w-full bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none" />
+              <input type="text" value={stat.suffix ?? ""} onChange={e => updateStat(i, "suffix", e.target.value)} placeholder="Suffix (optional, e.g. %)" className="w-full bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none" />
             </div>
           ))}
-          <button onClick={() => set("items", [...items, { value: "100+", label: "Happy Clients" }])} className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-dashed border-white/[0.12] hover:border-cyan-500/40 text-white/30 hover:text-white/60 text-xs font-semibold transition"><Plus className="w-3 h-3" /> Add Stat</button>
+          <button onClick={() => set("stats", [...stats, { number: "100+", label: "Happy Clients" }])} className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-dashed border-white/[0.12] hover:border-cyan-500/40 text-white/30 hover:text-white/60 text-xs font-semibold transition"><Plus className="w-3 h-3" /> Add Stat</button>
         </div>
       </div>
     </div>
@@ -429,36 +430,37 @@ function GuaranteeProps({ block, onChange }: { block: Block; onChange: (b: Block
   const set = sp(block, onChange);
   return (
     <div className="space-y-4">
-      <Field label="Title"><TextInput value={p(block, "title")} onChange={v => set("title", v)} placeholder="100% Money-Back Guarantee" /></Field>
-      <Field label="Body"><TextInput value={p(block, "body")} onChange={v => set("body", v)} placeholder="If you're not satisfied..." multiline /></Field>
-      <Field label="Badge Text"><TextInput value={p(block, "badgeText")} onChange={v => set("badgeText", v)} placeholder="30-Day Guarantee" /></Field>
+      <Field label="Headline"><TextInput value={p(block, "headline")} onChange={v => set("headline", v)} placeholder="100% Money-Back Guarantee" /></Field>
+      <Field label="Body"><TextInput value={p(block, "body")} onChange={v => set("body", v)} placeholder="If you're not completely satisfied within 30 days..." multiline /></Field>
       <Field label="Icon Emoji"><TextInput value={p(block, "icon")} onChange={v => set("icon", v)} placeholder="🛡️" /></Field>
+      <Field label="Background Color"><TextInput value={p(block, "bgColor")} onChange={v => set("bgColor", v)} placeholder="Auto" /></Field>
     </div>
   );
 }
 
 function TrustBadgesProps({ block, onChange }: { block: Block; onChange: (b: Block) => void }) {
   const set = sp(block, onChange);
-  const items: { icon?: string; label?: string }[] = p(block, "items", []);
+  const badges: { icon?: string; label?: string }[] = p(block, "badges", []);
 
-  function updateItem(i: number, key: string, val: string) {
-    const next = [...items]; next[i] = { ...next[i], [key]: val }; set("items", next);
+  function updateBadge(i: number, key: string, val: string) {
+    const next = [...badges]; next[i] = { ...next[i], [key]: val }; set("badges", next);
   }
 
   return (
     <div className="space-y-4">
       <Field label="Title"><TextInput value={p(block, "title")} onChange={v => set("title", v)} placeholder="Trusted By Thousands" /></Field>
+      <Field label="Background Color"><TextInput value={p(block, "bgColor")} onChange={v => set("bgColor", v)} placeholder="Auto" /></Field>
       <div>
         <label className="block text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">Badges</label>
         <div className="space-y-3">
-          {items.map((item, i) => (
+          {badges.map((badge, i) => (
             <div key={i} className="flex gap-2 items-center">
-              <input type="text" value={item.icon ?? ""} onChange={e => updateItem(i, "icon", e.target.value)} placeholder="🔒" className="w-12 bg-white/[0.05] border border-white/[0.1] rounded-lg px-2 py-2 text-sm text-white text-center focus:outline-none" />
-              <input type="text" value={item.label ?? ""} onChange={e => updateItem(i, "label", e.target.value)} placeholder="SSL Secure" className="flex-1 bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none" />
-              <button onClick={() => set("items", items.filter((_, j) => j !== i))} className="text-white/20 hover:text-red-400 transition"><Trash2 className="w-3 h-3" /></button>
+              <input type="text" value={badge.icon ?? ""} onChange={e => updateBadge(i, "icon", e.target.value)} placeholder="🔒" className="w-12 bg-white/[0.05] border border-white/[0.1] rounded-lg px-2 py-2 text-sm text-white text-center focus:outline-none" />
+              <input type="text" value={badge.label ?? ""} onChange={e => updateBadge(i, "label", e.target.value)} placeholder="SSL Secure" className="flex-1 bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none" />
+              <button onClick={() => set("badges", badges.filter((_, j) => j !== i))} className="text-white/20 hover:text-red-400 transition"><Trash2 className="w-3 h-3" /></button>
             </div>
           ))}
-          <button onClick={() => set("items", [...items, { icon: "✓", label: "Verified" }])} className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-dashed border-white/[0.12] hover:border-cyan-500/40 text-white/30 hover:text-white/60 text-xs font-semibold transition"><Plus className="w-3 h-3" /> Add Badge</button>
+          <button onClick={() => set("badges", [...badges, { icon: "✓", label: "Verified" }])} className="w-full flex items-center justify-center gap-2 py-2 rounded-xl border border-dashed border-white/[0.12] hover:border-cyan-500/40 text-white/30 hover:text-white/60 text-xs font-semibold transition"><Plus className="w-3 h-3" /> Add Badge</button>
         </div>
       </div>
     </div>
@@ -475,8 +477,10 @@ function ProcessProps({ block, onChange }: { block: Block; onChange: (b: Block) 
 
   return (
     <div className="space-y-4">
+      <Field label="Eyebrow"><TextInput value={p(block, "eyebrow")} onChange={v => set("eyebrow", v)} placeholder="Optional label above title" /></Field>
       <Field label="Section Title"><TextInput value={p(block, "title")} onChange={v => set("title", v)} placeholder="How It Works" /></Field>
       <Field label="Subtitle"><TextInput value={p(block, "subtitle")} onChange={v => set("subtitle", v)} placeholder="3 simple steps..." /></Field>
+      <Field label="Background Color"><TextInput value={p(block, "bgColor")} onChange={v => set("bgColor", v)} placeholder="Auto" /></Field>
       <div>
         <label className="block text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">Steps</label>
         <div className="space-y-3">
@@ -535,10 +539,24 @@ function BeforeAfterProps({ block, onChange }: { block: Block; onChange: (b: Blo
 
 function UrgencyProps({ block, onChange }: { block: Block; onChange: (b: Block) => void }) {
   const set = sp(block, onChange);
+  const items: string[] = p(block, "items", []);
+
   return (
     <div className="space-y-4">
-      <Field label="Main Text"><TextInput value={p(block, "text")} onChange={v => set("text", v)} placeholder="⚡ Limited spots available" /></Field>
-      <Field label="Subtext"><TextInput value={p(block, "subtext")} onChange={v => set("subtext", v)} placeholder="Offer expires in 24 hours" /></Field>
+      <Field label="Icon Emoji"><TextInput value={p(block, "icon")} onChange={v => set("icon", v)} placeholder="⚡" /></Field>
+      <Field label="Main Text"><TextInput value={p(block, "text")} onChange={v => set("text", v)} placeholder="⚡ Limited Time Offer — Act Now!" /></Field>
+      <div>
+        <label className="block text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">Extra Items</label>
+        <div className="space-y-2">
+          {items.map((item, i) => (
+            <div key={i} className="flex gap-2">
+              <input type="text" value={item} onChange={e => { const n = [...items]; n[i] = e.target.value; set("items", n); }} placeholder="e.g. Only 3 left" className="flex-1 bg-white/[0.05] border border-white/[0.1] rounded-lg px-2.5 py-2 text-sm text-white placeholder-white/20 focus:outline-none" />
+              <button onClick={() => set("items", items.filter((_, j) => j !== i))} className="text-white/20 hover:text-red-400 transition"><Trash2 className="w-3 h-3" /></button>
+            </div>
+          ))}
+          <button onClick={() => set("items", [...items, ""])} className="text-[11px] text-white/30 hover:text-cyan-400 transition flex items-center gap-1"><Plus className="w-3 h-3" /> Add Item</button>
+        </div>
+      </div>
       <Field label="Button Text"><TextInput value={p(block, "buttonText")} onChange={v => set("buttonText", v)} placeholder="Claim Your Spot" /></Field>
       <Field label="Button URL"><TextInput value={p(block, "buttonUrl")} onChange={v => set("buttonUrl", v)} placeholder="https://..." /></Field>
       <Field label="Background Color"><TextInput value={p(block, "bgColor")} onChange={v => set("bgColor", v)} placeholder="#dc2626" /></Field>
@@ -556,10 +574,12 @@ function FormProps({ block, onChange }: { block: Block; onChange: (b: Block) => 
 
   return (
     <div className="space-y-4">
+      <Field label="Eyebrow"><TextInput value={p(block, "eyebrow")} onChange={v => set("eyebrow", v)} placeholder="Optional label above title" /></Field>
       <Field label="Title"><TextInput value={p(block, "title")} onChange={v => set("title", v)} placeholder="Get Started Free" /></Field>
       <Field label="Subtitle"><TextInput value={p(block, "subtitle")} onChange={v => set("subtitle", v)} placeholder="Enter your details below" /></Field>
       <Field label="Button Text"><TextInput value={p(block, "buttonText")} onChange={v => set("buttonText", v)} placeholder="Submit" /></Field>
       <Field label="Privacy Text"><TextInput value={p(block, "privacyText")} onChange={v => set("privacyText", v)} placeholder="We'll never spam you." /></Field>
+      <Field label="Background Color"><TextInput value={p(block, "bgColor")} onChange={v => set("bgColor", v)} placeholder="Auto" /></Field>
       <div>
         <label className="block text-[10px] font-black uppercase tracking-widest text-white/30 mb-2">Form Fields</label>
         <div className="space-y-3">
