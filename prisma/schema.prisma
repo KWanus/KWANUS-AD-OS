@@ -58,6 +58,7 @@ model User {
   sites                Site[]
   himalayaRuns         HimalayaRun[]
   nicheResearches      NicheResearch[]
+  marketIntelligence   MarketIntelligence[]
 }
 
 model OptInForm {
@@ -882,6 +883,32 @@ model NicheResearch {
   user           User     @relation(fields: [userId], references: [id])
 
   @@index([userId])
+}
+
+model MarketIntelligence {
+  id              String   @id @default(cuid())
+  userId          String
+  niche           String
+  subNiche        String?
+  vertical        String?
+  status          String   @default("pending")
+  products        Json     @default("[]")
+  winnerAnalysis  Json     @default("{}")
+  adIntelligence  Json     @default("{}")
+  marketSynthesis Json     @default("{}")
+  generatedAssets Json     @default("{}")
+  funnelBlueprint Json     @default("{}")
+  executionTier   String   @default("elite")
+  score           Int?
+  topProductName  String?
+  topProductUrl   String?
+  estimatedEarnings String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  user            User     @relation(fields: [userId], references: [id])
+
+  @@index([userId, createdAt])
+  @@index([niche])
 }
 
 model SiteFormSubmission {
