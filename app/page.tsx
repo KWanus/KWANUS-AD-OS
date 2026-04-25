@@ -405,7 +405,7 @@ export default function Home() {
 
         {/* ── Playbook progress ── */}
         {bizType && projects.length > 0 && (
-          <Link href="/playbook"
+          <Link href="/playbook/tasks"
             className="flex items-center justify-between rounded-xl border border-[#f5a623]/15 bg-[#f5a623]/[0.03] px-4 py-3 mb-4 group hover:border-[#f5a623]/25 transition">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-full bg-[#f5a623]/10 border border-[#f5a623]/20 flex items-center justify-center shrink-0">
@@ -414,10 +414,10 @@ export default function Home() {
               <div>
                 <p className="text-xs font-bold">Week {playbookWeek} of 6 — {
                   playbookWeek <= 1 ? "Foundation" :
-                  playbookWeek <= 2 ? "Start outreach" :
-                  playbookWeek <= 3 ? "Close first client" :
-                  playbookWeek <= 4 ? "Deliver & scale" :
-                  playbookWeek <= 5 ? "Systemize" : "Full speed"
+                  playbookWeek <= 2 ? "Launch & Test" :
+                  playbookWeek <= 3 ? "First Wins" :
+                  playbookWeek <= 4 ? "Deliver & Scale" :
+                  playbookWeek <= 5 ? "Systemize" : "Full Speed"
                 }</p>
                 <p className="text-[10px] text-t-text-faint">Your {bizType.replace(/_/g, " ")} playbook</p>
               </div>

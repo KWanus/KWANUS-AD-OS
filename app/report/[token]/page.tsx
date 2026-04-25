@@ -73,10 +73,10 @@ export default async function PublicReportPage({ params }: { params: Promise<{ t
           <p style={{ fontSize: 13, color: "#aaa" }}>No recent activity</p>
         ) : (
           <div>
-            {client.activities.map((a: { id: string; type: string; note: string | null; createdAt: Date }) => (
+            {client.activities.map((a: any) => (
               <div key={a.id} style={{ borderLeft: "3px solid #f5a623", paddingLeft: 12, marginBottom: 12 }}>
                 <p style={{ fontSize: 13, fontWeight: 600 }}>{a.type.replace(/_/g, " ")}</p>
-                {a.note && <p style={{ fontSize: 12, color: "#666" }}>{a.note}</p>}
+                {a.content && <p style={{ fontSize: 12, color: "#666" }}>{a.content}</p>}
                 <p style={{ fontSize: 11, color: "#aaa" }}>{new Date(a.createdAt).toLocaleDateString()}</p>
               </div>
             ))}

@@ -982,3 +982,48 @@ model HimalayaMemory {
 
   @@index([userId])
 }
+
+model EmailIntegration {
+  id           String    @id @default(cuid())
+  userId       String    @unique
+  provider     String    // gmail, outlook
+  email        String
+  accessToken  String
+  refreshToken String
+  expiresAt    DateTime?
+  connected    Boolean   @default(true)
+  dailyLimit   Int       @default(500)  // Sending limit per day
+  sentToday    Int       @default(0)
+  lastResetAt  DateTime  @default(now())
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  @@index([userId])
+}
+
+model EmailTracking {
+  id          String    @id @default(cuid())
+  userId      String
+  leadId      String?
+  messageId   String?   // Provider message ID
+  to          String
+  subject     String
+  body        String    @db.Text
+  sent        Boolean   @default(false)
+  sentAt      DateTime?
+  opened      Boolean   @default(false)
+  openedAt    DateTime?
+  clicked     Boolean   @default(false)
+  clickedAt   DateTime?
+  replied     Boolean   @default(false)
+  repliedAt   DateTime?
+  replyBody   String?   @db.Text
+  bounced     Boolean   @default(false)
+  error       String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([userId])
+  @@index([leadId])
+  @@index([to])
+}
