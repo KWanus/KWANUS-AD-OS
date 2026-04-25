@@ -46,6 +46,7 @@ export default function Home() {
   const [playbookWeek, setPlaybookWeek] = useState(1);
   const [hotLeads, setHotLeads] = useState<Array<{ id: string; name: string; score: number; tier: string; urgency: string; nextAction: string }>>([]);
   const [integrations, setIntegrations] = useState<{ gmail: boolean; calendar: boolean } | null>(null);
+  const [revenueSummary, setRevenueSummary] = useState<{ totalRevenue: number; monthlyRevenue: number; clientCount: number } | null>(null);
 
   // Don't redirect logged-out users — show landing page
   // But redirect NEW signed-in users to onboarding if they have no projects
@@ -78,7 +79,8 @@ export default function Home() {
       fetch("/api/himalaya/advisor").then(r => r.json()),
       fetch("/api/leads/score?limit=3").then(r => r.json()),
       fetch("/api/settings/integrations").then(r => r.json()),
-    ]).then(([notifRes, advisorRes, hotLeadsRes, integrationsRes]) => {
+      fetch("/api/analytics/revenue").then(r => r.json()),
+    ]).then(([notifRes, advisorRes, hotLeadsRes, integrationsRes, revenueRes]) => {
       const notifs = notifRes.status === "fulfilled" ? notifRes.value : {};
       const advisor = advisorRes.status === "fulfilled" ? advisorRes.value : {};
       const hot = hotLeadsRes.status === "fulfilled" && hotLeadsRes.value.ok ? hotLeadsRes.value.hotLeads : [];
@@ -96,6 +98,16 @@ export default function Home() {
         setIntegrations({
           gmail: ints.some((i: { type: string; connected: boolean }) => i.type === "email" && i.connected),
           calendar: ints.some((i: { type: string; connected: boolean }) => i.type === "calendar" && i.connected),
+        });
+      }
+
+      // Parse revenue summary
+      if (revenueRes.status === "fulfilled" && revenueRes.value.ok && revenueRes.value.metrics) {
+        const metrics = revenueRes.value.metrics;
+        setRevenueSummary({
+          totalRevenue: metrics.totalRevenue ?? 0,
+          monthlyRevenue: metrics.currentMonthRevenue ?? 0,
+          clientCount: metrics.totalClients ?? 0,
         });
       }
     }).catch(() => {});
@@ -479,6 +491,32 @@ export default function Home() {
                   </div>
                 </Link>
               ))}
+            </div>
+          </div>
+        )}
+
+        {/* ── Revenue Summary ── */}
+        {revenueSummary && revenueSummary.totalRevenue > 0 && (
+          <div className="mb-6 rounded-2xl border border-[#f5a623]/15 bg-[#f5a623]/[0.03] p-5">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-[10px] font-black text-[#f5a623] tracking-widest">REVENUE SNAPSHOT</p>
+              <Link href="/revenue-analytics" className="text-[10px] font-bold text-t-text-faint hover:text-[#f5a623] transition">
+                Full Analytics →
+              </Link>
+            </div>
+            <div className="grid grid-cols-3 gap-3">
+              <div className="rounded-xl bg-t-bg-card border border-t-border px-3 py-3 text-center">
+                <p className="text-lg font-black text-white">${(revenueSummary.totalRevenue / 100).toLocaleString()}</p>
+                <p className="text-[9px] text-t-text-faint mt-0.5">Total Revenue</p>
+              </div>
+              <div className="rounded-xl bg-t-bg-card border border-t-border px-3 py-3 text-center">
+                <p className="text-lg font-black text-emerald-400">${(revenueSummary.monthlyRevenue / 100).toLocaleString()}</p>
+                <p className="text-[9px] text-t-text-faint mt-0.5">This Month</p>
+              </div>
+              <div className="rounded-xl bg-t-bg-card border border-t-border px-3 py-3 text-center">
+                <p className="text-lg font-black text-blue-400">{revenueSummary.clientCount}</p>
+                <p className="text-[9px] text-t-text-faint mt-0.5">Clients</p>
+              </div>
             </div>
           </div>
         )}
