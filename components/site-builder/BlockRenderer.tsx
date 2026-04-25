@@ -186,22 +186,22 @@ function HeroBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
 function FeaturesBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark ? "#07101f" : "#f8fafc");
+  const bg = props?.bgColor ?? (isDark ? "#07101f" : "#f8fafc");
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.5)" : "rgba(15,23,42,0.55)";
   const cardBg = isDark ? "rgba(255,255,255,0.03)" : "#ffffff";
   const cardBorder = isDark ? "rgba(255,255,255,0.07)" : "#e2e8f0";
-  const cols = props.columns ?? 3;
-  const items: { icon?: string; title?: string; body?: string; number?: string }[] = props.items ?? [];
-  const layout = props.layout ?? "grid"; // "grid" | "list" | "icon-top"
+  const cols = props?.columns ?? 3;
+  const items: { icon?: string; title?: string; body?: string; number?: string }[] = props?.items ?? [];
+  const layout = props?.layout ?? "grid"; // "grid" | "list" | "icon-top"
 
   return (
     <section style={sectionBase(bg)}>
       <div style={container()}>
-        {(props.eyebrow || props.title) && (
+        {(props?.eyebrow || props?.title) && (
           <div style={{ textAlign: "center", marginBottom: 60 }}>
-            {props.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
-            {props.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
+            {props?.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
+            {props?.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
             {props.subtitle && <p style={{ color: subColor, fontSize: 17, maxWidth: 560, margin: "0 auto", lineHeight: 1.7 }}>{props.subtitle}</p>}
           </div>
         )}
@@ -262,7 +262,7 @@ function FeaturesBlock({ props, theme }: { props: Block["props"]; theme: SiteThe
 function StatsBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark
+  const bg = props?.bgColor ?? (isDark
     ? `linear-gradient(135deg, ${primary}18 0%, transparent 50%), #06101e`
     : `linear-gradient(135deg, ${primary}0a 0%, transparent 50%), #f0f9ff`);
   const textColor = isDark ? "#ffffff" : "#0f172a";
@@ -887,13 +887,13 @@ function UrgencyBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
 
 function TextBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
-  const bg = props.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
+  const bg = props?.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
   const textColor = isDark ? "rgba(255,255,255,0.8)" : "#1e293b";
 
   return (
     <section style={sectionBase(bg, "60px 24px")}>
       <div style={{ ...container(720), color: textColor, fontSize: 16, lineHeight: 1.85 }}
-        dangerouslySetInnerHTML={{ __html: (props.html || props.content || "").replace(/\n/g, "<br/>") }}
+        dangerouslySetInnerHTML={{ __html: (props?.html || props?.content || "").replace(/\n/g, "<br/>") }}
       />
     </section>
   );
@@ -982,12 +982,12 @@ function VideoBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme 
 function FormBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark ? "#07101f" : "#f8fafc");
+  const bg = props?.bgColor ?? (isDark ? "#07101f" : "#f8fafc");
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.5)" : "rgba(15,23,42,0.5)";
   const inputBg = isDark ? "rgba(255,255,255,0.05)" : "#ffffff";
   const inputBorder = isDark ? "rgba(255,255,255,0.1)" : "#e2e8f0";
-  const fields: { name?: string; type?: string; placeholder?: string; required?: boolean }[] = props.fields ?? [
+  const fields: { name?: string; type?: string; placeholder?: string; required?: boolean }[] = props?.fields ?? [
     { name: "name", type: "text", placeholder: "Your Name", required: true },
     { name: "email", type: "email", placeholder: "Email Address", required: true },
     { name: "phone", type: "tel", placeholder: "Phone (optional)" },
@@ -1441,16 +1441,16 @@ function BookingBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
 function PaymentBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark ? "#0c0a08" : "#f0fdf4");
+  const bg = props?.bgColor ?? (isDark ? "#0c0a08" : "#f0fdf4");
   const textColor = isDark ? "#ffffff" : "#0f172a";
-  const paymentUrl = props.paymentUrl ?? "#";
-  const price = props.price ?? "";
-  const buttonText = props.buttonText ?? "Get Started Now";
+  const paymentUrl = props?.paymentUrl ?? "#";
+  const price = props?.price ?? "";
+  const buttonText = props?.buttonText ?? "Get Started Now";
 
   return (
     <section style={sectionBase(bg)} id="payment">
       <div style={{ ...container(560), textAlign: "center" }}>
-        {props.title && <h2 style={{ ...headingStyle(textColor, "clamp(1.5rem,3vw,2.2rem)"), marginBottom: 16 }}>{props.title}</h2>}
+        {props?.title && <h2 style={{ ...headingStyle(textColor, "clamp(1.5rem,3vw,2.2rem)"), marginBottom: 16 }}>{props.title}</h2>}
         {price && (
           <p style={{ fontSize: "clamp(2rem,5vw,3rem)", fontWeight: 900, color: primary, marginBottom: 8 }}>
             {price}
