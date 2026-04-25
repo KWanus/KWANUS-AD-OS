@@ -147,6 +147,18 @@ function ExpandableCard({ title, defaultOpen, children }: { title: string; defau
   );
 }
 
+function verticalToBusinessType(vertical?: string | null): string {
+  const map: Record<string, string> = {
+    affiliate: "affiliate",
+    dropship: "affiliate",
+    local_service: "local_service",
+    coaching: "consultant_coach",
+    ecommerce: "ecommerce",
+    info_product: "content_creator",
+  };
+  return map[vertical ?? "affiliate"] ?? "affiliate";
+}
+
 // ---------------------------------------------------------------------------
 // Page
 // ---------------------------------------------------------------------------
@@ -261,7 +273,12 @@ export default function MarketIntelligenceRunPage({ params }: { params: Promise<
               </div>
               <div className="flex flex-wrap gap-2 shrink-0">
                 <Link
-                  href={`/himalaya/scratch`}
+                  href={`/himalaya/scratch?${new URLSearchParams({
+                    businessType: verticalToBusinessType(run.vertical),
+                    niche: run.subNiche ? `${run.niche} - ${run.subNiche}` : run.niche,
+                    goal: "launch_faster",
+                    description: `Market Intelligence Score: ${run.score}/100. Top product: ${synthesis.bestProduct.name}. ${synthesis.bestProduct.reasoning ?? ""} Estimated earnings: ${synthesis.bestProduct.estimatedEarningsPerDay ?? "unknown"}.`,
+                  }).toString()}`}
                   className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-500 hover:from-cyan-400 hover:to-blue-400 px-5 py-3 text-sm font-black text-white shadow-[0_0_20px_rgba(6,182,212,0.2)] transition"
                 >
                   <Zap className="w-4 h-4" />

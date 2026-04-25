@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useCallback } from "react";
-import { useRouter } from "next/navigation";
+import { useState, useCallback, useEffect } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { ProgressStage } from "@/components/himalaya/ProgressStage";
 import { useHimalayaRun } from "@/lib/himalaya/useHimalayaRun";
@@ -29,10 +29,22 @@ const GOALS = [
 
 export default function HimalayaScratchPage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [businessType, setBusinessType] = useState("");
   const [niche, setNiche] = useState("");
   const [goal, setGoal] = useState("");
   const [dream, setDream] = useState("");
+
+  useEffect(() => {
+    const bt = searchParams.get("businessType");
+    const n = searchParams.get("niche");
+    const g = searchParams.get("goal");
+    const d = searchParams.get("description");
+    if (bt) setBusinessType(bt);
+    if (n) setNiche(n);
+    if (g) setGoal(g);
+    if (d) setDream(d);
+  }, [searchParams]);
 
   const buildDiagnoseBody = useCallback(() => ({
     mode: "scratch" as const,

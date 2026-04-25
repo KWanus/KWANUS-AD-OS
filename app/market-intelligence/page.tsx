@@ -119,7 +119,13 @@ export default function MarketIntelligencePage() {
     setRunning(true);
     setError(null);
     setCurrentStage("discovering");
-    setStageDetail("Starting market scan...");
+    setStageDetail("Scanning markets for winning products...");
+
+    const stageTimers = [
+      setTimeout(() => { setCurrentStage("analyzing"); setStageDetail("Deep-diving into winner funnels and strategies..."); }, 8000),
+      setTimeout(() => { setCurrentStage("synthesizing"); setStageDetail("Building your personalized launch strategy..."); }, 25000),
+      setTimeout(() => { setCurrentStage("generating"); setStageDetail("Creating hooks, ads, and email sequences..."); }, 45000),
+    ];
 
     try {
       const res = await fetch("/api/market-intelligence", {
@@ -135,6 +141,8 @@ export default function MarketIntelligencePage() {
           generateAssets: true,
         }),
       });
+
+      stageTimers.forEach(clearTimeout);
 
       const data = (await res.json()) as {
         ok: boolean;
@@ -153,6 +161,7 @@ export default function MarketIntelligencePage() {
         router.push(`/market-intelligence/${data.runId}`);
       }
     } catch (err) {
+      stageTimers.forEach(clearTimeout);
       setError(err instanceof Error ? err.message : "Something went wrong");
       setCurrentStage(null);
     } finally {

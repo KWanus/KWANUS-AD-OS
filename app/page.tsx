@@ -22,6 +22,7 @@ import {
   TrendingUp,
   Users,
   Zap,
+  Radar,
   BarChart2,
   AlertTriangle,
   ExternalLink,
@@ -179,7 +180,8 @@ const TOOL_HUBS = [
   { label: "AI Copilot", href: "/copilot", icon: BotMessageSquare, sub: "Ask what to build next", accent: "cyan" as Accent },
   { label: "Scan", href: "/scan", icon: ScanSearch, sub: "Analyze any URL or offer", accent: "blue" as Accent },
   { label: "Skills", href: "/skills", icon: Sparkles, sub: "Run one-click workflows", accent: "violet" as Accent },
-  { label: "Campaigns", href: "/campaigns", icon: Zap, sub: "Hooks, landing copy, emails", accent: "emerald" as Accent },
+  { label: "Intel", href: "/market-intelligence", icon: Radar, sub: "Scan markets, find winning products", accent: "emerald" as Accent },
+  { label: "Campaigns", href: "/campaigns", icon: Zap, sub: "Hooks, landing copy, emails", accent: "cyan" as Accent },
   { label: "Sites", href: "/websites", icon: Globe, sub: "Funnels, stores, and public pages", accent: "pink" as Accent },
   { label: "Products", href: "/products", icon: Package, sub: "Offer library and source records", accent: "amber" as Accent },
 ];
