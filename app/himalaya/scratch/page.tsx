@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import AppNav from "@/components/AppNav";
 import { ArrowLeft, ArrowRight } from "lucide-react";
 import { ProgressStage } from "@/components/himalaya/ProgressStage";
 import { useHimalayaRun } from "@/lib/himalaya/useHimalayaRun";
@@ -89,7 +90,9 @@ export default function HimalayaScratchPage() {
 
   // ── Form UI ───────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-[#020509] flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#020509] text-white">
+      <AppNav />
+      <div className="flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-2xl">
         <button
           onClick={() => router.push("/himalaya")}
@@ -191,6 +194,7 @@ export default function HimalayaScratchPage() {
             Build My Foundation <ArrowRight className="w-4 h-4" />
           </button>
         </div>
+      </div>
       </div>
     </div>
   );

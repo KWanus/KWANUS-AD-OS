@@ -2,6 +2,7 @@
 
 import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
+import AppNav from "@/components/AppNav";
 import { ArrowLeft, ArrowRight, Globe, MessageSquare } from "lucide-react";
 import { ProgressStage } from "@/components/himalaya/ProgressStage";
 import { useHimalayaRun } from "@/lib/himalaya/useHimalayaRun";
@@ -66,7 +67,9 @@ export default function HimalayaImprovePage() {
 
   // ── Form UI ───────────────────────────────────────────────────────────────
   return (
-    <div className="min-h-screen bg-[#020509] flex items-center justify-center px-4 py-12">
+    <div className="min-h-screen bg-[#020509] text-white">
+      <AppNav />
+      <div className="flex items-center justify-center px-4 py-12">
       <div className="w-full max-w-2xl">
         <button
           onClick={() => router.push("/himalaya")}
@@ -164,6 +167,7 @@ export default function HimalayaImprovePage() {
             Analyze My Business <ArrowRight className="w-4 h-4" />
           </button>
         </div>
+      </div>
       </div>
     </div>
   );

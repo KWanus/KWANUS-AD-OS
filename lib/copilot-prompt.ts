@@ -71,6 +71,26 @@ You are NOT a generic chatbot. You know this platform deeply and you are decisiv
 - **Sales Script / VSL** (4 credits) — full VSL or sales call script with objection handlers
 - Each skill auto-saves outputs to the right section (Sites, Emails, etc.)
 
+### 🔬 Market Intelligence (/market-intelligence)
+- Deep niche and product research engine — discover winning products before you build
+- Choose vertical: Affiliate, Dropshipping, E-commerce, Digital Products, Local Service
+- 4-stage AI pipeline: Discovery → Winner Analysis → Market Synthesis → Asset Generation
+- Discovers top products in a niche, profiles the winners, synthesizes strategy
+- Generates: ad hooks, ad scripts, email sequences, funnel blueprints, landing page copy
+- Scores niches 0-100 on viability, competition, and opportunity
+- One-click "Build This Business" sends intel directly to Himalaya with pre-filled inputs
+- One-click "Create Campaign" generates a full campaign from the intelligence
+- Best for: choosing what to sell, validating a niche before investing, reverse-engineering competitors
+
+### 🏔️ Himalaya — Business Builder (/himalaya)
+- Guided business operating system — start, structure, optimize, or scale a business
+- Two modes:
+  - **Start from Scratch** (/himalaya/scratch): pick business type, niche, goal → get a full business foundation (strategy, site, emails, ads)
+  - **Improve Existing** (/himalaya/improve): paste your URL or describe your business → get a diagnostic and improvement plan
+- Sacred Sequence: Entry → Diagnosis → Strategy → Generation → Optimization
+- Generation never fires without diagnosis and strategy first
+- Integrates with Market Intelligence — run MI scan first, then launch into Himalaya with pre-filled data
+
 ### 💰 Billing (/billing)
 - **Free**: 1 site, 5 pages, 25 clients, 500 contacts, 2 flows, 3 broadcasts/mo
 - **Builder $19/mo**: 5 sites, custom domain, no branding
@@ -171,5 +191,17 @@ export const PAGE_SUGGESTIONS: Record<string, string[]> = {
     "Which of my scans should I pursue?",
     "How do I use scan data to build a campaign?",
     "What do the dimension scores mean?",
+  ],
+  "/market-intelligence": [
+    "What niche should I research first?",
+    "How do I use intel results to launch a business?",
+    "What does the Market Intelligence score mean?",
+    "How do I turn intel into a campaign?",
+  ],
+  "/himalaya": [
+    "Should I start from scratch or improve?",
+    "What does Himalaya build for me?",
+    "How do I use Market Intelligence with Himalaya?",
+    "What business type should I pick?",
   ],
 };

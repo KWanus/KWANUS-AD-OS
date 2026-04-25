@@ -3,6 +3,7 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import AppNav from "@/components/AppNav";
 import {
   ArrowLeft,
   Loader2,
@@ -231,6 +232,7 @@ export default function MarketIntelligenceRunPage({ params }: { params: Promise<
 
   return (
     <div className="min-h-screen bg-[#020509] text-white">
+      <AppNav />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8">
         {/* Header */}
         <div className="flex items-start justify-between gap-4 mb-8">
