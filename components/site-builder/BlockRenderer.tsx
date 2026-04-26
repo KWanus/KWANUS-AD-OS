@@ -97,10 +97,10 @@ function HeroBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
   const bg = props?.bgColor ?? (isDark
-    ? `radial-gradient(ellipse 80% 60% at 50% -10%, ${primary}22 0%, transparent 60%), #0c0a08`
-    : `radial-gradient(ellipse 80% 60% at 50% -10%, ${primary}15 0%, transparent 60%), #ffffff`);
+    ? `radial-gradient(ellipse 100% 70% at 50% -20%, ${primary}25 0%, rgba(139, 92, 246, 0.1) 40%, transparent 70%), linear-gradient(to bottom, #0c0a08 0%, #0c0a08 100%)`
+    : `radial-gradient(ellipse 100% 70% at 50% -20%, ${primary}20 0%, rgba(139, 92, 246, 0.08) 40%, transparent 70%), #ffffff`);
   const textColor = isDark ? "#ffffff" : "#0f172a";
-  const subColor = isDark ? "rgba(255,255,255,0.55)" : "rgba(15,23,42,0.6)";
+  const subColor = isDark ? "rgba(255,255,255,0.6)" : "rgba(15,23,42,0.65)";
   const align = props?.textAlign ?? "center";
   const socialProof = props?.socialProofText;
   const trustItems: string[] = props?.trustItems ?? [];
@@ -112,13 +112,15 @@ function HeroBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
         {/* Social proof pill */}
         {socialProof && (
           <div style={{
-            display: "inline-flex", alignItems: "center", gap: 8,
-            background: isDark ? "rgba(255,255,255,0.06)" : "rgba(0,0,0,0.05)",
-            border: `1px solid ${isDark ? "rgba(255,255,255,0.1)" : "rgba(0,0,0,0.08)"}`,
-            borderRadius: 100, padding: "6px 14px", marginBottom: 28,
+            display: "inline-flex", alignItems: "center", gap: 10,
+            background: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.03)",
+            backdropFilter: "blur(12px)",
+            border: `1px solid ${isDark ? "rgba(139, 92, 246, 0.2)" : "rgba(139, 92, 246, 0.15)"}`,
+            borderRadius: 100, padding: "8px 16px", marginBottom: 32,
+            boxShadow: isDark ? "0 4px 20px rgba(139, 92, 246, 0.1)" : "0 4px 20px rgba(0,0,0,0.05)",
           }}>
-            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#22c55e", display: "inline-block", flexShrink: 0, boxShadow: "0 0 6px #22c55e" }} />
-            <span style={{ color: isDark ? "rgba(255,255,255,0.7)" : "rgba(0,0,0,0.6)", fontSize: 12, fontWeight: 600 }}>{socialProof}</span>
+            <span style={{ width: 7, height: 7, borderRadius: "50%", background: "#22c55e", display: "inline-block", flexShrink: 0, boxShadow: "0 0 10px #22c55e, 0 0 20px rgba(34, 197, 94, 0.3)" }} />
+            <span style={{ color: isDark ? "rgba(255,255,255,0.8)" : "rgba(0,0,0,0.7)", fontSize: 13, fontWeight: 700, letterSpacing: "0.01em" }}>{socialProof}</span>
           </div>
         )}
 
@@ -140,23 +142,39 @@ function HeroBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
         {props?.buttonText && (
           <div style={{ display: "flex", gap: 14, justifyContent: align === "center" ? "center" : "flex-start", flexWrap: "wrap", marginBottom: trustItems.length ? 48 : 0 }}>
             <a href={props?.buttonUrl ?? "#"} style={{
-              display: "inline-flex", alignItems: "center", gap: 8,
-              padding: "15px 34px", borderRadius: 14,
-              background: `linear-gradient(135deg, ${primary}, #e07850)`,
-              boxShadow: `0 8px 32px ${primary}55`,
-              color: "#fff", fontWeight: 800, fontSize: 15, textDecoration: "none",
+              display: "inline-flex", alignItems: "center", gap: 10,
+              padding: "17px 38px", borderRadius: 16,
+              background: `linear-gradient(135deg, ${primary} 0%, #e07850 50%, rgba(139, 92, 246, 0.9) 100%)`,
+              boxShadow: `0 10px 40px ${primary}40, 0 0 60px ${primary}20`,
+              color: "#fff", fontWeight: 800, fontSize: 16, textDecoration: "none",
               letterSpacing: "0.01em",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            }} onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.05) translateY(-2px)";
+              e.currentTarget.style.boxShadow = `0 15px 60px ${primary}50, 0 0 80px ${primary}30`;
+            }} onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1) translateY(0)";
+              e.currentTarget.style.boxShadow = `0 10px 40px ${primary}40, 0 0 60px ${primary}20`;
             }}>
               {props?.buttonText}
-              <span style={{ fontSize: 16 }}>→</span>
+              <span style={{ fontSize: 18 }}>→</span>
             </a>
             {props?.secondaryButtonText && (
               <a href={props?.secondaryButtonUrl ?? "#"} style={{
-                display: "inline-flex", alignItems: "center", gap: 8,
-                padding: "15px 34px", borderRadius: 14,
-                border: `1px solid ${isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.15)"}`,
-                color: textColor, fontWeight: 700, fontSize: 15, textDecoration: "none",
-                background: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.02)",
+                display: "inline-flex", alignItems: "center", gap: 10,
+                padding: "17px 38px", borderRadius: 16,
+                border: `1px solid ${isDark ? "rgba(139, 92, 246, 0.25)" : "rgba(139, 92, 246, 0.2)"}`,
+                color: textColor, fontWeight: 700, fontSize: 16, textDecoration: "none",
+                background: isDark ? "rgba(255,255,255,0.05)" : "rgba(255,255,255,0.8)",
+                backdropFilter: "blur(12px)",
+                boxShadow: isDark ? "0 4px 20px rgba(0,0,0,0.2)" : "0 4px 20px rgba(0,0,0,0.05)",
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              }} onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "scale(1.03) translateY(-1px)";
+                e.currentTarget.style.borderColor = isDark ? "rgba(139, 92, 246, 0.4)" : "rgba(139, 92, 246, 0.35)";
+              }} onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "scale(1) translateY(0)";
+                e.currentTarget.style.borderColor = isDark ? "rgba(139, 92, 246, 0.25)" : "rgba(139, 92, 246, 0.2)";
               }}>
                 {props?.secondaryButtonText}
               </a>
