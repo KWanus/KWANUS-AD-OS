@@ -530,7 +530,24 @@ export default function ClientsPage() {
                   <button
                     onClick={() => void syncBusinessSystem()}
                     disabled={syncingSystem}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-amber-500/25 bg-amber-500/10 px-5 py-3 text-sm font-bold text-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex items-center gap-2 rounded-2xl border px-5 py-3 text-sm font-bold text-amber-100 disabled:cursor-not-allowed disabled:opacity-60 transition-all duration-300"
+                    style={{
+                      background: "rgba(245,158,11,0.1)",
+                      backdropFilter: "blur(8px)",
+                      borderColor: "rgba(245,158,11,0.25)",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!syncingSystem) {
+                        e.currentTarget.style.background = "rgba(245,158,11,0.15)";
+                        e.currentTarget.style.borderColor = "rgba(245,158,11,0.4)";
+                        e.currentTarget.style.transform = "translateY(-1px)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "rgba(245,158,11,0.1)";
+                      e.currentTarget.style.borderColor = "rgba(245,158,11,0.25)";
+                      e.currentTarget.style.transform = "translateY(0)";
+                    }}
                   >
                     {syncingSystem ? "Syncing..." : "Sync My System"}
                   </button>
@@ -539,7 +556,24 @@ export default function ClientsPage() {
                   <button
                     onClick={() => void refreshBusinessSystem()}
                     disabled={refreshingRecommendations}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-5 py-3 text-sm font-bold text-[#f5f0e8] disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex items-center gap-2 rounded-2xl border px-5 py-3 text-sm font-bold text-[#f5f0e8] disabled:cursor-not-allowed disabled:opacity-60 transition-all duration-300"
+                    style={{
+                      background: "rgba(245,166,35,0.1)",
+                      backdropFilter: "blur(8px)",
+                      borderColor: "rgba(245,166,35,0.2)",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!refreshingRecommendations) {
+                        e.currentTarget.style.background = "rgba(245,166,35,0.15)";
+                        e.currentTarget.style.borderColor = "rgba(245,166,35,0.35)";
+                        e.currentTarget.style.transform = "translateY(-1px)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "rgba(245,166,35,0.1)";
+                      e.currentTarget.style.borderColor = "rgba(245,166,35,0.2)";
+                      e.currentTarget.style.transform = "translateY(0)";
+                    }}
                   >
                     {refreshingRecommendations ? "Refreshing..." : "Refresh Recommendations"}
                   </button>
@@ -567,13 +601,42 @@ export default function ClientsPage() {
               <div className="flex flex-wrap gap-3">
                 <Link
                   href="/clients/new"
-                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#f5a623] to-emerald-500 px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(245,166,35,0.22)]"
+                  className="inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-black text-white transition-all duration-300"
+                  style={{
+                    background: "linear-gradient(135deg, #f5a623 0%, #10b981 100%)",
+                    boxShadow: "0 10px 40px rgba(245,166,35,0.35), 0 0 60px rgba(245,166,35,0.15)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "scale(1.03) translateY(-2px)";
+                    e.currentTarget.style.boxShadow = "0 15px 60px rgba(245,166,35,0.45), 0 0 80px rgba(245,166,35,0.25)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "scale(1) translateY(0)";
+                    e.currentTarget.style.boxShadow = "0 10px 40px rgba(245,166,35,0.35), 0 0 60px rgba(245,166,35,0.15)";
+                  }}
                 >
                   Add Client
                 </Link>
                 <Link
                   href="/my-system"
-                  className="inline-flex items-center gap-2 rounded-2xl border border-white/[0.1] bg-white/[0.04] px-5 py-3 text-sm font-bold text-white/70"
+                  className="inline-flex items-center gap-2 rounded-2xl border px-5 py-3 text-sm font-bold text-white/70 transition-all duration-300"
+                  style={{
+                    background: "rgba(255,255,255,0.04)",
+                    backdropFilter: "blur(8px)",
+                    borderColor: "rgba(255,255,255,0.1)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-1px)";
+                    e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+                    e.currentTarget.style.borderColor = "rgba(139, 92, 246, 0.3)";
+                    e.currentTarget.style.color = "rgba(255,255,255,0.9)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
+                    e.currentTarget.style.color = "rgba(255,255,255,0.7)";
+                  }}
                 >
                   Open My System
                 </Link>
