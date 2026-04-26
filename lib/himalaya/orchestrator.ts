@@ -337,7 +337,7 @@ export async function runHimalaya(
           foundation = await generateIntelligentFoundation(profileInput, input.path as BusinessPath, intel);
         } catch (err) {
           console.warn("[Orchestrator] Intelligent generation failed, using template fallback:", err);
-          foundation = generateFoundation(profileInput, input.path as BusinessPath);
+          foundation = await generateFoundation(profileInput, input.path as BusinessPath);
         }
 
         const normalized = normalizeScratchPayload(foundation, input.profileId!, profile.niche ?? "", profile.primaryGoal);

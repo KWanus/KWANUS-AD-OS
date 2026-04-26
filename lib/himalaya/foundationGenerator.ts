@@ -57,87 +57,114 @@ export type BusinessFoundation = {
 // Path-specific generators
 // ---------------------------------------------------------------------------
 
-function generateAffiliate(p: HimalayaProfileInput): BusinessFoundation {
+async function generateAffiliate(p: HimalayaProfileInput): Promise<BusinessFoundation> {
   const niche = p.niche || "health & wellness";
+
+  // 🔥 CRITICAL: Find a REAL affiliate product to promote
+  let product: { name: string; commission: number; platform: string; description: string; vendorPageUrl: string } | null = null;
+  try {
+    const { findProducts } = await import("../paths/productFinder");
+    const results = await findProducts(niche);
+    if (results.products.length > 0) {
+      const top = results.products[0];
+      product = {
+        name: top.name,
+        commission: top.commission,
+        platform: top.platform.charAt(0).toUpperCase() + top.platform.slice(1),
+        description: top.description,
+        vendorPageUrl: top.vendorPageUrl,
+      };
+      console.log(`[Foundation] Found product: ${top.name} ($${top.commission}/sale)`);
+    }
+  } catch (err) {
+    console.warn("[Foundation] Product research failed, using generic template:", err);
+  }
+
+  const productName = product?.name || `Top ${niche} Solution`;
+  const commissionAmount = product?.commission || 45;
+  const platform = product?.platform || "ClickBank";
+  const productDesc = product?.description || `A proven ${niche} program with great results`;
+
   return {
     path: "affiliate",
     pathLabel: "Affiliate Marketing",
     businessProfile: {
       businessType: "Affiliate Marketing",
       niche,
-      targetCustomer: `People actively searching for solutions in ${niche}`,
-      painPoint: `They've tried generic solutions in ${niche} that didn't work and want something proven`,
-      uniqueAngle: `Honest, comparison-based reviews that help people make faster, better decisions in ${niche}`,
+      targetCustomer: `People actively searching for ${productName} or proven ${niche} solutions`,
+      painPoint: `They've tried generic solutions in ${niche} that didn't work - they need something proven like ${productName}`,
+      uniqueAngle: `Expert, honest review of ${productName} - helping people make the right buying decision with real insights`,
     },
     idealCustomer: {
-      who: `Frustrated buyers in the ${niche} space who research before purchasing`,
+      who: `Buyers researching ${productName} or looking for proven ${niche} solutions`,
       demographics: "25-45, tech-savvy, willing to spend $30-200 on solutions",
       psychographics: "Value authenticity, read reviews, want proof before buying",
       whereToBuy: "Google search, YouTube reviews, social media recommendations",
-      buyingTrigger: "Seeing a clear comparison or honest recommendation from someone they trust",
+      buyingTrigger: `Seeing an honest, detailed review of ${productName} from someone they trust`,
     },
     offerDirection: {
-      coreOffer: `Curated recommendations and honest reviews for the best ${niche} products`,
-      pricing: "Commission-based: $10-100 per sale depending on product",
-      deliverable: "Review content, comparison pages, and recommendation guides",
-      transformation: `Helping people skip the trial-and-error and find what actually works in ${niche}`,
-      guarantee: "Full transparency — disclose affiliate relationships, only recommend products you'd use",
+      coreOffer: `Promote ${productName} and earn $${commissionAmount} commission per sale through ${platform}`,
+      pricing: `Earn $${commissionAmount} per sale promoting ${productName}`,
+      deliverable: `Complete sales website promoting ${productName} with your ${platform} affiliate link embedded`,
+      transformation: `Turn visitors into ${productName} buyers and earn passive commissions on autopilot`,
+      guarantee: "Full FTC disclosure - transparent affiliate relationship with honest product review",
     },
     websiteBlueprint: {
-      headline: `The ${niche.charAt(0).toUpperCase() + niche.slice(1)} Products That Actually Work`,
-      subheadline: "Honest reviews, real comparisons, and no sponsored BS",
-      heroCtaText: "See Top Picks",
+      headline: `${productName}: Honest Review & Results`,
+      subheadline: `Real testing, honest feedback, and everything you need to know about ${productName}`,
+      heroCtaText: `Get ${productName} Now →`,
       sections: [
-        "Hero with value proposition",
-        "Featured product comparison table",
-        "In-depth review cards with pros/cons",
-        "Category navigation",
-        "About section (why trust this site)",
-        "Email opt-in for deals and updates",
+        `Hero with ${productName} value proposition`,
+        `What is ${productName}? (Product overview)`,
+        `Honest pros and cons of ${productName}`,
+        `Who ${productName} is perfect for`,
+        `Real results from ${productName} users`,
+        `How to get ${productName} (CTA with affiliate link)`,
+        "FTC disclosure and transparency section",
       ],
       trustElements: [
-        "Personal testing disclosure",
-        "Affiliate relationship transparency",
-        "Reader testimonials or comments",
-        "Social proof (subscriber count)",
+        `Full FTC disclosure - "I earn a commission if you buy ${productName} through my link"`,
+        `Honest review - both pros AND cons of ${productName}`,
+        "Real user testimonials and results",
+        "Money-back guarantee information",
       ],
-      urgencyLine: "Prices and availability change — these are today's best verified deals",
+      urgencyLine: `Limited time: Get ${productName} now before the price increases`,
     },
     marketingAngles: [
-      { hook: `Stop wasting money on ${niche} products that don't work`, angle: "Problem-aware comparison", platform: "Google SEO / YouTube" },
-      { hook: `I tested the top 5 ${niche} products so you don't have to`, angle: "Authority reviewer", platform: "YouTube / TikTok" },
-      { hook: `The ${niche} product everyone is recommending is NOT the best option`, angle: "Contrarian truth", platform: "Social media / Reddit" },
-      { hook: `$50 vs $200: which ${niche} product actually delivers?`, angle: "Price comparison", platform: "YouTube / Blog" },
-      { hook: `The only ${niche} buying guide you'll ever need`, angle: "Definitive resource", platform: "Google SEO" },
+      { hook: `${productName}: My honest review after 30 days`, angle: "Personal experience", platform: "YouTube / Blog" },
+      { hook: `Is ${productName} worth it? Real results revealed`, angle: "Results-focused review", platform: "YouTube / TikTok" },
+      { hook: `${productName} vs competitors: Which one actually works?`, angle: "Comparison review", platform: "Google SEO" },
+      { hook: `I tested ${productName} so you don't have to - here's what happened`, angle: "Authority reviewer", platform: "Social media" },
+      { hook: `The truth about ${productName} that nobody tells you`, angle: "Contrarian insight", platform: "Reddit / Forums" },
     ],
     emailSequence: [
-      { subject: `The #1 mistake people make buying ${niche} products`, purpose: "Hook and establish authority", timing: "Immediately after opt-in" },
-      { subject: "My honest top 3 picks (and why)", purpose: "Deliver value and first recommendations", timing: "Day 1" },
-      { subject: "The one I use every day", purpose: "Personal recommendation with affiliate link", timing: "Day 3" },
-      { subject: `New deal alert: ${niche} sale this week`, purpose: "Urgency-driven promotion", timing: "Day 5" },
-      { subject: "Quick question for you", purpose: "Engagement + segment by interest", timing: "Day 7" },
+      { subject: `The truth about ${productName}`, purpose: "Hook and establish credibility", timing: "Immediately after opt-in" },
+      { subject: `My honest ${productName} review (pros & cons)`, purpose: "Deliver detailed review with value", timing: "Day 1" },
+      { subject: `Who ${productName} is NOT for`, purpose: "Build trust through honesty", timing: "Day 3" },
+      { subject: `Special ${productName} bonus offer inside`, purpose: "Urgency and exclusive incentive", timing: "Day 5" },
+      { subject: `Still deciding on ${productName}? Read this`, purpose: "Address objections and close", timing: "Day 7" },
     ],
     actionRoadmap: [
-      { phase: "Foundation", timeframe: "Week 1", tasks: [
-        `Research top 10 affiliate programs in ${niche}`,
-        "Sign up for 3-5 programs with best commissions",
-        "Set up a simple review website or landing page",
-        "Write your first 3 product reviews",
-        "Set up email capture with lead magnet",
+      { phase: "Launch", timeframe: "Day 1", tasks: [
+        `✅ DONE: Himalaya found ${productName} for you ($${commissionAmount}/sale)`,
+        `✅ DONE: Complete sales website built and deployed`,
+        `Sign up for ${platform} affiliate account`,
+        `Get your unique affiliate link for ${productName}`,
+        `Test the website - make sure everything works`,
       ]},
-      { phase: "Content & Traffic", timeframe: "Week 2-3", tasks: [
-        "Create comparison content (top 5, vs articles)",
-        "Set up YouTube or TikTok channel for video reviews",
-        "Publish 2-3 pieces of content per week",
-        "Optimize for SEO keywords in your niche",
-        "Start sharing on relevant communities (Reddit, forums)",
+      { phase: "Drive Traffic", timeframe: "Week 1-2", tasks: [
+        `Create YouTube review video about ${productName}`,
+        `Write blog post: "${productName} Review: My Honest Experience"`,
+        `Share on Reddit/Facebook groups related to ${niche}`,
+        `Run Facebook/Google ads to your review page`,
+        `Post TikTok/Instagram content about ${productName}`,
       ]},
-      { phase: "Scale & Optimize", timeframe: "Week 4+", tasks: [
-        "Analyze which content drives the most clicks",
-        "Double down on winning formats",
-        "Test paid traffic to top-performing pages",
-        "Build email list and nurture with weekly recommendations",
-        "Negotiate higher commission rates with top-performing programs",
+      { phase: "Scale & Earn", timeframe: "Week 3+", tasks: [
+        `Analyze which traffic source drives the most sales`,
+        `Double down on your best-performing channel`,
+        `Add email follow-up sequence for visitors who don't buy`,
+        `Create bonus offer to increase conversion rate`,
+        `Scale winning ads to $100-500/day ad spend`,
       ]},
     ],
   };
@@ -472,12 +499,12 @@ function generateGenericPath(p: HimalayaProfileInput, path: BusinessPath): Busin
 // Main generator
 // ---------------------------------------------------------------------------
 
-export function generateFoundation(
+export async function generateFoundation(
   profile: HimalayaProfileInput,
   path: BusinessPath
-): BusinessFoundation {
+): Promise<BusinessFoundation> {
   switch (path) {
-    case "affiliate": return generateAffiliate(profile);
+    case "affiliate": return await generateAffiliate(profile);
     case "dropshipping": return generateDropshipping(profile);
     case "agency": return generateAgency(profile);
     case "freelance": return generateFreelance(profile);

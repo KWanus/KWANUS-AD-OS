@@ -16,7 +16,7 @@ export async function generateIntelligentFoundation(
   if (!apiKey) {
     // Fall back to template generator
     const { generateFoundation } = await import("./foundationGenerator");
-    return generateFoundation(profile, path);
+    return await generateFoundation(profile, path);
   }
 
   const anthropic = new Anthropic({ apiKey });
@@ -138,5 +138,5 @@ Respond in this exact JSON format (raw JSON only, no markdown):
 
   // Fallback to template
   const { generateFoundation } = await import("./foundationGenerator");
-  return generateFoundation(profile, path);
+  return await generateFoundation(profile, path);
 }
