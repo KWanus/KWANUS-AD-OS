@@ -441,11 +441,13 @@ function TestimonialsBlock({ props, theme }: { props: Block["props"]; theme: Sit
 function PricingBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props?.bgColor ?? (isDark ? "#07101f" : "#f8fafc");
+  const bg = props?.bgColor ?? (isDark
+    ? `radial-gradient(ellipse 70% 50% at 50% 0%, rgba(139, 92, 246, 0.08) 0%, transparent 60%), #0c0a08`
+    : `radial-gradient(ellipse 70% 50% at 50% 0%, rgba(139, 92, 246, 0.04) 0%, transparent 60%), #ffffff`);
   const textColor = isDark ? "#ffffff" : "#0f172a";
-  const subColor = isDark ? "rgba(255,255,255,0.45)" : "rgba(15,23,42,0.5)";
-  const cardBg = isDark ? "rgba(255,255,255,0.025)" : "#ffffff";
-  const cardBorder = isDark ? "rgba(255,255,255,0.08)" : "#e2e8f0";
+  const subColor = isDark ? "rgba(255,255,255,0.6)" : "rgba(15,23,42,0.65)";
+  const cardBg = isDark ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.95)";
+  const cardBorder = isDark ? "rgba(139, 92, 246, 0.15)" : "rgba(139, 92, 246, 0.1)";
   const tiers: { label?: string; price?: string; period?: string; description?: string; features?: string[]; buttonText?: string; buttonUrl?: string; highlight?: boolean; badge?: string; strikePrice?: string }[] = props?.tiers ?? [];
 
   return (
@@ -462,17 +464,31 @@ function PricingBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
           {tiers.map((tier, i) => (
             <div key={i} style={{
               background: tier.highlight
-                ? isDark ? "rgba(255,255,255,0.06)" : "#ffffff"
+                ? isDark ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.98)"
                 : cardBg,
+              backdropFilter: "blur(16px)",
               border: `1px solid ${tier.highlight ? primary : cardBorder}`,
-              borderRadius: 22,
-              padding: "36px 28px",
-              display: "flex", flexDirection: "column", gap: 24,
+              borderRadius: 28,
+              padding: "40px 32px",
+              display: "flex", flexDirection: "column", gap: 26,
               position: "relative",
               boxShadow: tier.highlight
-                ? `0 20px 60px ${primary}25, 0 0 0 1px ${primary}40`
-                : "none",
-              transform: tier.highlight ? "scale(1.03)" : "none",
+                ? `0 24px 72px ${primary}30, 0 0 60px ${primary}15`
+                : isDark ? "0 8px 32px rgba(0,0,0,0.3)" : "0 8px 32px rgba(0,0,0,0.06)",
+              transform: tier.highlight ? "scale(1.05)" : "none",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            }} onMouseEnter={(e) => {
+              if (!tier.highlight) {
+                e.currentTarget.style.transform = "translateY(-6px)";
+                e.currentTarget.style.borderColor = isDark ? "rgba(139, 92, 246, 0.25)" : "rgba(139, 92, 246, 0.2)";
+                e.currentTarget.style.boxShadow = isDark ? "0 16px 48px rgba(139, 92, 246, 0.15)" : "0 16px 48px rgba(139, 92, 246, 0.1)";
+              }
+            }} onMouseLeave={(e) => {
+              if (!tier.highlight) {
+                e.currentTarget.style.transform = "translateY(0)";
+                e.currentTarget.style.borderColor = cardBorder;
+                e.currentTarget.style.boxShadow = isDark ? "0 8px 32px rgba(0,0,0,0.3)" : "0 8px 32px rgba(0,0,0,0.06)";
+              }
             }}>
               {/* Popular badge */}
               {tier.badge && (
@@ -502,12 +518,31 @@ function PricingBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
               {tier.buttonText && (
                 <a href={tier.buttonUrl ?? "#"} style={{
                   display: "block", textAlign: "center",
-                  padding: "13px 24px", borderRadius: 12,
-                  background: tier.highlight ? `linear-gradient(135deg, ${primary}, #e07850)` : "transparent",
-                  border: tier.highlight ? "none" : `1px solid ${cardBorder}`,
+                  padding: "15px 28px", borderRadius: 14,
+                  background: tier.highlight
+                    ? `linear-gradient(135deg, ${primary} 0%, #e07850 50%, rgba(139, 92, 246, 0.9) 100%)`
+                    : "transparent",
+                  border: tier.highlight ? "none" : `2px solid ${cardBorder}`,
                   color: tier.highlight ? "#fff" : textColor,
-                  fontWeight: 800, fontSize: 14, textDecoration: "none",
-                  boxShadow: tier.highlight ? `0 4px 20px ${primary}40` : "none",
+                  fontWeight: 800, fontSize: 15, textDecoration: "none",
+                  boxShadow: tier.highlight ? `0 8px 28px ${primary}45` : "none",
+                  transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                }} onMouseEnter={(e) => {
+                  if (tier.highlight) {
+                    e.currentTarget.style.transform = "scale(1.03)";
+                    e.currentTarget.style.boxShadow = `0 12px 36px ${primary}55`;
+                  } else {
+                    e.currentTarget.style.borderColor = isDark ? "rgba(139, 92, 246, 0.3)" : "rgba(139, 92, 246, 0.25)";
+                    e.currentTarget.style.background = isDark ? "rgba(255,255,255,0.03)" : "rgba(139, 92, 246, 0.02)";
+                  }
+                }} onMouseLeave={(e) => {
+                  if (tier.highlight) {
+                    e.currentTarget.style.transform = "scale(1)";
+                    e.currentTarget.style.boxShadow = `0 8px 28px ${primary}45`;
+                  } else {
+                    e.currentTarget.style.borderColor = cardBorder;
+                    e.currentTarget.style.background = "transparent";
+                  }
                 }}>
                   {tier.buttonText}
                 </a>
