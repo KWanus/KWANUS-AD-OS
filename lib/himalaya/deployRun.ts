@@ -66,6 +66,57 @@ export async function deployRun(input: {
   const results: Record<string, { id: string; url: string }> = {};
   const generatedAssets: Record<string, unknown> = {};
 
+  // 🔥 CRITICAL: Extract foundation data from rawSignals (product-specific data from research)
+  const rawSignals = run.rawSignals as Record<string, unknown> | null;
+  const foundation = rawSignals?.foundation as {
+    path?: string;
+    pathLabel?: string;
+    businessProfile?: {
+      businessType?: string;
+      niche?: string;
+      targetCustomer?: string;
+      painPoint?: string;
+      uniqueAngle?: string;
+    };
+    idealCustomer?: {
+      who?: string;
+      demographics?: string;
+      psychographics?: string;
+      whereToBuy?: string;
+      buyingTrigger?: string;
+    };
+    offerDirection?: {
+      coreOffer?: string;
+      pricing?: string;
+      deliverable?: string;
+      transformation?: string;
+      guarantee?: string;
+    };
+    websiteBlueprint?: {
+      headline?: string;
+      subheadline?: string;
+      heroCtaText?: string;
+      sections?: string[];
+      trustElements?: string[];
+      urgencyLine?: string;
+    };
+    marketingAngles?: Array<{
+      hook: string;
+      angle: string;
+      platform: string;
+    }>;
+    emailSequence?: Array<{
+      subject: string;
+      purpose: string;
+      timing: string;
+    }>;
+    actionRoadmap?: Array<{
+      phase: string;
+      timeframe: string;
+      tasks: string[];
+    }>;
+  } | undefined;
+
   const dbUser = await prisma.user.findUnique({
     where: { id: input.userId },
     select: {
@@ -180,12 +231,19 @@ export async function deployRun(input: {
   await Promise.allSettled(aiGenerationPromises);
 
   if (shouldDeploy("campaign") && assets) {
+    // Extract product-specific naming from foundation
+    const productName = foundation?.offerDirection?.coreOffer?.split(" and earn")[0] ??
+                       foundation?.websiteBlueprint?.headline?.split(":")[0] ??
+                       run.title ??
+                       "Product";
+    const campaignName = `${foundation?.pathLabel ?? "Campaign"}: ${productName}`;
+
     const campaign = await prisma.campaign.create({
       data: {
         userId: input.userId,
-        name: run.title ?? "Himalaya Campaign",
+        name: campaignName,
         mode: run.mode,
-        productName: run.title ?? "",
+        productName: productName,
         productUrl: run.inputUrl,
         status: "draft",
         workflowState: "elite",
@@ -193,17 +251,29 @@ export async function deployRun(input: {
       },
     });
 
-    let hooks = (assets.adHooks ?? []) as { format: string; hook: string }[];
+    // 🔥 PRIORITY 1: Use foundation.marketingAngles (product-specific from research)
+    let hooks: { format: string; hook: string; platform?: string }[] = [];
+
+    if (foundation?.marketingAngles && foundation.marketingAngles.length > 0) {
+      console.log(`[Deploy] Using ${foundation.marketingAngles.length} product-specific marketing angles from foundation`);
+      hooks = foundation.marketingAngles.map(a => ({
+        format: a.angle,
+        hook: a.hook,
+        platform: a.platform,
+      }));
+    } else {
+      // Fallback to generic assets if no foundation data
+      hooks = (assets.adHooks ?? []) as { format: string; hook: string }[];
+    }
+
     const adImages = (generatedAssets.adImages ?? []) as {
       base64: string;
       prompt: string;
       model: string;
     }[];
 
-    // Inject proven ad angles from playbook if generated hooks are weak
-    const campaignPlaybook = getPlaybook(
-      ((run.rawSignals as Record<string, unknown> | null)?.foundation as Record<string, unknown> | undefined)?.path as string ?? ""
-    );
+    // PRIORITY 2: Inject proven ad angles from playbook if we still need more
+    const campaignPlaybook = getPlaybook(foundation?.path ?? "");
     if (campaignPlaybook && hooks.length < 3) {
       const playbookHooks = campaignPlaybook.adAngles.map(a => ({
         format: `${a.angle} (proven)`,
@@ -672,28 +742,47 @@ export async function deployRun(input: {
   }
 
   if (shouldDeploy("emails") && assets) {
-    // Try to use niche-specific email sequences from playbooks first
-    const foundation = (run.rawSignals as Record<string, unknown> | null)?.foundation as Record<string, unknown> | undefined;
-    const bizType = (foundation?.path as string) ?? run.mode ?? "";
+    // 🔥 PRIORITY 1: Use foundation.emailSequence (product-specific from research)
+    const bizType = foundation?.path ?? run.mode ?? "";
     const playbook = getPlaybook(bizType);
 
-    const sequences = (assets.emailSequences ?? {}) as Record<string, unknown>;
-    let welcomeEmails = (sequences.welcome ?? []) as {
+    let welcomeEmails: {
       subject: string;
       purpose?: string;
       preview?: string;
       body?: string;
       timing?: string;
-    }[];
+    }[] = [];
 
-    // If playbook has proven sequences and generated ones are weak, use playbook
-    if (playbook && (welcomeEmails.length < 3 || !welcomeEmails[0]?.body)) {
-      welcomeEmails = playbook.emailSequence[0]?.emails.map(e => ({
+    if (foundation?.emailSequence && foundation.emailSequence.length > 0) {
+      console.log(`[Deploy] Using ${foundation.emailSequence.length} product-specific emails from foundation`);
+      welcomeEmails = foundation.emailSequence.map(e => ({
         subject: e.subject,
         purpose: e.purpose,
-        body: e.body,
-        timing: `Day ${e.day}`,
-      })) ?? welcomeEmails;
+        preview: e.purpose,
+        body: `<p><strong>${e.purpose}</strong></p><p>${e.timing}</p>`,
+        timing: e.timing,
+      }));
+    } else {
+      // PRIORITY 2: Fallback to generic assets
+      const sequences = (assets.emailSequences ?? {}) as Record<string, unknown>;
+      welcomeEmails = (sequences.welcome ?? []) as {
+        subject: string;
+        purpose?: string;
+        preview?: string;
+        body?: string;
+        timing?: string;
+      }[];
+
+      // PRIORITY 3: If playbook has proven sequences and generated ones are weak, use playbook
+      if (playbook && (welcomeEmails.length < 3 || !welcomeEmails[0]?.body)) {
+        welcomeEmails = playbook.emailSequence[0]?.emails.map(e => ({
+          subject: e.subject,
+          purpose: e.purpose,
+          body: e.body,
+          timing: `Day ${e.day}`,
+        })) ?? welcomeEmails;
+      }
     }
 
     if (welcomeEmails.length > 0) {
