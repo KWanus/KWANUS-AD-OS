@@ -300,7 +300,7 @@ function StatsBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme 
             </div>
           ))}
         </div>
-        {props.caption && (
+        {props?.caption && (
           <p style={{ color: subColor, textAlign: "center", fontSize: 13, marginTop: 20 }}>{props.caption}</p>
         )}
       </div>
@@ -993,7 +993,7 @@ function FormBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
     { name: "phone", type: "tel", placeholder: "Phone (optional)" },
   ];
   const siteId = props?.siteId ?? "";
-  const submitUrl = props.submitUrl ?? "/api/forms/submit";
+  const submitUrl = props?.submitUrl ?? "/api/forms/submit";
 
   // Form submission script injected inline for public sites
   const formScript = `
