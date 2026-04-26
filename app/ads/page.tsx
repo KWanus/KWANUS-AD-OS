@@ -198,7 +198,22 @@ export default function AdsPage() {
               />
               <button
                 onClick={() => void loadAll(budget)}
-                className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-4 py-2.5 text-sm font-bold text-[#f5a623] transition hover:bg-[#f5a623]/20"
+                className="inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-bold text-[#f5a623] transition-all duration-300"
+                style={{
+                  background: "rgba(245,166,35,0.1)",
+                  backdropFilter: "blur(8px)",
+                  borderColor: "rgba(245,166,35,0.2)",
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.background = "rgba(245,166,35,0.2)";
+                  e.currentTarget.style.borderColor = "rgba(245,166,35,0.35)";
+                  e.currentTarget.style.transform = "translateY(-1px)";
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.background = "rgba(245,166,35,0.1)";
+                  e.currentTarget.style.borderColor = "rgba(245,166,35,0.2)";
+                  e.currentTarget.style.transform = "translateY(0)";
+                }}
               >
                 <RefreshCw className="h-4 w-4" />
                 Refresh
@@ -279,7 +294,22 @@ export default function AdsPage() {
                   </div>
                   <Link
                     href="/settings#ad-connections"
-                    className="inline-flex items-center justify-center gap-2 rounded-xl border border-amber-500/20 bg-amber-500/10 px-4 py-2.5 text-sm font-bold text-amber-200 transition hover:bg-amber-500/20"
+                    className="inline-flex items-center justify-center gap-2 rounded-xl border px-4 py-2.5 text-sm font-bold text-amber-200 transition-all duration-300"
+                    style={{
+                      background: "rgba(245,158,11,0.1)",
+                      backdropFilter: "blur(8px)",
+                      borderColor: "rgba(245,158,11,0.2)",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.background = "rgba(245,158,11,0.2)";
+                      e.currentTarget.style.borderColor = "rgba(245,158,11,0.35)";
+                      e.currentTarget.style.transform = "translateY(-1px)";
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "rgba(245,158,11,0.1)";
+                      e.currentTarget.style.borderColor = "rgba(245,158,11,0.2)";
+                      e.currentTarget.style.transform = "translateY(0)";
+                    }}
                   >
                     Open Connections
                     <ArrowRight className="h-4 w-4" />
