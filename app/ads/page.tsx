@@ -394,8 +394,9 @@ export default function AdsPage() {
                                   const authUrl = `https://www.facebook.com/v21.0/dialog/oauth?client_id=${process.env.NEXT_PUBLIC_META_APP_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scopes}&response_type=code`;
                                   window.location.href = authUrl;
                                 } else if (platform === "google") {
-                                  // TODO: Implement Google OAuth
-                                  alert("Google Ads integration coming soon!");
+                                  const scopes = ["https://www.googleapis.com/auth/adwords"].join(" ");
+                                  const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${encodeURIComponent(scopes)}&response_type=code&access_type=offline&prompt=consent`;
+                                  window.location.href = authUrl;
                                 } else if (platform === "tiktok") {
                                   // TODO: Implement TikTok OAuth
                                   alert("TikTok Ads integration coming soon!");
