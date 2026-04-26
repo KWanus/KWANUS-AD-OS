@@ -328,14 +328,32 @@ function FlowCard({
                   }
                 } catch { toast.error("Failed to duplicate"); }
               }}
-              className="p-1.5 rounded-lg hover:bg-[#f5a623]/10 text-white/20 hover:text-[#f5a623]"
+              className="p-1.5 rounded-lg text-white/20 transition-all duration-200"
+              style={{ background: "transparent" }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(245,166,35,0.1)";
+                e.currentTarget.style.color = "rgba(245,166,35,1)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.color = "rgba(255,255,255,0.2)";
+              }}
               aria-label="Duplicate flow"
             >
               <Copy className="w-3.5 h-3.5" />
             </button>
             <button
               onClick={(e) => { e.stopPropagation(); setConfirmDelete(true); }}
-              className="p-1.5 rounded-lg hover:bg-red-500/10 text-white/20 hover:text-red-400"
+              className="p-1.5 rounded-lg text-white/20 transition-all duration-200"
+              style={{ background: "transparent" }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.background = "rgba(239,68,68,0.1)";
+                e.currentTarget.style.color = "rgba(248,113,113,1)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.background = "transparent";
+                e.currentTarget.style.color = "rgba(255,255,255,0.2)";
+              }}
               aria-label="Delete flow"
             >
               <Trash2 className="w-3.5 h-3.5" />
@@ -367,7 +385,25 @@ function FlowCard({
       {/* Action */}
       <button
         onClick={() => router.push(`/emails/flows/${flow.id}`)}
-        className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] hover:border-white/[0.16] text-white/60 hover:text-white text-xs font-semibold transition-all"
+        className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-xs font-semibold transition-all duration-300"
+        style={{
+          background: "rgba(255,255,255,0.04)",
+          backdropFilter: "blur(8px)",
+          borderColor: "rgba(255,255,255,0.08)",
+          color: "rgba(255,255,255,0.6)",
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+          e.currentTarget.style.borderColor = "rgba(255,255,255,0.16)";
+          e.currentTarget.style.color = "rgba(255,255,255,1)";
+          e.currentTarget.style.transform = "translateY(-1px)";
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+          e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+          e.currentTarget.style.color = "rgba(255,255,255,0.6)";
+          e.currentTarget.style.transform = "translateY(0)";
+        }}
       >
         Edit Flow
         <ChevronRight className="w-3.5 h-3.5" />
@@ -405,7 +441,19 @@ function EmptyState({ onCreateClick }: { onCreateClick: () => void }) {
       <div className="flex flex-col sm:flex-row gap-3">
         <button
           onClick={onCreateClick}
-          className="flex items-center gap-2 px-6 py-3 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition-opacity"
+          className="flex items-center gap-2 px-6 py-3 rounded-xl text-white text-sm font-bold transition-all duration-300"
+          style={{
+            background: "linear-gradient(135deg, #f5a623 0%, #e07850 50%, rgba(139, 92, 246, 0.9) 100%)",
+            boxShadow: "0 10px 40px rgba(245,166,35,0.35), 0 0 60px rgba(245,166,35,0.15)",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = "scale(1.03) translateY(-2px)";
+            e.currentTarget.style.boxShadow = "0 15px 60px rgba(245,166,35,0.45), 0 0 80px rgba(245,166,35,0.25)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = "scale(1) translateY(0)";
+            e.currentTarget.style.boxShadow = "0 10px 40px rgba(245,166,35,0.35), 0 0 60px rgba(245,166,35,0.15)";
+          }}
         >
           <Plus className="w-4 h-4" />
           Create Your First Flow
@@ -827,14 +875,48 @@ function CreateFlowModal({
         <div className="sticky bottom-0 bg-[#0a1628] border-t border-white/[0.06] px-6 py-4 flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 py-3 rounded-xl border border-white/[0.1] text-white/40 hover:text-white/60 text-sm font-semibold transition"
+            className="flex-1 py-3 rounded-xl border text-sm font-semibold transition-all duration-300"
+            style={{
+              background: "rgba(255,255,255,0.04)",
+              backdropFilter: "blur(8px)",
+              borderColor: "rgba(255,255,255,0.1)",
+              color: "rgba(255,255,255,0.4)",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.color = "rgba(255,255,255,0.6)";
+              e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.color = "rgba(255,255,255,0.4)";
+              e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+            }}
           >
             Cancel
           </button>
           <button
             onClick={handleCreate}
             disabled={creating || !name.trim()}
-            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition"
+            className="flex-1 flex items-center justify-center gap-2 py-3 rounded-xl text-white text-sm font-bold disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-300"
+            style={{
+              background: creating || !name.trim()
+                ? "rgba(245,166,35,0.3)"
+                : "linear-gradient(135deg, #f5a623 0%, #e07850 50%, rgba(139, 92, 246, 0.9) 100%)",
+              boxShadow: creating || !name.trim()
+                ? "none"
+                : "0 6px 24px rgba(245,166,35,0.3), 0 0 40px rgba(245,166,35,0.1)",
+            }}
+            onMouseEnter={(e) => {
+              if (!creating && name.trim()) {
+                e.currentTarget.style.transform = "scale(1.05)";
+                e.currentTarget.style.boxShadow = "0 8px 32px rgba(245,166,35,0.4), 0 0 50px rgba(245,166,35,0.15)";
+              }
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1)";
+              if (!creating && name.trim()) {
+                e.currentTarget.style.boxShadow = "0 6px 24px rgba(245,166,35,0.3), 0 0 40px rgba(245,166,35,0.1)";
+              }
+            }}
           >
             {creating ? (
               <>
@@ -1029,7 +1111,24 @@ function EmailsPage() {
                   <button
                     onClick={() => void syncBusinessSystem()}
                     disabled={syncingSystem}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-amber-500/25 bg-amber-500/10 px-5 py-3 text-sm font-bold text-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex items-center gap-2 rounded-2xl border px-5 py-3 text-sm font-bold text-amber-100 disabled:cursor-not-allowed disabled:opacity-60 transition-all duration-300"
+                    style={{
+                      background: "rgba(245,158,11,0.1)",
+                      backdropFilter: "blur(8px)",
+                      borderColor: "rgba(245,158,11,0.25)",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!syncingSystem) {
+                        e.currentTarget.style.background = "rgba(245,158,11,0.15)";
+                        e.currentTarget.style.borderColor = "rgba(245,158,11,0.4)";
+                        e.currentTarget.style.transform = "translateY(-1px)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "rgba(245,158,11,0.1)";
+                      e.currentTarget.style.borderColor = "rgba(245,158,11,0.25)";
+                      e.currentTarget.style.transform = "translateY(0)";
+                    }}
                   >
                     {syncingSystem ? "Syncing..." : "Sync My System"}
                   </button>
@@ -1038,7 +1137,24 @@ function EmailsPage() {
                   <button
                     onClick={() => void refreshBusinessSystem()}
                     disabled={refreshingRecommendations}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-5 py-3 text-sm font-bold text-[#f5f0e8] disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex items-center gap-2 rounded-2xl border px-5 py-3 text-sm font-bold text-[#f5f0e8] disabled:cursor-not-allowed disabled:opacity-60 transition-all duration-300"
+                    style={{
+                      background: "rgba(245,166,35,0.1)",
+                      backdropFilter: "blur(8px)",
+                      borderColor: "rgba(245,166,35,0.2)",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!refreshingRecommendations) {
+                        e.currentTarget.style.background = "rgba(245,166,35,0.15)";
+                        e.currentTarget.style.borderColor = "rgba(245,166,35,0.35)";
+                        e.currentTarget.style.transform = "translateY(-1px)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "rgba(245,166,35,0.1)";
+                      e.currentTarget.style.borderColor = "rgba(245,166,35,0.2)";
+                      e.currentTarget.style.transform = "translateY(0)";
+                    }}
                   >
                     {refreshingRecommendations ? "Refreshing..." : "Refresh Recommendations"}
                   </button>
@@ -1093,14 +1209,43 @@ function EmailsPage() {
               <div className="flex flex-wrap gap-3">
                 <button
                   onClick={() => void createRecommendedFlow()}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(245,166,35,0.22)]"
+                  className="inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-black text-white transition-all duration-300"
+                  style={{
+                    background: "linear-gradient(135deg, #f5a623 0%, #e07850 50%, rgba(139, 92, 246, 0.9) 100%)",
+                    boxShadow: "0 10px 40px rgba(245,166,35,0.35), 0 0 60px rgba(245,166,35,0.15)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "scale(1.03) translateY(-2px)";
+                    e.currentTarget.style.boxShadow = "0 15px 60px rgba(245,166,35,0.45), 0 0 80px rgba(245,166,35,0.25)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "scale(1) translateY(0)";
+                    e.currentTarget.style.boxShadow = "0 10px 40px rgba(245,166,35,0.35), 0 0 60px rgba(245,166,35,0.15)";
+                  }}
                 >
                   <Zap className="w-4 h-4" />
                   Create Recommended Flow
                 </button>
                 <button
                   onClick={() => setModalOpen(true)}
-                  className="inline-flex items-center gap-2 rounded-2xl border border-white/[0.1] bg-white/[0.04] px-5 py-3 text-sm font-bold text-white/70"
+                  className="inline-flex items-center gap-2 rounded-2xl border px-5 py-3 text-sm font-bold text-white/70 transition-all duration-300"
+                  style={{
+                    background: "rgba(255,255,255,0.04)",
+                    backdropFilter: "blur(8px)",
+                    borderColor: "rgba(255,255,255,0.1)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-1px)";
+                    e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+                    e.currentTarget.style.borderColor = "rgba(139, 92, 246, 0.3)";
+                    e.currentTarget.style.color = "rgba(255,255,255,0.9)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
+                    e.currentTarget.style.color = "rgba(255,255,255,0.7)";
+                  }}
                 >
                   <Plus className="w-4 h-4" />
                   Create Custom Flow
@@ -1132,7 +1277,19 @@ function EmailsPage() {
           {flows.length > 0 && (
             <button
               onClick={() => setModalOpen(true)}
-              className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 transition-opacity shrink-0"
+              className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-white text-sm font-bold shrink-0 transition-all duration-300"
+              style={{
+                background: "linear-gradient(135deg, #f5a623 0%, #e07850 50%, rgba(139, 92, 246, 0.9) 100%)",
+                boxShadow: "0 6px 24px rgba(245,166,35,0.3), 0 0 40px rgba(245,166,35,0.1)",
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "scale(1.05) translateY(-1px)";
+                e.currentTarget.style.boxShadow = "0 8px 32px rgba(245,166,35,0.4), 0 0 50px rgba(245,166,35,0.15)";
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "scale(1) translateY(0)";
+                e.currentTarget.style.boxShadow = "0 6px 24px rgba(245,166,35,0.3), 0 0 40px rgba(245,166,35,0.1)";
+              }}
             >
               <Plus className="w-4 h-4" />
               Create Flow
