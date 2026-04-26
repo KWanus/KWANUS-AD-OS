@@ -96,14 +96,14 @@ function eyebrowStyle(color: string): React.CSSProperties {
 function HeroBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark
+  const bg = props?.bgColor ?? (isDark
     ? `radial-gradient(ellipse 80% 60% at 50% -10%, ${primary}22 0%, transparent 60%), #0c0a08`
     : `radial-gradient(ellipse 80% 60% at 50% -10%, ${primary}15 0%, transparent 60%), #ffffff`);
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.55)" : "rgba(15,23,42,0.6)";
-  const align = props.textAlign ?? "center";
-  const socialProof = props.socialProofText;
-  const trustItems: string[] = props.trustItems ?? [];
+  const align = props?.textAlign ?? "center";
+  const socialProof = props?.socialProofText;
+  const trustItems: string[] = props?.trustItems ?? [];
 
   return (
     <section style={{ ...sectionBase(bg, "110px 24px 100px"), textAlign: align as "center" | "left" }}>
@@ -122,8 +122,8 @@ function HeroBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
           </div>
         )}
 
-        {props.eyebrow && (
-          <p style={{ ...eyebrowStyle(primary), marginBottom: 16 }}>{props.eyebrow}</p>
+        {props?.eyebrow && (
+          <p style={{ ...eyebrowStyle(primary), marginBottom: 16 }}>{props?.eyebrow}</p>
         )}
 
         <h1 style={{ ...headingStyle(textColor, "clamp(2.2rem,5.5vw,4rem)"), maxWidth: 800, textAlign: align as "center" | "left", marginBottom: 24 }}>
@@ -132,14 +132,14 @@ function HeroBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
 
         {props?.subheadline && (
           <p style={{ color: subColor, fontSize: "clamp(1rem,2vw,1.2rem)", maxWidth: 600, lineHeight: 1.7, marginBottom: 40, textAlign: align as "center" | "left" }}>
-            {props.subheadline}
+            {props?.subheadline}
           </p>
         )}
 
         {/* CTAs */}
         {props?.buttonText && (
           <div style={{ display: "flex", gap: 14, justifyContent: align === "center" ? "center" : "flex-start", flexWrap: "wrap", marginBottom: trustItems.length ? 48 : 0 }}>
-            <a href={props.buttonUrl ?? "#"} style={{
+            <a href={props?.buttonUrl ?? "#"} style={{
               display: "inline-flex", alignItems: "center", gap: 8,
               padding: "15px 34px", borderRadius: 14,
               background: `linear-gradient(135deg, ${primary}, #e07850)`,
@@ -147,18 +147,18 @@ function HeroBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
               color: "#fff", fontWeight: 800, fontSize: 15, textDecoration: "none",
               letterSpacing: "0.01em",
             }}>
-              {props.buttonText}
+              {props?.buttonText}
               <span style={{ fontSize: 16 }}>→</span>
             </a>
             {props?.secondaryButtonText && (
-              <a href={props.secondaryButtonUrl ?? "#"} style={{
+              <a href={props?.secondaryButtonUrl ?? "#"} style={{
                 display: "inline-flex", alignItems: "center", gap: 8,
                 padding: "15px 34px", borderRadius: 14,
                 border: `1px solid ${isDark ? "rgba(255,255,255,0.15)" : "rgba(0,0,0,0.15)"}`,
                 color: textColor, fontWeight: 700, fontSize: 15, textDecoration: "none",
                 background: isDark ? "rgba(255,255,255,0.04)" : "rgba(0,0,0,0.02)",
               }}>
-                {props.secondaryButtonText}
+                {props?.secondaryButtonText}
               </a>
             )}
           </div>
@@ -200,9 +200,9 @@ function FeaturesBlock({ props, theme }: { props: Block["props"]; theme: SiteThe
       <div style={container()}>
         {(props?.eyebrow || props?.title) && (
           <div style={{ textAlign: "center", marginBottom: 60 }}>
-            {props?.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
-            {props?.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
-            {props?.subtitle && <p style={{ color: subColor, fontSize: 17, maxWidth: 560, margin: "0 auto", lineHeight: 1.7 }}>{props.subtitle}</p>}
+            {props?.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props?.eyebrow}</p>}
+            {props?.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props?.title}</h2>}
+            {props?.subtitle && <p style={{ color: subColor, fontSize: 17, maxWidth: 560, margin: "0 auto", lineHeight: 1.7 }}>{props?.subtitle}</p>}
           </div>
         )}
         <div style={{
@@ -301,7 +301,7 @@ function StatsBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme 
           ))}
         </div>
         {props?.caption && (
-          <p style={{ color: subColor, textAlign: "center", fontSize: 13, marginTop: 20 }}>{props.caption}</p>
+          <p style={{ color: subColor, textAlign: "center", fontSize: 13, marginTop: 20 }}>{props?.caption}</p>
         )}
       </div>
     </section>
@@ -315,21 +315,21 @@ function StatsBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme 
 function TestimonialsBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark ? "#0c0a08" : "#f8fafc");
+  const bg = props?.bgColor ?? (isDark ? "#0c0a08" : "#f8fafc");
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.65)" : "rgba(15,23,42,0.65)";
   const cardBg = isDark ? "rgba(255,255,255,0.035)" : "#ffffff";
   const cardBorder = isDark ? "rgba(255,255,255,0.08)" : "#e2e8f0";
-  const items: { name?: string; role?: string; company?: string; quote?: string; avatar?: string; stars?: number; verified?: boolean; result?: string }[] = props.items ?? [];
+  const items: { name?: string; role?: string; company?: string; quote?: string; avatar?: string; stars?: number; verified?: boolean; result?: string }[] = props?.items ?? [];
 
   return (
     <section style={sectionBase(bg)}>
       <div style={container()}>
         {(props?.eyebrow || props?.title) && (
           <div style={{ textAlign: "center", marginBottom: 60 }}>
-            {props?.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
-            {props?.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
-            {props?.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 540, margin: "0 auto" }}>{props.subtitle}</p>}
+            {props?.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props?.eyebrow}</p>}
+            {props?.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props?.title}</h2>}
+            {props?.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 540, margin: "0 auto" }}>{props?.subtitle}</p>}
           </div>
         )}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 20 }}>
@@ -408,21 +408,21 @@ function TestimonialsBlock({ props, theme }: { props: Block["props"]; theme: Sit
 function PricingBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark ? "#07101f" : "#f8fafc");
+  const bg = props?.bgColor ?? (isDark ? "#07101f" : "#f8fafc");
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.45)" : "rgba(15,23,42,0.5)";
   const cardBg = isDark ? "rgba(255,255,255,0.025)" : "#ffffff";
   const cardBorder = isDark ? "rgba(255,255,255,0.08)" : "#e2e8f0";
-  const tiers: { label?: string; price?: string; period?: string; description?: string; features?: string[]; buttonText?: string; buttonUrl?: string; highlight?: boolean; badge?: string; strikePrice?: string }[] = props.tiers ?? [];
+  const tiers: { label?: string; price?: string; period?: string; description?: string; features?: string[]; buttonText?: string; buttonUrl?: string; highlight?: boolean; badge?: string; strikePrice?: string }[] = props?.tiers ?? [];
 
   return (
     <section style={sectionBase(bg)}>
       <div style={container()}>
         {(props?.eyebrow || props?.title) && (
           <div style={{ textAlign: "center", marginBottom: 60 }}>
-            {props?.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
-            {props?.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
-            {props?.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 520, margin: "0 auto" }}>{props.subtitle}</p>}
+            {props?.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props?.eyebrow}</p>}
+            {props?.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props?.title}</h2>}
+            {props?.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 520, margin: "0 auto" }}>{props?.subtitle}</p>}
           </div>
         )}
         <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(tiers.length || 3, 3)}, 1fr)`, gap: 20, alignItems: "start" }}>
@@ -493,7 +493,7 @@ function PricingBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
         </div>
         {props?.guarantee && (
           <p style={{ color: subColor, textAlign: "center", fontSize: 13, marginTop: 32 }}>
-            🔒 {props.guarantee}
+            🔒 {props?.guarantee}
           </p>
         )}
       </div>
@@ -508,20 +508,20 @@ function PricingBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
 function FAQBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
+  const bg = props?.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.6)" : "rgba(15,23,42,0.65)";
   const borderColor = isDark ? "rgba(255,255,255,0.07)" : "#e8edf2";
-  const items: { q?: string; a?: string }[] = props.items ?? [];
+  const items: { q?: string; a?: string }[] = props?.items ?? [];
 
   return (
     <section style={sectionBase(bg)}>
       <div style={{ ...container(780) }}>
         {(props?.eyebrow || props?.title) && (
           <div style={{ textAlign: "center", marginBottom: 56 }}>
-            {props?.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
-            {props?.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
-            {props?.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 520, margin: "0 auto" }}>{props.subtitle}</p>}
+            {props?.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props?.eyebrow}</p>}
+            {props?.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props?.title}</h2>}
+            {props?.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 520, margin: "0 auto" }}>{props?.subtitle}</p>}
           </div>
         )}
         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
@@ -555,15 +555,15 @@ function FAQBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme })
         </div>
         {props?.ctaText && (
           <div style={{ textAlign: "center", marginTop: 48 }}>
-            <p style={{ color: subColor, fontSize: 15, marginBottom: 16 }}>{props.ctaText}</p>
+            <p style={{ color: subColor, fontSize: 15, marginBottom: 16 }}>{props?.ctaText}</p>
             {props?.ctaButtonText && (
-              <a href={props.ctaButtonUrl ?? "#"} style={{
+              <a href={props?.ctaButtonUrl ?? "#"} style={{
                 display: "inline-flex", alignItems: "center", gap: 8,
                 padding: "13px 28px", borderRadius: 12,
                 background: `linear-gradient(135deg, ${primary}, #e07850)`,
                 color: "#fff", fontWeight: 800, fontSize: 14, textDecoration: "none",
               }}>
-                {props.ctaButtonText}
+                {props?.ctaButtonText}
               </a>
             )}
           </div>
@@ -579,8 +579,8 @@ function FAQBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme })
 
 function CTABlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? `linear-gradient(135deg, ${primary}ee 0%, #e07850ee 100%)`;
-  const trustItems: string[] = props.trustItems ?? [];
+  const bg = props?.bgColor ?? `linear-gradient(135deg, ${primary}ee 0%, #e07850ee 100%)`;
+  const trustItems: string[] = props?.trustItems ?? [];
 
   return (
     <section style={{ background: bg, padding: "100px 24px", textAlign: "center", position: "relative", overflow: "hidden" }}>
@@ -591,34 +591,34 @@ function CTABlock({ props, theme }: { props: Block["props"]; theme: SiteTheme })
         pointerEvents: "none",
       }} />
       <div style={{ ...container(720), position: "relative" }}>
-        {props?.eyebrow && <p style={{ ...eyebrowStyle("rgba(255,255,255,0.7)"), marginBottom: 16 }}>{props.eyebrow}</p>}
+        {props?.eyebrow && <p style={{ ...eyebrowStyle("rgba(255,255,255,0.7)"), marginBottom: 16 }}>{props?.eyebrow}</p>}
         <h2 style={{ ...headingStyle("#ffffff", "clamp(2rem,4.5vw,3.25rem)"), marginBottom: 20 }}>
           {props?.headline || "Ready to get started?"}
         </h2>
         {props?.subheadline && (
           <p style={{ color: "rgba(255,255,255,0.8)", fontSize: 18, lineHeight: 1.7, marginBottom: 40, maxWidth: 560, margin: "0 auto 40px" }}>
-            {props.subheadline}
+            {props?.subheadline}
           </p>
         )}
         {props?.buttonText && (
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap", marginBottom: 28 }}>
-            <a href={props.buttonUrl ?? "#"} style={{
+            <a href={props?.buttonUrl ?? "#"} style={{
               display: "inline-flex", alignItems: "center", gap: 8,
               padding: "16px 40px", borderRadius: 14,
               background: "#ffffff",
               color: "#0f172a", fontWeight: 900, fontSize: 16, textDecoration: "none",
               boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
             }}>
-              {props.buttonText} <span style={{ fontSize: 18 }}>→</span>
+              {props?.buttonText} <span style={{ fontSize: 18 }}>→</span>
             </a>
             {props?.secondaryButtonText && (
-              <a href={props.secondaryButtonUrl ?? "#"} style={{
+              <a href={props?.secondaryButtonUrl ?? "#"} style={{
                 display: "inline-flex", alignItems: "center", gap: 8,
                 padding: "16px 40px", borderRadius: 14,
                 border: "1px solid rgba(255,255,255,0.35)",
                 color: "#ffffff", fontWeight: 700, fontSize: 16, textDecoration: "none",
               }}>
-                {props.secondaryButtonText}
+                {props?.secondaryButtonText}
               </a>
             )}
           </div>
@@ -644,7 +644,7 @@ function CTABlock({ props, theme }: { props: Block["props"]; theme: SiteTheme })
 function GuaranteeBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
+  const bg = props?.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.6)" : "rgba(15,23,42,0.6)";
   const borderColor = isDark ? "rgba(255,255,255,0.08)" : "#e2e8f0";
@@ -665,7 +665,7 @@ function GuaranteeBlock({ props, theme }: { props: Block["props"]; theme: SiteTh
             display: "flex", alignItems: "center", justifyContent: "center",
             fontSize: 32,
           }}>
-            {props.icon ?? "🛡️"}
+            {props?.icon ?? "🛡️"}
           </div>
           <div>
             <h3 style={{ color: textColor, fontSize: 22, fontWeight: 900, marginBottom: 10 }}>
@@ -687,10 +687,10 @@ function GuaranteeBlock({ props, theme }: { props: Block["props"]; theme: SiteTh
 
 function TrustBadgesBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
-  const bg = props.bgColor ?? (isDark ? "#07101f" : "#f8fafc");
+  const bg = props?.bgColor ?? (isDark ? "#07101f" : "#f8fafc");
   const subColor = isDark ? "rgba(255,255,255,0.35)" : "rgba(15,23,42,0.35)";
   const borderColor = isDark ? "rgba(255,255,255,0.07)" : "#e8edf2";
-  const badges: { icon?: string; label?: string }[] = props.badges ?? [
+  const badges: { icon?: string; label?: string }[] = props?.badges ?? [
     { icon: "🔒", label: "SSL Secured" },
     { icon: "💳", label: "Secure Payment" },
     { icon: "✅", label: "Verified Business" },
@@ -701,9 +701,9 @@ function TrustBadgesBlock({ props, theme }: { props: Block["props"]; theme: Site
   return (
     <section style={sectionBase(bg, "48px 24px")}>
       <div style={container()}>
-        {props.title && (
+        {props?.title && (
           <p style={{ color: subColor, textAlign: "center", fontSize: 12, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.15em", marginBottom: 28 }}>
-            {props.title}
+            {props?.title}
           </p>
         )}
         <div style={{
@@ -735,20 +735,20 @@ function TrustBadgesBlock({ props, theme }: { props: Block["props"]; theme: Site
 function ProcessBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark ? "#07101f" : "#f8fafc");
+  const bg = props?.bgColor ?? (isDark ? "#07101f" : "#f8fafc");
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.5)" : "rgba(15,23,42,0.55)";
   const borderColor = isDark ? "rgba(255,255,255,0.07)" : "#e2e8f0";
-  const steps: { icon?: string; title?: string; body?: string }[] = props.steps ?? [];
+  const steps: { icon?: string; title?: string; body?: string }[] = props?.steps ?? [];
 
   return (
     <section style={sectionBase(bg)}>
       <div style={container()}>
         {(props?.eyebrow || props?.title) && (
           <div style={{ textAlign: "center", marginBottom: 60 }}>
-            {props?.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
-            {props?.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
-            {props?.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 520, margin: "0 auto" }}>{props.subtitle}</p>}
+            {props?.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props?.eyebrow}</p>}
+            {props?.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props?.title}</h2>}
+            {props?.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 520, margin: "0 auto" }}>{props?.subtitle}</p>}
           </div>
         )}
         <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(steps.length || 3, 4)}, 1fr)`, gap: 20, position: "relative" }}>
@@ -787,17 +787,17 @@ function ProcessBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
 function BeforeAfterBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
+  const bg = props?.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.5)" : "rgba(15,23,42,0.55)";
-  const beforeItems: string[] = props.beforeItems ?? [];
-  const afterItems: string[] = props.afterItems ?? [];
+  const beforeItems: string[] = props?.beforeItems ?? [];
+  const afterItems: string[] = props?.afterItems ?? [];
 
   return (
     <section style={sectionBase(bg)}>
       <div style={container(860)}>
-        {props.title && (
-          <h2 style={{ ...headingStyle(textColor), textAlign: "center", marginBottom: 48 }}>{props.title}</h2>
+        {props?.title && (
+          <h2 style={{ ...headingStyle(textColor), textAlign: "center", marginBottom: 48 }}>{props?.title}</h2>
         )}
         <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 20 }}>
           {/* Before */}
@@ -852,8 +852,8 @@ function BeforeAfterBlock({ props, theme }: { props: Block["props"]; theme: Site
 
 function UrgencyBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? `linear-gradient(90deg, #dc2626, #b91c1c)`;
-  const items: string[] = props.items ?? [];
+  const bg = props?.bgColor ?? `linear-gradient(90deg, #dc2626, #b91c1c)`;
+  const items: string[] = props?.items ?? [];
 
   return (
     <div style={{
@@ -861,7 +861,7 @@ function UrgencyBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
       display: "flex", alignItems: "center", justifyContent: "center", gap: 24,
       flexWrap: "wrap",
     }}>
-      {props?.icon && <span style={{ fontSize: 18 }}>{props.icon}</span>}
+      {props?.icon && <span style={{ fontSize: 18 }}>{props?.icon}</span>}
       <span style={{ color: "#ffffff", fontWeight: 800, fontSize: 14, textAlign: "center" }}>
         {props?.text ?? "⚡ Limited Time Offer — Act Now!"}
       </span>
@@ -869,12 +869,12 @@ function UrgencyBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
         <span key={i} style={{ color: "rgba(255,255,255,0.8)", fontSize: 13, fontWeight: 600 }}>· {item}</span>
       ))}
       {props?.buttonText && (
-        <a href={props.buttonUrl ?? "#"} style={{
+        <a href={props?.buttonUrl ?? "#"} style={{
           padding: "6px 16px", borderRadius: 8,
           background: "#ffffff", color: "#dc2626",
           fontWeight: 800, fontSize: 13, textDecoration: "none",
         }}>
-          {props.buttonText}
+          {props?.buttonText}
         </a>
       )}
     </div>
@@ -905,21 +905,21 @@ function TextBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
 
 function ImageBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
-  const bg = props.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
+  const bg = props?.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
   const textColor = isDark ? "rgba(255,255,255,0.35)" : "rgba(15,23,42,0.35)";
 
   return (
     <section style={sectionBase(bg, "40px 24px")}>
-      <div style={{ maxWidth: props.fullWidth ? "100%" : 1100, margin: "0 auto" }}>
+      <div style={{ maxWidth: props?.fullWidth ? "100%" : 1100, margin: "0 auto" }}>
         {props?.src ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={props?.src as string} alt={(props.alt as string) ?? ""} style={{ width: "100%", borderRadius: props.rounded ? 20 : 0, display: "block" }} />
+          <img src={props?.src as string} alt={(props?.alt as string) ?? ""} style={{ width: "100%", borderRadius: props?.rounded ? 20 : 0, display: "block" }} />
         ) : (
           <div style={{ width: "100%", aspectRatio: "16/9", background: isDark ? "rgba(255,255,255,0.04)" : "#f1f5f9", borderRadius: 20, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <span style={{ color: textColor, fontSize: 14 }}>Add an image URL in the editor</span>
           </div>
         )}
-        {props?.caption && <p style={{ color: textColor, fontSize: 13, textAlign: "center", marginTop: 12 }}>{props.caption}</p>}
+        {props?.caption && <p style={{ color: textColor, fontSize: 13, textAlign: "center", marginTop: 12 }}>{props?.caption}</p>}
       </div>
     </section>
   );
@@ -932,7 +932,7 @@ function ImageBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme 
 function VideoBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
+  const bg = props?.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
 
   function getEmbedUrl(url: string) {
     try {
@@ -953,10 +953,10 @@ function VideoBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme 
   return (
     <section style={sectionBase(bg, "72px 24px")}>
       <div style={container(900)}>
-        {props?.title && <h2 style={{ ...headingStyle(isDark ? "#fff" : "#0f172a"), textAlign: "center", marginBottom: 32 }}>{props.title}</h2>}
+        {props?.title && <h2 style={{ ...headingStyle(isDark ? "#fff" : "#0f172a"), textAlign: "center", marginBottom: 32 }}>{props?.title}</h2>}
         {props?.url ? (
           <div style={{ position: "relative", paddingTop: "56.25%", borderRadius: 20, overflow: "hidden", boxShadow: `0 32px 64px rgba(0,0,0,0.4)` }}>
-            <iframe src={getEmbedUrl(props.url as string)}
+            <iframe src={getEmbedUrl(props?.url as string)}
               style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen />
@@ -969,7 +969,7 @@ function VideoBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme 
             </div>
           </div>
         )}
-        {props?.caption && <p style={{ color: isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)", textAlign: "center", fontSize: 13, marginTop: 16 }}>{props.caption}</p>}
+        {props?.caption && <p style={{ color: isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)", textAlign: "center", fontSize: 13, marginTop: 16 }}>{props?.caption}</p>}
       </div>
     </section>
   );
@@ -1064,9 +1064,9 @@ function FormBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
       <div style={{ ...container(560) }}>
         {(props?.eyebrow || props?.title) && (
           <div style={{ textAlign: "center", marginBottom: 40 }}>
-            {props?.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
-            {props?.title && <h2 style={{ ...headingStyle(textColor, "clamp(1.5rem,3vw,2rem)"), marginBottom: 12 }}>{props.title}</h2>}
-            {props?.subtitle && <p style={{ color: subColor, fontSize: 15, lineHeight: 1.7 }}>{props.subtitle}</p>}
+            {props?.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props?.eyebrow}</p>}
+            {props?.title && <h2 style={{ ...headingStyle(textColor, "clamp(1.5rem,3vw,2rem)"), marginBottom: 12 }}>{props?.title}</h2>}
+            {props?.subtitle && <p style={{ color: subColor, fontSize: 15, lineHeight: 1.7 }}>{props?.subtitle}</p>}
           </div>
         )}
         <div style={{
@@ -1097,7 +1097,7 @@ function FormBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
             </button>
             <p className="form-message" style={{ color: subColor, fontSize: 14, textAlign: "center", margin: "8px 0 0", minHeight: 20 }}></p>
             {props?.privacyText && (
-              <p style={{ color: subColor, fontSize: 12, textAlign: "center", margin: "4px 0 0" }}>{props.privacyText}</p>
+              <p style={{ color: subColor, fontSize: 12, textAlign: "center", margin: "4px 0 0" }}>{props?.privacyText}</p>
             )}
           </form>
           {siteId && <script dangerouslySetInnerHTML={{ __html: formScript }} />}
@@ -1114,7 +1114,7 @@ function FormBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
 function CheckoutBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark ? "#07101f" : "#f8fafc");
+  const bg = props?.bgColor ?? (isDark ? "#07101f" : "#f8fafc");
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.5)" : "rgba(15,23,42,0.5)";
   const cardBg = isDark ? "#0a1324" : "#ffffff";
@@ -1131,8 +1131,8 @@ function CheckoutBlock({ props, theme }: { props: Block["props"]; theme: SiteThe
           {/* Header */}
           <div style={{ textAlign: "center", marginBottom: 32 }}>
             <p style={{ color: subColor, fontSize: 11, fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 8 }}>SECURE ORDER FORM</p>
-            <h2 style={{ ...headingStyle(textColor, "1.6rem"), marginBottom: 8 }}>{props.title ?? "Complete Your Order"}</h2>
-            {props?.subtitle && <p style={{ color: subColor, fontSize: 14 }}>{props.subtitle}</p>}
+            <h2 style={{ ...headingStyle(textColor, "1.6rem"), marginBottom: 8 }}>{props?.title ?? "Complete Your Order"}</h2>
+            {props?.subtitle && <p style={{ color: subColor, fontSize: 14 }}>{props?.subtitle}</p>}
           </div>
 
           {/* Order summary */}
@@ -1144,7 +1144,7 @@ function CheckoutBlock({ props, theme }: { props: Block["props"]; theme: SiteThe
             {props?.originalPrice && (
               <div style={{ display: "flex", justifyContent: "space-between", color: subColor, fontSize: 13, marginTop: 6 }}>
                 <span>Regular Price</span>
-                <span style={{ textDecoration: "line-through" }}>{props.originalPrice}</span>
+                <span style={{ textDecoration: "line-through" }}>{props?.originalPrice}</span>
               </div>
             )}
           </div>
@@ -1206,12 +1206,12 @@ function ProductsBlock({
 }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
+  const bg = props?.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.35)" : "rgba(15,23,42,0.4)";
   const cardBg = isDark ? "rgba(255,255,255,0.03)" : "#ffffff";
   const cardBorder = isDark ? "rgba(255,255,255,0.08)" : "#e2e8f0";
-  const columns = Math.max(1, Math.min(Number(props.columns ?? 3), 4));
+  const columns = Math.max(1, Math.min(Number(props?.columns ?? 3), 4));
 
   // Real checkout: call /api/checkout → redirect to Stripe
   async function handleBuyNow(productId: string) {
@@ -1236,10 +1236,10 @@ function ProductsBlock({
   return (
     <section style={sectionBase(bg)}>
       <div style={container()}>
-        {props?.title && <h2 style={{ ...headingStyle(textColor), textAlign: "center", marginBottom: 16 }}>{props.title}</h2>}
+        {props?.title && <h2 style={{ ...headingStyle(textColor), textAlign: "center", marginBottom: 16 }}>{props?.title}</h2>}
         {props?.subtitle && (
           <p style={{ color: subColor, textAlign: "center", fontSize: 15, maxWidth: 620, margin: "0 auto 40px", lineHeight: 1.7 }}>
-            {props.subtitle}
+            {props?.subtitle}
           </p>
         )}
 
@@ -1348,9 +1348,9 @@ function ProductsBlock({
 
 function DividerBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
-  const bg = props.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
+  const bg = props?.bgColor ?? (isDark ? "#0c0a08" : "#ffffff");
   const lineColor = isDark ? "rgba(255,255,255,0.06)" : "#e8edf2";
-  const height = props.height ?? 48;
+  const height = props?.height ?? 48;
 
   return (
     <section style={{ background: bg, padding: `${height}px 24px`, display: "flex", alignItems: "center" }}>
@@ -1372,11 +1372,11 @@ function DividerBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
 function BookingBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark ? "#07101f" : "#f0fdf4");
+  const bg = props?.bgColor ?? (isDark ? "#07101f" : "#f0fdf4");
   const textColor = isDark ? "#ffffff" : "#0f172a";
-  const userId = props.userId ?? "";
-  const headline = (props.headline as string) ?? "Book a Free Consultation";
-  const subtitle = (props.subtitle as string) ?? "Pick a time that works for you. We'll confirm within minutes.";
+  const userId = props?.userId ?? "";
+  const headline = (props?.headline as string) ?? "Book a Free Consultation";
+  const subtitle = (props?.subtitle as string) ?? "Pick a time that works for you. We'll confirm within minutes.";
 
   const bookingScript = `
     (function(){
@@ -1450,13 +1450,13 @@ function PaymentBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
   return (
     <section style={sectionBase(bg)} id="payment">
       <div style={{ ...container(560), textAlign: "center" }}>
-        {props?.title && <h2 style={{ ...headingStyle(textColor, "clamp(1.5rem,3vw,2.2rem)"), marginBottom: 16 }}>{props.title}</h2>}
+        {props?.title && <h2 style={{ ...headingStyle(textColor, "clamp(1.5rem,3vw,2.2rem)"), marginBottom: 16 }}>{props?.title}</h2>}
         {price && (
           <p style={{ fontSize: "clamp(2rem,5vw,3rem)", fontWeight: 900, color: primary, marginBottom: 8 }}>
             {price}
           </p>
         )}
-        {props?.subtitle && <p style={{ color: isDark ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.5)", fontSize: 16, marginBottom: 32 }}>{props.subtitle}</p>}
+        {props?.subtitle && <p style={{ color: isDark ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.5)", fontSize: 16, marginBottom: 32 }}>{props?.subtitle}</p>}
         <a
           href={paymentUrl}
           target="_blank"
@@ -1485,10 +1485,10 @@ function PaymentBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
 function FooterBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props.bgColor ?? (isDark ? "#020509" : "#0f172a");
+  const bg = props?.bgColor ?? (isDark ? "#020509" : "#0f172a");
   const textColor = isDark ? "rgba(255,255,255,0.3)" : "rgba(255,255,255,0.4)";
-  const links: { label?: string; url?: string }[] = props.links ?? [];
-  const columns: { title?: string; links?: { label?: string; url?: string }[] }[] = props.columns ?? [];
+  const links: { label?: string; url?: string }[] = props?.links ?? [];
+  const columns: { title?: string; links?: { label?: string; url?: string }[] }[] = props?.columns ?? [];
 
   return (
     <footer style={{ background: bg, padding: "60px 24px 32px" }}>
