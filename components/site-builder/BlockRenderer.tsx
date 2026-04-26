@@ -325,10 +325,10 @@ function TestimonialsBlock({ props, theme }: { props: Block["props"]; theme: Sit
   return (
     <section style={sectionBase(bg)}>
       <div style={container()}>
-        {(props.eyebrow || props.title) && (
+        {(props?.eyebrow || props?.title) && (
           <div style={{ textAlign: "center", marginBottom: 60 }}>
-            {props.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
-            {props.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
+            {props?.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
+            {props?.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
             {props?.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 540, margin: "0 auto" }}>{props.subtitle}</p>}
           </div>
         )}
@@ -418,10 +418,10 @@ function PricingBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
   return (
     <section style={sectionBase(bg)}>
       <div style={container()}>
-        {(props.eyebrow || props.title) && (
+        {(props?.eyebrow || props?.title) && (
           <div style={{ textAlign: "center", marginBottom: 60 }}>
-            {props.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
-            {props.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
+            {props?.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
+            {props?.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
             {props?.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 520, margin: "0 auto" }}>{props.subtitle}</p>}
           </div>
         )}
@@ -517,10 +517,10 @@ function FAQBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme })
   return (
     <section style={sectionBase(bg)}>
       <div style={{ ...container(780) }}>
-        {(props.eyebrow || props.title) && (
+        {(props?.eyebrow || props?.title) && (
           <div style={{ textAlign: "center", marginBottom: 56 }}>
-            {props.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
-            {props.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
+            {props?.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
+            {props?.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
             {props?.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 520, margin: "0 auto" }}>{props.subtitle}</p>}
           </div>
         )}
@@ -591,7 +591,7 @@ function CTABlock({ props, theme }: { props: Block["props"]; theme: SiteTheme })
         pointerEvents: "none",
       }} />
       <div style={{ ...container(720), position: "relative" }}>
-        {props.eyebrow && <p style={{ ...eyebrowStyle("rgba(255,255,255,0.7)"), marginBottom: 16 }}>{props.eyebrow}</p>}
+        {props?.eyebrow && <p style={{ ...eyebrowStyle("rgba(255,255,255,0.7)"), marginBottom: 16 }}>{props.eyebrow}</p>}
         <h2 style={{ ...headingStyle("#ffffff", "clamp(2rem,4.5vw,3.25rem)"), marginBottom: 20 }}>
           {props.headline || "Ready to get started?"}
         </h2>
@@ -744,10 +744,10 @@ function ProcessBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
   return (
     <section style={sectionBase(bg)}>
       <div style={container()}>
-        {(props.eyebrow || props.title) && (
+        {(props?.eyebrow || props?.title) && (
           <div style={{ textAlign: "center", marginBottom: 60 }}>
-            {props.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
-            {props.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
+            {props?.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
+            {props?.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
             {props?.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 520, margin: "0 auto" }}>{props.subtitle}</p>}
           </div>
         )}
@@ -953,7 +953,7 @@ function VideoBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme 
   return (
     <section style={sectionBase(bg, "72px 24px")}>
       <div style={container(900)}>
-        {props.title && <h2 style={{ ...headingStyle(isDark ? "#fff" : "#0f172a"), textAlign: "center", marginBottom: 32 }}>{props.title}</h2>}
+        {props?.title && <h2 style={{ ...headingStyle(isDark ? "#fff" : "#0f172a"), textAlign: "center", marginBottom: 32 }}>{props.title}</h2>}
         {props.url ? (
           <div style={{ position: "relative", paddingTop: "56.25%", borderRadius: 20, overflow: "hidden", boxShadow: `0 32px 64px rgba(0,0,0,0.4)` }}>
             <iframe src={getEmbedUrl(props.url as string)}
@@ -1062,10 +1062,10 @@ function FormBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
   return (
     <section style={sectionBase(bg)}>
       <div style={{ ...container(560) }}>
-        {(props.eyebrow || props.title) && (
+        {(props?.eyebrow || props?.title) && (
           <div style={{ textAlign: "center", marginBottom: 40 }}>
-            {props.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
-            {props.title && <h2 style={{ ...headingStyle(textColor, "clamp(1.5rem,3vw,2rem)"), marginBottom: 12 }}>{props.title}</h2>}
+            {props?.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
+            {props?.title && <h2 style={{ ...headingStyle(textColor, "clamp(1.5rem,3vw,2rem)"), marginBottom: 12 }}>{props.title}</h2>}
             {props?.subtitle && <p style={{ color: subColor, fontSize: 15, lineHeight: 1.7 }}>{props.subtitle}</p>}
           </div>
         )}
@@ -1236,7 +1236,7 @@ function ProductsBlock({
   return (
     <section style={sectionBase(bg)}>
       <div style={container()}>
-        {props.title && <h2 style={{ ...headingStyle(textColor), textAlign: "center", marginBottom: 16 }}>{props.title}</h2>}
+        {props?.title && <h2 style={{ ...headingStyle(textColor), textAlign: "center", marginBottom: 16 }}>{props.title}</h2>}
         {props?.subtitle && (
           <p style={{ color: subColor, textAlign: "center", fontSize: 15, maxWidth: 620, margin: "0 auto 40px", lineHeight: 1.7 }}>
             {props.subtitle}
