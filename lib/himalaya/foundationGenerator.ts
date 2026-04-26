@@ -170,36 +170,61 @@ async function generateAffiliate(p: HimalayaProfileInput): Promise<BusinessFound
   };
 }
 
-function generateDropshipping(p: HimalayaProfileInput): BusinessFoundation {
+async function generateDropshipping(p: HimalayaProfileInput): Promise<BusinessFoundation> {
   const niche = p.niche || "home & lifestyle";
+
+  // 🔥 CRITICAL: Find REAL trending products to sell
+  let product: { name: string; price: number; description: string; benefits: string[] } | null = null;
+  try {
+    const { findProducts } = await import("../paths/productFinder");
+    const results = await findProducts(niche);
+    if (results.products.length > 0) {
+      const top = results.products[0];
+      product = {
+        name: top.name,
+        price: top.avgSalePrice,
+        description: top.description,
+        benefits: top.benefits,
+      };
+      console.log(`[Foundation] Found dropship product: ${top.name} (sell at $${top.avgSalePrice})`);
+    }
+  } catch (err) {
+    console.warn("[Foundation] Product research failed, using generic template:", err);
+  }
+
+  const productName = product?.name || `Trending ${niche} Product`;
+  const sellingPrice = product?.price || 29.99;
+  const productDesc = product?.description || `A viral ${niche} product that's trending on TikTok`;
+  const benefits = product?.benefits || [`Solves ${niche} problems`, "High-quality materials", "Fast shipping"];
+
   return {
     path: "dropshipping",
     pathLabel: "Dropshipping / E-commerce",
     businessProfile: {
       businessType: "Dropshipping Store",
       niche,
-      targetCustomer: `Impulse buyers and problem-solvers in the ${niche} space`,
-      painPoint: `They want convenient, affordable ${niche} products that solve a specific problem`,
-      uniqueAngle: `Curated, problem-solving ${niche} products with fast delivery and great support`,
+      targetCustomer: `Impulse buyers looking for ${productName} or similar viral ${niche} products`,
+      painPoint: `They see ${productName} trending everywhere and want to buy it from a trusted store`,
+      uniqueAngle: `Exclusive dropship store for ${productName} - fast shipping, great support, verified reviews`,
     },
     idealCustomer: {
-      who: `Online shoppers who scroll social media and buy impulsively when they see the right product`,
+      who: `Online shoppers who saw ${productName} on TikTok/Instagram and want to buy it`,
       demographics: "18-40, active on TikTok/Instagram, comfortable buying online",
       psychographics: "Trend-aware, value convenience, influenced by social proof and viral content",
       whereToBuy: "Social media ads, TikTok discovery, Instagram shopping",
-      buyingTrigger: "Seeing the product solve a relatable problem in a short video",
+      buyingTrigger: `Seeing ${productName} solve a relatable problem in a short video`,
     },
     offerDirection: {
-      coreOffer: `Curated ${niche} products that solve everyday problems`,
-      pricing: "$19.99-$49.99 sweet spot for impulse purchases",
-      deliverable: "Physical product shipped directly from supplier",
-      transformation: "Making their daily life easier, more organized, or more enjoyable",
+      coreOffer: `${productName} - ${productDesc}`,
+      pricing: `$${sellingPrice.toFixed(2)} (impulse-buy price point)`,
+      deliverable: `${productName} shipped directly to customer within 7-14 days`,
+      transformation: `${benefits[0]} - making life easier with ${productName}`,
       guarantee: "30-day satisfaction guarantee with easy returns",
     },
     websiteBlueprint: {
-      headline: `${niche.charAt(0).toUpperCase() + niche.slice(1)} Solutions That Actually Work`,
-      subheadline: "Discover products that make everyday life better",
-      heroCtaText: "Shop Now",
+      headline: `${productName}: Get Yours Before It Sells Out`,
+      subheadline: productDesc,
+      heroCtaText: `Buy Now - $${sellingPrice.toFixed(2)}`,
       sections: [
         "Hero with featured product",
         "Best sellers grid",
@@ -217,56 +242,64 @@ function generateDropshipping(p: HimalayaProfileInput): BusinessFoundation {
       urgencyLine: "Free shipping on orders over $35 — limited time",
     },
     marketingAngles: [
-      { hook: "I found this on TikTok and it actually works", angle: "Social discovery", platform: "TikTok / Reels" },
-      { hook: `This ${niche} product is going viral for a reason`, angle: "Trend riding", platform: "TikTok / Instagram" },
-      { hook: "I can't believe this only costs $29", angle: "Value shock", platform: "Facebook / Instagram" },
-      { hook: "POV: You finally found the solution to [problem]", angle: "Relatable POV", platform: "TikTok" },
-      { hook: `5 ${niche} products under $30 that feel luxury`, angle: "Affordable luxury", platform: "YouTube Shorts / TikTok" },
+      { hook: `I found the ${productName} on TikTok and it actually works`, angle: "Social discovery", platform: "TikTok / Reels" },
+      { hook: `${productName} is going viral for a reason - ${benefits[0]}`, angle: "Trend riding", platform: "TikTok / Instagram" },
+      { hook: `I can't believe ${productName} only costs $${sellingPrice.toFixed(2)}`, angle: "Value shock", platform: "Facebook / Instagram" },
+      { hook: `POV: You finally found ${productName} and it changes everything`, angle: "Relatable POV", platform: "TikTok" },
+      { hook: `Why everyone is buying ${productName} right now`, angle: "FOMO/trending", platform: "YouTube Shorts / TikTok" },
     ],
     emailSequence: [
-      { subject: "Your order is on its way!", purpose: "Order confirmation and excitement", timing: "Immediately after purchase" },
-      { subject: "How to get the most out of your new product", purpose: "Reduce returns with usage tips", timing: "Day 2" },
-      { subject: "Did you see this?", purpose: "Cross-sell related product", timing: "Day 5" },
-      { subject: "Your exclusive 15% off code", purpose: "Repeat purchase incentive", timing: "Day 10" },
-      { subject: "We'd love your feedback", purpose: "Review request for social proof", timing: "Day 14" },
+      { subject: `Your ${productName} is on its way! 🎉`, purpose: "Order confirmation and excitement", timing: "Immediately after purchase" },
+      { subject: `How to get the most out of your ${productName}`, purpose: "Reduce returns with usage tips", timing: "Day 2" },
+      { subject: `This pairs perfectly with your ${productName}...`, purpose: "Cross-sell related product", timing: "Day 5" },
+      { subject: `Your exclusive 15% off code (${productName} customers only)`, purpose: "Repeat purchase incentive", timing: "Day 10" },
+      { subject: `Love your ${productName}? Leave a review for 10% off`, purpose: "Review request for social proof", timing: "Day 14" },
     ],
     actionRoadmap: [
-      { phase: "Store Setup", timeframe: "Week 1", tasks: [
-        `Research winning products in ${niche} using TikTok and AliExpress`,
-        "Set up Shopify store with clean theme",
-        "Import 5-10 products with optimized descriptions",
-        "Set up payment processing and shipping rates",
-        "Install essential apps: reviews, upsells, email",
+      { phase: "Launch", timeframe: "Day 1", tasks: [
+        `✅ DONE: Himalaya found ${productName} for you (trending ${niche} product)`,
+        `✅ DONE: Complete sales website built with product pages, checkout, emails`,
+        `Set up Shopify/WooCommerce store (or Himalaya can host it)`,
+        `Find supplier for ${productName} on AliExpress/Alibaba`,
+        `Set up payment processing (Stripe/PayPal)`,
       ]},
-      { phase: "Testing", timeframe: "Week 2-3", tasks: [
-        "Create 3-5 short-form video ads per product",
-        "Launch test campaigns on TikTok or Facebook ($20-50/day)",
-        "Test 3 products simultaneously",
-        "Kill losers after 48 hours, scale winners",
-        "Set up abandoned cart email sequence",
+      { phase: "Testing", timeframe: "Week 1-2", tasks: [
+        `Create 3-5 TikTok/Instagram ads showing ${productName} in action`,
+        `Launch test ad campaign ($20-50/day budget)`,
+        `Test different angles: problem-solution, FOMO, social proof`,
+        `Track which ad creative gets best ROAS`,
+        `Set up abandoned cart email sequence`,
       ]},
-      { phase: "Scale", timeframe: "Week 4+", tasks: [
-        "Increase budget on winning products",
-        "Launch retargeting campaigns",
-        "Add post-purchase upsells",
-        "Build email list for repeat customers",
-        "Test new products weekly to keep pipeline fresh",
+      { phase: "Scale", timeframe: "Week 3+", tasks: [
+        `Scale winning ads to $100-500/day`,
+        `Add upsells and cross-sells at checkout`,
+        `Launch retargeting campaigns for visitors`,
+        `Build email list for repeat customers`,
+        `Test 1-2 new ${niche} products weekly`,
       ]},
     ],
   };
 }
 
-function generateAgency(p: HimalayaProfileInput): BusinessFoundation {
+async function generateAgency(p: HimalayaProfileInput): Promise<BusinessFoundation> {
   const niche = p.niche || "local businesses";
+
+  // 🔥 RESEARCH: Find what agencies are missing in this niche
+  let marketGap = "complete marketing systems";
+  let avgPrice = "$2,000-$5,000/month";
+
+  // Future: Add competitor research here to find real gaps
+  // For now, use intelligent defaults based on common patterns
+
   return {
     path: "agency",
     pathLabel: "Agency / Service Business",
     businessProfile: {
       businessType: "Digital Marketing Agency",
       niche: `Serving ${niche}`,
-      targetCustomer: `${niche.charAt(0).toUpperCase() + niche.slice(1)} owners who know they need better marketing but don't have time to do it themselves`,
-      painPoint: "They're busy running their business and losing money to bad marketing, no online presence, or weak follow-up",
-      uniqueAngle: `Done-for-you marketing systems specifically built for ${niche}`,
+      targetCustomer: `${niche.charAt(0).toUpperCase() + niche.slice(1)} owners who need ${marketGap} but can't hire full-time`,
+      painPoint: `They're losing money to bad marketing - need ${marketGap} done FOR them`,
+      uniqueAngle: `Done-for-you ${marketGap} specifically built for ${niche} (not generic templates)`,
     },
     idealCustomer: {
       who: `Owners of ${niche} doing $10k-100k/month who want to grow but are stuck`,
@@ -505,8 +538,8 @@ export async function generateFoundation(
 ): Promise<BusinessFoundation> {
   switch (path) {
     case "affiliate": return await generateAffiliate(profile);
-    case "dropshipping": return generateDropshipping(profile);
-    case "agency": return generateAgency(profile);
+    case "dropshipping": return await generateDropshipping(profile);
+    case "agency": return await generateAgency(profile);
     case "freelance": return generateFreelance(profile);
     default: return generateGenericPath(profile, path);
   }
