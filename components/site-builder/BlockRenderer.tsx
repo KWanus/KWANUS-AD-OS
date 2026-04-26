@@ -127,10 +127,10 @@ function HeroBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
         )}
 
         <h1 style={{ ...headingStyle(textColor, "clamp(2.2rem,5.5vw,4rem)"), maxWidth: 800, textAlign: align as "center" | "left", marginBottom: 24 }}>
-          {props.headline || "Your Headline Here"}
+          {props?.headline || "Your Headline Here"}
         </h1>
 
-        {props.subheadline && (
+        {props?.subheadline && (
           <p style={{ color: subColor, fontSize: "clamp(1rem,2vw,1.2rem)", maxWidth: 600, lineHeight: 1.7, marginBottom: 40, textAlign: align as "center" | "left" }}>
             {props.subheadline}
           </p>
@@ -150,7 +150,7 @@ function HeroBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
               {props.buttonText}
               <span style={{ fontSize: 16 }}>→</span>
             </a>
-            {props.secondaryButtonText && (
+            {props?.secondaryButtonText && (
               <a href={props.secondaryButtonUrl ?? "#"} style={{
                 display: "inline-flex", alignItems: "center", gap: 8,
                 padding: "15px 34px", borderRadius: 14,
@@ -491,7 +491,7 @@ function PricingBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
             </div>
           ))}
         </div>
-        {props.guarantee && (
+        {props?.guarantee && (
           <p style={{ color: subColor, textAlign: "center", fontSize: 13, marginTop: 32 }}>
             🔒 {props.guarantee}
           </p>
@@ -553,10 +553,10 @@ function FAQBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme })
             </details>
           ))}
         </div>
-        {props.ctaText && (
+        {props?.ctaText && (
           <div style={{ textAlign: "center", marginTop: 48 }}>
             <p style={{ color: subColor, fontSize: 15, marginBottom: 16 }}>{props.ctaText}</p>
-            {props.ctaButtonText && (
+            {props?.ctaButtonText && (
               <a href={props.ctaButtonUrl ?? "#"} style={{
                 display: "inline-flex", alignItems: "center", gap: 8,
                 padding: "13px 28px", borderRadius: 12,
@@ -593,9 +593,9 @@ function CTABlock({ props, theme }: { props: Block["props"]; theme: SiteTheme })
       <div style={{ ...container(720), position: "relative" }}>
         {props?.eyebrow && <p style={{ ...eyebrowStyle("rgba(255,255,255,0.7)"), marginBottom: 16 }}>{props.eyebrow}</p>}
         <h2 style={{ ...headingStyle("#ffffff", "clamp(2rem,4.5vw,3.25rem)"), marginBottom: 20 }}>
-          {props.headline || "Ready to get started?"}
+          {props?.headline || "Ready to get started?"}
         </h2>
-        {props.subheadline && (
+        {props?.subheadline && (
           <p style={{ color: "rgba(255,255,255,0.8)", fontSize: 18, lineHeight: 1.7, marginBottom: 40, maxWidth: 560, margin: "0 auto 40px" }}>
             {props.subheadline}
           </p>
@@ -611,7 +611,7 @@ function CTABlock({ props, theme }: { props: Block["props"]; theme: SiteTheme })
             }}>
               {props.buttonText} <span style={{ fontSize: 18 }}>→</span>
             </a>
-            {props.secondaryButtonText && (
+            {props?.secondaryButtonText && (
               <a href={props.secondaryButtonUrl ?? "#"} style={{
                 display: "inline-flex", alignItems: "center", gap: 8,
                 padding: "16px 40px", borderRadius: 14,
@@ -669,10 +669,10 @@ function GuaranteeBlock({ props, theme }: { props: Block["props"]; theme: SiteTh
           </div>
           <div>
             <h3 style={{ color: textColor, fontSize: 22, fontWeight: 900, marginBottom: 10 }}>
-              {props.headline ?? "100% Money-Back Guarantee"}
+              {props?.headline ?? "100% Money-Back Guarantee"}
             </h3>
             <p style={{ color: subColor, fontSize: 15, lineHeight: 1.75, margin: 0 }}>
-              {props.body ?? "If you're not completely satisfied within 30 days, we'll refund every penny. No questions asked. No hassle. We stand behind our work 100%."}
+              {props?.body ?? "If you're not completely satisfied within 30 days, we'll refund every penny. No questions asked. No hassle. We stand behind our work 100%."}
             </p>
           </div>
         </div>
@@ -809,7 +809,7 @@ function BeforeAfterBlock({ props, theme }: { props: Block["props"]; theme: Site
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
               <span style={{ fontSize: 20 }}>❌</span>
               <span style={{ color: "#ef4444", fontWeight: 800, fontSize: 14, textTransform: "uppercase", letterSpacing: "0.1em" }}>
-                {props.beforeLabel ?? "Before"}
+                {props?.beforeLabel ?? "Before"}
               </span>
             </div>
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
@@ -829,7 +829,7 @@ function BeforeAfterBlock({ props, theme }: { props: Block["props"]; theme: Site
             <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 20 }}>
               <span style={{ fontSize: 20 }}>✅</span>
               <span style={{ color: primary, fontWeight: 800, fontSize: 14, textTransform: "uppercase", letterSpacing: "0.1em" }}>
-                {props.afterLabel ?? "After"}
+                {props?.afterLabel ?? "After"}
               </span>
             </div>
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: 10 }}>
@@ -861,9 +861,9 @@ function UrgencyBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
       display: "flex", alignItems: "center", justifyContent: "center", gap: 24,
       flexWrap: "wrap",
     }}>
-      {props.icon && <span style={{ fontSize: 18 }}>{props.icon}</span>}
+      {props?.icon && <span style={{ fontSize: 18 }}>{props.icon}</span>}
       <span style={{ color: "#ffffff", fontWeight: 800, fontSize: 14, textAlign: "center" }}>
-        {props.text ?? "⚡ Limited Time Offer — Act Now!"}
+        {props?.text ?? "⚡ Limited Time Offer — Act Now!"}
       </span>
       {items.map((item: string, i: number) => (
         <span key={i} style={{ color: "rgba(255,255,255,0.8)", fontSize: 13, fontWeight: 600 }}>· {item}</span>
@@ -911,15 +911,15 @@ function ImageBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme 
   return (
     <section style={sectionBase(bg, "40px 24px")}>
       <div style={{ maxWidth: props.fullWidth ? "100%" : 1100, margin: "0 auto" }}>
-        {props.src ? (
+        {props?.src ? (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={props.src as string} alt={(props.alt as string) ?? ""} style={{ width: "100%", borderRadius: props.rounded ? 20 : 0, display: "block" }} />
+          <img src={props?.src as string} alt={(props.alt as string) ?? ""} style={{ width: "100%", borderRadius: props.rounded ? 20 : 0, display: "block" }} />
         ) : (
           <div style={{ width: "100%", aspectRatio: "16/9", background: isDark ? "rgba(255,255,255,0.04)" : "#f1f5f9", borderRadius: 20, display: "flex", alignItems: "center", justifyContent: "center" }}>
             <span style={{ color: textColor, fontSize: 14 }}>Add an image URL in the editor</span>
           </div>
         )}
-        {props.caption && <p style={{ color: textColor, fontSize: 13, textAlign: "center", marginTop: 12 }}>{props.caption}</p>}
+        {props?.caption && <p style={{ color: textColor, fontSize: 13, textAlign: "center", marginTop: 12 }}>{props.caption}</p>}
       </div>
     </section>
   );
@@ -954,7 +954,7 @@ function VideoBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme 
     <section style={sectionBase(bg, "72px 24px")}>
       <div style={container(900)}>
         {props?.title && <h2 style={{ ...headingStyle(isDark ? "#fff" : "#0f172a"), textAlign: "center", marginBottom: 32 }}>{props.title}</h2>}
-        {props.url ? (
+        {props?.url ? (
           <div style={{ position: "relative", paddingTop: "56.25%", borderRadius: 20, overflow: "hidden", boxShadow: `0 32px 64px rgba(0,0,0,0.4)` }}>
             <iframe src={getEmbedUrl(props.url as string)}
               style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100%", border: "none" }}
@@ -969,7 +969,7 @@ function VideoBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme 
             </div>
           </div>
         )}
-        {props.caption && <p style={{ color: isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)", textAlign: "center", fontSize: 13, marginTop: 16 }}>{props.caption}</p>}
+        {props?.caption && <p style={{ color: isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.4)", textAlign: "center", fontSize: 13, marginTop: 16 }}>{props.caption}</p>}
       </div>
     </section>
   );
@@ -1096,7 +1096,7 @@ function FormBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
               {props?.buttonText ?? "Submit"}
             </button>
             <p className="form-message" style={{ color: subColor, fontSize: 14, textAlign: "center", margin: "8px 0 0", minHeight: 20 }}></p>
-            {props.privacyText && (
+            {props?.privacyText && (
               <p style={{ color: subColor, fontSize: 12, textAlign: "center", margin: "4px 0 0" }}>{props.privacyText}</p>
             )}
           </form>
@@ -1138,10 +1138,10 @@ function CheckoutBlock({ props, theme }: { props: Block["props"]; theme: SiteThe
           {/* Order summary */}
           <div style={{ background: isDark ? "rgba(255,255,255,0.03)" : "#f8fafc", borderRadius: 14, padding: "20px", marginBottom: 20, border: `1px solid ${borderColor}` }}>
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", color: textColor, fontWeight: 700, fontSize: 15 }}>
-              <span>{props.productName ?? "Digital Product"}</span>
-              <span>{props.price ?? "$97.00"}</span>
+              <span>{props?.productName ?? "Digital Product"}</span>
+              <span>{props?.price ?? "$97.00"}</span>
             </div>
-            {props.originalPrice && (
+            {props?.originalPrice && (
               <div style={{ display: "flex", justifyContent: "space-between", color: subColor, fontSize: 13, marginTop: 6 }}>
                 <span>Regular Price</span>
                 <span style={{ textDecoration: "line-through" }}>{props.originalPrice}</span>
@@ -1150,7 +1150,7 @@ function CheckoutBlock({ props, theme }: { props: Block["props"]; theme: SiteThe
           </div>
 
           {/* Order bump */}
-          {props.showOrderBump && (
+          {props?.showOrderBump && (
             <div style={{
               background: `${primary}10`, border: `2px dashed ${primary}60`,
               borderRadius: 14, padding: "20px", marginBottom: 20, cursor: "pointer",
@@ -1159,9 +1159,9 @@ function CheckoutBlock({ props, theme }: { props: Block["props"]; theme: SiteThe
                 <input type="checkbox" style={{ width: 18, height: 18, marginTop: 2, accentColor: primary, flexShrink: 0 }} />
                 <div>
                   <p style={{ color: primary, fontWeight: 800, fontSize: 14, marginBottom: 4 }}>
-                    ⚡ {props.bumpHeadline ?? "YES! Add the VIP Bonus — Only $19 More"}
+                    ⚡ {props?.bumpHeadline ?? "YES! Add the VIP Bonus — Only $19 More"}
                   </p>
-                  <p style={{ color: subColor, fontSize: 13, lineHeight: 1.6 }}>{props.bumpText ?? "Get exclusive access to the advanced training modules. One-time offer."}</p>
+                  <p style={{ color: subColor, fontSize: 13, lineHeight: 1.6 }}>{props?.bumpText ?? "Get exclusive access to the advanced training modules. One-time offer."}</p>
                 </div>
               </div>
             </div>
@@ -1354,7 +1354,7 @@ function DividerBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
 
   return (
     <section style={{ background: bg, padding: `${height}px 24px`, display: "flex", alignItems: "center" }}>
-      {props.showLine && <div style={{ width: "100%", maxWidth: 1100, margin: "0 auto", height: 1, background: lineColor }} />}
+      {props?.showLine && <div style={{ width: "100%", maxWidth: 1100, margin: "0 auto", height: 1, background: lineColor }} />}
     </section>
   );
 }
@@ -1515,9 +1515,9 @@ function FooterBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme
           </div>
         )}
         <p style={{ color: textColor, fontSize: 13, textAlign: "center" }}>
-          {props.copyright ?? `© ${new Date().getFullYear()} All rights reserved.`}
+          {props?.copyright ?? `© ${new Date().getFullYear()} All rights reserved.`}
         </p>
-        {props.showPoweredBy !== false && (
+        {props?.showPoweredBy !== false && (
           <p style={{ color: "rgba(255,255,255,0.1)", fontSize: 11, textAlign: "center", marginTop: 8 }}>Built with Himalaya</p>
         )}
       </div>
