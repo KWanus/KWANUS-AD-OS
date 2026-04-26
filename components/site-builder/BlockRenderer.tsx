@@ -1050,10 +1050,10 @@ function FormBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
           } else {
             if(msg){msg.textContent='Something went wrong. Please try again.';msg.style.color='#ef4444';}
           }
-          if(btn){btn.disabled=false;btn.textContent='${(props.buttonText ?? "Submit").replace(/'/g, "\\'")}';}
+          if(btn){btn.disabled=false;btn.textContent='${(props?.buttonText ?? "Submit").replace(/'/g, "\\'")}';}
         }).catch(function(){
           if(msg){msg.textContent='Network error. Please try again.';msg.style.color='#ef4444';}
-          if(btn){btn.disabled=false;btn.textContent='${(props.buttonText ?? "Submit").replace(/'/g, "\\'")}';}
+          if(btn){btn.disabled=false;btn.textContent='${(props?.buttonText ?? "Submit").replace(/'/g, "\\'")}';}
         });
       });
     })();
