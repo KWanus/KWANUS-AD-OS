@@ -51,7 +51,92 @@ export type BusinessFoundation = {
     timeframe: string;
     tasks: string[];
   }[];
+  adCreatives: {
+    platform: string;
+    format: string;
+    hook: string;
+    visualStyle: string;
+    imagePrompt: string;
+    videoScript?: {
+      duration: string;
+      hook: string;
+      problem: string;
+      solution: string;
+      cta: string;
+    };
+  }[];
 };
+
+// ---------------------------------------------------------------------------
+// Ad Creative Generation Helper
+// ---------------------------------------------------------------------------
+
+function generateAdCreatives(params: {
+  productName: string;
+  niche: string;
+  benefits: string[];
+  platform: string;
+  hook: string;
+  angle: string;
+}): {
+  platform: string;
+  format: string;
+  hook: string;
+  visualStyle: string;
+  imagePrompt: string;
+  videoScript?: {
+    duration: string;
+    hook: string;
+    problem: string;
+    solution: string;
+    cta: string;
+  };
+} {
+  const { productName, niche, benefits, platform, hook, angle } = params;
+  const mainBenefit = benefits[0] || `Solves ${niche} problems`;
+
+  // Platform-specific formats and styles
+  const formats: Record<string, { format: string; visualStyle: string; ar: string }> = {
+    "TikTok": { format: "vertical-video", visualStyle: "UGC style, authentic, relatable", ar: "9:16" },
+    "Instagram": { format: "square-video", visualStyle: "Aesthetic, clean, modern", ar: "1:1" },
+    "Facebook": { format: "static-image", visualStyle: "Lifestyle photography, aspirational", ar: "4:5" },
+    "YouTube": { format: "horizontal-video", visualStyle: "Professional, polished", ar: "16:9" },
+  };
+
+  const platformKey = Object.keys(formats).find(k => platform.includes(k)) || "TikTok";
+  const { format, visualStyle, ar } = formats[platformKey];
+
+  // Generate Midjourney/DALL-E prompt
+  const imagePrompt = `${visualStyle} product photography of ${productName}, ${mainBenefit}, modern setting, natural lighting, --ar ${ar} --style raw --v 6`;
+
+  // Generate video script (for video formats)
+  let videoScript: {
+    duration: string;
+    hook: string;
+    problem: string;
+    solution: string;
+    cta: string;
+  } | undefined;
+
+  if (format.includes("video")) {
+    videoScript = {
+      duration: "15-30 seconds",
+      hook: `0-3s: ${hook}`,
+      problem: `3-10s: Show the ${niche} problem people face`,
+      solution: `10-25s: Demonstrate ${productName} solving it - ${mainBenefit}`,
+      cta: `25-30s: "Link in bio to get ${productName}" with product shot`,
+    };
+  }
+
+  return {
+    platform: platformKey,
+    format,
+    hook,
+    visualStyle,
+    imagePrompt,
+    videoScript,
+  };
+}
 
 // ---------------------------------------------------------------------------
 // Path-specific generators
@@ -167,6 +252,40 @@ async function generateAffiliate(p: HimalayaProfileInput): Promise<BusinessFound
         `Scale winning ads to $100-500/day ad spend`,
       ]},
     ],
+    adCreatives: [
+      generateAdCreatives({
+        productName,
+        niche,
+        benefits: [productDesc],
+        platform: "TikTok",
+        hook: `${productName}: My honest review after 30 days`,
+        angle: "Personal experience UGC",
+      }),
+      generateAdCreatives({
+        productName,
+        niche,
+        benefits: [productDesc],
+        platform: "Instagram",
+        hook: `Is ${productName} worth it? Real results revealed`,
+        angle: "Results showcase",
+      }),
+      generateAdCreatives({
+        productName,
+        niche,
+        benefits: [productDesc],
+        platform: "Facebook",
+        hook: `The truth about ${productName} that nobody tells you`,
+        angle: "Contrarian insight",
+      }),
+      generateAdCreatives({
+        productName,
+        niche,
+        benefits: [productDesc],
+        platform: "YouTube",
+        hook: `${productName} vs competitors: Which one actually works?`,
+        angle: "Comparison review",
+      }),
+    ],
   };
 }
 
@@ -277,6 +396,40 @@ async function generateDropshipping(p: HimalayaProfileInput): Promise<BusinessFo
         `Build email list for repeat customers`,
         `Test 1-2 new ${niche} products weekly`,
       ]},
+    ],
+    adCreatives: [
+      generateAdCreatives({
+        productName,
+        niche,
+        benefits,
+        platform: "TikTok",
+        hook: `I found the ${productName} on TikTok and it actually works`,
+        angle: "Social discovery UGC",
+      }),
+      generateAdCreatives({
+        productName,
+        niche,
+        benefits,
+        platform: "Instagram",
+        hook: `${productName} is going viral for a reason - ${benefits[0]}`,
+        angle: "Trend riding",
+      }),
+      generateAdCreatives({
+        productName,
+        niche,
+        benefits,
+        platform: "Facebook",
+        hook: `I can't believe ${productName} only costs $${sellingPrice.toFixed(2)}`,
+        angle: "Value shock",
+      }),
+      generateAdCreatives({
+        productName,
+        niche,
+        benefits,
+        platform: "TikTok",
+        hook: `POV: You finally found ${productName} and it changes everything`,
+        angle: "Relatable transformation",
+      }),
     ],
   };
 }
