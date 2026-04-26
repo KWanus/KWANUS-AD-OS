@@ -97,6 +97,12 @@ async function generateWithGroq(input: AIInput): Promise<AIResult> {
   const key = process.env.GROQ_API_KEY;
   if (!key) return { ok: false, content: "", provider: "groq", model: "none", error: "No key" };
 
+  // Import rate limiter
+  const { rateLimit } = await import("@/lib/utils/rateLimiter");
+
+  // RATE LIMIT - Enforce 2-second minimum delay to avoid bans
+  await rateLimit("groq");
+
   try {
     const res = await fetch("https://api.groq.com/openai/v1/chat/completions", {
       method: "POST",
@@ -114,6 +120,19 @@ async function generateWithGroq(input: AIInput): Promise<AIResult> {
         temperature: input.temperature ?? 0.8,
       }),
     });
+
+    // Handle rate limiting (429)
+    if (res.status === 429) {
+      console.warn("[Groq] Rate limited (429) — will retry with exponential backoff");
+      return { ok: false, content: "", provider: "groq", model: "llama-3.3-70b", error: "Rate limited (429)" };
+    }
+
+    // Handle banned account or invalid key (400)
+    if (res.status === 400) {
+      const errorData = await res.json().catch(() => null);
+      console.error("[Groq] HTTP 400 — Account may be banned or API key invalid:", errorData);
+      return { ok: false, content: "", provider: "groq", model: "llama-3.3-70b", error: "Banned or invalid key (400)" };
+    }
 
     if (!res.ok) return { ok: false, content: "", provider: "groq", model: "llama-3.3-70b", error: `HTTP ${res.status}` };
 
