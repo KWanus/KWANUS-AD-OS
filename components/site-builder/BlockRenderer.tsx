@@ -137,7 +137,7 @@ function HeroBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
         )}
 
         {/* CTAs */}
-        {props.buttonText && (
+        {props?.buttonText && (
           <div style={{ display: "flex", gap: 14, justifyContent: align === "center" ? "center" : "flex-start", flexWrap: "wrap", marginBottom: trustItems.length ? 48 : 0 }}>
             <a href={props.buttonUrl ?? "#"} style={{
               display: "inline-flex", alignItems: "center", gap: 8,
@@ -166,7 +166,7 @@ function HeroBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
 
         {/* Trust items */}
         {trustItems.length > 0 && (
-          <div style={{ display: "flex", gap: 20, flexWrap: "wrap", justifyContent: align === "center" ? "center" : "flex-start", marginTop: props.buttonText ? 0 : 0 }}>
+          <div style={{ display: "flex", gap: 20, flexWrap: "wrap", justifyContent: align === "center" ? "center" : "flex-start", marginTop: props?.buttonText ? 0 : 0 }}>
             {trustItems.map((item: string, i: number) => (
               <span key={i} style={{ display: "flex", alignItems: "center", gap: 6, color: isDark ? "rgba(255,255,255,0.4)" : "rgba(0,0,0,0.45)", fontSize: 12, fontWeight: 600 }}>
                 <span style={{ color: "#22c55e" }}>✓</span> {item}
@@ -600,7 +600,7 @@ function CTABlock({ props, theme }: { props: Block["props"]; theme: SiteTheme })
             {props.subheadline}
           </p>
         )}
-        {props.buttonText && (
+        {props?.buttonText && (
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap", marginBottom: 28 }}>
             <a href={props.buttonUrl ?? "#"} style={{
               display: "inline-flex", alignItems: "center", gap: 8,
@@ -868,7 +868,7 @@ function UrgencyBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
       {items.map((item: string, i: number) => (
         <span key={i} style={{ color: "rgba(255,255,255,0.8)", fontSize: 13, fontWeight: 600 }}>· {item}</span>
       ))}
-      {props.buttonText && (
+      {props?.buttonText && (
         <a href={props.buttonUrl ?? "#"} style={{
           padding: "6px 16px", borderRadius: 8,
           background: "#ffffff", color: "#dc2626",
@@ -1093,7 +1093,7 @@ function FormBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
               color: "#fff", fontWeight: 800, fontSize: 16, cursor: "pointer",
               boxShadow: `0 8px 24px ${primary}40`, marginTop: 8,
             }}>
-              {props.buttonText ?? "Submit"}
+              {props?.buttonText ?? "Submit"}
             </button>
             <p className="form-message" style={{ color: subColor, fontSize: 14, textAlign: "center", margin: "8px 0 0", minHeight: 20 }}></p>
             {props.privacyText && (
@@ -1173,7 +1173,7 @@ function CheckoutBlock({ props, theme }: { props: Block["props"]; theme: SiteThe
             color: "#fff", fontWeight: 900, fontSize: 17, cursor: "pointer",
             boxShadow: `0 8px 32px ${primary}50`,
           }}>
-            {props.buttonText ?? "Complete Purchase →"}
+            {props?.buttonText ?? "Complete Purchase →"}
           </button>
 
           <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 20, marginTop: 20, flexWrap: "wrap" }}>
@@ -1329,7 +1329,7 @@ function ProductsBlock({
                         boxShadow: `0 12px 30px ${primary}33`,
                       }}
                     >
-                      {props.buttonText ?? "Buy Now"}
+                      {props?.buttonText ?? "Buy Now"}
                     </button>
                   </div>
                 </article>
