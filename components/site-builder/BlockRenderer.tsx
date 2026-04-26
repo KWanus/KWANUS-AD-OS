@@ -204,11 +204,13 @@ function HeroBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
 function FeaturesBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props?.bgColor ?? (isDark ? "#07101f" : "#f8fafc");
+  const bg = props?.bgColor ?? (isDark
+    ? `radial-gradient(ellipse 80% 50% at 50% 0%, rgba(139, 92, 246, 0.08) 0%, transparent 60%), #0c0a08`
+    : `radial-gradient(ellipse 80% 50% at 50% 0%, rgba(139, 92, 246, 0.04) 0%, transparent 60%), #ffffff`);
   const textColor = isDark ? "#ffffff" : "#0f172a";
-  const subColor = isDark ? "rgba(255,255,255,0.5)" : "rgba(15,23,42,0.55)";
-  const cardBg = isDark ? "rgba(255,255,255,0.03)" : "#ffffff";
-  const cardBorder = isDark ? "rgba(255,255,255,0.07)" : "#e2e8f0";
+  const subColor = isDark ? "rgba(255,255,255,0.6)" : "rgba(15,23,42,0.65)";
+  const cardBg = isDark ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.9)";
+  const cardBorder = isDark ? "rgba(139, 92, 246, 0.15)" : "rgba(139, 92, 246, 0.1)";
   const cols = props?.columns ?? 3;
   const items: { icon?: string; title?: string; body?: string; number?: string }[] = props?.items ?? [];
   const layout = props?.layout ?? "grid"; // "grid" | "list" | "icon-top"
@@ -233,20 +235,33 @@ function FeaturesBlock({ props, theme }: { props: Block["props"]; theme: SiteThe
           {items.map((item, i) => (
             <div key={i} style={{
               background: cardBg,
+              backdropFilter: "blur(12px)",
               border: `1px solid ${cardBorder}`,
-              borderRadius: 20,
-              padding: layout === "list" ? "20px 24px" : "32px 28px",
+              borderRadius: 24,
+              padding: layout === "list" ? "24px 28px" : "36px 32px",
               display: "flex",
               flexDirection: layout === "list" ? "row" : "column",
-              gap: layout === "list" ? 16 : 18,
+              gap: layout === "list" ? 18 : 20,
               alignItems: layout === "list" ? "flex-start" : undefined,
+              boxShadow: isDark ? "0 4px 24px rgba(0,0,0,0.2)" : "0 4px 24px rgba(0,0,0,0.04)",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              cursor: "default",
+            }} onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "translateY(-4px)";
+              e.currentTarget.style.borderColor = isDark ? "rgba(139, 92, 246, 0.3)" : "rgba(139, 92, 246, 0.25)";
+              e.currentTarget.style.boxShadow = isDark ? `0 12px 40px rgba(139, 92, 246, 0.15)` : `0 12px 40px rgba(139, 92, 246, 0.1)`;
+            }} onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "translateY(0)";
+              e.currentTarget.style.borderColor = cardBorder;
+              e.currentTarget.style.boxShadow = isDark ? "0 4px 24px rgba(0,0,0,0.2)" : "0 4px 24px rgba(0,0,0,0.04)";
             }}>
               {item.icon && (
                 <div style={{
-                  width: 52, height: 52, borderRadius: 14, flexShrink: 0,
-                  background: `linear-gradient(135deg, ${primary}22, #e0785022)`,
-                  border: `1px solid ${primary}33`,
-                  display: "flex", alignItems: "center", justifyContent: "center", fontSize: 24,
+                  width: 56, height: 56, borderRadius: 16, flexShrink: 0,
+                  background: `linear-gradient(135deg, ${primary}30, rgba(139, 92, 246, 0.25))`,
+                  border: `1px solid ${primary}40`,
+                  display: "flex", alignItems: "center", justifyContent: "center", fontSize: 26,
+                  boxShadow: `0 4px 16px ${primary}20`,
                 }}>
                   {item.icon}
                 </div>
@@ -597,7 +612,7 @@ function FAQBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme })
 
 function CTABlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const primary = px(theme.primaryColor!);
-  const bg = props?.bgColor ?? `linear-gradient(135deg, ${primary}ee 0%, #e07850ee 100%)`;
+  const bg = props?.bgColor ?? `linear-gradient(135deg, ${primary} 0%, #e07850 50%, rgba(139, 92, 246, 0.95) 100%)`;
   const trustItems: string[] = props?.trustItems ?? [];
 
   return (
@@ -621,20 +636,38 @@ function CTABlock({ props, theme }: { props: Block["props"]; theme: SiteTheme })
         {props?.buttonText && (
           <div style={{ display: "flex", gap: 14, justifyContent: "center", flexWrap: "wrap", marginBottom: 28 }}>
             <a href={props?.buttonUrl ?? "#"} style={{
-              display: "inline-flex", alignItems: "center", gap: 8,
-              padding: "16px 40px", borderRadius: 14,
+              display: "inline-flex", alignItems: "center", gap: 10,
+              padding: "18px 44px", borderRadius: 16,
               background: "#ffffff",
-              color: "#0f172a", fontWeight: 900, fontSize: 16, textDecoration: "none",
-              boxShadow: "0 8px 32px rgba(0,0,0,0.25)",
+              color: "#0f172a", fontWeight: 900, fontSize: 17, textDecoration: "none",
+              boxShadow: "0 12px 48px rgba(0,0,0,0.3), 0 0 60px rgba(255,255,255,0.2)",
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            }} onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.05) translateY(-3px)";
+              e.currentTarget.style.boxShadow = "0 18px 60px rgba(0,0,0,0.4), 0 0 80px rgba(255,255,255,0.3)";
+            }} onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1) translateY(0)";
+              e.currentTarget.style.boxShadow = "0 12px 48px rgba(0,0,0,0.3), 0 0 60px rgba(255,255,255,0.2)";
             }}>
-              {props?.buttonText} <span style={{ fontSize: 18 }}>→</span>
+              {props?.buttonText} <span style={{ fontSize: 19 }}>→</span>
             </a>
             {props?.secondaryButtonText && (
               <a href={props?.secondaryButtonUrl ?? "#"} style={{
-                display: "inline-flex", alignItems: "center", gap: 8,
-                padding: "16px 40px", borderRadius: 14,
-                border: "1px solid rgba(255,255,255,0.35)",
-                color: "#ffffff", fontWeight: 700, fontSize: 16, textDecoration: "none",
+                display: "inline-flex", alignItems: "center", gap: 10,
+                padding: "18px 44px", borderRadius: 16,
+                border: "2px solid rgba(255,255,255,0.4)",
+                backdropFilter: "blur(12px)",
+                background: "rgba(255,255,255,0.1)",
+                color: "#ffffff", fontWeight: 800, fontSize: 17, textDecoration: "none",
+                transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+              }} onMouseEnter={(e) => {
+                e.currentTarget.style.transform = "scale(1.03) translateY(-2px)";
+                e.currentTarget.style.borderColor = "rgba(255,255,255,0.6)";
+                e.currentTarget.style.background = "rgba(255,255,255,0.15)";
+              }} onMouseLeave={(e) => {
+                e.currentTarget.style.transform = "scale(1) translateY(0)";
+                e.currentTarget.style.borderColor = "rgba(255,255,255,0.4)";
+                e.currentTarget.style.background = "rgba(255,255,255,0.1)";
               }}>
                 {props?.secondaryButtonText}
               </a>
