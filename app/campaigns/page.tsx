@@ -265,7 +265,19 @@ export default function CampaignsPage() {
         <div className="mb-6 flex items-center gap-3">
           <button
             onClick={() => setShowCreate(v => !v)}
-            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-xs font-bold hover:opacity-90 transition shrink-0"
+            className="flex items-center gap-1.5 px-4 py-2.5 rounded-xl text-white text-xs font-bold transition-all duration-300 shrink-0"
+            style={{
+              background: "linear-gradient(135deg, #f5a623 0%, #e07850 50%, rgba(139, 92, 246, 0.9) 100%)",
+              boxShadow: "0 6px 24px rgba(245,166,35,0.3), 0 0 40px rgba(245,166,35,0.1)",
+            }}
+            onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.05) translateY(-1px)";
+              e.currentTarget.style.boxShadow = "0 8px 32px rgba(245,166,35,0.4), 0 0 50px rgba(245,166,35,0.15)";
+            }}
+            onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1) translateY(0)";
+              e.currentTarget.style.boxShadow = "0 6px 24px rgba(245,166,35,0.3), 0 0 40px rgba(245,166,35,0.1)";
+            }}
           >
             <Plus className="w-3.5 h-3.5" /> New Campaign
           </button>
@@ -276,7 +288,22 @@ export default function CampaignsPage() {
                 value={search}
                 onChange={e => setSearch(e.target.value)}
                 placeholder="Search campaigns..."
-                className="w-full bg-white/[0.03] border border-white/[0.07] rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none focus:border-[#f5a623]/40 transition placeholder-white/20 font-medium"
+                className="w-full border rounded-xl pl-10 pr-4 py-2.5 text-sm outline-none transition placeholder-white/20 font-medium"
+                style={{
+                  background: "rgba(255,255,255,0.03)",
+                  backdropFilter: "blur(8px)",
+                  borderColor: "rgba(255,255,255,0.07)",
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = "rgba(245,166,35,0.4)";
+                  e.currentTarget.style.background = "rgba(255,255,255,0.05)";
+                  e.currentTarget.style.boxShadow = "0 0 0 4px rgba(245,166,35,0.08)";
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = "rgba(255,255,255,0.07)";
+                  e.currentTarget.style.background = "rgba(255,255,255,0.03)";
+                  e.currentTarget.style.boxShadow = "none";
+                }}
               />
             </div>
           )}
@@ -284,7 +311,15 @@ export default function CampaignsPage() {
 
         {/* Quick create form */}
         {showCreate && (
-          <div className="mb-6 bg-white/[0.02] border border-white/[0.07] rounded-2xl p-4">
+          <div
+            className="mb-6 border rounded-2xl p-4"
+            style={{
+              background: "rgba(255,255,255,0.02)",
+              backdropFilter: "blur(12px)",
+              borderColor: "rgba(255,255,255,0.07)",
+              boxShadow: "0 4px 24px rgba(0,0,0,0.1)",
+            }}
+          >
             <h3 className="text-xs font-black uppercase tracking-widest text-white/30 mb-3">New Campaign</h3>
             <div className="flex items-end gap-3">
               <div className="flex-1">
@@ -308,7 +343,27 @@ export default function CampaignsPage() {
               <button
                 onClick={() => void handleCreate()}
                 disabled={creating || !newName.trim()}
-                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#e07850] text-white text-sm font-bold hover:opacity-90 disabled:opacity-40 transition"
+                className="px-4 py-2.5 rounded-xl text-white text-sm font-bold disabled:opacity-40 transition-all duration-300"
+                style={{
+                  background: creating || !newName.trim()
+                    ? "rgba(245,166,35,0.3)"
+                    : "linear-gradient(135deg, #f5a623 0%, #e07850 50%, rgba(139, 92, 246, 0.9) 100%)",
+                  boxShadow: creating || !newName.trim()
+                    ? "none"
+                    : "0 6px 24px rgba(245,166,35,0.3), 0 0 40px rgba(245,166,35,0.1)",
+                }}
+                onMouseEnter={(e) => {
+                  if (!creating && newName.trim()) {
+                    e.currentTarget.style.transform = "scale(1.05)";
+                    e.currentTarget.style.boxShadow = "0 8px 32px rgba(245,166,35,0.4), 0 0 50px rgba(245,166,35,0.15)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = "scale(1)";
+                  if (!creating && newName.trim()) {
+                    e.currentTarget.style.boxShadow = "0 6px 24px rgba(245,166,35,0.3), 0 0 40px rgba(245,166,35,0.1)";
+                  }
+                }}
               >
                 {creating ? <Loader2 className="w-4 h-4 animate-spin" /> : "Create"}
               </button>
@@ -343,7 +398,24 @@ export default function CampaignsPage() {
                   <button
                     onClick={() => void syncBusinessSystem()}
                     disabled={syncingSystem}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-amber-500/25 bg-amber-500/10 px-5 py-3 text-sm font-bold text-amber-100 disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex items-center gap-2 rounded-2xl border px-5 py-3 text-sm font-bold text-amber-100 disabled:cursor-not-allowed disabled:opacity-60 transition-all duration-300"
+                    style={{
+                      background: "rgba(245,158,11,0.1)",
+                      backdropFilter: "blur(8px)",
+                      borderColor: "rgba(245,158,11,0.25)",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!syncingSystem) {
+                        e.currentTarget.style.background = "rgba(245,158,11,0.15)";
+                        e.currentTarget.style.borderColor = "rgba(245,158,11,0.4)";
+                        e.currentTarget.style.transform = "translateY(-1px)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "rgba(245,158,11,0.1)";
+                      e.currentTarget.style.borderColor = "rgba(245,158,11,0.25)";
+                      e.currentTarget.style.transform = "translateY(0)";
+                    }}
                   >
                     {syncingSystem ? "Syncing..." : "Sync My System"}
                   </button>
@@ -352,7 +424,24 @@ export default function CampaignsPage() {
                   <button
                     onClick={() => void refreshBusinessSystem()}
                     disabled={refreshingRecommendations}
-                    className="inline-flex items-center gap-2 rounded-2xl border border-[#f5a623]/20 bg-[#f5a623]/10 px-5 py-3 text-sm font-bold text-[#f5f0e8] disabled:cursor-not-allowed disabled:opacity-60"
+                    className="inline-flex items-center gap-2 rounded-2xl border px-5 py-3 text-sm font-bold text-[#f5f0e8] disabled:cursor-not-allowed disabled:opacity-60 transition-all duration-300"
+                    style={{
+                      background: "rgba(245,166,35,0.1)",
+                      backdropFilter: "blur(8px)",
+                      borderColor: "rgba(245,166,35,0.2)",
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!refreshingRecommendations) {
+                        e.currentTarget.style.background = "rgba(245,166,35,0.15)";
+                        e.currentTarget.style.borderColor = "rgba(245,166,35,0.35)";
+                        e.currentTarget.style.transform = "translateY(-1px)";
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.background = "rgba(245,166,35,0.1)";
+                      e.currentTarget.style.borderColor = "rgba(245,166,35,0.2)";
+                      e.currentTarget.style.transform = "translateY(0)";
+                    }}
                   >
                     {refreshingRecommendations ? "Refreshing..." : "Refresh Recommendations"}
                   </button>
@@ -382,14 +471,43 @@ export default function CampaignsPage() {
               <div className="flex flex-wrap gap-3">
                 <Link
                   href={recommendedTypeParam ? `/campaigns/new?type=${recommendedTypeParam}` : "/analyze"}
-                  className="inline-flex items-center gap-2 rounded-2xl bg-gradient-to-r from-[#f5a623] to-[#e07850] px-5 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(245,166,35,0.22)]"
+                  className="inline-flex items-center gap-2 rounded-2xl px-5 py-3 text-sm font-black text-white transition-all duration-300"
+                  style={{
+                    background: "linear-gradient(135deg, #f5a623 0%, #e07850 50%, rgba(139, 92, 246, 0.9) 100%)",
+                    boxShadow: "0 10px 40px rgba(245,166,35,0.35), 0 0 60px rgba(245,166,35,0.15)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "scale(1.03) translateY(-2px)";
+                    e.currentTarget.style.boxShadow = "0 15px 60px rgba(245,166,35,0.45), 0 0 80px rgba(245,166,35,0.25)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "scale(1) translateY(0)";
+                    e.currentTarget.style.boxShadow = "0 10px 40px rgba(245,166,35,0.35), 0 0 60px rgba(245,166,35,0.15)";
+                  }}
                 >
                   <Zap className="w-4 h-4" />
                   Start Recommended Campaign
                 </Link>
                 <Link
                   href="/my-system"
-                  className="inline-flex items-center gap-2 rounded-2xl border border-white/[0.1] bg-white/[0.04] px-5 py-3 text-sm font-bold text-white/70"
+                  className="inline-flex items-center gap-2 rounded-2xl border px-5 py-3 text-sm font-bold text-white/70 transition-all duration-300"
+                  style={{
+                    background: "rgba(255,255,255,0.04)",
+                    backdropFilter: "blur(8px)",
+                    borderColor: "rgba(255,255,255,0.1)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-1px)";
+                    e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+                    e.currentTarget.style.borderColor = "rgba(139, 92, 246, 0.3)";
+                    e.currentTarget.style.color = "rgba(255,255,255,0.9)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+                    e.currentTarget.style.borderColor = "rgba(255,255,255,0.1)";
+                    e.currentTarget.style.color = "rgba(255,255,255,0.7)";
+                  }}
                 >
                   Open My System
                   <ArrowRight className="w-4 h-4" />
@@ -448,7 +566,22 @@ export default function CampaignsPage() {
               return (
                 <div key={c.id}
                   onClick={() => router.push(`/campaigns/${c.id}`)}
-                  className={`group relative rounded-2xl border ${s.border} bg-white/[0.02] hover:bg-white/[0.04] p-5 cursor-pointer transition-all duration-200 flex items-center gap-4 overflow-hidden`}
+                  className={`group relative rounded-2xl border ${s.border} p-5 cursor-pointer transition-all duration-300 flex items-center gap-4 overflow-hidden`}
+                  style={{
+                    background: "rgba(255,255,255,0.02)",
+                    backdropFilter: "blur(12px)",
+                    boxShadow: "0 4px 24px rgba(0,0,0,0.1)",
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = "translateY(-2px)";
+                    e.currentTarget.style.boxShadow = "0 8px 32px rgba(245,166,35,0.12)";
+                    e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "0 4px 24px rgba(0,0,0,0.1)";
+                    e.currentTarget.style.background = "rgba(255,255,255,0.02)";
+                  }}
                 >
                   {/* Subtle left accent */}
                   <div className={`absolute left-0 top-0 bottom-0 w-0.5 ${s.dot} opacity-60`} />
@@ -546,14 +679,32 @@ export default function CampaignsPage() {
                               }
                             } catch { toast.error("Failed to duplicate"); }
                           }}
-                          className="p-2 rounded-lg hover:bg-[#f5a623]/10 text-white/20 hover:text-[#f5a623] transition opacity-0 group-hover:opacity-100"
+                          className="p-2 rounded-lg text-white/20 transition-all duration-200 opacity-0 group-hover:opacity-100"
+                          style={{ background: "transparent" }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = "rgba(245,166,35,0.1)";
+                            e.currentTarget.style.color = "rgba(245,166,35,1)";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = "transparent";
+                            e.currentTarget.style.color = "rgba(255,255,255,0.2)";
+                          }}
                           title="Duplicate campaign"
                         >
                           <Copy className="w-3.5 h-3.5" />
                         </button>
                         <button
                           onClick={() => setDeleteConfirm(c.id)}
-                          className="p-2 rounded-lg hover:bg-red-500/10 text-white/20 hover:text-red-400 transition opacity-0 group-hover:opacity-100"
+                          className="p-2 rounded-lg text-white/20 transition-all duration-200 opacity-0 group-hover:opacity-100"
+                          style={{ background: "transparent" }}
+                          onMouseEnter={(e) => {
+                            e.currentTarget.style.background = "rgba(239,68,68,0.1)";
+                            e.currentTarget.style.color = "rgba(248,113,113,1)";
+                          }}
+                          onMouseLeave={(e) => {
+                            e.currentTarget.style.background = "transparent";
+                            e.currentTarget.style.color = "rgba(255,255,255,0.2)";
+                          }}
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
