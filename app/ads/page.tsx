@@ -382,6 +382,46 @@ export default function AdsPage() {
                               ? `Current operator read: ${data?.totals.roas ? `${data.totals.roas.toFixed(1)}x ROAS with ${data.totals.clicks} clicks.` : "connected but still light on performance data."}`
                               : "Connect this platform to turn it from a placeholder card into a live decision surface."}
                           </p>
+
+                          {!connected && (
+                            <button
+                              onClick={() => {
+                                const baseUrl = process.env.NEXT_PUBLIC_APP_URL || window.location.origin;
+                                const redirectUri = `${baseUrl}/api/oauth/${platform}/callback`;
+
+                                if (platform === "meta") {
+                                  const scopes = ["ads_management", "ads_read", "read_insights"].join(",");
+                                  const authUrl = `https://www.facebook.com/v21.0/dialog/oauth?client_id=${process.env.NEXT_PUBLIC_META_APP_ID}&redirect_uri=${encodeURIComponent(redirectUri)}&scope=${scopes}&response_type=code`;
+                                  window.location.href = authUrl;
+                                } else if (platform === "google") {
+                                  // TODO: Implement Google OAuth
+                                  alert("Google Ads integration coming soon!");
+                                } else if (platform === "tiktok") {
+                                  // TODO: Implement TikTok OAuth
+                                  alert("TikTok Ads integration coming soon!");
+                                }
+                              }}
+                              className="w-full rounded-xl border px-4 py-2.5 text-xs font-bold transition-all duration-300"
+                              style={{
+                                background: "rgba(245,166,35,0.1)",
+                                backdropFilter: "blur(8px)",
+                                borderColor: "rgba(245,166,35,0.2)",
+                                color: "#f5a623",
+                              }}
+                              onMouseEnter={(e) => {
+                                e.currentTarget.style.background = "rgba(245,166,35,0.2)";
+                                e.currentTarget.style.borderColor = "rgba(245,166,35,0.35)";
+                                e.currentTarget.style.transform = "translateY(-1px)";
+                              }}
+                              onMouseLeave={(e) => {
+                                e.currentTarget.style.background = "rgba(245,166,35,0.1)";
+                                e.currentTarget.style.borderColor = "rgba(245,166,35,0.2)";
+                                e.currentTarget.style.transform = "translateY(0)";
+                              }}
+                            >
+                              Connect {platform === "meta" ? "Meta" : platform === "google" ? "Google" : "TikTok"} Ads
+                            </button>
+                          )}
                         </div>
                       </div>
                     );
