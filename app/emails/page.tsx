@@ -276,7 +276,7 @@ function FlowCard({
     }
   }
 
-  const triggerCfg = TRIGGER_CONFIG[flow.trigger];
+  const triggerCfg = TRIGGER_CONFIG[flow.trigger] || TRIGGER_CONFIG.custom;
 
   return (
     <div className="group relative bg-white/[0.025] border border-white/[0.07] rounded-2xl p-5 hover:border-white/[0.14] hover:bg-white/[0.04] transition-all duration-200 flex flex-col gap-4">
