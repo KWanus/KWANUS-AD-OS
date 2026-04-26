@@ -382,32 +382,87 @@ function FlowCard({
         </div>
       </div>
 
-      {/* Action */}
-      <button
-        onClick={() => router.push(`/emails/flows/${flow.id}`)}
-        className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-xs font-semibold transition-all duration-300"
-        style={{
-          background: "rgba(255,255,255,0.04)",
-          backdropFilter: "blur(8px)",
-          borderColor: "rgba(255,255,255,0.08)",
-          color: "rgba(255,255,255,0.6)",
-        }}
-        onMouseEnter={(e) => {
-          e.currentTarget.style.background = "rgba(255,255,255,0.08)";
-          e.currentTarget.style.borderColor = "rgba(255,255,255,0.16)";
-          e.currentTarget.style.color = "rgba(255,255,255,1)";
-          e.currentTarget.style.transform = "translateY(-1px)";
-        }}
-        onMouseLeave={(e) => {
-          e.currentTarget.style.background = "rgba(255,255,255,0.04)";
-          e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
-          e.currentTarget.style.color = "rgba(255,255,255,0.6)";
-          e.currentTarget.style.transform = "translateY(0)";
-        }}
-      >
-        Edit Flow
-        <ChevronRight className="w-3.5 h-3.5" />
-      </button>
+      {/* Actions */}
+      <div className="grid grid-cols-2 gap-2">
+        <button
+          onClick={() => router.push(`/emails/flows/${flow.id}`)}
+          className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-xs font-semibold transition-all duration-300"
+          style={{
+            background: "rgba(255,255,255,0.04)",
+            backdropFilter: "blur(8px)",
+            borderColor: "rgba(255,255,255,0.08)",
+            color: "rgba(255,255,255,0.6)",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "rgba(255,255,255,0.08)";
+            e.currentTarget.style.borderColor = "rgba(255,255,255,0.16)";
+            e.currentTarget.style.color = "rgba(255,255,255,1)";
+            e.currentTarget.style.transform = "translateY(-1px)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "rgba(255,255,255,0.04)";
+            e.currentTarget.style.borderColor = "rgba(255,255,255,0.08)";
+            e.currentTarget.style.color = "rgba(255,255,255,0.6)";
+            e.currentTarget.style.transform = "translateY(0)";
+          }}
+        >
+          Edit Flow
+        </button>
+        <button
+          onClick={async (e) => {
+            e.stopPropagation();
+            const testEmail = prompt("Enter email address to send test:");
+            if (!testEmail) return;
+
+            const toastId = toast.loading("Sending test email...");
+            try {
+              const res = await fetch("/api/emails/deploy", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  flowId: flow.id,
+                  subscriberEmail: testEmail,
+                  variables: {
+                    firstName: "Test",
+                    productName: "Sample Product",
+                    businessName: "Your Business",
+                  },
+                }),
+              });
+
+              const data = await res.json() as { success: boolean; emailsSent?: number; error?: string };
+
+              if (data.success && (data.emailsSent ?? 0) > 0) {
+                toast.success(`Test email sent to ${testEmail}!`, { id: toastId });
+              } else {
+                toast.error(data.error || "Failed to send test email", { id: toastId });
+              }
+            } catch (err) {
+              toast.error("Failed to send test email", { id: toastId });
+            }
+          }}
+          className="w-full flex items-center justify-center gap-1.5 py-2.5 rounded-xl border text-xs font-semibold transition-all duration-300"
+          style={{
+            background: "rgba(245,166,35,0.1)",
+            backdropFilter: "blur(8px)",
+            borderColor: "rgba(245,166,35,0.2)",
+            color: "#f5a623",
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = "rgba(245,166,35,0.2)";
+            e.currentTarget.style.borderColor = "rgba(245,166,35,0.35)";
+            e.currentTarget.style.transform = "translateY(-1px)";
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = "rgba(245,166,35,0.1)";
+            e.currentTarget.style.borderColor = "rgba(245,166,35,0.2)";
+            e.currentTarget.style.transform = "translateY(0)";
+          }}
+        >
+          <Zap className="w-3.5 h-3.5" />
+          Test Send
+        </button>
+      </div>
     </div>
   );
 }
