@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import OpenAI from "openai";
 import { deductCredits, getOrCreateUser } from "@/lib/auth";
 import { auth } from "@clerk/nextjs/server";
+import { getBestFramework, generateProfessionalPrompt } from "@/lib/ads/professionalCreatives";
 
 // Supported aspect ratios mapped to OpenAI size params
 const RATIO_TO_SIZE: Record<string, "1024x1024" | "1024x1792" | "1792x1024"> = {
@@ -10,7 +11,26 @@ const RATIO_TO_SIZE: Record<string, "1024x1024" | "1024x1792" | "1792x1024"> = {
   "16:9": "1792x1024",
 };
 
-function buildCreativePrompt(prompt: string, executionTier: "core" | "elite") {
+function buildCreativePrompt(
+  prompt: string,
+  executionTier: "core" | "elite",
+  product?: string,
+  benefit?: string,
+  hook?: string,
+  platform?: "meta" | "tiktok" | "google"
+) {
+  // If we have structured data, use professional frameworks
+  if (product && benefit && hook && platform) {
+    const framework = getBestFramework(platform, "image", "conversion");
+    const professionalPrompt = generateProfessionalPrompt(product, benefit, hook, framework.id);
+
+    if (executionTier === "elite") {
+      return `${professionalPrompt}\n\nEXECUTION TIER: Elite - Maximum commercial polish, professional color grading, studio-quality lighting, conversion-optimized composition.`;
+    }
+    return professionalPrompt;
+  }
+
+  // Fallback for generic prompts
   if (executionTier === "elite") {
     return `Create a premium direct-response advertising image with category-leading visual polish, stronger product clarity, richer trust cues, sharper composition, better emotional pull, and conversion-first framing.\n\nOriginal brief:\n${prompt}`;
   }
@@ -40,6 +60,11 @@ export async function POST(req: NextRequest) {
       model?: "dall-e-3" | "dall-e-2";
       quality?: "standard" | "hd";
       executionTier?: "core" | "elite";
+      // Structured creative data for professional frameworks
+      product?: string;
+      benefit?: string;
+      hook?: string;
+      platform?: "meta" | "tiktok" | "google";
     };
     const executionTier = body.executionTier === "core" ? "core" : "elite";
 
@@ -61,7 +86,7 @@ export async function POST(req: NextRequest) {
 
         const { data } = await fal.subscribe("fal-ai/flux-pro/v1.1-ultra", {
           input: {
-            prompt: buildCreativePrompt(body.prompt, executionTier),
+            prompt: buildCreativePrompt(body.prompt, executionTier, body.product, body.benefit, body.hook, body.platform),
             aspect_ratio: body.aspectRatio === "9:16" ? "9:16" : body.aspectRatio === "16:9" ? "16:9" : "1:1",
             raw: true,
           },
@@ -80,7 +105,7 @@ export async function POST(req: NextRequest) {
     const client = new OpenAI({ apiKey });
     const response = await client.images.generate({
       model: body.model ?? "dall-e-3",
-      prompt: buildCreativePrompt(body.prompt, executionTier),
+      prompt: buildCreativePrompt(body.prompt, executionTier, body.product, body.benefit, body.hook, body.platform),
       n: 1,
       size,
       quality: body.quality ?? "standard",

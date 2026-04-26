@@ -1,11 +1,34 @@
 import { NextRequest, NextResponse } from "next/server";
 import { deductCredits, getOrCreateUser } from "@/lib/auth";
 import { auth } from "@clerk/nextjs/server";
+import { getBestFramework, generateProfessionalPrompt, generateProfessionalVideoScript } from "@/lib/ads/professionalCreatives";
 
 // Runway Gen-4 Turbo via REST API
 // Docs: https://docs.dev.runwayml.com/
 
-function buildVideoPrompt(prompt: string, executionTier: "core" | "elite") {
+function buildVideoPrompt(
+  prompt: string,
+  executionTier: "core" | "elite",
+  product?: string,
+  benefit?: string,
+  hook?: string,
+  platform?: "meta" | "tiktok" | "google"
+) {
+  // If we have structured data, use professional frameworks
+  if (product && benefit && hook && platform) {
+    const framework = getBestFramework(platform, "video", "conversion");
+    const script = generateProfessionalVideoScript(product, benefit, hook, framework.id);
+
+    if (script) {
+      const visualPrompt = `${script.visualDirection}\n\n${script.soundDirection}`;
+      if (executionTier === "elite") {
+        return `${visualPrompt}\n\nEXECUTION TIER: Elite - Professional cinematography, smooth camera work, commercial-grade color grading, polished editing.`;
+      }
+      return visualPrompt;
+    }
+  }
+
+  // Fallback for generic prompts
   if (executionTier === "elite") {
     return `Create a premium commercial video shot with top-operator ad polish, stronger product readability, cleaner motion discipline, sharper focal hierarchy, richer buyer emotion, and a conversion-first finish.\n\nOriginal brief:\n${prompt}`;
   }
@@ -35,6 +58,11 @@ export async function POST(req: NextRequest) {
       duration?: 5 | 10;
       ratio?: "768:1344" | "1344:768" | "1024:1024";
       executionTier?: "core" | "elite";
+      // Structured creative data for professional frameworks
+      product?: string;
+      benefit?: string;
+      hook?: string;
+      platform?: "meta" | "tiktok" | "google";
     };
     const executionTier = body.executionTier === "core" ? "core" : "elite";
 
@@ -47,7 +75,7 @@ export async function POST(req: NextRequest) {
 
     const payload: Record<string, unknown> = {
       model: "gen4_turbo",
-      promptText: buildVideoPrompt(body.prompt, executionTier),
+      promptText: buildVideoPrompt(body.prompt, executionTier, body.product, body.benefit, body.hook, body.platform),
       duration: body.duration ?? 5,
       ratio: body.ratio === "768:1344" ? "9:16" : (body.ratio ?? "9:16"),
     };

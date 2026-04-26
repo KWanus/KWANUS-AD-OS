@@ -14,6 +14,7 @@
 
 import { generateAI } from "@/lib/integrations/aiInference";
 import { prisma } from "@/lib/prisma";
+import { getBestFramework, generateProfessionalPrompt, IMAGE_FRAMEWORKS } from "./professionalCreatives";
 
 // ── Types ────────────────────────────────────────────────────────────────────
 
@@ -339,21 +340,36 @@ Return ONLY the JSON array.`,
 // ── Image prompt builder ─────────────────────────────────────────────────────
 
 function buildImagePrompt(brief: AdBrief, angle: string, aspectRatio: string): string {
+  // Map angle to framework
+  const angleToFramework: Record<string, string> = {
+    pain: "pain_agitate",
+    desire: "aspirational",
+    proof: "social_proof",
+    urgency: "urgency",
+    story: "native_product",
+  };
+
+  const frameworkId = angleToFramework[angle] ?? "native_product";
+  const framework = IMAGE_FRAMEWORKS.find(f => f.id === frameworkId);
+
+  if (framework) {
+    // Use professional framework prompt
+    return generateProfessionalPrompt(
+      brief.offer,
+      brief.painPoints[0] ?? brief.targetAudience,
+      brief.uniqueAngle,
+      frameworkId
+    );
+  }
+
+  // Fallback to generic prompt
   const sizeMap: Record<string, string> = {
     "1:1": "square", "4:5": "portrait", "9:16": "vertical portrait",
     "16:9": "landscape", "1.91:1": "wide landscape",
   };
   const size = sizeMap[aspectRatio] ?? "square";
 
-  const styleByAngle: Record<string, string> = {
-    pain: "dramatic lighting, dark tones, person looking frustrated or overwhelmed, professional photography",
-    desire: "bright, aspirational, person celebrating success, warm golden lighting, premium feel",
-    proof: "clean white background, trust badges, before/after split, professional studio",
-    urgency: "bold red/orange accent, countdown timer feel, high contrast, attention-grabbing",
-    story: "authentic candid moment, warm natural lighting, relatable everyday setting",
-  };
-
-  return `${size} ad creative for ${brief.niche}. ${styleByAngle[angle] ?? styleByAngle.desire}. Brand color: ${brief.brandColor}. No text overlays. Commercial quality. 4K resolution. Clean composition with space for text overlay.`;
+  return `${size} ad creative for ${brief.niche}. Professional commercial photography. Brand color: ${brief.brandColor}. 4K resolution. Clean composition.`;
 }
 
 // ── Budget calculator ────────────────────────────────────────────────────────
