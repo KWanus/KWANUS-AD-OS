@@ -1068,11 +1068,13 @@ function VideoBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme 
 function FormBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }) {
   const isDark = theme.mode !== "light";
   const primary = px(theme.primaryColor!);
-  const bg = props?.bgColor ?? (isDark ? "#07101f" : "#f8fafc");
+  const bg = props?.bgColor ?? (isDark
+    ? `radial-gradient(ellipse 60% 50% at 50% 0%, rgba(139, 92, 246, 0.06) 0%, transparent 70%), #0c0a08`
+    : `radial-gradient(ellipse 60% 50% at 50% 0%, rgba(139, 92, 246, 0.03) 0%, transparent 70%), #ffffff`);
   const textColor = isDark ? "#ffffff" : "#0f172a";
-  const subColor = isDark ? "rgba(255,255,255,0.5)" : "rgba(15,23,42,0.5)";
-  const inputBg = isDark ? "rgba(255,255,255,0.05)" : "#ffffff";
-  const inputBorder = isDark ? "rgba(255,255,255,0.1)" : "#e2e8f0";
+  const subColor = isDark ? "rgba(255,255,255,0.6)" : "rgba(15,23,42,0.65)";
+  const inputBg = isDark ? "rgba(255,255,255,0.03)" : "rgba(255,255,255,0.95)";
+  const inputBorder = isDark ? "rgba(139, 92, 246, 0.2)" : "rgba(139, 92, 246, 0.15)";
   const fields: { name?: string; type?: string; placeholder?: string; required?: boolean }[] = props?.fields ?? [
     { name: "name", type: "text", placeholder: "Your Name", required: true },
     { name: "email", type: "email", placeholder: "Email Address", required: true },
@@ -1156,28 +1158,41 @@ function FormBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
           </div>
         )}
         <div style={{
-          background: isDark ? "rgba(255,255,255,0.025)" : "#ffffff",
-          border: `1px solid ${isDark ? "rgba(255,255,255,0.08)" : "#e2e8f0"}`,
-          borderRadius: 24, padding: "40px 36px",
+          background: isDark ? "rgba(255,255,255,0.02)" : "rgba(255,255,255,0.95)",
+          backdropFilter: "blur(16px)",
+          border: `1px solid ${inputBorder}`,
+          borderRadius: 28, padding: "44px 40px",
+          boxShadow: isDark ? "0 12px 48px rgba(0,0,0,0.3)" : "0 12px 48px rgba(0,0,0,0.06)",
         }}>
           <form id={`himalaya-form-${siteId}`} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             {fields.map((field, i) => (
               <div key={i}>
                 {field.type === "textarea" ? (
                   <textarea name={field.name ?? `field_${i}`} placeholder={field.placeholder ?? field.name} rows={4}
-                    style={{ width: "100%", background: inputBg, border: `1px solid ${inputBorder}`, borderRadius: 12, padding: "13px 16px", color: textColor, fontSize: 15, outline: "none", resize: "vertical", fontFamily: "inherit" }} />
+                    style={{ width: "100%", background: inputBg, backdropFilter: "blur(8px)", border: `2px solid ${inputBorder}`, borderRadius: 14, padding: "15px 18px", color: textColor, fontSize: 15, outline: "none", resize: "vertical", fontFamily: "inherit", transition: "all 0.2s ease" }}
+                    onFocus={(e) => { e.currentTarget.style.borderColor = primary; e.currentTarget.style.boxShadow = `0 0 0 3px ${primary}20`; }}
+                    onBlur={(e) => { e.currentTarget.style.borderColor = inputBorder; e.currentTarget.style.boxShadow = "none"; }} />
                 ) : (
                   <input name={field.name ?? `field_${i}`} type={field.type ?? "text"} placeholder={field.placeholder ?? field.name}
                     required={field.required}
-                    style={{ width: "100%", background: inputBg, border: `1px solid ${inputBorder}`, borderRadius: 12, padding: "13px 16px", color: textColor, fontSize: 15, outline: "none" }} />
+                    style={{ width: "100%", background: inputBg, backdropFilter: "blur(8px)", border: `2px solid ${inputBorder}`, borderRadius: 14, padding: "15px 18px", color: textColor, fontSize: 15, outline: "none", transition: "all 0.2s ease" }}
+                    onFocus={(e) => { e.currentTarget.style.borderColor = primary; e.currentTarget.style.boxShadow = `0 0 0 3px ${primary}20`; }}
+                    onBlur={(e) => { e.currentTarget.style.borderColor = inputBorder; e.currentTarget.style.boxShadow = "none"; }} />
                 )}
               </div>
             ))}
             <button type="submit" style={{
-              width: "100%", padding: "15px", borderRadius: 12, border: "none",
-              background: `linear-gradient(135deg, ${primary}, #e07850)`,
-              color: "#fff", fontWeight: 800, fontSize: 16, cursor: "pointer",
-              boxShadow: `0 8px 24px ${primary}40`, marginTop: 8,
+              width: "100%", padding: "17px", borderRadius: 14, border: "none",
+              background: `linear-gradient(135deg, ${primary} 0%, #e07850 50%, rgba(139, 92, 246, 0.9) 100%)`,
+              color: "#fff", fontWeight: 800, fontSize: 17, cursor: "pointer",
+              boxShadow: `0 10px 32px ${primary}45, 0 0 60px ${primary}20`, marginTop: 12,
+              transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+            }} onMouseEnter={(e) => {
+              e.currentTarget.style.transform = "scale(1.02) translateY(-2px)";
+              e.currentTarget.style.boxShadow = `0 14px 40px ${primary}55, 0 0 80px ${primary}30`;
+            }} onMouseLeave={(e) => {
+              e.currentTarget.style.transform = "scale(1) translateY(0)";
+              e.currentTarget.style.boxShadow = `0 10px 32px ${primary}45, 0 0 60px ${primary}20`;
             }}>
               {props?.buttonText ?? "Submit"}
             </button>
