@@ -202,7 +202,7 @@ function FeaturesBlock({ props, theme }: { props: Block["props"]; theme: SiteThe
           <div style={{ textAlign: "center", marginBottom: 60 }}>
             {props?.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
             {props?.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
-            {props.subtitle && <p style={{ color: subColor, fontSize: 17, maxWidth: 560, margin: "0 auto", lineHeight: 1.7 }}>{props.subtitle}</p>}
+            {props?.subtitle && <p style={{ color: subColor, fontSize: 17, maxWidth: 560, margin: "0 auto", lineHeight: 1.7 }}>{props.subtitle}</p>}
           </div>
         )}
         <div style={{
@@ -268,7 +268,7 @@ function StatsBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme 
   const textColor = isDark ? "#ffffff" : "#0f172a";
   const subColor = isDark ? "rgba(255,255,255,0.45)" : "rgba(15,23,42,0.5)";
   const borderColor = isDark ? "rgba(255,255,255,0.07)" : "#e2e8f0";
-  const stats: { number?: string; label?: string; suffix?: string }[] = props.stats ?? [
+  const stats: { number?: string; label?: string; suffix?: string }[] = props?.stats ?? [
     { number: "500+", label: "Happy Clients" },
     { number: "98%", label: "Satisfaction Rate" },
     { number: "5★", label: "Average Rating" },
@@ -329,7 +329,7 @@ function TestimonialsBlock({ props, theme }: { props: Block["props"]; theme: Sit
           <div style={{ textAlign: "center", marginBottom: 60 }}>
             {props.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
             {props.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
-            {props.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 540, margin: "0 auto" }}>{props.subtitle}</p>}
+            {props?.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 540, margin: "0 auto" }}>{props.subtitle}</p>}
           </div>
         )}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(300px, 1fr))", gap: 20 }}>
@@ -422,7 +422,7 @@ function PricingBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
           <div style={{ textAlign: "center", marginBottom: 60 }}>
             {props.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
             {props.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
-            {props.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 520, margin: "0 auto" }}>{props.subtitle}</p>}
+            {props?.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 520, margin: "0 auto" }}>{props.subtitle}</p>}
           </div>
         )}
         <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(tiers.length || 3, 3)}, 1fr)`, gap: 20, alignItems: "start" }}>
@@ -521,7 +521,7 @@ function FAQBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme })
           <div style={{ textAlign: "center", marginBottom: 56 }}>
             {props.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
             {props.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
-            {props.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 520, margin: "0 auto" }}>{props.subtitle}</p>}
+            {props?.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 520, margin: "0 auto" }}>{props.subtitle}</p>}
           </div>
         )}
         <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
@@ -748,7 +748,7 @@ function ProcessBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
           <div style={{ textAlign: "center", marginBottom: 60 }}>
             {props.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
             {props.title && <h2 style={{ ...headingStyle(textColor), marginBottom: 16 }}>{props.title}</h2>}
-            {props.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 520, margin: "0 auto" }}>{props.subtitle}</p>}
+            {props?.subtitle && <p style={{ color: subColor, fontSize: 16, maxWidth: 520, margin: "0 auto" }}>{props.subtitle}</p>}
           </div>
         )}
         <div style={{ display: "grid", gridTemplateColumns: `repeat(${Math.min(steps.length || 3, 4)}, 1fr)`, gap: 20, position: "relative" }}>
@@ -992,7 +992,7 @@ function FormBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
     { name: "email", type: "email", placeholder: "Email Address", required: true },
     { name: "phone", type: "tel", placeholder: "Phone (optional)" },
   ];
-  const siteId = props.siteId ?? "";
+  const siteId = props?.siteId ?? "";
   const submitUrl = props.submitUrl ?? "/api/forms/submit";
 
   // Form submission script injected inline for public sites
@@ -1066,7 +1066,7 @@ function FormBlock({ props, theme }: { props: Block["props"]; theme: SiteTheme }
           <div style={{ textAlign: "center", marginBottom: 40 }}>
             {props.eyebrow && <p style={{ ...eyebrowStyle(primary), marginBottom: 12 }}>{props.eyebrow}</p>}
             {props.title && <h2 style={{ ...headingStyle(textColor, "clamp(1.5rem,3vw,2rem)"), marginBottom: 12 }}>{props.title}</h2>}
-            {props.subtitle && <p style={{ color: subColor, fontSize: 15, lineHeight: 1.7 }}>{props.subtitle}</p>}
+            {props?.subtitle && <p style={{ color: subColor, fontSize: 15, lineHeight: 1.7 }}>{props.subtitle}</p>}
           </div>
         )}
         <div style={{
@@ -1132,7 +1132,7 @@ function CheckoutBlock({ props, theme }: { props: Block["props"]; theme: SiteThe
           <div style={{ textAlign: "center", marginBottom: 32 }}>
             <p style={{ color: subColor, fontSize: 11, fontWeight: 800, letterSpacing: "0.2em", textTransform: "uppercase", marginBottom: 8 }}>SECURE ORDER FORM</p>
             <h2 style={{ ...headingStyle(textColor, "1.6rem"), marginBottom: 8 }}>{props.title ?? "Complete Your Order"}</h2>
-            {props.subtitle && <p style={{ color: subColor, fontSize: 14 }}>{props.subtitle}</p>}
+            {props?.subtitle && <p style={{ color: subColor, fontSize: 14 }}>{props.subtitle}</p>}
           </div>
 
           {/* Order summary */}
@@ -1237,7 +1237,7 @@ function ProductsBlock({
     <section style={sectionBase(bg)}>
       <div style={container()}>
         {props.title && <h2 style={{ ...headingStyle(textColor), textAlign: "center", marginBottom: 16 }}>{props.title}</h2>}
-        {props.subtitle && (
+        {props?.subtitle && (
           <p style={{ color: subColor, textAlign: "center", fontSize: 15, maxWidth: 620, margin: "0 auto 40px", lineHeight: 1.7 }}>
             {props.subtitle}
           </p>
@@ -1456,7 +1456,7 @@ function PaymentBlock({ props, theme }: { props: Block["props"]; theme: SiteThem
             {price}
           </p>
         )}
-        {props.subtitle && <p style={{ color: isDark ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.5)", fontSize: 16, marginBottom: 32 }}>{props.subtitle}</p>}
+        {props?.subtitle && <p style={{ color: isDark ? "rgba(255,255,255,0.6)" : "rgba(0,0,0,0.5)", fontSize: 16, marginBottom: 32 }}>{props.subtitle}</p>}
         <a
           href={paymentUrl}
           target="_blank"
