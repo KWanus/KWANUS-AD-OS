@@ -4,11 +4,12 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import {
   DollarSign, Users, Globe, Mail, TrendingUp, Target,
   CheckCircle2, AlertTriangle, ArrowRight, Loader2,
-  Trophy, Flame, BarChart2, Zap, Mountain,
+  Trophy, Flame, BarChart2, Zap, Mountain, Play, HelpCircle,
+  Rocket, Megaphone, Users as UsersIcon, TrendingUp as TrendingUpIcon,
 } from "lucide-react";
 
 type DashboardData = {
@@ -102,7 +103,7 @@ export default function DashboardPage() {
   if (loading) {
     return (
       <main className="min-h-screen bg-t-bg text-t-text">
-        <AppNav />
+        <SimplifiedNav />
         <div className="flex items-center justify-center min-h-[70vh]">
           <Loader2 className="w-6 h-6 text-t-text/20 animate-spin" />
         </div>
@@ -115,7 +116,7 @@ export default function DashboardPage() {
 
   return (
     <main className="min-h-screen bg-t-bg text-t-text">
-      <AppNav />
+      <SimplifiedNav />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-20">
 
         {/* ── Greeting + Score ── */}
@@ -147,6 +148,103 @@ export default function DashboardPage() {
           <MetricCard icon={Globe} label="Site Views" value={d.totalSiteViews.toLocaleString()} color="text-[#e07850]" />
           <MetricCard icon={BarChart2} label="Conversion" value={`${d.conversionRate}%`} color="text-blue-400" />
         </div>
+
+        {/* ── Getting Started (for new users) ── */}
+        {(d.totalRevenue === 0 && d.totalLeads === 0) && (
+          <div className="rounded-2xl border border-[#f5a623]/20 bg-gradient-to-br from-[#f5a623]/[0.08] to-[#e07850]/[0.05] p-6 mb-6">
+            <div className="flex items-start gap-4 mb-6">
+              <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-[#f5a623] to-[#e07850] flex items-center justify-center shrink-0">
+                <Rocket className="w-6 h-6 text-white" />
+              </div>
+              <div className="flex-1">
+                <h3 className="text-lg font-black text-white mb-1">Welcome! Let's Get Started</h3>
+                <p className="text-sm text-white/60">Choose what you'd like to build first. We'll guide you through everything.</p>
+              </div>
+              <button
+                onClick={() => window.dispatchEvent(new Event("open-tutorial"))}
+                className="px-3 py-1.5 rounded-lg border border-white/20 text-xs font-semibold text-white/70 hover:text-white hover:bg-white/5 transition flex items-center gap-1.5"
+              >
+                <HelpCircle className="w-3.5 h-3.5" />
+                Tutorial
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <Link
+                href="/himalaya"
+                className="group p-4 rounded-xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-[#f5a623]/30 transition"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-purple-500/10 flex items-center justify-center shrink-0">
+                    <Mountain className="w-5 h-5 text-purple-400" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-bold text-white mb-1 text-sm">Build with Himalaya</h4>
+                    <p className="text-xs text-white/50">Describe your idea, get a full business in 60 seconds</p>
+                    <div className="mt-2 flex items-center gap-1.5 text-[10px] text-purple-400 font-semibold">
+                      <Play className="w-3 h-3" />
+                      Recommended for beginners
+                    </div>
+                  </div>
+                </div>
+              </Link>
+
+              <Link
+                href="/campaigns"
+                className="group p-4 rounded-xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-[#f5a623]/30 transition"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-[#f5a623]/10 flex items-center justify-center shrink-0">
+                    <Megaphone className="w-5 h-5 text-[#f5a623]" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-bold text-white mb-1 text-sm">Launch Ad Campaign</h4>
+                    <p className="text-xs text-white/50">Professional ads with proven frameworks (2.9x-4.8x CTR)</p>
+                    <div className="mt-2 text-[10px] text-white/30 font-semibold">
+                      16 battle-tested templates
+                    </div>
+                  </div>
+                </div>
+              </Link>
+
+              <Link
+                href="/emails"
+                className="group p-4 rounded-xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-[#f5a623]/30 transition"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-emerald-500/10 flex items-center justify-center shrink-0">
+                    <Mail className="w-5 h-5 text-emerald-400" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-bold text-white mb-1 text-sm">Email Automation</h4>
+                    <p className="text-xs text-white/50">Set up flows that convert leads to customers</p>
+                    <div className="mt-2 text-[10px] text-white/30 font-semibold">
+                      Pre-built templates included
+                    </div>
+                  </div>
+                </div>
+              </Link>
+
+              <Link
+                href="/clients"
+                className="group p-4 rounded-xl border border-white/10 bg-white/[0.02] hover:bg-white/[0.05] hover:border-[#f5a623]/30 transition"
+              >
+                <div className="flex items-start gap-3">
+                  <div className="w-10 h-10 rounded-lg bg-blue-500/10 flex items-center justify-center shrink-0">
+                    <UsersIcon className="w-5 h-5 text-blue-400" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="font-bold text-white mb-1 text-sm">Manage Clients</h4>
+                    <p className="text-xs text-white/50">Track leads, pipeline, and revenue</p>
+                    <div className="mt-2 text-[10px] text-white/30 font-semibold">
+                      CRM + Analytics
+                    </div>
+                  </div>
+                </div>
+              </Link>
+            </div>
+          </div>
+        )}
 
         {/* ── Next Milestone ── */}
         {d.nextMilestone && (

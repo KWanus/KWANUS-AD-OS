@@ -7,6 +7,7 @@ import KeyboardShortcuts from "@/components/KeyboardShortcuts";
 import GlobalSearch from "@/components/GlobalSearch";
 import RecentPageTracker from "@/components/RecentPageTracker";
 import ScrollToTop from "@/components/ScrollToTop";
+import TutorialSystem from "@/components/TutorialSystem";
 import ThemeProvider from "@/lib/theme/ThemeProvider";
 import ModeProvider from "@/lib/theme/ModeProvider";
 import "./globals.css";
@@ -62,6 +63,7 @@ export default function RootLayout({
           <GlobalSearch />
           <RecentPageTracker />
           <ScrollToTop />
+          <TutorialSystem />
           <Toaster position="bottom-right" theme="dark" richColors />
           </ThemeProvider>
         </body>
