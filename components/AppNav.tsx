@@ -31,6 +31,7 @@ const NAV = [
 
 // Pruned from 18 to 8 items (audit: 16+ items is overwhelming)
 const MORE = [
+  { href: "/creative-studio", label: "Creative Studio", icon: Sparkles },
   { href: "/inbox",      label: "Inbox",      icon: MessageSquareText },
   { href: "/analytics",  label: "Analytics",  icon: BarChart3 },
   { href: "/revenue-analytics", label: "CRM Revenue", icon: TrendingUp },
