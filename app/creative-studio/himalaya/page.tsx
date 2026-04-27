@@ -73,12 +73,17 @@ export default function HimalayaCreativeStudioPage() {
     try {
       const res = await fetch("/api/himalaya/projects");
       const data = await res.json();
-      setProjects(data || []);
-      if (data && data.length > 0) {
-        setSelectedProject(data[0].id);
+
+      // Handle different response formats
+      const projectsArray = Array.isArray(data) ? data : (data?.projects || []);
+
+      setProjects(projectsArray);
+      if (projectsArray && projectsArray.length > 0) {
+        setSelectedProject(projectsArray[0].id);
       }
     } catch (err) {
       console.error("Failed to load Himalaya projects:", err);
+      setProjects([]); // Set to empty array on error
     } finally {
       setLoading(false);
     }
@@ -150,69 +155,73 @@ export default function HimalayaCreativeStudioPage() {
           </div>
 
           {/* Project Selector */}
-          <div className="mb-6 p-4 rounded-xl bg-gradient-to-br from-[#f5a623]/10 to-[#ff6b6b]/10 border border-[#f5a623]/20">
-            <div className="flex items-center justify-between">
-              <div className="flex-1">
-                <label className="text-xs font-bold text-white/40 uppercase tracking-wider mb-2 block">
-                  Select Himalaya Project
-                </label>
-                <select
-                  value={selectedProject || ""}
-                  onChange={(e) => setSelectedProject(e.target.value)}
-                  className="w-full max-w-md px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm font-semibold focus:outline-none focus:border-[#f5a623]/50"
-                >
-                  {projects.map((project) => (
-                    <option key={project.id} value={project.id} className="bg-[#1a1a1a]">
-                      {project.title || project.niche}
-                    </option>
-                  ))}
-                </select>
-              </div>
+          {projects.length > 0 && (
+            <div className="mb-6 p-4 rounded-xl bg-gradient-to-br from-[#f5a623]/10 to-[#ff6b6b]/10 border border-[#f5a623]/20">
+              <div className="flex items-center justify-between">
+                <div className="flex-1">
+                  <label className="text-xs font-bold text-white/40 uppercase tracking-wider mb-2 block">
+                    Select Himalaya Project
+                  </label>
+                  <select
+                    value={selectedProject || ""}
+                    onChange={(e) => setSelectedProject(e.target.value)}
+                    className="w-full max-w-md px-4 py-2 rounded-lg bg-white/5 border border-white/10 text-white text-sm font-semibold focus:outline-none focus:border-[#f5a623]/50"
+                  >
+                    {projects.map((project) => (
+                      <option key={project.id} value={project.id} className="bg-[#1a1a1a]">
+                        {project.title || project.niche}
+                      </option>
+                    ))}
+                  </select>
+                </div>
 
-              {analysis && (
-                <button
-                  onClick={generateCreativesFromHimalaya}
-                  className="px-6 py-3 rounded-lg bg-gradient-to-r from-[#f5a623] to-[#ff6b6b] text-white font-bold hover:shadow-lg hover:shadow-[#f5a623]/20 transition flex items-center gap-2"
-                >
-                  <Wand2 className="w-5 h-5" />
-                  Generate All Creatives
-                </button>
-              )}
+                {analysis && (
+                  <button
+                    onClick={generateCreativesFromHimalaya}
+                    className="px-6 py-3 rounded-lg bg-gradient-to-r from-[#f5a623] to-[#ff6b6b] text-white font-bold hover:shadow-lg hover:shadow-[#f5a623]/20 transition flex items-center gap-2"
+                  >
+                    <Wand2 className="w-5 h-5" />
+                    Generate All Creatives
+                  </button>
+                )}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* Search Bar */}
-          <div className="flex items-center gap-3">
-            <div className="flex-1 relative">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
-              <input
-                type="text"
-                placeholder={`Search ${adCreatives.length} AI-generated creative ideas...`}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#f5a623]/50 focus:bg-white/[0.07] transition"
-              />
-            </div>
+          {projects.length > 0 && (
+            <div className="flex items-center gap-3">
+              <div className="flex-1 relative">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30" />
+                <input
+                  type="text"
+                  placeholder={`Search ${adCreatives.length} AI-generated creative ideas...`}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="w-full pl-11 pr-4 py-3 rounded-xl bg-white/5 border border-white/10 text-white placeholder-white/30 focus:outline-none focus:border-[#f5a623]/50 focus:bg-white/[0.07] transition"
+                />
+              </div>
 
-            <div className="flex items-center gap-1 p-1 rounded-lg bg-white/5 border border-white/10">
-              <button
-                onClick={() => setViewMode("grid")}
-                className={`p-2 rounded-md transition ${
-                  viewMode === "grid" ? "bg-[#f5a623]/20 text-[#f5a623]" : "text-white/40 hover:text-white/70"
-                }`}
-              >
-                <Grid3x3 className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => setViewMode("list")}
-                className={`p-2 rounded-md transition ${
-                  viewMode === "list" ? "bg-[#f5a623]/20 text-[#f5a623]" : "text-white/40 hover:text-white/70"
-                }`}
-              >
-                <List className="w-4 h-4" />
-              </button>
+              <div className="flex items-center gap-1 p-1 rounded-lg bg-white/5 border border-white/10">
+                <button
+                  onClick={() => setViewMode("grid")}
+                  className={`p-2 rounded-md transition ${
+                    viewMode === "grid" ? "bg-[#f5a623]/20 text-[#f5a623]" : "text-white/40 hover:text-white/70"
+                  }`}
+                >
+                  <Grid3x3 className="w-4 h-4" />
+                </button>
+                <button
+                  onClick={() => setViewMode("list")}
+                  className={`p-2 rounded-md transition ${
+                    viewMode === "list" ? "bg-[#f5a623]/20 text-[#f5a623]" : "text-white/40 hover:text-white/70"
+                  }`}
+                >
+                  <List className="w-4 h-4" />
+                </button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {loading ? (
