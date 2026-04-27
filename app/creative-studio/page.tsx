@@ -6,7 +6,7 @@ import SimplifiedNav from "@/components/SimplifiedNav";
 import {
   Search, Filter, Upload, Download, Sparkles, Layout, Image as ImageIcon,
   Video, FileText, Palette, Wand2, Copy, Trash2, Star, Grid3x3, List,
-  ChevronRight, Plus, Folder, Heart, Clock, TrendingUp, Zap, Eye,
+  ChevronRight, Plus, Folder, Heart, Clock, TrendingUp, Zap, Eye, Mountain,
 } from "lucide-react";
 
 // Template categories (like Canva)
@@ -157,6 +157,13 @@ export default function CreativeStudioPage() {
             </div>
 
             <div className="flex items-center gap-3">
+              <Link
+                href="/creative-studio/himalaya"
+                className="px-4 py-2 rounded-lg border border-[#f5a623]/30 bg-[#f5a623]/10 text-[#f5a623] hover:bg-[#f5a623]/20 transition flex items-center gap-2 text-sm font-bold"
+              >
+                <Sparkles className="w-4 h-4" />
+                Himalaya Creatives
+              </Link>
               <button className="px-4 py-2 rounded-lg border border-white/10 text-white/70 hover:text-white hover:bg-white/5 transition flex items-center gap-2 text-sm font-semibold">
                 <Upload className="w-4 h-4" />
                 Import
