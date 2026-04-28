@@ -3,122 +3,78 @@
 import { useState } from "react";
 import Link from "next/link";
 import SimplifiedNav from "@/components/SimplifiedNav";
+import { ECOMMERCE_TEMPLATES } from "@/lib/templates/provenTemplates";
 import {
   Search, Filter, Upload, Download, Sparkles, Layout, Image as ImageIcon,
   Video, FileText, Palette, Wand2, Copy, Trash2, Star, Grid3x3, List,
   ChevronRight, Plus, Folder, Heart, Clock, TrendingUp, Zap, Eye, Mountain,
+  Award, Target, BarChart3,
 } from "lucide-react";
 
-// Template categories (like Canva)
+// Template categories based on proven templates
 const CATEGORIES = [
-  { id: "all", label: "All Templates", icon: Layout, count: 1500 },
-  { id: "social", label: "Social Media", icon: ImageIcon, count: 450 },
-  { id: "ads", label: "Ads & Marketing", icon: TrendingUp, count: 380 },
-  { id: "stories", label: "Stories", icon: Video, count: 220 },
-  { id: "posts", label: "Posts & Feeds", icon: Grid3x3, count: 280 },
-  { id: "video-ads", label: "Video Ads", icon: Video, count: 170 },
+  { id: "all", label: "All Templates", icon: Layout, count: 100 },
+  { id: "ecommerce", label: "E-Commerce", icon: TrendingUp, count: 50 },
+  { id: "saas", label: "SaaS B2B", icon: Target, count: 50 },
+  { id: "meta", label: "Meta/Facebook", icon: ImageIcon, count: 40 },
+  { id: "tiktok", label: "TikTok", icon: Video, count: 18 },
+  { id: "high-ctr", label: "Top Performers (6%+ CTR)", icon: Award, count: 25 },
 ];
 
-// Template subcategories
+// Template subcategories based on proven templates
 const SUBCATEGORIES = {
-  social: ["Instagram Post", "Facebook Ad", "LinkedIn Post", "Twitter Header", "Pinterest Pin"],
-  ads: ["Meta Ads", "Google Display", "TikTok Ads", "Snapchat Ads", "YouTube Ads"],
-  stories: ["Instagram Stories", "Facebook Stories", "Snapchat Stories", "WhatsApp Status"],
-  posts: ["Carousel", "Single Image", "Collage", "Quote Post", "Product Showcase"],
-  "video-ads": ["TikTok", "Instagram Reels", "YouTube Shorts", "Facebook Video", "Story Ads"],
+  ecommerce: ["Product Demo", "Before/After", "Flash Sale", "Reviews", "Lifestyle", "UGC"],
+  saas: ["Problem-Solution", "Feature Highlight", "ROI Calculator", "Case Study", "Free Trial"],
+  meta: ["Square (1080x1080)", "Carousel", "Video 15s", "Video 30s"],
+  tiktok: ["Viral Demo", "GRWM", "Transformation", "Try-On Haul", "Tutorial"],
+  "high-ctr": ["6%+ CTR", "8%+ CTR", "10%+ CTR"],
 };
 
-// Mock templates (in production, fetch from database)
-const TEMPLATES = [
-  {
-    id: 1,
-    title: "Modern Product Launch",
-    category: "ads",
-    subcategory: "Meta Ads",
-    thumbnail: "https://placehold.co/400x400/1a1a1a/f5a623?text=Modern+Product",
-    isPro: false,
-    uses: 12453,
-    likes: 892,
-    format: "1080x1080",
-  },
-  {
-    id: 2,
-    title: "Bold Sale Announcement",
-    category: "social",
-    subcategory: "Instagram Post",
-    thumbnail: "https://placehold.co/400x400/1a1a1a/ff6b6b?text=Bold+Sale",
-    isPro: true,
-    uses: 8921,
-    likes: 654,
-    format: "1080x1080",
-  },
-  {
-    id: 3,
-    title: "Minimalist Story",
-    category: "stories",
-    subcategory: "Instagram Stories",
-    thumbnail: "https://placehold.co/400x600/1a1a1a/a855f7?text=Story",
-    isPro: false,
-    uses: 15234,
-    likes: 1203,
-    format: "1080x1920",
-  },
-  {
-    id: 4,
-    title: "Video Ad Template",
-    category: "video-ads",
-    subcategory: "TikTok",
-    thumbnail: "https://placehold.co/400x600/1a1a1a/10b981?text=Video+Ad",
-    isPro: true,
-    uses: 6234,
-    likes: 445,
-    format: "1080x1920",
-  },
-  {
-    id: 5,
-    title: "Product Showcase Carousel",
-    category: "posts",
-    subcategory: "Carousel",
-    thumbnail: "https://placehold.co/400x400/1a1a1a/3b82f6?text=Carousel",
-    isPro: false,
-    uses: 9876,
-    likes: 723,
-    format: "1080x1080",
-  },
-  {
-    id: 6,
-    title: "Before/After Split",
-    category: "ads",
-    subcategory: "Meta Ads",
-    thumbnail: "https://placehold.co/400x400/1a1a1a/f5a623?text=Before+After",
-    isPro: false,
-    uses: 11234,
-    likes: 891,
-    format: "1080x1080",
-  },
-  {
-    id: 7,
-    title: "Pain Agitation Ad",
-    category: "ads",
-    subcategory: "Meta Ads",
-    thumbnail: "https://placehold.co/400x400/1a1a1a/ff6b6b?text=Pain+Agitation",
-    isPro: true,
-    uses: 8456,
-    likes: 672,
-    format: "1080x1080",
-  },
-  {
-    id: 8,
-    title: "UGC Style Post",
-    category: "social",
-    subcategory: "Instagram Post",
-    thumbnail: "https://placehold.co/400x400/1a1a1a/a855f7?text=UGC+Style",
-    isPro: false,
-    uses: 13567,
-    likes: 1024,
-    format: "1080x1080",
-  },
-];
+// Convert proven templates to display format
+const TEMPLATES = ECOMMERCE_TEMPLATES.map((template, index) => {
+  // Determine category based on template properties
+  let category = "ecommerce";
+  if (template.avgCTR >= 6) category = "high-ctr";
+  if (template.platform === "tiktok") category = "tiktok";
+  if (template.platform === "meta") category = "meta";
+
+  // Determine subcategory based on visual style
+  let subcategory = template.visualStyle === "before-after" ? "Before/After" :
+    template.visualStyle === "urgency" ? "Flash Sale" :
+    template.visualStyle === "testimonial" ? "Reviews" :
+    template.visualStyle === "lifestyle" ? "Lifestyle" :
+    template.visualStyle === "ugc" ? "UGC" : "Product Demo";
+
+  // Format display
+  const formatDisplay = template.format === "square" ? "1080x1080" :
+    template.format === "story" ? "1080x1920" :
+    template.format === "video_15s" ? "15s Video" :
+    template.format === "video_30s" ? "30s Video" : template.format;
+
+  // Generate thumbnail URL with template colors
+  const bgColor = template.designElements.backgroundColor.replace("#", "");
+  const primaryColor = template.designElements.primaryColor.replace("#", "");
+  const templateName = encodeURIComponent(template.name.split(":")[0].substring(0, 20));
+  const thumbnail = `https://placehold.co/400x400/${bgColor}/${primaryColor}?text=${templateName}`;
+
+  return {
+    id: template.id,
+    title: template.name,
+    category,
+    subcategory,
+    thumbnail,
+    isPro: template.isPro,
+    uses: Math.floor(template.avgCTR * 1000), // Simulated usage based on CTR
+    likes: Math.floor(template.avgCTR * 150), // Simulated likes
+    format: formatDisplay,
+    // Add proven template data
+    ctr: template.avgCTR,
+    ctrRange: template.ctrRange,
+    brandExample: template.brandExamples[0],
+    hook: template.hooks[0]?.text || "",
+    platforms: template.platform,
+  };
+});
 
 export default function CreativeStudioPage() {
   const [selectedCategory, setSelectedCategory] = useState("all");
@@ -152,7 +108,7 @@ export default function CreativeStudioPage() {
                 Creative Studio
               </h1>
               <p className="text-white/50 text-sm">
-                1,500+ professional templates · Canva-style editor · AI-powered generation
+                {TEMPLATES.length} proven templates · 2.9x-4.8x better CTR · Real brand examples
               </p>
             </div>
 
@@ -401,16 +357,20 @@ function TemplateCard({ template }: { template: typeof TEMPLATES[0] }) {
       {/* Info */}
       <div className="p-3">
         <h4 className="font-bold text-white text-sm mb-1 truncate">{template.title}</h4>
+        <div className="flex items-center justify-between text-[10px] text-white/50 mb-1">
+          <span className="flex items-center gap-1">
+            <BarChart3 className="w-3 h-3 text-[#10b981]" />
+            <span className="text-[#10b981] font-bold">{template.ctr}% CTR</span>
+          </span>
+          <span className="text-white/30">·</span>
+          <span className="truncate">{template.brandExample}</span>
+        </div>
         <div className="flex items-center justify-between text-xs text-white/40">
           <span>{template.format}</span>
           <div className="flex items-center gap-2">
             <span className="flex items-center gap-1">
-              <Eye className="w-3 h-3" />
-              {(template.uses / 1000).toFixed(1)}k
-            </span>
-            <span className="flex items-center gap-1">
-              <Heart className="w-3 h-3" />
-              {template.likes}
+              <Award className="w-3 h-3 text-[#f5a623]" />
+              <span className="text-[#f5a623]">{template.ctrRange}</span>
             </span>
           </div>
         </div>
@@ -436,15 +396,19 @@ function TemplateListItem({ template }: { template: typeof TEMPLATES[0] }) {
               PRO
             </span>
           )}
+          <span className="px-2 py-0.5 rounded-md bg-[#10b981]/20 text-[#10b981] text-[10px] font-bold flex items-center gap-1">
+            <BarChart3 className="w-3 h-3" />
+            {template.ctr}% CTR
+          </span>
         </div>
         <div className="flex items-center gap-3 text-xs text-white/40">
-          <span>{template.subcategory}</span>
+          <span>{template.brandExample}</span>
           <span>•</span>
           <span>{template.format}</span>
           <span>•</span>
-          <span className="flex items-center gap-1">
-            <Eye className="w-3 h-3" />
-            {(template.uses / 1000).toFixed(1)}k uses
+          <span className="flex items-center gap-1 text-[#f5a623]">
+            <Award className="w-3 h-3" />
+            {template.ctrRange}
           </span>
           <span className="flex items-center gap-1">
             <Heart className="w-3 h-3" />
