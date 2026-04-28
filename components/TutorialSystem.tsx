@@ -164,6 +164,58 @@ const TUTORIALS: Tutorial[] = [
       },
     ],
   },
+  {
+    id: "creative-studio",
+    title: "Create Ads with Creative Studio",
+    description: "Use proven templates with 2.9x-4.8x better CTR to create professional ads",
+    icon: Sparkles,
+    estimatedTime: "7 min",
+    difficulty: "beginner",
+    steps: [
+      {
+        id: "goto-studio",
+        title: "Open Creative Studio",
+        description: "Click on 'Market' → 'Creative Studio' to access 13 proven ad templates with real performance data from brands like Purple, Ridge Wallet, and Warby Parker.",
+        elementSelector: "a[href='/creative-studio']",
+        position: "bottom",
+        ctaText: "Open Creative Studio",
+        ctaHref: "/creative-studio",
+      },
+      {
+        id: "browse-templates",
+        title: "Browse Proven Templates",
+        description: "Each template shows real CTR data (2.9x-4.8x improvement over generic ads), brand examples, and platform optimization. Filter by E-Commerce, SaaS, Meta, TikTok, or High-CTR (6%+).",
+        position: "bottom",
+      },
+      {
+        id: "select-template",
+        title: "Choose Your Template",
+        description: "Click any template to see full details including hooks from real brands, design specifications, copy formulas, and CTR benchmarks. Pick one that matches your product and platform.",
+        position: "bottom",
+      },
+      {
+        id: "customize-editor",
+        title: "Customize in Canva-Style Editor",
+        description: "The editor opens with your template pre-loaded. Drag and drop elements, upload images, change text, and customize colors to match your brand.",
+        position: "bottom",
+      },
+      {
+        id: "export-ad",
+        title: "Export Your Ad",
+        description: "Export as PNG or JPG in the correct size for your platform (1080x1080 for Meta, 1080x1920 for TikTok). Your ad is ready to upload!",
+        position: "bottom",
+      },
+      {
+        id: "himalaya-creatives",
+        title: "Bonus: AI-Generated Ads",
+        description: "Try 'Himalaya Creatives' in the Market menu to auto-generate ad ideas from your Himalaya business. It pre-fills the editor with your product details!",
+        elementSelector: "a[href='/creative-studio/himalaya']",
+        position: "bottom",
+        ctaText: "Try Himalaya Creatives",
+        ctaHref: "/creative-studio/himalaya",
+      },
+    ],
+  },
 ];
 
 export default function TutorialSystem() {
