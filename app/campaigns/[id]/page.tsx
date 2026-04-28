@@ -848,7 +848,7 @@ export default function CampaignWorkspace() {
                       Generate Professional Ad Creatives
                     </h3>
                     <p className="mt-2 text-sm leading-relaxed text-white/65">
-                      Access 1,500+ templates, 16 proven frameworks (2.9x-4.8x CTR), and Canva-style editor. Generate AI-powered ads from your Himalaya business analysis or start from scratch.
+                      Access 13 proven templates with 2.9x-4.8x CTR improvement, real brand examples, and Canva-style editor. Generate AI-powered ads from your Himalaya business analysis or start from scratch.
                     </p>
                   </div>
                   <div className="flex flex-col gap-2 shrink-0">
