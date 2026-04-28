@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import {
   Loader2, Copy, Check, Instagram, Music, Twitter, Linkedin, Facebook,
   Send, Clock,
@@ -54,7 +54,7 @@ export default function SocialContentPage() {
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <h1 className="text-2xl font-black text-white tracking-tight mb-2">Social Content</h1>
         <p className="text-sm text-white/35 mb-8">Generate ready-to-post content for any platform</p>

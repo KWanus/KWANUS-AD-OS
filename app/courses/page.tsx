@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import {
   BookOpen, Plus, Loader2, Check, DollarSign, Users, ChevronRight, Trash2,
 } from "lucide-react";
@@ -95,11 +95,11 @@ No explanations. Just the JSON array.`,
     setCreating(false);
   }
 
-  if (loading) return <div className="min-h-screen bg-t-bg text-white"><AppNav /><main className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 text-white/20 animate-spin" /></main></div>;
+  if (loading) return <div className="min-h-screen bg-t-bg text-white"><SimplifiedNav /><main className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 text-white/20 animate-spin" /></main></div>;
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">

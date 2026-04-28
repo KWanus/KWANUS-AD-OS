@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import {
   Mail, Calendar, Check, X, Loader2, ExternalLink, RefreshCw,
   AlertCircle, Zap,
@@ -91,7 +91,7 @@ export default function IntegrationsPage() {
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
         <h1 className="text-2xl font-black text-white tracking-tight mb-2">Integrations</h1>
         <p className="text-sm text-white/35 mb-8">

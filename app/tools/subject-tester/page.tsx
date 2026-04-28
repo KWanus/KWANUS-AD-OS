@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import { Mail, Sparkles, Loader2, Trophy, Plus, X } from "lucide-react";
 
 type SubjectScore = {
@@ -112,7 +112,7 @@ Each under 45 characters. No emojis. No quotes. Just the text, one per line.`,
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 rounded-xl bg-[#e07850]/10 border border-[#e07850]/20 flex items-center justify-center">

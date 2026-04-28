@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import {
   BarChart3, TrendingUp, Users, Globe, Mail, Zap,
   Loader2, ArrowRight, Activity, DollarSign,
@@ -275,7 +275,7 @@ export default function AnalyticsPage() {
       <div className="fixed top-0 left-1/3 w-[600px] h-[400px] bg-[#f5a623]/[0.05] blur-[140px] rounded-full pointer-events-none" />
       <div className="fixed bottom-0 right-1/4 w-[400px] h-[400px] bg-[#e07850]/[0.05] blur-[120px] rounded-full pointer-events-none" />
 
-      <AppNav />
+      <SimplifiedNav />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
 

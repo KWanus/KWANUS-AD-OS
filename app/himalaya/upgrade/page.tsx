@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Check, Zap, Mountain, Loader2, Target, Rocket, BarChart2, TrendingUp, RefreshCw, CheckCircle, XCircle } from "lucide-react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import HimalayaNav from "@/components/himalaya/HimalayaNav";
 
 type Access = {
@@ -134,7 +134,7 @@ export default function HimalayaUpgradePage() {
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <HimalayaNav />
       <main className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
         <Link href="/himalaya" className="mb-8 inline-flex items-center gap-1.5 text-xs text-white/30 transition hover:text-white/60">

@@ -4,7 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import SimpleMode from "@/components/SimpleMode";
 import { useAppMode } from "@/lib/theme/ModeProvider";
 import {
@@ -376,7 +376,7 @@ export default function Home() {
   if (running) {
     return (
       <main className="min-h-screen bg-t-bg text-t-text">
-        <AppNav />
+        <SimplifiedNav />
         <div className="flex flex-col items-center justify-center min-h-[75vh] gap-5 px-4">
           <div className="w-16 h-16 rounded-2xl bg-gradient-to-br from-[#f5a623] to-[#e07850] flex items-center justify-center animate-pulse">
             <Mountain className="w-8 h-8 text-white" />
@@ -393,7 +393,7 @@ export default function Home() {
   if (mode === "simple") {
     return (
       <main className="min-h-screen bg-t-bg text-t-text">
-        <AppNav />
+        <SimplifiedNav />
         <div className="px-4 sm:px-6 pb-20">
           {/* Mode toggle + greeting */}
           <div className="max-w-md mx-auto pt-12 pb-6">
@@ -434,7 +434,7 @@ export default function Home() {
   // Pro Mode — full dashboard with all features
   return (
     <main className="min-h-screen bg-t-bg text-t-text">
-      <AppNav />
+      <SimplifiedNav />
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pb-20">
 
         {/* ── Greeting ── */}

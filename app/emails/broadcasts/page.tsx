@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { toast } from "sonner";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import CampaignSubNav from "@/components/BuildSubNav";
 import {
   Send,
@@ -665,7 +665,7 @@ export default function BroadcastsPage() {
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <CampaignSubNav />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10">

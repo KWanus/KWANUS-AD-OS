@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import { Check, X, ExternalLink, Eye, EyeOff, Loader2, AlertTriangle } from "lucide-react";
 
 type KeyStatus = {
@@ -35,7 +35,7 @@ export default function ApiKeysPage() {
 
   return (
     <main className="min-h-screen bg-t-bg text-t-text">
-      <AppNav />
+      <SimplifiedNav />
       <div className="max-w-2xl mx-auto px-4 sm:px-6 pb-20">
         <div className="pt-8 pb-4">
           <h1 className="text-2xl font-black">API Keys & Integrations</h1>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import { Plus, X, Copy, Check, DollarSign, Gift, Shield, Sparkles, Loader2 } from "lucide-react";
 
 type OfferItem = {
@@ -88,7 +88,7 @@ export default function OfferBuilderPage() {
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center">

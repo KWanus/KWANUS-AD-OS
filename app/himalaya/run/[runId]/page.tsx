@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback, use, type ReactNode } from "react";
 import Link from "next/link";
 import { Loader2, ArrowLeft, AlertTriangle, ChevronDown } from "lucide-react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import HimalayaNav from "@/components/himalaya/HimalayaNav";
 import ResultsHeader from "@/components/himalaya/ResultsHeader";
 import ResultsSummary from "@/components/himalaya/ResultsSummary";
@@ -95,7 +95,7 @@ export default function HimalayaRunPage({ params }: { params: Promise<{ runId: s
   if (loading) {
     return (
       <div className="min-h-screen bg-t-bg text-white">
-        <AppNav />
+        <SimplifiedNav />
         <HimalayaNav />
         <main className="max-w-4xl mx-auto px-4 sm:px-6 py-8">
           {/* Skeleton */}
@@ -133,7 +133,7 @@ export default function HimalayaRunPage({ params }: { params: Promise<{ runId: s
   if (error || !vm) {
     return (
       <div className="min-h-screen bg-t-bg text-white">
-        <AppNav />
+        <SimplifiedNav />
         <div className="mx-auto flex min-h-[50vh] max-w-3xl flex-col justify-center gap-4 px-4">
           <div className="flex flex-col items-center gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8">
             <AlertTriangle className="w-8 h-8 text-red-400/50" />
@@ -149,7 +149,7 @@ export default function HimalayaRunPage({ params }: { params: Promise<{ runId: s
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <HimalayaNav />
       <main className="mx-auto max-w-4xl px-4 py-6 sm:px-6 sm:py-8 print:max-w-none print:px-8">
         {/* Back nav + share portal (hidden in print) */}

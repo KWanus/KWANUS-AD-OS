@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import type { Block } from "@/components/site-builder/BlockRenderer";
 import {
@@ -502,7 +502,7 @@ export default function SiteDetailPage({ params }: { params: Promise<{ id: strin
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
 
       <main className="max-w-4xl mx-auto px-4 sm:px-6 py-10">
         {/* Back */}

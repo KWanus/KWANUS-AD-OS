@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import {
   Store, Search, Star, ShoppingCart, DollarSign, TrendingUp,
   Mail, Zap, Globe, BookOpen, Loader2, Filter,
@@ -65,7 +65,7 @@ export default function MarketplacePage() {
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
         {/* Header */}
         <div className="text-center mb-10">

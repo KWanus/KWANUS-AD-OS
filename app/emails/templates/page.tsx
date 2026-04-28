@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import CampaignSubNav from "@/components/BuildSubNav";
 import {
   LayoutTemplate, Loader2, Zap, Search, ChevronRight,
@@ -304,7 +304,7 @@ export default function EmailTemplatesPage() {
       <div className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-[#f5a623]/[0.05] blur-[120px] rounded-full pointer-events-none" />
       <div className="fixed bottom-0 right-1/4 w-[400px] h-[400px] bg-[#e07850]/[0.04] blur-[120px] rounded-full pointer-events-none" />
 
-      <AppNav />
+      <SimplifiedNav />
       <CampaignSubNav />
 
       <main className="flex-1 max-w-7xl mx-auto w-full px-4 sm:px-6 py-10">

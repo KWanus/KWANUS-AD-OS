@@ -5,7 +5,7 @@ import { Plus, Globe, Loader2, Settings, ExternalLink, Sparkles, Copy, Check, Bo
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import { WorkspaceHero, WorkspaceShell } from "@/components/ui/WorkspaceShell";
 import { auditPublishedSite } from "@/lib/site-builder/publishAudit";
@@ -351,7 +351,7 @@ export default function WebsitesDashboard() {
 
     return (
         <div className="min-h-screen bg-t-bg font-sans flex flex-col text-white">
-            <AppNav />
+            <SimplifiedNav />
             <WorkspaceShell maxWidth="max-w-7xl">
                 <WorkspaceHero
                     eyebrow="Sites"

@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback, useMemo } from "react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import { toast } from "sonner";
 import {
   Plus, X, Copy, ChevronRight, Loader2, CheckCircle2,
@@ -1081,7 +1081,7 @@ export default function DropshipPage() {
           style={{ backgroundImage: "radial-gradient(circle, #fff 1px, transparent 1px)", backgroundSize: "32px 32px" }} />
       </div>
 
-      <AppNav />
+      <SimplifiedNav />
 
       <div className="relative z-10 flex-1 max-w-6xl mx-auto w-full px-6">
         {/* Header */}

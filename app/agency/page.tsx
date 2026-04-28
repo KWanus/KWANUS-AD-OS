@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import { toast } from "sonner";
 import {
   X,
@@ -1116,7 +1116,7 @@ export default function AgencyPage() {
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
 
       <main className="max-w-5xl mx-auto px-4 py-8 space-y-6">
         {/* Header */}

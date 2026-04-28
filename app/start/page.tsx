@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { Compass } from "lucide-react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import WorkflowGuide from "@/components/navigation/WorkflowGuide";
 import WorkflowHeader from "@/components/navigation/WorkflowHeader";
 import WorkflowPanel from "@/components/navigation/WorkflowPanel";
@@ -196,7 +196,7 @@ export default function StartPage() {
 
   return (
     <main className="min-h-screen bg-t-bg-card text-white flex flex-col">
-      <AppNav />
+      <SimplifiedNav />
       <header className="px-8 py-6 border-b border-white/10">
         <Link href="/" className="text-[#f5a623] text-sm hover:underline">← Back to Dashboard</Link>
         <div className="mt-2">

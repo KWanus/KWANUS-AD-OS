@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 
 type ProductScanResult = {
   id: string;
@@ -116,7 +116,7 @@ export default function ScanProductsPage() {
 
   return (
     <main className="min-h-screen bg-t-bg-card text-white flex flex-col">
-      <AppNav />
+      <SimplifiedNav />
       <header className="px-8 py-6 border-b border-white/10">
         <Link href="/" className="text-[#f5a623] text-sm hover:underline">← Back to Dashboard</Link>
         <h1 className="text-2xl font-bold mt-2">Scan Products</h1>

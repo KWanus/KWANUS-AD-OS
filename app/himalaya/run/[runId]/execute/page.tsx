@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import { Loader2, ArrowLeft, AlertTriangle } from "lucide-react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import HimalayaNav from "@/components/himalaya/HimalayaNav";
 import ExecutionSteps from "@/components/himalaya/ExecutionSteps";
 import { formatResults } from "@/lib/himalaya/formatResults";
@@ -32,7 +32,7 @@ export default function HimalayaExecutePage({ params }: { params: Promise<{ runI
   if (loading) {
     return (
       <div className="min-h-screen bg-t-bg text-white">
-        <AppNav />
+        <SimplifiedNav />
         <div className="flex items-center justify-center min-h-[60vh]">
           <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
         </div>
@@ -43,7 +43,7 @@ export default function HimalayaExecutePage({ params }: { params: Promise<{ runI
   if (error || !vm) {
     return (
       <div className="min-h-screen bg-t-bg text-white">
-        <AppNav />
+        <SimplifiedNav />
         <div className="mx-auto flex min-h-[50vh] max-w-3xl flex-col justify-center gap-4 px-4">
           <div className="flex flex-col items-center gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8">
             <AlertTriangle className="w-8 h-8 text-red-400/50" />
@@ -56,7 +56,7 @@ export default function HimalayaExecutePage({ params }: { params: Promise<{ runI
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <HimalayaNav />
       <main className="mx-auto max-w-3xl px-4 py-8 sm:px-6">
         <Link

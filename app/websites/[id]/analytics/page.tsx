@@ -2,7 +2,7 @@
 
 import { useState, useEffect, use } from "react";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import {
   ArrowLeft,
   Loader2,
@@ -111,7 +111,7 @@ export default function SiteAnalyticsPage({
   if (loading) {
     return (
       <main className="min-h-screen bg-t-bg text-t-text">
-        <AppNav />
+        <SimplifiedNav />
         <div className="flex items-center justify-center min-h-[70vh]">
           <Loader2 className="w-8 h-8 animate-spin text-[#f5a623]" />
         </div>
@@ -122,7 +122,7 @@ export default function SiteAnalyticsPage({
   if (error || !data) {
     return (
       <main className="min-h-screen bg-t-bg text-t-text">
-        <AppNav />
+        <SimplifiedNav />
         <div className="max-w-4xl mx-auto text-center py-20 px-4">
           <p className="text-red-400">{error ?? "No data"}</p>
           <Link href={`/websites/${id}`} className="mt-4 inline-block text-[#f5a623] hover:underline">Back to site</Link>
@@ -137,7 +137,7 @@ export default function SiteAnalyticsPage({
 
   return (
     <main className="min-h-screen bg-t-bg text-t-text">
-      <AppNav />
+      <SimplifiedNav />
       <div>
         <div className="max-w-6xl mx-auto px-4 sm:px-6 py-8 space-y-8">
           {/* Header */}

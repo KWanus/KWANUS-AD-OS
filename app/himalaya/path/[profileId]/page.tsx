@@ -9,7 +9,7 @@ import {
   Link as LinkIcon, Package, Briefcase, User, GraduationCap,
   MapPin, ShoppingBag, FileText, Zap, Wrench,
 } from "lucide-react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import HimalayaNav from "@/components/himalaya/HimalayaNav";
 import type { DecisionResult, BusinessPath, PathRecommendation } from "@/lib/himalaya/profileTypes";
 import { PATH_INFO } from "@/lib/himalaya/profileTypes";
@@ -216,7 +216,7 @@ export default function HimalayaPathPage({ params }: { params: Promise<{ profile
   if (loading) {
     return (
       <div className="min-h-screen bg-t-bg text-white">
-        <AppNav />
+        <SimplifiedNav />
         <div className="flex flex-col items-center justify-center min-h-[60vh] gap-3">
           <Loader2 className="w-6 h-6 text-[#f5a623] animate-spin" />
           <p className="text-sm text-white/30">Analyzing your profile...</p>
@@ -228,7 +228,7 @@ export default function HimalayaPathPage({ params }: { params: Promise<{ profile
   if (error || !result) {
     return (
       <div className="min-h-screen bg-t-bg text-white">
-        <AppNav />
+        <SimplifiedNav />
         <div className="mx-auto flex min-h-[50vh] max-w-3xl flex-col justify-center gap-4 px-4">
           <div className="flex flex-col items-center gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8">
             <AlertTriangle className="w-8 h-8 text-red-400/50" />
@@ -242,7 +242,7 @@ export default function HimalayaPathPage({ params }: { params: Promise<{ profile
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <HimalayaNav />
       <main className="mx-auto max-w-3xl px-4 py-10 sm:px-6">
         {/* Header */}

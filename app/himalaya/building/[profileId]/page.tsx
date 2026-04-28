@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { CheckCircle, Loader2, Mountain, AlertTriangle, XCircle } from "lucide-react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import HimalayaNav from "@/components/himalaya/HimalayaNav";
 
 type StageDisplay = {
@@ -108,7 +108,7 @@ export default function HimalayaBuildingPage({ params }: { params: Promise<{ pro
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <HimalayaNav />
       <main className="mx-auto max-w-lg px-4 py-16 sm:px-6">
         {/* Header */}

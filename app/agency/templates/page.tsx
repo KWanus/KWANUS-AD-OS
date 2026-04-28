@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import { toast } from "sonner";
 import {
   Bot,
@@ -235,7 +235,7 @@ Client: ________________________   Date: ____________
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
-      <AppNav />
+      <SimplifiedNav />
       <div className="max-w-3xl mx-auto px-4 py-10">
         {/* Header */}
         <div className="mb-8">

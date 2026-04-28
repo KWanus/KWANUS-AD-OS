@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import {
   Store, Package, Globe, Mail, Zap, Loader2, Check, DollarSign,
   ArrowRight, X, Tag, ChevronDown,
@@ -137,7 +137,7 @@ export default function SellPage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
-      <AppNav />
+      <SimplifiedNav />
       <main className="max-w-3xl mx-auto px-4 py-10">
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-3">

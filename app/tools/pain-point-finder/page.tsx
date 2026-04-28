@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import { Search, Loader2, Copy, Check, AlertTriangle, TrendingUp } from "lucide-react";
 
 type PainResult = {
@@ -73,7 +73,7 @@ Include 6 pain points (2 critical, 2 high, 2 medium) and 4 desires. Be extremely
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 rounded-xl bg-red-500/10 border border-red-500/20 flex items-center justify-center">

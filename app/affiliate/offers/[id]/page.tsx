@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -1098,7 +1098,7 @@ export default function AffiliateOfferPage() {
   if (loading) {
     return (
       <>
-        <AppNav />
+        <SimplifiedNav />
         <div className="flex items-center justify-center min-h-[60vh]">
           <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
         </div>
@@ -1109,7 +1109,7 @@ export default function AffiliateOfferPage() {
   if (!offer) {
     return (
       <>
-        <AppNav />
+        <SimplifiedNav />
         <div className="mx-auto flex min-h-[60vh] max-w-3xl flex-col justify-center gap-4 px-4">
           <DatabaseFallbackNotice visible={databaseUnavailable} />
           <div className="flex flex-col items-center justify-center gap-4 rounded-2xl border border-white/[0.07] bg-white/[0.03] p-8">
@@ -1132,7 +1132,7 @@ export default function AffiliateOfferPage() {
 
   return (
     <>
-      <AppNav />
+      <SimplifiedNav />
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-8">
         {/* Back */}
         <Link href="/affiliate" className="inline-flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition mb-6">

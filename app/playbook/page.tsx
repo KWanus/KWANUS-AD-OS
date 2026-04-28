@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import { getNicheGuide, getAllNicheGuides, type NicheGuide } from "@/lib/himalaya/nicheGuides";
 import {
   Loader2, ChevronRight, AlertTriangle, Clock, Target,
@@ -53,7 +53,7 @@ export default function PlaybookPage() {
   if (loading) {
     return (
       <main className="min-h-screen bg-t-bg text-t-text">
-        <AppNav />
+        <SimplifiedNav />
         <div className="flex flex-col items-center justify-center min-h-[75vh] gap-4">
           <Loader2 className="w-6 h-6 text-[#f5a623] animate-spin" />
           <p className="text-sm text-t-text-muted">Loading your playbook...</p>
@@ -65,7 +65,7 @@ export default function PlaybookPage() {
   if (!guide) {
     return (
       <main className="min-h-screen bg-t-bg text-t-text">
-        <AppNav />
+        <SimplifiedNav />
         <div className="flex flex-col items-center justify-center min-h-[75vh] gap-4">
           <p className="text-sm text-t-text-muted">No playbook available yet. Complete onboarding first.</p>
           <Link href="/himalaya" className="text-xs text-[#f5a623] hover:underline">Go to Himalaya</Link>
@@ -78,7 +78,7 @@ export default function PlaybookPage() {
 
   return (
     <main className="min-h-screen bg-t-bg text-t-text">
-      <AppNav />
+      <SimplifiedNav />
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pb-28">
 
         {/* Page header */}

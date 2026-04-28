@@ -4,7 +4,7 @@ import { useState, useEffect, use } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import {
   Check, Globe, Zap, Mail, Play, Copy, ExternalLink,
   ArrowRight, Mountain, Loader2, ChevronDown, Crown, ChevronRight,
@@ -85,7 +85,7 @@ export default function BuiltPage({ params }: { params: Promise<{ runId: string 
   if (loading) {
     return (
       <main className="min-h-screen bg-t-bg text-t-text">
-        <AppNav />
+        <SimplifiedNav />
         <div className="flex flex-col items-center justify-center min-h-[75vh] gap-4">
           <Loader2 className="w-6 h-6 text-[#f5a623] animate-spin" />
           <p className="text-sm text-t-text-muted">Loading your business...</p>
@@ -130,7 +130,7 @@ export default function BuiltPage({ params }: { params: Promise<{ runId: string 
 
   return (
     <main className="min-h-screen bg-t-bg text-t-text">
-      <AppNav />
+      <SimplifiedNav />
       <div className="max-w-lg mx-auto px-4 sm:px-6 pb-20">
 
         {/* Header */}

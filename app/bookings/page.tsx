@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import {
   CalendarDays, Check, Clock, Copy, ExternalLink, Loader2,
   Phone, Mail, ChevronLeft, ChevronRight, Settings, X,
@@ -107,7 +107,7 @@ export default function BookingsPage() {
   if (loading) {
     return (
       <main className="min-h-screen bg-t-bg text-t-text">
-        <AppNav />
+        <SimplifiedNav />
         <div className="flex items-center justify-center min-h-[70vh]">
           <Loader2 className="w-6 h-6 text-[#f5a623] animate-spin" />
         </div>
@@ -117,7 +117,7 @@ export default function BookingsPage() {
 
   return (
     <main className="min-h-screen bg-t-bg text-t-text">
-      <AppNav />
+      <SimplifiedNav />
       <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
 
         {/* Header */}

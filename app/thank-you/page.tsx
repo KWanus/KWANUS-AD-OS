@@ -2,12 +2,12 @@
 
 import Link from "next/link";
 import { CheckCircle, Mail, ArrowRight } from "lucide-react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 
 export default function ThankYouPage() {
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <main className="max-w-xl mx-auto px-4 py-20 text-center">
         <div className="mb-6">
           <div className="w-20 h-20 rounded-full bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center mx-auto">

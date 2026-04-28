@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import {
   Loader2, Check, ExternalLink, RefreshCw, AlertTriangle, Shield,
 } from "lucide-react";
@@ -71,13 +71,13 @@ export default function AdAccountsPage() {
     }
   }, []);
 
-  if (loading) return <div className="min-h-screen bg-t-bg text-white"><AppNav /><main className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 text-white/20 animate-spin" /></main></div>;
+  if (loading) return <div className="min-h-screen bg-t-bg text-white"><SimplifiedNav /><main className="flex items-center justify-center py-20"><Loader2 className="w-6 h-6 text-white/20 animate-spin" /></main></div>;
 
   const connectedCount = status ? Object.values(status).filter((p) => p.connected).length : 0;
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <main className="max-w-3xl mx-auto px-4 sm:px-6 py-10">
         <div className="flex items-center gap-3 mb-8">
           <div className="w-10 h-10 rounded-xl bg-[#f5a623]/10 border border-[#f5a623]/20 flex items-center justify-center">

@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import CampaignSubNav from "@/components/BuildSubNav";
 import {
   Search, Plus, Trash2, Upload, Tag, ChevronLeft,
@@ -188,7 +188,7 @@ export default function ContactsPage() {
       <div className="fixed inset-0 opacity-[0.02] pointer-events-none"
         style={{ backgroundImage: "radial-gradient(#fff 1px,transparent 1px)", backgroundSize: "28px 28px" }} />
 
-      <AppNav />
+      <SimplifiedNav />
       <CampaignSubNav />
 
       <div className="relative z-10 flex-1 max-w-6xl mx-auto w-full px-6 py-8">

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import { ArrowRight, Bot, Sparkles, Database, ShieldCheck } from "lucide-react";
 
 const AGENTS = [
@@ -40,7 +40,7 @@ const STEPS = [
 export default function AgentsPage() {
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
-      <AppNav />
+      <SimplifiedNav />
 
       <main className="max-w-4xl mx-auto px-4 py-12">
         {/* Header */}

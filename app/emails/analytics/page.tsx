@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import CampaignSubNav from "@/components/BuildSubNav";
 import {
   BarChart2,
@@ -332,7 +332,7 @@ export default function EmailAnalyticsPage() {
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <CampaignSubNav />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10">

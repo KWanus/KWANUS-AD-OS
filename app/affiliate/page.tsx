@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import {
   Copy, Check, Users, DollarSign, Share2, Mail, ArrowRight,
   MousePointerClick, TrendingUp, Loader2,
@@ -63,7 +63,7 @@ export default function AffiliatePage() {
 
   return (
     <div className="min-h-screen bg-[#0a0a0a] text-white">
-      <AppNav />
+      <SimplifiedNav />
       <main className="max-w-2xl mx-auto px-4 py-10">
         <div className="flex items-center gap-3 mb-8">
           <Share2 className="w-7 h-7 text-[#f5a623]" />

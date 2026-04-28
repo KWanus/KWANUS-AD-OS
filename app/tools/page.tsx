@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import {
   Webhook, Calculator, Globe, FileText, Calendar, Search,
   MessageSquare, BookmarkPlus, BarChart3, Target, Users,
@@ -136,7 +136,7 @@ const TOOLS = [
 export default function ToolsPage() {
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <main className="max-w-5xl mx-auto px-4 sm:px-6 py-10">
         <div className="mb-8">
           <h1 className="text-2xl font-black text-white tracking-tight">Tools</h1>

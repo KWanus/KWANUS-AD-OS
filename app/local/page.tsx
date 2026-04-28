@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import { toast } from "sonner";
 import {
   Loader2, MapPin, Package, BarChart2, Search, X, Plus,
@@ -1043,7 +1043,7 @@ export default function LocalPage() {
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <div className="max-w-5xl mx-auto px-4 pt-10 pb-20">
 
         {/* Header */}

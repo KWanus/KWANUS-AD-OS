@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import {
   DollarSign, TrendingUp, ShoppingCart, Mail, Users, BarChart3,
   ArrowUpRight, ArrowDownRight, Loader2, Globe,
@@ -50,7 +50,7 @@ export default function RevenueDashboard() {
   if (loading) {
     return (
       <div className="min-h-screen bg-t-bg text-white">
-        <AppNav />
+        <SimplifiedNav />
         <main className="max-w-6xl mx-auto px-4 py-10 flex items-center justify-center min-h-[60vh]">
           <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
         </main>
@@ -64,7 +64,7 @@ export default function RevenueDashboard() {
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <main className="max-w-6xl mx-auto px-4 sm:px-6 py-10">
         {/* Header */}
         <div className="flex items-center justify-between mb-8">

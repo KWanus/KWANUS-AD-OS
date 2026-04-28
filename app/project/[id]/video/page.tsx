@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from "react";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import {
   ArrowLeft, Play, Save, Video, Loader2, Check,
   Smartphone, Monitor, RotateCcw,
@@ -74,7 +74,7 @@ export default function VideoCreatorPage({ params }: { params: Promise<{ id: str
 
   return (
     <main className="min-h-screen bg-t-bg text-t-text">
-      <AppNav />
+      <SimplifiedNav />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-20">
         <div className="pt-6 pb-3">
           <Link href={`/project/${id}`} className="inline-flex items-center gap-1.5 text-xs text-t-text-faint hover:text-t-text-muted transition mb-3">

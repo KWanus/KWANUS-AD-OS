@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import {
   Shield,
   CheckCircle,
@@ -122,7 +122,7 @@ export default function EmailWarmupPage() {
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
 
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-10">
         {/* Back link */}

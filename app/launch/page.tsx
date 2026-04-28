@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import WorkflowGuide from "@/components/navigation/WorkflowGuide";
 import WorkflowHeader from "@/components/navigation/WorkflowHeader";
 import WorkflowLoading from "@/components/navigation/WorkflowLoading";
@@ -94,7 +94,7 @@ export default function LaunchPage() {
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <main className="max-w-xl mx-auto px-4 py-20">
         {!launching && !result ? (
           /* ── Input Stage ── */

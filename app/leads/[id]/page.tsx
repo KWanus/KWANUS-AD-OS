@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { useParams } from "next/navigation";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import EmailTemplateSelector from "@/components/EmailTemplateSelector";
 import CRMSubNav from "@/components/CRMSubNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
@@ -872,14 +872,14 @@ export default function LeadDetailPage() {
 
   if (loading) return (
     <div className="min-h-screen bg-t-bg text-white flex flex-col">
-      <AppNav />
+      <SimplifiedNav />
       <div className="flex-1 flex items-center justify-center"><Loader2 className="w-6 h-6 animate-spin text-white/20" /></div>
     </div>
   );
 
   if (!lead) return (
     <div className="min-h-screen bg-t-bg text-white flex flex-col">
-      <AppNav />
+      <SimplifiedNav />
       <div className="flex-1 flex items-center justify-center px-4">
         <div className="w-full max-w-3xl space-y-4">
           <DatabaseFallbackNotice visible={databaseUnavailable} />
@@ -907,7 +907,7 @@ export default function LeadDetailPage() {
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <CRMSubNav />
       <div className="max-w-4xl mx-auto px-4 pt-8 pb-20">
 

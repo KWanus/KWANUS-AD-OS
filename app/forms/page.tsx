@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from "react";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import { toast } from "sonner";
 import {
   Plus, Loader2, FileText, Eye, Users, Copy, Check,
@@ -325,7 +325,7 @@ export default function FormsManagerPage() {
   return (
     <div className="min-h-screen bg-t-bg text-white flex flex-col">
       <div className="fixed top-0 left-1/3 w-[500px] h-[400px] bg-[#f5a623]/[0.04] blur-[140px] rounded-full pointer-events-none" />
-      <AppNav />
+      <SimplifiedNav />
 
       <main className="flex-1 max-w-6xl mx-auto w-full px-4 sm:px-6 py-10">
         {/* Header */}

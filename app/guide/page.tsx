@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import {
   Mountain, ArrowRight, Zap, Globe, Mail, Users,
   Play, DollarSign, BarChart2, Settings, Target,
@@ -58,7 +58,7 @@ const GUIDES = [
 export default function GuidePage() {
   return (
     <main className="min-h-screen bg-t-bg text-t-text">
-      <AppNav />
+      <SimplifiedNav />
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pb-20">
         <div className="pt-8 pb-6">
           <h1 className="text-2xl font-black">How to Use Himalaya</h1>

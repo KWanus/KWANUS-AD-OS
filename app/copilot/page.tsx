@@ -2,7 +2,7 @@
 
 import { Suspense, useState, useRef, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import AISubNav from "@/components/AISubNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import { Send, Loader2, Zap, RefreshCw, User, Sparkles } from "lucide-react";
@@ -302,7 +302,7 @@ function CopilotPageContent() {
 
   return (
     <div className="min-h-screen bg-t-bg text-white flex flex-col">
-      <AppNav />
+      <SimplifiedNav />
       <AISubNav />
 
       <div className="flex-1 flex flex-col max-w-3xl mx-auto w-full px-4 pt-8 pb-4">
@@ -513,7 +513,7 @@ function CopilotPageContent() {
 
 export default function CopilotPage() {
   return (
-    <Suspense fallback={<div className="min-h-screen bg-t-bg text-white"><AppNav /></div>}>
+    <Suspense fallback={<div className="min-h-screen bg-t-bg text-white"><SimplifiedNav /></div>}>
       <CopilotPageContent />
     </Suspense>
   );

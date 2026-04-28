@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import ThemePicker from "@/components/settings/ThemePicker";
 import OperatorStatCard from "@/components/navigation/OperatorStatCard";
 import WorkflowHeader from "@/components/navigation/WorkflowHeader";
@@ -347,7 +347,7 @@ export default function SettingsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-t-bg text-white">
-        <AppNav />
+        <SimplifiedNav />
         <div className="flex items-center justify-center py-24">
           <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
         </div>
@@ -357,7 +357,7 @@ export default function SettingsPage() {
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
 
       <main className="max-w-2xl mx-auto px-4 sm:px-6 py-10 space-y-6">
         <div className="rounded-3xl border border-white/[0.06] bg-gradient-to-br from-[#f5a623]/[0.07] via-white/[0.02] to-[#e07850]/[0.04] p-5 sm:p-6">

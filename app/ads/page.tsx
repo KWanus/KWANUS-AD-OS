@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import OperatorCallout from "@/components/navigation/OperatorCallout";
 import WorkflowHeader from "@/components/navigation/WorkflowHeader";
 import OperatorStatCard from "@/components/navigation/OperatorStatCard";
@@ -179,7 +179,7 @@ export default function AdsPage() {
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
 
       <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6">
         <div className="mb-6 rounded-3xl border border-white/[0.06] bg-gradient-to-br from-[#f5a623]/[0.07] via-white/[0.02] to-[#e07850]/[0.04] p-5 sm:p-6">

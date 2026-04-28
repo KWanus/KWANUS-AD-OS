@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import Link from "next/link";
 import {
   DollarSign, TrendingUp, Users, Target, ArrowUpRight, ArrowDownRight,
@@ -78,7 +78,7 @@ export default function RevenueAnalyticsPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-t-bg text-white">
-        <AppNav />
+        <SimplifiedNav />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
           <div className="flex items-center justify-center h-64">
             <Loader2 className="w-8 h-8 animate-spin text-white/40" />
@@ -91,7 +91,7 @@ export default function RevenueAnalyticsPage() {
   if (!metrics) {
     return (
       <div className="min-h-screen bg-t-bg text-white">
-        <AppNav />
+        <SimplifiedNav />
         <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
           <p className="text-white/40">Failed to load revenue data</p>
         </main>
@@ -106,7 +106,7 @@ export default function RevenueAnalyticsPage() {
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-10">
         {/* Header */}
         <div className="mb-8">

@@ -7,7 +7,7 @@ import CreativeStudio from "@/components/studio/CreativeStudio";
 import WorkflowGuide from "@/components/navigation/WorkflowGuide";
 import WorkflowHeader from "@/components/navigation/WorkflowHeader";
 import { getUserId } from "@/lib/userId";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 
 type AnalysisMode = "operator" | "consultant" | "saas";
 type ExecutionTier = "core" | "elite";
@@ -716,7 +716,7 @@ function AnalyzeContent() {
   if (!result) {
     return (
       <main className="h-screen bg-t-bg text-white flex flex-col font-sans">
-        <AppNav />
+        <SimplifiedNav />
 
         <div className="flex-1 flex flex-col items-center justify-center px-4 sm:px-6 relative">
           {/* Subtle background glow */}
@@ -847,7 +847,7 @@ function AnalyzeContent() {
   // ── WITH RESULT: two-panel layout ────────────────────────────────────────
   return (
     <main className="h-screen overflow-hidden bg-t-bg-card text-white flex flex-col">
-      <AppNav />
+      <SimplifiedNav />
       {/* Action bar */}
       <header className="shrink-0 px-6 py-2 border-b border-white/[0.06] flex items-center gap-4">
         <div className="flex-1" />

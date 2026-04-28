@@ -4,7 +4,7 @@ import { useState, useEffect, use } from "react";
 import Link from "next/link";
 import { format, formatDistanceToNow } from "date-fns";
 import { toast } from "sonner";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import ScanSubNav from "@/components/ScanSubNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import {
@@ -378,7 +378,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
   if (loading) {
     return (
       <div className="min-h-screen bg-t-bg text-white">
-        <AppNav />
+        <SimplifiedNav />
         <ScanSubNav />
         <div className="flex items-center justify-center min-h-[50vh]">
           <Loader2 className="w-6 h-6 text-white/20 animate-spin" />
@@ -390,7 +390,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
   if (!analysis) {
     return (
       <div className="min-h-screen bg-t-bg text-white">
-        <AppNav />
+        <SimplifiedNav />
         <ScanSubNav />
         <div className="mx-auto flex min-h-[50vh] max-w-3xl flex-col justify-center gap-4 px-4">
           <DatabaseFallbackNotice visible={databaseUnavailable} />
@@ -421,7 +421,7 @@ export default function AnalysisDetailPage({ params }: { params: Promise<{ id: s
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 py-8">
         {/* Back */}
         <Link href="/analyses" className="inline-flex items-center gap-1.5 text-xs text-white/30 hover:text-white/60 transition mb-6">

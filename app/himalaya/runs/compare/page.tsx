@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import HimalayaNav from "@/components/himalaya/HimalayaNav";
 import RunComparePicker from "@/components/himalaya/RunComparePicker";
 import RunCompareView from "@/components/himalaya/RunCompareView";
@@ -13,7 +13,7 @@ export default function HimalayaComparePage() {
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <HimalayaNav />
       <main className="mx-auto max-w-6xl px-4 py-8 sm:px-6">
         <Link

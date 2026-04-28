@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import {
     Search, Filter,
     BarChart3, Edit3, Loader2,
@@ -142,7 +142,7 @@ export default function WinnerFinder() {
             <div className="fixed top-0 left-1/4 w-[500px] h-[500px] bg-[#f5a623]/10 blur-[120px] rounded-full pointer-events-none" />
             <div className="fixed bottom-0 right-1/4 w-[500px] h-[500px] bg-[#e07850]/10 blur-[120px] rounded-full pointer-events-none" />
 
-            <AppNav />
+            <SimplifiedNav />
 
             {/* Main Grid */}
             <section className="flex-1 p-8 overflow-y-auto">

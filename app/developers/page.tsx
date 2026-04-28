@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import {
   Key, Plus, Copy, Trash2, Loader2, AlertTriangle,
   Code2, Activity, Shield, CheckCircle2, XCircle,
@@ -101,7 +101,7 @@ export default function DeveloperConsolePage() {
 
   return (
     <main className="min-h-screen bg-t-bg text-t-text">
-      <AppNav />
+      <SimplifiedNav />
       <div className="max-w-3xl mx-auto px-4 sm:px-6 pb-20">
         {/* Header */}
         <div className="pt-8 pb-6 text-center">

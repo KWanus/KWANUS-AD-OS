@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { ArrowLeft, Mountain, RotateCcw } from "lucide-react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import HimalayaNav from "@/components/himalaya/HimalayaNav";
 import { track } from "@/lib/himalaya/tracking";
 import ProgressStage from "@/components/himalaya/ProgressStage";
@@ -163,7 +163,7 @@ export default function HimalayaImprovePage() {
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <HimalayaNav />
       <main className="mx-auto max-w-2xl px-4 py-10 sm:px-6">
         {running ? (

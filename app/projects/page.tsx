@@ -14,7 +14,7 @@ import {
   Target,
   Wand2,
 } from "lucide-react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 
 type Project = {
   id: string;
@@ -116,7 +116,7 @@ export default function ProjectsPage() {
         />
       </div>
 
-      <AppNav />
+      <SimplifiedNav />
 
       <section className="relative z-10 mx-auto flex w-full max-w-6xl flex-col px-6 pb-20">
         <header className="flex flex-wrap items-end justify-between gap-6 border-b border-white/[0.06] py-12">

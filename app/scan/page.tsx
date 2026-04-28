@@ -1,7 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import ScanSubNav from "@/components/ScanSubNav";
 import WorkflowGuide from "@/components/navigation/WorkflowGuide";
 import WorkflowHeader from "@/components/navigation/WorkflowHeader";
@@ -519,7 +519,7 @@ function ScanPageInner() {
 
   return (
     <div className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <ScanSubNav />
 
       <div className="max-w-3xl mx-auto px-4 pt-10 pb-20">
@@ -1009,7 +1009,7 @@ export default function ScanPage() {
     <Suspense
       fallback={
         <div className="min-h-screen bg-t-bg text-white">
-          <AppNav />
+          <SimplifiedNav />
           <div className="flex items-center justify-center py-24">
             <Loader2 className="w-6 h-6 animate-spin text-white/20" />
           </div>

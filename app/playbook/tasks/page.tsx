@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import {
   Loader2, CheckCircle2, Circle, ChevronRight, Lock, Trophy,
   Target, Zap, ArrowRight, BookOpen, Calendar,
@@ -89,7 +89,7 @@ export default function PlaybookTasksPage() {
   if (loading) {
     return (
       <main className="min-h-screen bg-t-bg text-t-text">
-        <AppNav />
+        <SimplifiedNav />
         <div className="flex flex-col items-center justify-center min-h-[75vh] gap-4">
           <Loader2 className="w-6 h-6 text-[#f5a623] animate-spin" />
           <p className="text-sm text-t-text-muted">Loading your playbook...</p>
@@ -101,7 +101,7 @@ export default function PlaybookTasksPage() {
   if (!progress) {
     return (
       <main className="min-h-screen bg-t-bg text-t-text">
-        <AppNav />
+        <SimplifiedNav />
         <div className="flex flex-col items-center justify-center min-h-[75vh] gap-4">
           <p className="text-sm text-t-text-muted">No playbook available. Complete onboarding first.</p>
           <Link href="/himalaya" className="text-xs text-[#f5a623] hover:underline">Go to Himalaya</Link>
@@ -115,7 +115,7 @@ export default function PlaybookTasksPage() {
 
   return (
     <main className="min-h-screen bg-t-bg text-t-text">
-      <AppNav />
+      <SimplifiedNav />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 pb-28">
 
         {/* Header */}

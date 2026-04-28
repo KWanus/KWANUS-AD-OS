@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import { Mountain, Loader2, Copy, Check, FileText, Quote } from "lucide-react";
 
 export default function CaseStudyPage() {
@@ -47,7 +47,7 @@ export default function CaseStudyPage() {
 
   return (
     <main className="min-h-screen bg-t-bg text-t-text">
-      <AppNav />
+      <SimplifiedNav />
       <div className="max-w-2xl mx-auto px-4 sm:px-6 pb-20">
         <div className="pt-8 pb-4">
           <h1 className="text-2xl font-black">Case Study Generator</h1>

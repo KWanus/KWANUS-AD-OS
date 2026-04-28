@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import {
   Bell, Trophy, AlertTriangle, CheckCircle2, Zap, Globe,
   Mail, DollarSign, Users, Mountain, Loader2, Trash2,
@@ -65,7 +65,7 @@ export default function NotificationsPage() {
 
   return (
     <main className="min-h-screen bg-t-bg text-t-text">
-      <AppNav />
+      <SimplifiedNav />
       <div className="max-w-2xl mx-auto px-4 sm:px-6 pb-20">
         <div className="pt-8 pb-4 flex items-center justify-between">
           <div>

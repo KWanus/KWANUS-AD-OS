@@ -9,7 +9,7 @@ import {
   Target, DollarSign, Users, Sparkles, BarChart3, MessageSquare,
   Calendar, FileText, Rocket, Brain
 } from "lucide-react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import { track } from "@/lib/himalaya/tracking";
 
 // ── What Himalaya Does For You ──────────────────────────────────────────────
@@ -244,7 +244,7 @@ export default function HimalayaPage() {
 
     return (
       <main className="min-h-screen bg-gradient-to-br from-[#0c0a08] via-[#0c0a08] to-violet-950/20 text-white">
-        <AppNav />
+        <SimplifiedNav />
         <div className="flex flex-col items-center justify-center min-h-[80vh] gap-8 px-4">
 
           {/* Animated Logo */}
@@ -319,7 +319,7 @@ export default function HimalayaPage() {
   if (phase === "intro") {
     return (
       <main className="min-h-screen bg-gradient-to-br from-[#0c0a08] via-[#0c0a08] to-violet-950/10 text-white">
-        <AppNav />
+        <SimplifiedNav />
 
         <div className="max-w-6xl mx-auto px-4 sm:px-6 pb-20">
 
@@ -445,7 +445,7 @@ export default function HimalayaPage() {
   if (phase === "entry") {
     return (
       <main className="min-h-screen bg-gradient-to-br from-[#0c0a08] via-[#0c0a08] to-violet-950/10 text-white">
-        <AppNav />
+        <SimplifiedNav />
 
         <div className="max-w-2xl mx-auto px-4 sm:px-6 pb-20">
 
@@ -511,7 +511,7 @@ export default function HimalayaPage() {
   // ── Context Input ───────────────────────────────────────────────────────────
   return (
     <main className="min-h-screen bg-gradient-to-br from-[#0c0a08] via-[#0c0a08] to-violet-950/10 text-white">
-      <AppNav />
+      <SimplifiedNav />
 
       <div className="max-w-2xl mx-auto px-4 sm:px-6 pb-20">
 

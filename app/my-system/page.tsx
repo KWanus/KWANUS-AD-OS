@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import DatabaseFallbackNotice from "@/components/DatabaseFallbackNotice";
 import {
   ARCHETYPES,
@@ -609,7 +609,7 @@ export default function MySystemPage() {
   if (loading) {
     return (
       <main className="min-h-screen bg-t-bg text-white">
-        <AppNav />
+        <SimplifiedNav />
         <div className="flex min-h-[70vh] items-center justify-center">
           <Loader2 className="h-7 w-7 animate-spin text-[#f5a623]" />
         </div>
@@ -620,7 +620,7 @@ export default function MySystemPage() {
   if (!profile) {
     return (
       <main className="min-h-screen bg-t-bg text-white">
-        <AppNav />
+        <SimplifiedNav />
         <div className="mx-auto max-w-3xl px-4 py-12 sm:px-6">
           <div className="rounded-[32px] border border-white/[0.08] bg-white/[0.03] p-8">
             <div className="flex items-center gap-3">
@@ -706,7 +706,7 @@ export default function MySystemPage() {
 
   return (
     <main className="min-h-screen bg-t-bg text-white">
-      <AppNav />
+      <SimplifiedNav />
       <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6">
         <div className="grid gap-8">
           <section className="rounded-[32px] border border-white/[0.08] bg-[linear-gradient(145deg,rgba(245,166,35,0.08),rgba(255,255,255,0.03))] p-8">

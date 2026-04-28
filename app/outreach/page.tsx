@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import Link from "next/link";
 import {
   Search, Users, Mail, Send, Loader2, Check, X, ChevronRight,
@@ -176,7 +176,7 @@ export default function OutreachPage() {
 
   return (
     <main className="min-h-screen bg-t-bg text-t-text">
-      <AppNav />
+      <SimplifiedNav />
       <div className="max-w-4xl mx-auto px-4 sm:px-6 pb-20">
 
         {/* Header */}

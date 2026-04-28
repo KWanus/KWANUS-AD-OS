@@ -4,7 +4,7 @@ import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import Link from "next/link";
-import AppNav from "@/components/AppNav";
+import SimplifiedNav from "@/components/SimplifiedNav";
 import {
   ArrowLeft, Download, Copy, Check, Loader2, Save,
   Image as ImageIcon, Palette, Sparkles, Smartphone,
@@ -183,7 +183,7 @@ export default function CreativeStudioPage({ params }: { params: Promise<{ id: s
 
   return (
     <main className="min-h-screen bg-t-bg text-t-text">
-      <AppNav />
+      <SimplifiedNav />
       <div className="max-w-5xl mx-auto px-4 sm:px-6 pb-20">
 
         <div className="pt-6 pb-3">
