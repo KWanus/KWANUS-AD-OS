@@ -32,7 +32,7 @@ const NAV_SECTIONS = [
     activeColor: "bg-purple-500/10 border-purple-500/30",
     items: [
       { href: "/himalaya", label: "AI Business Builder", icon: Mountain, description: "Build a complete business in 60 seconds" },
-      { href: "/websites", label: "Websites", icon: Globe, description: "13 proven templates · 2.5-4.7% CVR" },
+      { href: "/websites", label: "Websites", icon: Globe, description: "213 templates · 2.5-4.7% CVR" },
       { href: "/projects", label: "Projects", icon: FolderKanban, description: "All your projects in one place" },
     ],
   },

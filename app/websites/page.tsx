@@ -398,15 +398,15 @@ export default function WebsitesDashboard() {
                                 <div className="flex items-center gap-2 mb-2">
                                     <p className="text-[10px] font-black uppercase tracking-[0.28em] text-purple-300/80">NEW</p>
                                     <span className="px-2 py-0.5 rounded-full bg-purple-500/20 border border-purple-500/30 text-xs font-bold text-purple-300">
-                                        13 Templates
+                                        213 Templates
                                     </span>
                                 </div>
                                 <h2 className="text-2xl font-black text-white mb-2">
-                                    Shopify-Quality Website Templates
+                                    200+ Shopify-Quality Website Templates
                                 </h2>
                                 <p className="text-sm leading-7 text-white/62 max-w-2xl">
-                                    13 proven templates with <span className="text-[#10b981] font-bold">2.5-4.7% conversion rates</span> from
-                                    real Shopify stores. Dawn, Sense, and Impact-inspired designs. E-commerce, SaaS, Local Service, and more.
+                                    213 total templates: 13 proven (real data) + 100 standard + 100 optimized versions. <span className="text-[#10b981] font-bold">2.5-4.7% conversion rates</span>.
+                                    Dawn, Sense, and Impact-inspired designs for every business type.
                                 </p>
                                 <div className="flex flex-wrap gap-3 mt-4 text-xs">
                                     <div className="flex items-center gap-1.5 text-white/50">
@@ -433,7 +433,7 @@ export default function WebsitesDashboard() {
                                 className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:shadow-[0_0_50px_rgba(139,92,246,0.45)] hover:scale-[1.02] transition-all duration-200"
                             >
                                 <Globe className="w-4 h-4" />
-                                Browse 13 Templates
+                                Browse 213 Templates
                             </Link>
                             <Link
                                 href="/himalaya"
