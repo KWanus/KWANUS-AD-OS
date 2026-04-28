@@ -268,6 +268,31 @@ export default function BuiltPage({ params }: { params: Promise<{ runId: string 
           </div>
         </div>
 
+        {/* Creative Studio Quick Access */}
+        <div className="rounded-xl border border-[#f5a623]/20 bg-gradient-to-br from-[#f5a623]/5 to-[#ff6b6b]/5 p-4 mb-4">
+          <div className="flex items-center gap-2 mb-2">
+            <span className="text-lg">✨</span>
+            <p className="text-sm font-black text-[#f5a623]">Generate Professional Ad Creatives</p>
+          </div>
+          <p className="text-[10px] text-white/60 mb-3">
+            Your Himalaya business is ready! Generate AI-powered ads using 16 proven frameworks (2.9x-4.8x CTR) or browse 1,500+ professional templates.
+          </p>
+          <div className="flex gap-2">
+            <Link
+              href="/creative-studio/himalaya"
+              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg bg-gradient-to-r from-[#f5a623] to-[#ff6b6b] text-xs font-bold text-white hover:shadow-lg hover:shadow-[#f5a623]/20 transition"
+            >
+              🎯 Himalaya Creatives
+            </Link>
+            <Link
+              href="/creative-studio"
+              className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 rounded-lg border border-[#f5a623]/30 bg-black/20 text-xs font-bold text-[#f5a623] hover:bg-black/30 transition"
+            >
+              All Templates →
+            </Link>
+          </div>
+        </div>
+
         {/* Go to your business */}
         <div className="space-y-3">
           {d?.projectId && (

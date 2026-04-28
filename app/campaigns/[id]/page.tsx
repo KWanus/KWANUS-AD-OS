@@ -836,6 +836,59 @@ export default function CampaignWorkspace() {
                 </div>
               )}
 
+              {/* Creative Studio Quick Access */}
+              <div className="rounded-2xl border border-[#f5a623]/20 bg-gradient-to-br from-[#f5a623]/5 to-[#ff6b6b]/5 p-6">
+                <div className="flex flex-col gap-4 lg:flex-row lg:items-start lg:justify-between">
+                  <div className="max-w-2xl">
+                    <div className="flex items-center gap-2 mb-3">
+                      <span className="text-2xl">✨</span>
+                      <p className="text-xs uppercase tracking-widest text-[#f5a623] font-bold">Creative Studio</p>
+                    </div>
+                    <h3 className="text-xl font-bold text-white">
+                      Generate Professional Ad Creatives
+                    </h3>
+                    <p className="mt-2 text-sm leading-relaxed text-white/65">
+                      Access 1,500+ templates, 16 proven frameworks (2.9x-4.8x CTR), and Canva-style editor. Generate AI-powered ads from your Himalaya business analysis or start from scratch.
+                    </p>
+                  </div>
+                  <div className="flex flex-col gap-2 shrink-0">
+                    <Link
+                      href="/creative-studio/himalaya"
+                      className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-[#f5a623] to-[#ff6b6b] px-4 py-2.5 text-xs font-black uppercase tracking-[0.18em] text-white transition hover:shadow-lg hover:shadow-[#f5a623]/20"
+                    >
+                      🎯 Himalaya Creatives
+                    </Link>
+                    <Link
+                      href="/creative-studio"
+                      className="inline-flex items-center gap-2 rounded-xl border border-[#f5a623]/30 bg-black/20 px-4 py-2 text-xs font-black uppercase tracking-[0.18em] text-[#f5a623] transition hover:bg-black/30"
+                    >
+                      Browse All Templates →
+                    </Link>
+                    <Link
+                      href={`/campaigns/${id}/creatives`}
+                      className="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs font-semibold text-white/70 transition hover:bg-white/10 hover:text-white"
+                    >
+                      View Frameworks
+                    </Link>
+                  </div>
+                </div>
+
+                <div className="mt-5 grid gap-3 md:grid-cols-3">
+                  <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+                    <p className="text-2xl font-bold text-[#f5a623]">1,500+</p>
+                    <p className="text-xs text-white/50 mt-1">Professional Templates</p>
+                  </div>
+                  <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+                    <p className="text-2xl font-bold text-[#f5a623]">16</p>
+                    <p className="text-xs text-white/50 mt-1">Proven Frameworks</p>
+                  </div>
+                  <div className="rounded-xl border border-white/10 bg-black/20 p-4">
+                    <p className="text-2xl font-bold text-[#f5a623]">2.9x - 4.8x</p>
+                    <p className="text-xs text-white/50 mt-1">CTR Improvement</p>
+                  </div>
+                </div>
+              </div>
+
               {campaign.analysisRun && (
                 <div className="rounded-2xl border border-white/10 bg-white/5 p-6">
                   <p className="text-xs uppercase tracking-widest text-white/30 mb-3">Analysis Summary</p>

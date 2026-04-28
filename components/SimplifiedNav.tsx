@@ -44,7 +44,8 @@ const NAV_SECTIONS = [
     activeColor: "bg-[#f5a623]/10 border-[#f5a623]/30",
     items: [
       { href: "/campaigns", label: "Ad Campaigns", icon: FolderKanban, description: "Professional ad campaigns" },
-      { href: "/campaigns/creatives", label: "Creative Studio", icon: Sparkles, description: "16 proven frameworks (2.9x-4.8x CTR)" },
+      { href: "/creative-studio", label: "Creative Studio", icon: Sparkles, description: "1,500+ templates · Canva-style editor" },
+      { href: "/creative-studio/himalaya", label: "Himalaya Creatives", icon: Mountain, description: "AI-generated ads from your business" },
       { href: "/analytics", label: "Ad Analytics", icon: BarChart3, description: "Track campaign performance" },
     ],
   },
