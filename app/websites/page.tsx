@@ -386,6 +386,66 @@ export default function WebsitesDashboard() {
                     ] : undefined}
                 />
 
+                {/* Proven Website Templates CTA */}
+                <section className="mb-6 rounded-[30px] border border-purple-500/20 bg-gradient-to-br from-purple-500/10 via-blue-500/10 to-purple-500/10 p-6 relative overflow-hidden">
+                    <div className="absolute inset-0 bg-[url('/grid.svg')] opacity-[0.03]"></div>
+                    <div className="relative flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6">
+                        <div className="flex items-start gap-4 flex-1">
+                            <div className="p-4 rounded-2xl bg-gradient-to-br from-purple-500/20 to-blue-500/20 border border-purple-500/30 shrink-0">
+                                <Globe className="w-8 h-8 text-purple-400" />
+                            </div>
+                            <div>
+                                <div className="flex items-center gap-2 mb-2">
+                                    <p className="text-[10px] font-black uppercase tracking-[0.28em] text-purple-300/80">NEW</p>
+                                    <span className="px-2 py-0.5 rounded-full bg-purple-500/20 border border-purple-500/30 text-xs font-bold text-purple-300">
+                                        13 Templates
+                                    </span>
+                                </div>
+                                <h2 className="text-2xl font-black text-white mb-2">
+                                    Shopify-Quality Website Templates
+                                </h2>
+                                <p className="text-sm leading-7 text-white/62 max-w-2xl">
+                                    13 proven templates with <span className="text-[#10b981] font-bold">2.5-4.7% conversion rates</span> from
+                                    real Shopify stores. Dawn, Sense, and Impact-inspired designs. E-commerce, SaaS, Local Service, and more.
+                                </p>
+                                <div className="flex flex-wrap gap-3 mt-4 text-xs">
+                                    <div className="flex items-center gap-1.5 text-white/50">
+                                        <BarChart3 className="w-3.5 h-3.5 text-[#10b981]" />
+                                        <span className="text-[#10b981] font-bold">2.5-4.7%</span>
+                                        <span>CVR</span>
+                                    </div>
+                                    <div className="text-white/30">·</div>
+                                    <div className="flex items-center gap-1.5 text-white/50">
+                                        <Sparkles className="w-3.5 h-3.5 text-blue-400" />
+                                        <span>Mobile-First</span>
+                                    </div>
+                                    <div className="text-white/30">·</div>
+                                    <div className="flex items-center gap-1.5 text-white/50">
+                                        <FolderKanban className="w-3.5 h-3.5 text-purple-400" />
+                                        <span>Real Brand Examples</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div className="flex flex-wrap gap-3">
+                            <Link
+                                href="/websites/templates"
+                                className="flex items-center gap-2 rounded-2xl bg-gradient-to-r from-purple-500 to-blue-500 px-6 py-3 text-sm font-black text-white shadow-[0_0_30px_rgba(139,92,246,0.3)] hover:shadow-[0_0_50px_rgba(139,92,246,0.45)] hover:scale-[1.02] transition-all duration-200"
+                            >
+                                <Globe className="w-4 h-4" />
+                                Browse 13 Templates
+                            </Link>
+                            <Link
+                                href="/himalaya"
+                                className="flex items-center gap-2 rounded-2xl border border-white/[0.1] bg-white/[0.04] px-6 py-3 text-sm font-bold text-white/75 hover:bg-white/[0.07] transition-all duration-200"
+                            >
+                                <Wand2 className="w-4 h-4" />
+                                Auto-Fill with Himalaya
+                            </Link>
+                        </div>
+                    </div>
+                </section>
+
                 {businessProfile && (
                     <>
                         <section className="mb-6 rounded-[30px] border border-white/[0.08] bg-white/[0.03] p-5">
