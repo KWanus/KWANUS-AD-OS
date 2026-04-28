@@ -15,6 +15,11 @@ type HimalayaProject = {
   title: string;
   niche: string;
   createdAt: string;
+  campaign?: {
+    id: string;
+    name: string;
+    variationCount: number;
+  };
 };
 
 type AdCreative = {
@@ -58,6 +63,7 @@ export default function HimalayaCreativeStudioPage() {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState("");
   const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
+  const [savingCreative, setSavingCreative] = useState<string | null>(null);
 
   useEffect(() => {
     loadHimalayaProjects();
@@ -96,6 +102,50 @@ export default function HimalayaCreativeStudioPage() {
       setAnalysis(data);
     } catch (err) {
       console.error("Failed to load analysis:", err);
+    }
+  };
+
+  const saveCreativeToCampaign = async (creative: AdCreative) => {
+    const currentProject = projects.find(p => p.id === selectedProject);
+    if (!currentProject?.campaign) {
+      alert("No campaign connected to this project. Create a campaign first!");
+      return;
+    }
+
+    setSavingCreative(creative.hook);
+    try {
+      const response = await fetch(`/api/campaigns/${currentProject.campaign.id}/variations`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          name: `${creative.platform} - ${creative.format}`,
+          type: creative.format.includes("video") ? "video_script" : "ad_copy",
+          platform: creative.platform,
+          content: {
+            hook: creative.hook,
+            visualStyle: creative.visualStyle,
+            imagePrompt: creative.imagePrompt,
+            videoScript: creative.videoScript,
+            platform: creative.platform,
+            format: creative.format,
+          },
+          status: "draft",
+        }),
+      });
+
+      const result = await response.json();
+      if (result.ok) {
+        alert(`✅ Saved to campaign: ${currentProject.campaign.name}`);
+        // Reload projects to update variation count
+        loadHimalayaProjects();
+      } else {
+        alert("Failed to save creative to campaign");
+      }
+    } catch (err) {
+      console.error("Failed to save:", err);
+      alert("Error saving creative");
+    } finally {
+      setSavingCreative(null);
     }
   };
 
@@ -157,10 +207,10 @@ export default function HimalayaCreativeStudioPage() {
           {/* Project Selector */}
           {projects.length > 0 && (
             <div className="mb-6 p-4 rounded-xl bg-gradient-to-br from-[#f5a623]/10 to-[#ff6b6b]/10 border border-[#f5a623]/20">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
                 <div className="flex-1">
                   <label className="text-xs font-bold text-white/40 uppercase tracking-wider mb-2 block">
-                    Select Himalaya Project
+                    {projects.length === 1 ? "Your Himalaya Project" : `Select Project (${projects.length} available)`}
                   </label>
                   <select
                     value={selectedProject || ""}
@@ -169,16 +219,41 @@ export default function HimalayaCreativeStudioPage() {
                   >
                     {projects.map((project) => (
                       <option key={project.id} value={project.id} className="bg-[#1a1a1a]">
-                        {project.title || project.niche}
+                        {project.title || project.niche} {project.campaign ? `• Campaign: ${project.campaign.name}` : ""}
                       </option>
                     ))}
                   </select>
+
+                  {/* Campaign Connection Info */}
+                  {(() => {
+                    const currentProject = projects.find(p => p.id === selectedProject);
+                    if (!currentProject?.campaign) return null;
+
+                    return (
+                      <div className="mt-3 flex items-center gap-2">
+                        <div className="px-3 py-1.5 rounded-lg bg-black/20 border border-[#f5a623]/20">
+                          <p className="text-xs text-white/50">
+                            Connected Campaign: <Link href={`/campaigns/${currentProject.campaign.id}`} className="text-[#f5a623] hover:underline font-bold">{currentProject.campaign.name}</Link>
+                          </p>
+                          <p className="text-[10px] text-white/30 mt-0.5">
+                            {currentProject.campaign.variationCount} ad variations created
+                          </p>
+                        </div>
+                        <Link
+                          href={`/campaigns/${currentProject.campaign.id}`}
+                          className="px-3 py-1.5 rounded-lg border border-white/10 text-white/70 hover:text-white hover:bg-white/5 transition text-xs font-semibold flex items-center gap-1"
+                        >
+                          View Campaign <ArrowRight className="w-3 h-3" />
+                        </Link>
+                      </div>
+                    );
+                  })()}
                 </div>
 
                 {analysis && (
                   <button
                     onClick={generateCreativesFromHimalaya}
-                    className="px-6 py-3 rounded-lg bg-gradient-to-r from-[#f5a623] to-[#ff6b6b] text-white font-bold hover:shadow-lg hover:shadow-[#f5a623]/20 transition flex items-center gap-2"
+                    className="px-6 py-3 rounded-lg bg-gradient-to-r from-[#f5a623] to-[#ff6b6b] text-white font-bold hover:shadow-lg hover:shadow-[#f5a623]/20 transition flex items-center gap-2 self-start"
                   >
                     <Wand2 className="w-5 h-5" />
                     Generate All Creatives
@@ -271,13 +346,27 @@ export default function HimalayaCreativeStudioPage() {
               {viewMode === "grid" ? (
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                   {filteredCreatives.map((creative, idx) => (
-                    <CreativeCard key={idx} creative={creative} analysisId={analysis.id} />
+                    <CreativeCard
+                      key={idx}
+                      creative={creative}
+                      analysisId={analysis.id}
+                      currentProject={projects.find(p => p.id === selectedProject)}
+                      onSave={saveCreativeToCampaign}
+                      isSaving={savingCreative === creative.hook}
+                    />
                   ))}
                 </div>
               ) : (
                 <div className="space-y-3">
                   {filteredCreatives.map((creative, idx) => (
-                    <CreativeListItem key={idx} creative={creative} analysisId={analysis.id} />
+                    <CreativeListItem
+                      key={idx}
+                      creative={creative}
+                      analysisId={analysis.id}
+                      currentProject={projects.find(p => p.id === selectedProject)}
+                      onSave={saveCreativeToCampaign}
+                      isSaving={savingCreative === creative.hook}
+                    />
                   ))}
                 </div>
               )}
@@ -315,7 +404,19 @@ export default function HimalayaCreativeStudioPage() {
   );
 }
 
-function CreativeCard({ creative, analysisId }: { creative: AdCreative; analysisId: string }) {
+function CreativeCard({
+  creative,
+  analysisId,
+  currentProject,
+  onSave,
+  isSaving
+}: {
+  creative: AdCreative;
+  analysisId: string;
+  currentProject?: HimalayaProject;
+  onSave: (creative: AdCreative) => void;
+  isSaving: boolean;
+}) {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
@@ -332,14 +433,23 @@ function CreativeCard({ creative, analysisId }: { creative: AdCreative; analysis
 
         {/* Hover Overlay */}
         {isHovered && (
-          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex items-center justify-center gap-2 animate-in fade-in duration-200">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-sm flex flex-col items-center justify-center gap-2 animate-in fade-in duration-200 p-3">
             <Link
               href={`/creative-studio/editor/${analysisId}?creative=${encodeURIComponent(JSON.stringify(creative))}`}
-              className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#f5a623] to-[#ff6b6b] text-white text-sm font-bold hover:shadow-lg hover:shadow-[#f5a623]/40 transition"
+              className="w-full px-3 py-2 rounded-lg bg-gradient-to-r from-[#f5a623] to-[#ff6b6b] text-white text-xs font-bold hover:shadow-lg hover:shadow-[#f5a623]/40 transition text-center"
             >
-              <Wand2 className="w-4 h-4 inline mr-1" />
+              <Wand2 className="w-3.5 h-3.5 inline mr-1" />
               Design Ad
             </Link>
+            {currentProject?.campaign && (
+              <button
+                onClick={() => onSave(creative)}
+                disabled={isSaving}
+                className="w-full px-3 py-2 rounded-lg border border-white/20 bg-black/40 text-white text-xs font-semibold hover:bg-black/60 transition disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                {isSaving ? "Saving..." : `💾 Save to ${currentProject.campaign.name}`}
+              </button>
+            )}
           </div>
         )}
 
@@ -359,7 +469,19 @@ function CreativeCard({ creative, analysisId }: { creative: AdCreative; analysis
   );
 }
 
-function CreativeListItem({ creative, analysisId }: { creative: AdCreative; analysisId: string }) {
+function CreativeListItem({
+  creative,
+  analysisId,
+  currentProject,
+  onSave,
+  isSaving
+}: {
+  creative: AdCreative;
+  analysisId: string;
+  currentProject?: HimalayaProject;
+  onSave: (creative: AdCreative) => void;
+  isSaving: boolean;
+}) {
   return (
     <div className="flex items-center gap-4 p-4 rounded-xl border border-white/10 bg-white/[0.02] hover:border-[#f5a623]/30 hover:bg-white/[0.04] transition group">
       {/* Icon */}
@@ -378,20 +500,36 @@ function CreativeListItem({ creative, analysisId }: { creative: AdCreative; anal
             {creative.platform}
           </span>
           <span className="text-xs text-white/40">{creative.format}</span>
+          {currentProject?.campaign && (
+            <span className="px-2 py-0.5 rounded-md bg-white/5 text-white/40 text-[10px]">
+              → {currentProject.campaign.name}
+            </span>
+          )}
         </div>
         <p className="font-bold text-white text-sm mb-1">{creative.hook}</p>
         <p className="text-xs text-white/40 line-clamp-1">{creative.visualStyle}</p>
       </div>
 
       {/* Actions */}
-      <Link
-        href={`/creative-studio/editor/${analysisId}?creative=${encodeURIComponent(JSON.stringify(creative))}`}
-        className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#f5a623] to-[#ff6b6b] text-white text-sm font-bold hover:shadow-lg hover:shadow-[#f5a623]/20 transition flex items-center gap-2"
-      >
-        <Wand2 className="w-4 h-4" />
-        Design Ad
-        <ArrowRight className="w-4 h-4" />
-      </Link>
+      <div className="flex items-center gap-2">
+        {currentProject?.campaign && (
+          <button
+            onClick={() => onSave(creative)}
+            disabled={isSaving}
+            className="px-3 py-2 rounded-lg border border-white/10 bg-white/5 text-white/70 hover:text-white hover:bg-white/10 transition text-xs font-semibold disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isSaving ? "Saving..." : "💾 Save"}
+          </button>
+        )}
+        <Link
+          href={`/creative-studio/editor/${analysisId}?creative=${encodeURIComponent(JSON.stringify(creative))}`}
+          className="px-4 py-2 rounded-lg bg-gradient-to-r from-[#f5a623] to-[#ff6b6b] text-white text-sm font-bold hover:shadow-lg hover:shadow-[#f5a623]/20 transition flex items-center gap-2"
+        >
+          <Wand2 className="w-4 h-4" />
+          Design Ad
+          <ArrowRight className="w-4 h-4" />
+        </Link>
+      </div>
     </div>
   );
 }
