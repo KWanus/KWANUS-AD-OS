@@ -112,7 +112,7 @@ export async function getTopClients(userId: string, limit = 10): Promise<ClientR
     select: {
       id: true,
       name: true,
-      source: true,
+      sourceCampaignId: true,
       dealValue: true,
       createdAt: true,
     },
@@ -123,7 +123,7 @@ export async function getTopClients(userId: string, limit = 10): Promise<ClientR
   return clients.map(client => ({
     clientId: client.id,
     clientName: client.name,
-    source: client.source || "unknown",
+    source: client.sourceCampaignId || "unknown",
     totalRevenue: client.dealValue || 0,
     lifetimeValue: client.dealValue || 0, // In future, add subscription data
     acquisitionDate: client.createdAt,
@@ -138,7 +138,7 @@ export async function getMRRProjection(userId: string): Promise<MRRProjection> {
   const clients = await prisma.client.findMany({
     where: {
       userId,
-      status: { in: ["active", "onboarding"] },
+      pipelineStage: { in: ["active", "onboarding"] },
     },
     select: {
       dealValue: true,
