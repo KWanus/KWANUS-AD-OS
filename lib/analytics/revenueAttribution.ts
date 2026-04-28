@@ -52,9 +52,9 @@ export async function getRevenueBySource(userId: string): Promise<RevenueSource[
     select: {
       id: true,
       name: true,
-      source: true,
+      sourceCampaignId: true,
       dealValue: true,
-      status: true,
+      pipelineStage: true,
       createdAt: true,
     },
   });
@@ -74,7 +74,7 @@ export async function getRevenueBySource(userId: string): Promise<RevenueSource[
 
   // Process clients
   for (const client of clients) {
-    const source = client.source || "unknown";
+    const source = client.sourceCampaignId || "direct";
     const existing = sourceMap.get(source) || { clients: 0, totalRevenue: 0, leadCount: 0 };
     sourceMap.set(source, {
       clients: existing.clients + 1,
