@@ -10,7 +10,7 @@ import {
   Home, Mountain, FolderKanban, Globe, Mail, Users, Settings,
   Search, ChevronDown, LayoutGrid, Sun, Moon, Sparkles,
   MessageSquareText, TrendingUp, BarChart3, Briefcase, FileText,
-  MapPin, ShoppingCart, Building2, Package, Wrench, Send, Share2, Code2, Store, BookOpen, DollarSign,
+  MapPin, ShoppingCart, Building2, Package, Wrench, Send, Share2, Code2, Store, BookOpen, DollarSign, Radar,
 } from "lucide-react";
 import { useTheme, type ThemeMode } from "@/lib/theme/ThemeProvider";
 
@@ -25,6 +25,7 @@ const NAV = [
   { href: "/websites",  label: "Sites",     icon: Globe,         match: (p: string) => p.startsWith("/websites") },
   { href: "/emails",    label: "Emails",    icon: Mail,          match: (p: string) => p.startsWith("/emails") },
   { href: "/clients",   label: "CRM",       icon: Users,         match: (p: string) => p.startsWith("/clients") || p.startsWith("/leads") },
+  { href: "/market-intelligence", label: "Intel", icon: Radar, match: (p: string) => p.startsWith("/market-intelligence") },
 ];
 
 // ── More menu ────────────────────────────────────────────────────────────────

@@ -608,6 +608,21 @@ export default function Home() {
           </div>
         )}
 
+        {/* ── Market Intelligence Quick Access ── */}
+        <Link
+          href="/market-intelligence"
+          className="flex items-center gap-4 mb-6 rounded-2xl border border-cyan-500/20 bg-gradient-to-br from-cyan-500/[0.05] to-transparent px-5 py-4 group hover:border-cyan-500/30 hover:shadow-[0_10px_40px_rgba(34,211,238,0.1)] transition-all"
+        >
+          <div className="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-500 flex items-center justify-center shrink-0 shadow-[0_0_15px_rgba(34,211,238,0.2)]">
+            <Target className="w-5 h-5 text-white" />
+          </div>
+          <div className="flex-1 min-w-0">
+            <p className="text-sm font-bold text-white group-hover:text-cyan-400 transition">Market Intelligence</p>
+            <p className="text-xs text-t-text-faint">Scan niches, find winning products, get launch assets</p>
+          </div>
+          <ArrowRight className="w-5 h-5 text-cyan-500/50 group-hover:text-cyan-400 group-hover:translate-x-1 transition-all" />
+        </Link>
+
         {/* ── Insights — what happened while you were away ── */}
         {insights && (insights.notifications > 0 || insights.advisor || insights.opportunities > 0) && (
           <div className="mb-6 rounded-2xl border border-[#f5a623]/15 bg-gradient-to-br from-[#f5a623]/[0.04] to-transparent p-5">
